@@ -23,8 +23,23 @@ var ActorInspector = Backbone.View.extend({
         '<textarea readonly class="cell-attrs-hidden" maxlength=100> <%= isHidden %> </textarea>',
         '<label for="interval"> Intervals </label><br>',
         '<textarea readonly class="cell-attrs-intervals" maxlength=100> <%= intervals %> </textarea>',
-        '<input type="range" min="0" max="10" value="30", id="slider-1">',
-        '<input type="range" min="0" max="10" value="70", id="slider-2">',
+        '<div class="wrapper">',
+        '<div class="values">',
+        '<span id="range1">',
+        '0',
+        '</span>',
+        '<span> &dash; </span>',
+        '<span id="range2">',
+        '10',
+        '</span>',
+        '</div>',
+        '<div class="container">',
+        '<div class="slider-track">',
+        '</div>',
+        '<input type="range" min="0" max="10" value="30", id="slider-1" >',
+        '<input type="range" min="0" max="10" value="70", id="slider-2" >',
+        '</div>',
+        '</div>',
         //'<label class="sub-label">Num Relative Time Points</label>',
 		//'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"> </input>',
         '</div>',
@@ -144,3 +159,4 @@ var ActorInspector = Backbone.View.extend({
         }
     }
 });
+
