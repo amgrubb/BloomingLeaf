@@ -691,7 +691,7 @@ padding: 0px 20px 0px 0px;
 
 .wrapper{
   position: relative;
-  background-color: #ffffff00;
+  background-color: #ffffff;
   border-radius: 10px;
 }
 .container{
@@ -750,7 +750,7 @@ input[type="range"]::-moz-range-thumb{
   width: 1.7em;
   cursor: pointer;
   border-radius: 50%;
-  background-color: #16244d95;
+  background-color: #3264fe;
   pointer-events: auto;
 }
 input[type="range"]::-ms-thumb{
