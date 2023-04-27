@@ -3,6 +3,7 @@ package layout;
 import simulation.*;
 import merge.*;
 
+
 import java.util.*;
 
 public class LayoutAlgorithm {
@@ -139,12 +140,18 @@ public class LayoutAlgorithm {
 
         ArrayList<Double> x_means = new ArrayList<Double>();
         ArrayList<Double> y_means = new ArrayList<Double>();
+        
+        ArrayList<Double[]> adjustments = new ArrayList<Double[]>();
+        System.out.println("adjustment arraylist created!");
+        for (int l = 0; l < nodePositions.length; l++) {
+            // adjustments.add(new Double[]{0.0, 0.0});
+            adjustments.add(new Double[]{0.0, 0.0});
+        }
 
         //Layout forces applied maxIter times
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
 			if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
-
             
             double x_sum = 0;
             double y_sum = 0;
@@ -182,18 +189,37 @@ public class LayoutAlgorithm {
                     nodePositions[k].setX(nodePositions[k].getX() - x_shift);
                     nodePositions[k].setY(nodePositions[k].getY() - y_shift);
                     
+                    adjustments.get(j)[0] += x_shift;
+                    adjustments.get(j)[1] += y_shift;
+                    adjustments.get(k)[0] -= x_shift;
+                    adjustments.get(k)[1] -= y_shift;
 
+                    System.out.println("x shift saved to adjustment to"+ j + "th node!"+ adjustments.get(j)[0]);
+                    System.out.println("y shift saved to adjustment to"+ j + "th node!"+ adjustments.get(j)[1]);
+                    System.out.println("x shift saved to adjustment to"+ k + "th node!" + adjustments.get(k)[0]);
+                    System.out.println("y shift saved to adjustment to"+ k + "th node!"+ adjustments.get(k)[1]);
+                    
                     //if either is an actor, add adjust to children nodes
-                    if(j < numActors) {
-                    	propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
-                    }
+                    // if(j < numActors) {
+                    // 	propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
+                    // }
 
-                    if(k < numActors) {
-                    	propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
-                    }
+                    // if(k < numActors) {
+                    // 	propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
+                    // }
 
+                    
                 }
 
+                for (Double[] adjustment : adjustments) {
+                    System.out.println("X shift: " + adjustment[0] + ", Y shift: " + adjustment[1] );
+                }
+                
+
+                if(j < numActors) {
+                    propagateAdjustments(model.getActors().get(j), adjustments.get(j)[0], adjustments.get(j)[1]);
+                }
+                
                 //adjust positions based on gravity from the center
                 double phi = angleBetween(center, nodePositions[j]);
                 if (LMain.DEBUG) System.out.println("phi: " + phi);
@@ -206,6 +232,32 @@ public class LayoutAlgorithm {
                 if(j < numActors) {
                 	propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
                 }
+
+
+                for(int k = 0; k < nodePositions.length; k++){
+                    if(j == k) continue;
+                    //if either is an actor, add adjust to children nodes
+                    // if(j < numActors) {
+                    // 	propagateAdjustments(model.getActors().get(j), adjustments.get(j)[0], adjustments.get(j)[1]);
+                    // }
+
+                    // if(k < numActors) {
+                    // 	propagateAdjustments(model.getActors().get(k), adjustments.get(k)[0], adjustments.get(k)[1]);
+                    // }
+
+                }
+
+                // for (Double[] adjustment : adjustments) {
+                //     if(j < numActors) {
+                //         propagateAdjustments(model.getActors().get(j), adjustment[0], adjustment[1]);
+                //     }
+                // }
+
+                // for (int l = 0; l < nodePositions.length; l++) {
+                //     nodePositions[l].setX(nodePositions[l].getX() + adjustments.get(l)[0]);
+                //     nodePositions[l].setY(nodePositions[l].getY() + adjustments.get(l)[1]);
+                // }
+
 
             }
 
