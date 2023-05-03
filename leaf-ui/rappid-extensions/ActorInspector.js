@@ -39,8 +39,12 @@ var ActorInspector = Backbone.View.extend({
         '<input type="range" min="0" max="10" value="3", id="slider-1" oninput="slideOne()">',
         '<input type="range" min="0" max="10" value="7", id="slider-2" oninput="slideTwo()">',
         '</div>',
+        '<label for="hidden">Flip intervals</label>',
+        '<input type="checkbox" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">',
+        '<div class="legend-box legend-box-blue">Hide</div>',
+        '<div class="legend-box legend-box-white">Display</div>',
         '</div>',
-        '<script src="js/actorDoubleSlider.js"></script>', // script hasn't worked yet, but relative path looks correct
+        '<script src="js/actorDoubleSlider.js"></script>',
         //'<label class="sub-label">Num Relative Time Points</label>',
 		//'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"> </input>',
         '</div>',

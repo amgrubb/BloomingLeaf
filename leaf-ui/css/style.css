@@ -691,7 +691,7 @@ padding: 0px 20px 0px 0px;
 
 .wrapper{
   position: relative;
-  background-color: #ffffff;
+  background-color: #ffffff00;
   border-radius: 10px;
 }
 .container{
@@ -790,4 +790,22 @@ input[type="range"]:active::-webkit-slider-thumb{
   bottom: -14px;
   left: 0;
   right: 0;
+}
+
+.legend-box {
+  height: 20px;
+  width: 150px;
+  margin-left: 50px;
+  /* margin-bottom: 15px; */
+  /* border: 1px solid black; */
+}
+
+.legend-box-blue {
+  background-color: #3264fe;
+  color: #ffffff;  
+}
+
+.legend-box-white {
+  background-color: #ffffff;
+  color: #3264fe;
 }
