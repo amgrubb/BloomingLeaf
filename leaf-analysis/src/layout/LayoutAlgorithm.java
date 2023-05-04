@@ -137,17 +137,13 @@ public class LayoutAlgorithm {
         }
         if (LMain.DEBUG) System.out.println(constant);
         double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
+   
+        ArrayList<ArrayList<VisualInfo>> nodePositionsRecord = new ArrayList<ArrayList<VisualInfo>>();
 
-        ArrayList<Double> x_means = new ArrayList<Double>();
-        ArrayList<Double> y_means = new ArrayList<Double>();
-        
         ArrayList<Double[]> adjustments = new ArrayList<Double[]>();
-        System.out.println("adjustment arraylist created!");
-        for (int l = 0; l < nodePositions.length; l++) {
-            adjustments.add(new Double[]{nodePositions[l].getX(), nodePositions[l].getY()});
-            System.out.println(l + "th node's initial x is "+nodePositions[l].getX());
-            System.out.println(l + "th node's initial y is "+nodePositions[l].getY());
-        }
+        for (int k = 0; k < nodePositions.length; k++) {
+            adjustments.add(new Double[]{nodePositions[k].getX(), nodePositions[k].getY()});
+        } // initial positions stored
 
         //Layout forces applied maxIter times
 		for(int i = 0; i < maxIter; i++){
@@ -179,9 +175,6 @@ public class LayoutAlgorithm {
                     if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
                     if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
 
-                    x_sum = x_sum + Math.abs(x_shift);
-                    y_sum = y_sum + Math.abs(y_shift);
-
                     //apply forces to node j
                     nodePositions[j].setX(nodePositions[j].getX() + x_shift);
                     nodePositions[j].setY(nodePositions[j].getY() + y_shift);
@@ -195,7 +188,7 @@ public class LayoutAlgorithm {
  
                 //adjust positions based on gravity from the center
                 double phi = angleBetween(center, nodePositions[j]);
-                if (LMain.DEBUG) System.out.println("phi: " + phi);
+                //if (LMain.DEBUG) System.out.println("phi: " + phi);
                 nodePositions[j].setX(nodePositions[j].getX() + gravitation*Math.cos(phi));
                 nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
 
@@ -203,26 +196,14 @@ public class LayoutAlgorithm {
 
             }
 
-
-            int count = nodePositions.length;
-            if (LMain.DEBUG) System.out.println("number of nodes" + count);
-            double x_mean = x_sum / count;
-            double y_mean = y_sum / count;
-
-            if (LMain.DEBUG) System.out.println(i + "th iteration \n" + "x_mean" + x_mean);
-            if (LMain.DEBUG) System.out.println("y_mean" + y_mean);
-
-
-            
-            if(i % 100 == 0) {
-                x_means.add(x_mean);
-                y_means.add(y_mean);
+            if (i % 100 == 0) {
+                ArrayList<VisualInfo> positions = new ArrayList<VisualInfo>();
+                for(int k = 0; k < nodePositions.length; k++){
+                    positions.add(new VisualInfo(nodePositions[k].getWidth(), nodePositions[k].getHeight(),nodePositions[k].getX(), nodePositions[k].getY()));
+                }
+                nodePositionsRecord.add(positions);
             }
-
-            
-            if (LMain.DEBUG) System.out.println("x_means: "+x_means);
-            if (LMain.DEBUG) System.out.println("y_means: "+y_means);
-
+  
             //check if the layout is looking good --> if if it is, return model 
             if(checkConds(nodePositions, center, numActors)) {
             	if (LMain.DEBUG) System.out.println("Conditions Met");
@@ -233,6 +214,65 @@ public class LayoutAlgorithm {
             lV.update();
             if (LMain.DEBUG) System.out.println(constant);
         }
+
+        ArrayList<ArrayList<Double>> diffXByNodes = new ArrayList<ArrayList<Double>>();
+        ArrayList<ArrayList<Double>> diffYByNodes = new ArrayList<ArrayList<Double>>();
+
+        for (int k = 0; k < nodePositions.length; k++) {
+            ArrayList<Double> nodeDiffX = new ArrayList<Double>();
+            ArrayList<Double> nodeDiffY = new ArrayList<Double>();
+            for (int i = 0; i < nodePositionsRecord.size()-1; i++) {
+                ArrayList<VisualInfo> intervalNodePositions = nodePositionsRecord.get(i);
+                ArrayList<VisualInfo> nextIntervalNodePositions = nodePositionsRecord.get(i + 1);
+                nodeDiffX.add(nextIntervalNodePositions.get(k).getX() - intervalNodePositions.get(k).getX());
+                nodeDiffY.add(nextIntervalNodePositions.get(k).getX() - intervalNodePositions.get(k).getX());
+            }
+            diffXByNodes.add(nodeDiffX);
+            diffYByNodes.add(nodeDiffY);
+        }
+
+        // // print out diffXByNodes
+        // System.out.println("Diff X by Nodes:");
+        //     for (ArrayList<Double> nodeDiffX : diffXByNodes) {
+        //         for (Double diffX : nodeDiffX) {
+        //         System.out.print(diffX + " ");
+        //         }
+        //         System.out.println();
+        //     }
+
+        // // print out diffYByNodes
+        // System.out.println("Diff Y by Nodes:");
+        // for (ArrayList<Double> nodeDiffY : diffYByNodes) {
+        //     for (Double diffY : nodeDiffY) {
+        //         System.out.print(diffY + " ");
+        //     }
+        //     System.out.println();
+        // }
+        
+        ArrayList<ArrayList<Double>> diffDistanceByNodes = new ArrayList<ArrayList<Double>>();
+
+        for (int i = 0; i < diffXByNodes.size(); i++) {
+            ArrayList<Double> nodeDiffDistance = new ArrayList<Double>();
+            for (int j = 0; j < diffXByNodes.get(i).size(); j++) {
+                double diffX = diffXByNodes.get(i).get(j);
+                double diffY = diffYByNodes.get(i).get(j);
+                double diffDistance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+                nodeDiffDistance.add(diffDistance);
+            }
+            diffDistanceByNodes.add(nodeDiffDistance);
+        }
+
+        // print out diffDistanceByNodes
+        System.out.println("Diff Distance by Nodes:");
+        for (ArrayList<Double> nodeDiffDistance : diffDistanceByNodes) {
+            for (Double diffDistance : nodeDiffDistance) {
+                String formattedDiffDistance = String.format("%.3f", diffDistance);
+                System.out.print(formattedDiffDistance + " ");
+            }
+            System.out.println();
+        }
+
+
 		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
 
@@ -342,7 +382,7 @@ public class LayoutAlgorithm {
      * @return
      */
     public double angleBetween(VisualInfo n1, VisualInfo n2) {
-    	//if (LMain.DEBUG) System.out.println("Starting: angleBetween");
+    	if (LMain.DEBUG) System.out.println("Starting: angleBetween");
         if(n1 != n2){
             double distX = n1.getX() - n2.getX();
             double distY = n1.getY() - n2.getY();
