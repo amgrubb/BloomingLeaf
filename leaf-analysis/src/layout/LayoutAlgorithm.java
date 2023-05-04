@@ -144,8 +144,9 @@ public class LayoutAlgorithm {
         ArrayList<Double[]> adjustments = new ArrayList<Double[]>();
         System.out.println("adjustment arraylist created!");
         for (int l = 0; l < nodePositions.length; l++) {
-            // adjustments.add(new Double[]{0.0, 0.0});
-            adjustments.add(new Double[]{0.0, 0.0});
+            adjustments.add(new Double[]{nodePositions[l].getX(), nodePositions[l].getY()});
+            System.out.println(l + "th node's initial x is "+nodePositions[l].getX());
+            System.out.println(l + "th node's initial y is "+nodePositions[l].getY());
         }
 
         //Layout forces applied maxIter times
@@ -159,7 +160,7 @@ public class LayoutAlgorithm {
             for(int j = 0; j < nodePositions.length; j++){
             	if (LMain.DEBUG) System.out.println(j + "th Node\n");
                 for(int k = 0; k < nodePositions.length; k++){
-                    if(j ==k) continue;
+                    if(j == k) continue;
                     //TODO: Force constants, sizes? How to know...
                     if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
 
@@ -189,37 +190,9 @@ public class LayoutAlgorithm {
                     nodePositions[k].setX(nodePositions[k].getX() - x_shift);
                     nodePositions[k].setY(nodePositions[k].getY() - y_shift);
                     
-                    adjustments.get(j)[0] += x_shift;
-                    adjustments.get(j)[1] += y_shift;
-                    adjustments.get(k)[0] -= x_shift;
-                    adjustments.get(k)[1] -= y_shift;
-
-                    System.out.println("x shift saved to adjustment to"+ j + "th node!"+ adjustments.get(j)[0]);
-                    System.out.println("y shift saved to adjustment to"+ j + "th node!"+ adjustments.get(j)[1]);
-                    System.out.println("x shift saved to adjustment to"+ k + "th node!" + adjustments.get(k)[0]);
-                    System.out.println("y shift saved to adjustment to"+ k + "th node!"+ adjustments.get(k)[1]);
-                    
-                    //if either is an actor, add adjust to children nodes
-                    // if(j < numActors) {
-                    // 	propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
-                    // }
-
-                    // if(k < numActors) {
-                    // 	propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
-                    // }
-
-                    
                 }
 
-                for (Double[] adjustment : adjustments) {
-                    System.out.println("X shift: " + adjustment[0] + ", Y shift: " + adjustment[1] );
-                }
-                
-
-                if(j < numActors) {
-                    propagateAdjustments(model.getActors().get(j), adjustments.get(j)[0], adjustments.get(j)[1]);
-                }
-                
+ 
                 //adjust positions based on gravity from the center
                 double phi = angleBetween(center, nodePositions[j]);
                 if (LMain.DEBUG) System.out.println("phi: " + phi);
@@ -228,38 +201,8 @@ public class LayoutAlgorithm {
 
                 //gravitation = getDist(nodePositions[j], center) * .2;
 
-                //if j is an actor, add adjust to children nodes
-                if(j < numActors) {
-                	propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
-                }
-
-
-                for(int k = 0; k < nodePositions.length; k++){
-                    if(j == k) continue;
-                    //if either is an actor, add adjust to children nodes
-                    // if(j < numActors) {
-                    // 	propagateAdjustments(model.getActors().get(j), adjustments.get(j)[0], adjustments.get(j)[1]);
-                    // }
-
-                    // if(k < numActors) {
-                    // 	propagateAdjustments(model.getActors().get(k), adjustments.get(k)[0], adjustments.get(k)[1]);
-                    // }
-
-                }
-
-                // for (Double[] adjustment : adjustments) {
-                //     if(j < numActors) {
-                //         propagateAdjustments(model.getActors().get(j), adjustment[0], adjustment[1]);
-                //     }
-                // }
-
-                // for (int l = 0; l < nodePositions.length; l++) {
-                //     nodePositions[l].setX(nodePositions[l].getX() + adjustments.get(l)[0]);
-                //     nodePositions[l].setY(nodePositions[l].getY() + adjustments.get(l)[1]);
-                // }
-
-
             }
+
 
             int count = nodePositions.length;
             if (LMain.DEBUG) System.out.println("number of nodes" + count);
@@ -276,9 +219,6 @@ public class LayoutAlgorithm {
                 y_means.add(y_mean);
             }
 
-            // for(Double x:x_means){
-            //     if (LMain.DEBUG) System.out.println(x);
-            // }
             
             if (LMain.DEBUG) System.out.println("x_means: "+x_means);
             if (LMain.DEBUG) System.out.println("y_means: "+y_means);
@@ -295,6 +235,14 @@ public class LayoutAlgorithm {
         }
 		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
+
+        for(int k = 0; k < nodePositions.length; k++){
+            adjustments.get(k)[0] -= nodePositions[k].getX();
+            adjustments.get(k)[1] -= nodePositions[k].getY();
+            if(k < numActors) {
+                propagateAdjustments(model.getActors().get(k), -adjustments.get(k)[0], -adjustments.get(k)[1]);
+            }
+        }
 
         //maximum iterations completed
 		return model;
