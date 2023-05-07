@@ -21,11 +21,12 @@ layout_loader.onchange = function () {
 	var file = layout_loader.files.item(0);
 	var reader_layout = new FileReader();
 
-	reader_layout.readAsText(file);
 	reader_layout.onload = function() {
 		var model = JSON.parse(reader_layout.result);
 		backendLayoutRequest(model);
 	}
+
+	reader_layout.readAsText(file);
 
 	reader_layout.onerror = function() {
 		console.log(reader_layout.error);
@@ -56,7 +57,7 @@ merge_button.onclick = function () {
 
 			reader_merge_file2.onload = function() {
 				model2 = JSON.parse(reader_merge_file2.result);
-				backendMergeRequest(model1, model2, timingOffset);
+				backendPreMergeRequest(model1, model2, timingOffset);
 				merge_file_picker.style.display = "none";
 			}
 

@@ -58,12 +58,50 @@ function backendLayoutRequest(model) {
 	xhr.send(data);
 }
 
-function backendMergeRequest(model1, model2, timing_offset) {
+
+// Call premerge and get the timing file back
+function backendPreMergeRequest(model1, model2, timing_offset) {
 	var jsObject = {};
-	jsObject.analysisRequest = "merge";
+	jsObject.analysisRequest = "premerge";
 	jsObject.model1 = model1;
 	jsObject.model2 = model2;
 	jsObject.timingOffset = timing_offset;
+	var data = backendStringifyCirc(jsObject);
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		// This function get called when the response is received.
+		console.log("Reading the response");
+		if (xhr.readyState == XMLHttpRequest.DONE) {
+			var response = xhr.responseText;
+			var result = JSON.parse(response);
+			console.log(result);
+			dealWithTimingObject(result);
+		}
+	}
+	xhr.send(data);
+}
+
+function dealWithTimingObject(timing) {
+	// Detmermine if further user input is required
+	console.log(Object.keys(timing.timingList[0]).length);
+	if(Object.keys(timing.timingList[0]).length == 0) {
+		// No changes required 
+		backendMergeRequest(timing);
+	}
+	else {
+		// TODO
+		console.log("timing modifications required");
+	}
+}
+
+function backendMergeRequest(timing) {
+	var jsObject = {};
+	jsObject.analysisRequest = "merge";
+	jsObject.timing = timing;
 	var data = backendStringifyCirc(jsObject);
 
 	var xhr = new XMLHttpRequest();
