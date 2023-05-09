@@ -154,7 +154,7 @@ public class Traceability{
 			fileWriter.close();
 			
 		}catch(IOException e) {
-			System.out.println("There was a problem in providing the traceability chart.");
+			System.out.println("There was a problem in providing the traceability chart (E1).");
 		}
 		
 	}
@@ -244,7 +244,7 @@ public class Traceability{
 			fileWriter.close();
 			
 		}catch(IOException e) {
-			System.out.println("There was a problem in providing the traceability chart.");
+			System.out.println("There was a problem in providing the traceability chart (E2).");
 		}
 		
 	}
@@ -266,7 +266,7 @@ public class Traceability{
 			this.countUserResolve += conflicts.size();
 			
 		}catch(IOException e) {
-			System.out.println("There was a problem in providing the traceability chart.");
+			System.out.println("There was a problem in providing the traceability chart (E3).");
 		}
 		
 	}
@@ -292,7 +292,7 @@ public class Traceability{
 			fileWriter.close();
 			
 		}catch(IOException e) {
-			System.out.println("There was a problem in providing the traceability chart.");
+			System.out.println("There was a problem in providing the traceability chart (E4).");
 		}
 	}
 
@@ -306,7 +306,7 @@ public class Traceability{
 			fileWriter.close();
 			
 		}catch(IOException e) {
-			System.out.println("There was a problem in providing the traceability chart.");
+			System.out.println("There was a problem in providing the traceability chart (E5).");
 		}
 		
 	}

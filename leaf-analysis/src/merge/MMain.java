@@ -94,12 +94,14 @@ public class MMain {
 	        	if(i.hasActor()) i.getActor().addEmbed(i);
 	        }
 	        
-			// run auto-layout
-			LayoutAlgorithm layerOuter = new LayoutAlgorithm(mergedModel, "trace.txt", 5000);
-			ModelSpec layedOutModel = layerOuter.layout();
-			
-			// Create Output file that will be used by frontend
-			IMain mergedModelOut = IMainBuilder.buildIMain(layedOutModel);
+	        //TODO: Decide if we want to automatically run layout. Can this be passed as a parameter?
+//			// run auto-layout
+//			LayoutAlgorithm layerOuter = new LayoutAlgorithm(mergedModel, "trace.txt", 5000);
+//			ModelSpec layedOutModel = layerOuter.layout();
+//			
+//			// Create Output file that will be used by frontend
+//			IMain mergedModelOut = IMainBuilder.buildIMain(layedOutModel);
+	        IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
 			if (DEBUG) System.out.println(gson.toJson(mergedModelOut));
 
 			createOutputFile(mergedModelOut, outPath + outputFile);

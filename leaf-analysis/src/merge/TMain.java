@@ -31,12 +31,13 @@ public class TMain {
 	public Integer getTimingOffset() {
 		return timingOffset;
 	}
-	public List<TIntention> getTimingList() {
-		return timingList;
-	}
-	public HashMap<String, TIntention> getTimingsMap(){
-		return timingsMap;
-	}
+	//TODO: Remove if truely unused...
+//	public List<TIntention> getTimingList() {
+//		return timingList;
+//	}
+//	public HashMap<String, TIntention> getTimingsMap(){
+//		return timingsMap;
+//	}
 	public TIntention getTiming(String intentionName) {
 		return timingsMap.get(intentionName);
 	}
