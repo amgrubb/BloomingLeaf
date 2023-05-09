@@ -13,6 +13,8 @@ leaf-analysis/temp/*.*
 leaf-analysis/temp/*/*
 leaf-analysis/temp/*
 
+leaf-analysis/data
+
 *.class
 *.idea
 *.iml
