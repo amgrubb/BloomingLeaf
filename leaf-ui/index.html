@@ -230,7 +230,24 @@
                     </div>
         </div>
         
-      
+        <!-- Get user input for timing file -->
+        <div id="timing-input-window" class="popup_frame" style="display: none; width: 1000px;">
+
+            <div id="page-mask"></div>
+                    <div class="popup_content">
+                    
+                        <div class="popup_header">
+                            <span class="close" onclick=" $('#timing-input-window').css('display', 'none');">&times;</span>
+                            <h2>Input Relative Timepoints</h2>
+                        </div>
+                        <div class="popup_body" id="timing-input-intention-list">
+                            <!-- <h3>Intention Name</h3>
+                            <input type="text" id="timing-input-order" value="">  <span>New Time Order</span><br>
+                            <h4>Relative time points to add: <span id="timing-input-toAdd"></span></h4> -->
+                        </div>
+                            &nbsp;&nbsp;<button id= "merge-button" class="popup_button"> Finish Merge </button><br><br>
+                    </div>
+        </div>  
         <!-- <div id="dropdown-model" class="dropdown analysis-only" style="display: none">
             <button id="modeling-btn" class="red-btn btn">Model</button>
             <div class="dropdown-toolbar">

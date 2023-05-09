@@ -8,6 +8,7 @@
 
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 var globalAnalysisResult; 
+var globalTiming;
 
 /** Makes a request for the backend and calls the response function.
  * {ConfigBBM} analysisRequest
@@ -77,6 +78,7 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
+			console.log(response[130] + response[131] + response[132]);
 			var result = JSON.parse(response);
 			console.log(result);
 			dealWithTimingObject(result);
@@ -87,14 +89,53 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 
 function dealWithTimingObject(timing) {
 	// Detmermine if further user input is required
-	console.log(Object.keys(timing.timingList[0]).length);
-	if(Object.keys(timing.timingList[0]).length == 0) {
-		// No changes required 
-		backendMergeRequest(timing);
+
+	var input_required = false;
+	var timing_list = timing.timingList;
+	var indexes_to_modify = [];
+
+	for(var i = 0; i < timing_list.length - 1; i++) {
+		var intention = timing_list[i];
+		console.log(timing_list);
+		console.log(intention);
+		if(intention.itemsToAdd.length != 0) {
+			input_required = true;
+			indexes_to_modify.push(i);
+		}
 	}
-	else {
-		// TODO
-		console.log("timing modifications required");
+
+	if(input_required) {
+		// call merge
+		globalTiming = timing_list;
+		globalTiming.indexes_to_modify = indexes_to_modify;
+		displayTimingInputWindow();
+	}
+	// console.log(Object.keys(timing.timingList[0]).length);
+	// if(Object.keys(timing.timingList[0]).length == 0) {
+	// 	// No changes required 
+	// 	backendMergeRequest(timing);
+	// }
+	// else {
+	// 	// TODO
+	// 	console.log("timing modifications required");
+	// }
+}
+
+function displayTimingInputWindow() {
+	$('#timing-input-window').css('display', '');
+
+	let indexes = globalTiming.indexes_to_modify;
+	let intention_list = $('#timing-input-intention-list');
+
+	for(i in indexes) {
+		intention_list.append(
+			"<div>" +
+			"<h3>" + globalTiming[i].intention + "</h3>" +
+			"<input type=\"text\" style=\"width:80%\" id=\"timing-input-order-" + i + "\" value=\"" + globalTiming[i].newTimeOrder +  "\"> " +
+			"<span>New Time Order</span><br>" +
+			"<h4>Relative time points to add: <span id=\"timing-input-toAdd-" + i + "\">" + globalTiming[i].itemsToAdd + "</span></h4>" +
+			"</div>"
+		)
 	}
 }
 
