@@ -63,7 +63,7 @@ public class MergeAlgorithm {
 	 * @param timings
 	 * @return the merged model
 	 */
-	public ModelSpec mergeModels(){
+	private void mergeModels(){
 		long startTime= System.currentTimeMillis();
 		if (MMain.DEBUG) System.out.println("Starting: mergeModels");
 
@@ -92,13 +92,12 @@ public class MergeAlgorithm {
 
 	    if (MMain.DEBUG) System.out.println("Merge complete.");
 
-		return mergedModel;
 	}
 
 	/**
 	 * Print traceability merge results to file
 	 */
-	public void printTraceability(long runtime) {
+	private void printTraceability(long runtime) {
 		trace.printDeletedToFile(deletedElements, deletedTimings);
 		trace.printConflictMessagesToFile(conflictMessages);
 		trace.printOutput(mergedModel);
@@ -113,7 +112,7 @@ public class MergeAlgorithm {
 	 * @param model2
 	 * @param delta
 	 */
-	public void updateTimeline() {
+	private void updateTimeline() {
 		// update max time for both models as the greater of model1 and model2's new times
 		Integer newMax = Math.max(model1.getMaxTime(), model2.getMaxTime() + delta);
 		model1.setMaxTime(newMax);
@@ -172,7 +171,7 @@ public class MergeAlgorithm {
 	}
 
 	// ******* Intention merging methods begin ******** //
-	public void mergeIntentions() {
+	private void mergeIntentions() {
 		ArrayList<Intention> mergedIntentions = new ArrayList<Intention>();
 		HashSet<String> mergedIntentionsNameSet = new HashSet<String>();
 		int currIDCount = 0;
@@ -331,7 +330,7 @@ public class MergeAlgorithm {
 
 	}
 
-	public void mergeActors() {
+	private void mergeActors() {
 		//to keep track of all the actors
 		HashSet<String> actorsNameSet = new HashSet<>();
 		ArrayList<Actor> mergedActors = new ArrayList<>();
@@ -425,7 +424,7 @@ public class MergeAlgorithm {
 	 * Merges actor links and deletes links if they conflict with actor types
 	 */
 
-	public void mergeActorLinks() {
+	private void mergeActorLinks() {
 		ArrayList<ActorLink> mergedAL = new ArrayList<>(); //ALs that will be preserved
 		ArrayList<ActorLink> deletedAL = new ArrayList<>(); //ALs that will be logged as deleted
 		
@@ -541,7 +540,7 @@ public class MergeAlgorithm {
 
 	// ******* Link merging methods begin ******** //
 
-	public void mergeLinks(){
+	private void mergeLinks(){
 
 		ArrayList<NotBothLink> mergedNBL = new ArrayList<>();
 		ArrayList<ContributionLink> mergedCL = new ArrayList<>();
