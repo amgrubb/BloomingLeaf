@@ -129,13 +129,13 @@ public class MergeEvolvingFunction {
 	 * Getters
 	 **********/
 	
-	public MEvolvingFunction getFuncA() {
-		return funcA;
-	}
-	
-	public MEvolvingFunction getFuncB() {
-		return funcB;
-	}
+//	public MEvolvingFunction getFuncA() {
+//		return funcA;
+//	}
+//	
+//	public MEvolvingFunction getFuncB() {
+//		return funcB;
+//	}
 	
 	public MEvolvingFunction getFuncMerged() {
 		return funcMerged;

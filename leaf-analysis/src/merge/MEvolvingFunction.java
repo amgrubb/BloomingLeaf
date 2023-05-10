@@ -158,12 +158,49 @@ public class MEvolvingFunction {
 		if (MMain.DEBUG) System.out.println("Starting: buildSegments");
 
 		this.segments = new ArrayList<>();
+		
+		//TODO: Start a Zero, the A, B, etc...
 		// build function between each timepoint
+		// timing = [0, 6, A-E000TPA, B-E001TPA, AB-MaxTime]
+		char letter = '0';
 		for (int i = 0; i < timing.size()-1; i++) {
+//			String startTime = timing.get(i);			
+//			String endTime = timing.get(i+1);
+//			segments.add(new MFunctionSegment(startTime, startTimes.get(startTime),
+//												 endTime, endTimes.get(endTime)));
+			char startTP = letter;
+			if (i == 0) 
+				letter = 'A';
+			else
+				letter += 1;
+			char endTP = letter;
+			
 			String startTime = timing.get(i);
 			String endTime = timing.get(i+1);
-			segments.add(new MFunctionSegment(startTime, startTimes.get(startTime),
-												 endTime, endTimes.get(endTime)));
+			Integer startAT = null;
+			Integer endAT = null;
+			try {
+				startAT = Integer.parseUnsignedInt(startTime);
+			} catch (NumberFormatException nfe) {
+				
+			}
+			try {
+				endAT = Integer.parseUnsignedInt(endTime);
+			} catch (NumberFormatException nfe) {
+				
+			}
+			
+			segments.add(new MFunctionSegment(String.valueOf(startTP), startAT, startTimes.get(startTime),
+											  String.valueOf(endTP), endAT, endTimes.get(endTime)));
+			
+//				 * String startTP;
+//				 * Integer startAT;
+//				 * String type;
+//				 * String refEvidencePair;
+//				 */
+//				private String endTP;
+//				private Integer endAT;
+//				private String startEvidencePair;
 		}
 	}
 	
