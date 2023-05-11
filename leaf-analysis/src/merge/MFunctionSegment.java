@@ -47,13 +47,13 @@ public class MFunctionSegment extends FunctionSegment{
 	/**
 	 * For segments we build: assign start and endpoints and detect type
 	 */
-	public MFunctionSegment(String startTP, String startEvidencePair, String endTP, String endEvidencePair) {
-		super("", endEvidencePair, startTP, null);
-		this.setType(this.assignType(startEvidencePair, endEvidencePair));
-		this.endTP = endTP;
-		this.startEvidencePair = startEvidencePair;
-		
-	}
+//	public MFunctionSegment(String startTP, String startEvidencePair, String endTP, String endEvidencePair) {
+//		super("", endEvidencePair, startTP, null);
+//		this.setType(this.assignType(startEvidencePair, endEvidencePair));
+//		this.endTP = endTP;
+//		this.startEvidencePair = startEvidencePair;
+//		
+//	}
 	public MFunctionSegment(String startTP, Integer startAT, String startEvidencePair, 
 			String endTP, Integer endAT, String endEvidencePair) {
 		super("", endEvidencePair, startTP, startAT);
@@ -62,14 +62,7 @@ public class MFunctionSegment extends FunctionSegment{
 		this.endAT = endAT;
 		this.startEvidencePair = startEvidencePair;
 		
-	}
-	//TODO: We need a constructor that passes the AT.
-//	`	qAQS.pl
-//	public MFunctionSegment(String startTP, String startEvidencePair, String endTP, String endEvidencePair) {
-//		// FunctionSegment(String type, String refEvidencePair, String startTimePoint, Integer startAbsTime)
-//		super()
-//	}
-	
+	}	
 	
 	
 	/**

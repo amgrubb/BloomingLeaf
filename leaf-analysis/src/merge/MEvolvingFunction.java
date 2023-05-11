@@ -16,20 +16,9 @@ public class MEvolvingFunction {
 	private HashMap<String, String> startTimes;  // <time, evidence pair>
 	private HashMap<String, String> endTimes;    // <time, evidence pair>
 	
-	/**
-	 * Builds timeline from segments + timing
-	 * For input (Model A and Model B evolving functions)
-	 */
-	public MEvolvingFunction(List<MFunctionSegment> segments, List<String> timing) {
-		if (MMain.DEBUG) System.out.println("Starting: MEvolvingFunction");
-
-		this.segments = segments;
-		this.timing = timing;
-		
-		// find evidence pair (or lack thereof) for every timepoint in timing
-		buildTimeline();
-	}
-	
+	/******************************************************
+	 * For output: turning timeline into function segments
+	 ******************************************************/
 	/**
 	 * Builds segments from timeline + timing
 	 * For output (Merged evolving function)
@@ -41,58 +30,116 @@ public class MEvolvingFunction {
 		this.timing = timing;
 		
 		// build evolving functions for merged intention
-		buildSegments();
+//		buildSegments();
+//	}
+//	private void buildSegments() {
+		if (MMain.DEBUG) System.out.println("Starting: buildSegments");
+
+		this.segments = new ArrayList<>();
+
+		char letter = '0';
+		for (int i = 0; i < timing.size()-1; i++) {
+			// Old code that doesn't include absolute time points.
+//			String startTime = timing.get(i);			
+//			String endTime = timing.get(i+1);
+//			segments.add(new MFunctionSegment(startTime, startTimes.get(startTime),
+//												 endTime, endTimes.get(endTime)));
+			char startTP = letter;
+			if (i == 0) 
+				letter = 'A';
+			else
+				letter += 1;
+			char endTP = letter;
+			
+			String startTime = timing.get(i);
+			String endTime = timing.get(i+1);
+			Integer startAT = null;
+			Integer endAT = null;
+			try {
+				startAT = Integer.parseUnsignedInt(startTime);
+			} catch (NumberFormatException nfe) {
+				
+			}
+			try {
+				endAT = Integer.parseUnsignedInt(endTime);
+			} catch (NumberFormatException nfe) {
+				
+			}
+			
+			segments.add(new MFunctionSegment(String.valueOf(startTP), startAT, startTimes.get(startTime),
+											  String.valueOf(endTP), endAT, endTimes.get(endTime)));
+		}
 	}
 	
+
 	/******************************************************
 	 * For input: turning function segments into a timeline
 	 ******************************************************/
-	
-	private void buildTimeline() {
-		if (MMain.DEBUG) System.out.println("Starting: buildTimeline");
-		// adjust timing list to contain numeric times
-		cleanTiming();
+	/**
+	 * Builds timeline from segments + timing
+	 * For input (Model A and Model B evolving functions)
+	 */
+	public MEvolvingFunction(List<MFunctionSegment> segments, List<String> timing) {
+		if (MMain.DEBUG) System.out.println("Starting: MEvolvingFunction");
 
-		// find evolving function's value at each point in the union of model timelines
+		this.segments = segments;
+		this.timing = timing;
 		
 		// to hold timeline values
 		this.startTimes = new HashMap<>();
 		this.endTimes = new HashMap<>();
 		
+		// find evidence pair (or lack thereof) for every timepoint in timing
+//		buildTimeline();
+//	}
+//
+//	private void buildTimeline() {
+		if (MMain.DEBUG) System.out.println("Starting: buildTimeline");
+		// adjust timing list to contain numeric times
+//		cleanTiming();
+
+		// find evolving function's value at each point in the union of model timelines
+	
+		System.out.println(timing.toString());
 		// add evidence pair for every time in given timeline
 		for (String time: timing) {
 			// model is stochastic (no value) outside its segments' domain
-			if (!withinTimeline(time)) {
+			if (!withinTimeline(time)) {		//TODO: Redo this part!!
 				startTimes.put(time, "(no value)");
 				endTimes.put(time, "(no value)");
+				
 			} else if (time.equals(getTimelineStart())) {
 				startTimes.put(time,  findTimelineStartValue(time));  // we have the start of this segment
 				endTimes.put(time, "(no value)");
+			
 			} else if (time.equals(getTimelineEnd())) {
 				endTimes.put(time,  findTimelineEndValue(time));  // we have the end of this segment
 				startTimes.put(time, "(no value)");  // but not the start of the next segment
+			
 			} else {
 				// within timeline, look up timelineA value at that time
 				startTimes.put(time, findTimelineStartValue(time));
 				endTimes.put(time, findTimelineEndValue(time));
 			}
+			
+			
 		}
 	}
 	
-	/*
-	 * Convert numeric timepoint names to just the number
-	 */
-	private void cleanTiming() {
-		for (int i=0; i<timing.size(); i++) {
-			String time = timing.get(i);
-			// take timepoint name after "-"
-			String post = time.substring(time.indexOf('-')+1);
-			// numeric - replace with just numbers
-			if (MEPOperators.isNumeric(post)) {
-				timing.set(i, post);
-			}
-		}
-	}
+//	/*
+//	 * Convert numeric timepoint names to just the number
+//	 */
+//	private void cleanTiming() {
+//		for (int i=0; i<timing.size(); i++) {
+//			String time = timing.get(i);
+//			// take timepoint name after "-"
+//			String post = time.substring(time.indexOf('-')+1);
+//			// numeric - replace with just numbers
+//			if (MEPOperators.isNumeric(post)) {
+//				timing.set(i, post);
+//			}
+//		}
+//	}
 	
 	private Boolean withinTimeline(String time) {
 		// whether a given time is within the timeline of model A
@@ -104,12 +151,13 @@ public class MEvolvingFunction {
 	
 	private String getTimelineStart() {
 		// return first time in segments list
-		return segments.get(0).getStartTime();
+		return this.segments.get(0).getStartTime();
 	}
 	
-	private String getTimelineEnd() {
+	private String getTimelineEnd() {			//TODO: What about Max time.
 		// return last time in segments list
-		return segments.get(segments.size()-1).getEndTime();
+		System.out.println(this.segments.get(this.segments.size()-1).getEndTime());
+		return this.segments.get(this.segments.size()-1).getEndTime();
 	}
 	
 	private String findTimelineStartValue(String time) {
@@ -149,61 +197,7 @@ public class MEvolvingFunction {
 		// NOTE: we should not reach this value from outside the timeline of model
 		return "mid";
 	}
-	
-	/******************************************************
-	 * For output: turning timeline into function segments
-	 ******************************************************/
-	
-	private void buildSegments() {
-		if (MMain.DEBUG) System.out.println("Starting: buildSegments");
-
-		this.segments = new ArrayList<>();
 		
-		//TODO: Start a Zero, the A, B, etc...
-		// build function between each timepoint
-		// timing = [0, 6, A-E000TPA, B-E001TPA, AB-MaxTime]
-		char letter = '0';
-		for (int i = 0; i < timing.size()-1; i++) {
-//			String startTime = timing.get(i);			
-//			String endTime = timing.get(i+1);
-//			segments.add(new MFunctionSegment(startTime, startTimes.get(startTime),
-//												 endTime, endTimes.get(endTime)));
-			char startTP = letter;
-			if (i == 0) 
-				letter = 'A';
-			else
-				letter += 1;
-			char endTP = letter;
-			
-			String startTime = timing.get(i);
-			String endTime = timing.get(i+1);
-			Integer startAT = null;
-			Integer endAT = null;
-			try {
-				startAT = Integer.parseUnsignedInt(startTime);
-			} catch (NumberFormatException nfe) {
-				
-			}
-			try {
-				endAT = Integer.parseUnsignedInt(endTime);
-			} catch (NumberFormatException nfe) {
-				
-			}
-			
-			segments.add(new MFunctionSegment(String.valueOf(startTP), startAT, startTimes.get(startTime),
-											  String.valueOf(endTP), endAT, endTimes.get(endTime)));
-			
-//				 * String startTP;
-//				 * Integer startAT;
-//				 * String type;
-//				 * String refEvidencePair;
-//				 */
-//				private String endTP;
-//				private Integer endAT;
-//				private String startEvidencePair;
-		}
-	}
-	
 	/******************************************************
 	 * Assists MergeEvolvingFunction
 	 ******************************************************/
@@ -271,17 +265,17 @@ public class MEvolvingFunction {
 		return segments;
 	}
 	
-	public List<String> getTiming(){
-		return timing;
-	}
+//	private List<String> getTiming(){
+//		return timing;
+//	}
 	
-	public HashMap<String, String> getStartTimeline(){
-		return startTimes;
-	}
+//	public HashMap<String, String> getStartTimeline(){
+//		return startTimes;
+//	}
 	
-	public HashMap<String, String> getEndTimeline(){
-		return endTimes;
-	}
+//	public HashMap<String, String> getEndTimeline(){
+//		return endTimes;
+//	}
 	
 	public String getStartingEvidencePair(String time) {
 		return startTimes.get(time);

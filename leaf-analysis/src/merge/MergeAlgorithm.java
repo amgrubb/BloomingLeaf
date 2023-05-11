@@ -1055,7 +1055,7 @@ public class MergeAlgorithm {
 		// merge overlapping evolving functions
 
 		// set maxtime names
-		String maxTimeName1, maxTimeName2;
+		String maxTimeName1, maxTimeName2;		//TODO: The timing files is not actually taken into account here.
 		Boolean modelMaxTimesMatch = (maxTime1.equals(maxTime2));
 		// models end at same maxtime
 		if (modelMaxTimesMatch) {
@@ -1073,7 +1073,7 @@ public class MergeAlgorithm {
 			// get timing order from user input
 			TIntention intentionTiming = timings.getTiming(intention1.getName());
 			timeOrder = intentionTiming.getNewTimeOrder();
-		} else {
+		} else {								// TODO: If no timing file exists.
 			// doesn't have timing from user because simple merge
 			// see PreMerge conditions to skip inputting timing
 
@@ -1135,11 +1135,11 @@ public class MergeAlgorithm {
 
 		// replace maxtime names with maxtime ints in timeOrder
 		if (modelMaxTimesMatch) {
-			if (timeOrder.contains("AB-MaxTime")) {
+			if (timeOrder.contains("AB-MaxTime")) {		// TODO: Timing file does not auto-populate AB-MaxTime.
 				timeOrder.set(timeOrder.indexOf("AB-MaxTime"), maxTime1.toString());
 			}
 		} else {
-			if (timeOrder.contains("A-MaxTime")) {
+			if (timeOrder.contains("A-MaxTime")) {		// TODO: pretends to take into account max time.
 				timeOrder.set(timeOrder.indexOf("A-MaxTime"), maxTime1.toString());
 			}
 			if (timeOrder.contains("B-MaxTime")) {
@@ -1151,6 +1151,21 @@ public class MergeAlgorithm {
 		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
 		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getUserEvalAt(delta), maxTime2, maxTimeName2);
 
+		/*
+		 * Convert numeric timepoint names to just the number
+		 */
+		//private void cleanTiming() {
+		for (int i=0; i < timeOrder.size(); i++) {
+			String time = timeOrder.get(i);
+			// take time point order name after "-"
+			String post = time.substring(time.indexOf('-')+1);
+			// numeric - replace with just numbers
+			if (MEPOperators.isNumeric(post)) {
+				timeOrder.set(i, post);
+			}
+		}
+		//}
+		
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
 
