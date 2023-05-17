@@ -1040,6 +1040,21 @@ paper.on("link:options", function (cell) {
         };
         
     });
+
+    //cancel edits to palette customization
+    $('#cancel-customization').on('click', function () { 
+        document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
+        document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
+        document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
+        document.getElementById('my-PS').value=  EVO.selfColorVisDict["0010"];
+        document.getElementById('my-PD').value=  EVO.selfColorVisDict["0100"];
+        document.getElementById('my-PP').value=  EVO.selfColorVisDict["0110"];
+        document.getElementById('my-FP').value=  EVO.selfColorVisDict["0111"];
+        document.getElementById('my-PF').value=  EVO.selfColorVisDict["1110"];
+        document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
+        $('#color-input').css("display", "none");
+
+    });
    
 
     /**
