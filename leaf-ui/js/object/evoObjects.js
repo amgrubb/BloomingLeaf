@@ -640,7 +640,7 @@ class EVO {
      * Fill in self-dictionary
      */
     static fillInDictionary() {
-        if (EVO.paletteOption == 7) {
+        if (EVO.paletteOption == 7 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value) {
             EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
                 "0011": document.getElementById("my-Satisfied").value,
@@ -651,8 +651,12 @@ class EVO {
                 "1100": document.getElementById("my-Denied").value,
                 "1110": document.getElementById("my-PF").value,
                 "1111": document.getElementById("my-FF").value
-            }
-        }    
+            };
+            return true
+        } else{
+            return false  
+        }
+        
     }
 }
 
@@ -778,15 +782,6 @@ class EVONextState {
             return selfVis[intentionEval];
         }
 
-    }
-
-
-    /**
-     * Validates if the input colors are hexcolor
-     */
-    static validateColor(color) {
-        const COLOR_PATTERN = new RegExp("^(#[a-fA-F0-9]{6})$");
-        return COLOR_PATTERN.test(color);
     }
 
 

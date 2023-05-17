@@ -688,3 +688,17 @@ padding: 0px 20px 0px 0px;
   padding: 5px;
   text-align: center;
 }
+
+/** buttons for the palette customization */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.top-left-button {
+  align-self: flex-start;
+}
+
+.top-right-button {
+  align-self: flex-start;
+}

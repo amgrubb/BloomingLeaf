@@ -3,6 +3,7 @@ This file contains all the jQuery functions that are associated with buttons and
 It also contains the setup for Rappid elements.
 */
 
+
 // Used to be onFunctionsBothWindows.js
 // Navigation bar functions:
 var max_font = 20;
@@ -1008,30 +1009,38 @@ paper.on("link:options", function (cell) {
 
     //Show warning messages if use input invalid color
     $('#submit-color').on('click', function () {
-        //fill in the dictionary
-        EVO.fillInDictionary();
-
-        //check that the entered colors are different
-        if (validateColor(EVO.selfColorVisDict) == false) { swal("Please make sure your satisfied and denied values are different", "", "error"); }
-
-        // Display a message to tell the user their selection is saved
-        $("#saved-options-message").css("display", "");
-        setTimeout(function(){
-            $("#saved-options-message").css("display", "none");
-            //close the color input
-            $('#color-input').css("display", "none");
-        }, 500);
-    
-        // refresh the visual overlay on the model and the palette dropdown
-        EVO.paletteOption =6;
-        highlightPalette(EVO.paletteOption);
-        if ($('#analysisSlider').css("display") == "none") {
-            EVO.refresh(undefined);
-        } else {
-            EVO.refresh(selectResult);
+       
+        //check that the entered colors for the satisfied and  denied values are different
+        if (!EVO.fillInDictionary()) 
+        {
+            //changes the color for fully satisfied and fully denied to what they were 
+            document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
+            document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
+            //error messsage 
+            swal("Please make sure your satisfied and denied values are different",   "", "error")
+            
         }
+        else{
+            // Display a message to tell the user their selection is saved
+            $("#saved-options-message").css("display", "");
+            setTimeout(function(){
+                $("#saved-options-message").css("display", "none");
+                //close the color input
+                $('#color-input').css("display", "none");
+            }, 500);
+        
+            // refresh the visual overlay on the model and the palette dropdown
+            EVO.paletteOption =6;
+            highlightPalette(EVO.paletteOption);
+            if ($('#analysisSlider').css("display") == "none") {
+                EVO.refresh(undefined);
+            } else {
+                EVO.refresh(selectResult);
+            }
+        };
         
     });
+   
 
     /**
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
@@ -1267,12 +1276,5 @@ function unhighlightPalettes() {
     }
 }
 
-/**
- * Checks if the color selections for satisfied and denied are different
- * @param {*} colorDict 
- * @returns {boolean}
- */
-function validateColor(colorDict) {
-    return colorDict[ "0011"] != colorDict["1100"];
-}
+
     

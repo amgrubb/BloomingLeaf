@@ -134,12 +134,9 @@
             <div id="page-mask"></div>
                     <div class="popup_content">
                     
-                        <div class="popup_header">
-
-                            <span id="submit-color" class="close" onclick=" $('#color-input').css('display', 'none');">&times;</span>
-
+                        <div class="popup_header"> 
                             <h2>Create My Palette</h2>
-                        </div>
+                        </div>                            
                         <div class="popup_body">
                             <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfied Value</h3>
                             <table id="initial-satisfied-list" class="abs-table">
@@ -153,11 +150,11 @@
                             
                                     </tr>
                                     <tr>
-                                        <td><input type="color" value="#D3D3D3" id="my-None" class="analysis-input" /></td>
+                                        <td><input type="color" value= "#D3D3D3" id="my-None" class="analysis-input" /></td>
                                         <td><input type="color" value="#003fff" id="my-Satisfied" class="analysis-input" /></td>
                                         <td><input type="color" value="#8FB8DE" id="my-PS" class="analysis-input" /></td>
                                         <td><input type="color" value="#fbaca8" id="my-PD" class="analysis-input" /></td>
-                                        <td><input type="color" value="#9400D3" id="my-Denied" class="analysis-input" /></td>
+                                        <td><input type="color" value="#FF2600" id="my-Denied" class="analysis-input" /></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -171,16 +168,17 @@
                                         <th>(F, F)</th>
                                     </tr>
                                     <tr>
-                                        <td><input type="color" value="#5946b2" id="my-PP" class="analysis-input" type="number" /></td>
-                                        <td><input type="color" value="#FF2600" id="my-FP" class="analysis-input" type="number" /></td>
+                                        <td><input type="color" value="#9400D3" id="my-PP" class="analysis-input" type="number" /></td>
+                                        <td><input type="color" value="#5946b2" id="my-FP" class="analysis-input" type="number" /></td>
                                         <td><input type="color" value="#ca2c92" id="my-PF" class="analysis-input" type="number" /></td>
                                         <td><input type="color" value="#0D0221" id="my-FF" class="analysis-input" type="number" /></td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="button" style="text-align: right;  padding: 10px">
+                            <div class="button-container" style="padding: 10px">
+                               <span>  <button class="top-left-button" id="cancel-customization" style="background-color: #1E85F7; color: white; padding: 8px 20px; font-size:15px; align-self;" onclick=" $('#color-input').css('display', 'none');"> Cancel </button> </span>
                                <span id="saved-options-message" style = "display: none;">   Your options are now saved! </span>
-                               <span>  <button id="submit-color" style="background-color: #1E85F7; color: white; padding: 8px 20px; font-size:15px"> Save my palette </button> </span>
+                               <span>  <button id="submit-color" class="top-right-button" style="background-color: #1E85F7; color: white; padding: 8px 20px; font-size:15px"> Save my palette </button> </span>
                             </div>
                         </div>
                     </div>
