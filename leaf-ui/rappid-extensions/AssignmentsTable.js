@@ -77,7 +77,10 @@ var AssignmentsTable = Backbone.View.extend({
         '</tr>',
         '</table>',
         '</div>',
+        '<button id="export-button">Export Max Abs Time</button>',
+
         '</div>',
+        '<script src="js/max.js"></script>',
         '</div>',
         '</script>'].join(''),
 
@@ -107,7 +110,7 @@ var AssignmentsTable = Backbone.View.extend({
     updateMaxAbsTime: function () {
         var maxTimeElement = this.$('#max-abs-time');
         if (maxTimeElement.val() !== "") {
-            this.model.set('maxAbsTime', maxTimeElement.val())
+            this.model.set('maxAbsTime', maxTimeElement.val());
         } else {
             maxTimeElement.val(this.model.prop('maxAbsTime'));
         }
@@ -466,3 +469,4 @@ var LinkRelationshipView = Backbone.View.extend({
         this.model.set('absTime', myNull);
     },
 });
+

@@ -125,6 +125,14 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<br>',
         '<canvas id="chart" width="240" height="240"></canvas>',
+        // '</div>',
+        // '<button id="export-button">Export Max Abs Time</button>',
+
+        // '</div>',
+        // '</div>',
+        // '<script src="js/max.js"></script>',
+        // '</div>',
+
         '</script>'].join(''),
 
     events: {
