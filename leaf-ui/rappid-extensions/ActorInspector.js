@@ -1,3 +1,4 @@
+
 var ActorInspector = Backbone.View.extend({
     model: joint.shapes.basic.Actor,
 
@@ -17,30 +18,32 @@ var ActorInspector = Backbone.View.extend({
         '<option value=G <%if (type === "G")  { %> selected <%} %>> Agent </option>',
         '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
         '</select>',
-        '<label for="hidden">Hide Actor</label>',
-        '<input type="checkbox" id="actor-hidden" name="hidden" value="true">',
+        '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 75px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:20px">Hide Actor</label>',
         // '<label for="hidden"> Actor is hidden? </label><br>',
         // '<textarea readonly class="cell-attrs-hidden" maxlength=100> <%= isHidden %> </textarea>',
         // '<label for="interval"> Intervals </label><br>',
         // '<textarea readonly class="cell-attrs-intervals" maxlength=100> <%= intervals %> </textarea>',
         '<div class="wrapper">',
-        '<div class="values">',
+        // '<div class="values">',
+        // '</div>',
+        '<div class="container">',
+        '<div class="slider-track">',
+        '</div>',
+        '<input type="range" min="0" max="100"  value="30", id="slider-1" oninput="slideOne()">',
+        '<input type="range" min="0" max="100"  value="70", id="slider-2" oninput="slideTwo()">',
+        '</div>',
+        '<label for="range1">Available: ',
         '<span id="range1">',
         '0',
         '</span>',
         '<span> &dash; </span>',
         '<span id="range2">',
-        '10',
+        '100',
         '</span>',
-        '</div>',
-        '<div class="container">',
-        '<div class="slider-track">',
-        '</div>',
-        '<input type="range" min="0" max="10" value="3", id="slider-1" oninput="slideOne()">',
-        '<input type="range" min="0" max="10" value="7", id="slider-2" oninput="slideTwo()">',
-        '</div>',
-        '<label for="hidden">Flip intervals</label>',
-        '<input type="checkbox" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">',
+        '</label>',
+        '<br>',
+        // '<label for="hidden">Flip intervals</label>',
+        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Invert Slider</button>',
         // '<div class="legend-box legend-box-blue">Hide</div>',
         // '<div class="legend-box legend-box-white">Display</div>',
         '</div>',
@@ -162,6 +165,7 @@ var ActorInspector = Backbone.View.extend({
         else if (actorType == 'A') {
             this.model.attr({ '.line': { 'stroke-width': 0 } });
         }
-    }
+    },
+
 });
 
