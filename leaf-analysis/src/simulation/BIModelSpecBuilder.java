@@ -166,7 +166,6 @@ public class BIModelSpecBuilder {
 					Intention intentElementSrc = modelSpec.getIntentionByUniqueID(linkSrcID);
 					Intention intentElementDest = modelSpec.getIntentionByUniqueID(linkDestID);
 					
-					
 					if (linkType.equals("NBT"))
 						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false, 
 								link.getLink().getAbsTime(), link.getId()));
@@ -179,6 +178,8 @@ public class BIModelSpecBuilder {
 								intentElementDest, link.getLink(), link.getId());
 						if (tempCont != null)
 							contributionLinks.add(tempCont);
+						else if (tempCont == null && linkType.equals("no"))		// Remove simple `no' links before running analysis.
+							continue;
 						else
 							allDecompositionLinks.add(link);
 					}

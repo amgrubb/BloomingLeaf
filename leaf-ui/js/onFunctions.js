@@ -7,8 +7,8 @@ It also contains the setup for Rappid elements.
 // Navigation bar functions:
 var max_font = 20;
 var min_font = 6;
-var current_font = 10;
-var default_font = 10;
+var current_font = 12;
+var default_font = 12;
 
 function zoomIn(pPaperScroller) {
     pPaperScroller.zoom(0.2, { max: 3 });
@@ -54,7 +54,7 @@ function fontDown(pPaper) {
 }
 
 /**
- * Changes font size to default (10)
+ * Changes font size to default (12)
  * @param {*} pPaper 
  */
 function defaultFont(pPaper) {
@@ -179,11 +179,8 @@ $('#btn-clear-flabel').on('click', function () {
             $(".function-type").val('NT');
             cell.attr(".funcvalue/text", "");
 
-            if ($('.inspector-views').length != 0) {
-                // Rerender elementInspector for clearing Dynamic Labels
-                var elementInspector = new ElementInspector({ model: cell });
-                elementInspector.render();
-            }
+            // Rerender elementInspector for clearing Dynamic Labels
+            resetInspectorView(cell);
         }
     }
 });
@@ -929,13 +926,16 @@ paper.on("link:options", function (cell) {
                 if (intention.get('evolvingFunction') != null) {
                     var funcType = intention.get('evolvingFunction').get('type');
                 }
-            }
 
-            // If the initsatVal is not empty and if funcType empty
-            if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
-                intention.removeInitialSatValue();
-                cell.attr(".satvalue/text", "");
-                $('#init-sat-value').val('(no value)');
+                // If the initsatVal is not empty and if funcType empty
+                if (initSatVal != '(no value)' && funcType === 'NT') {
+                    intention.removeInitialSatValue();
+                    cell.attr(".satvalue/text", "");
+                    $('#init-sat-value').val('(no value)');
+
+                    // Rerender elementInspector for clearing Evaluation Labels
+                    resetInspectorView(cell);
+                }
             }
         }
         EVO.refresh(selectResult);
@@ -1113,6 +1113,16 @@ function removeHighlight() {
 function clearInspector() {
     if ($('.inspector-views').length != 0) {
         $('.inspector-views').trigger('clearInspector');
+    }
+}
+
+/**
+ * Reinstantiate the inspector panel for a selected cellView
+ */
+function resetInspectorView(cell) {
+    if ($('.inspector-views').length != 0) {
+        var elementInspector = new ElementInspector({ model: cell });
+        elementInspector.render();
     }
 }
 

@@ -106,7 +106,7 @@ public class BICSPPath {
     	CSPIntentions.initializeUserEvaluationsForIntentions(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints); //, this.timePointMap, this.infinity);
     	CSPIntentions.addNBFunctions(this.constraints, this.spec, this.values, 
-    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity, this.store);
     	CSPPath.createLTConstraintsBetweenTimePoint(this.constraints, this.spec, 
     			this.timePoints, this.timePointMap);
     	    	
