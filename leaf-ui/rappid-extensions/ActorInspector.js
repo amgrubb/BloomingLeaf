@@ -8,52 +8,29 @@ var ActorInspector = Backbone.View.extend({
     },
 
     template: [
-        //'<link rel="stylesheet" type="text/css" href="../css/actor.css">',
         '<script type="text/template" id="item-template">',
+        //Actor name label and text field
         '<div class="inspector-views" id="right-inspector">',
         '<label>Actor name</label>',
         '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
+        //Actor type
         '<label> Actor type </label>',
         '<select id="actor-type-ID" class="actor-type">',
         '<option value=A <%if (type === "A")  { %> selected <%} %>> Actor </option>',
         '<option value=G <%if (type === "G")  { %> selected <%} %>> Agent </option>',
         '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
         '</select>',
-        '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 75px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:20px">Hide Actor</label>',
+        //Hide Actor checkbox and label
+        '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 75px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:40px">Hide Actor</label>',
         '<br>',
-        // '<label for="hidden"> Actor is hidden? </label><br>',
-        // '<textarea readonly class="cell-attrs-hidden" maxlength=100> <%= isHidden %> </textarea>',
-        // '<label for="interval"> Intervals </label><br>',
-        // '<textarea readonly class="cell-attrs-intervals" maxlength=100> <%= intervals %> </textarea>',
-        '<div class="wrapper">',
-        // '<div class="values">',
-        // '</div>',
-        // '<div class="container">',
-        // '<div class="slider-track">',
-        // '</div>',
-        // '<input type="range" min="0" max="maxtime"  value="30", id="slider-1" oninput="slideOne()">',
-        // '<input type="range" min="0" max="maxtime"  value="70", id="slider-2" oninput="slideTwo()">',
-        // '</div>',
-        // '<label for="range1">Available: ',
-        // '<span id="range1">',
-        // '0',
-        // '</span>',
-        // '<span> &dash; </span>',
-        // '<span id="range2">',
-        // 'maxTime',
-        // '</span>',
-        // '</label>',
+        //Double slider
+        '<div class="wrapper" style="margin-top: 40px">',
         '</div>',
         '<div id = max-time>',
         '</div>',
         '<br>',
-        // '<label for="hidden">Flip intervals</label>',
         '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Invert Slider</button>',
-        // '<div class="legend-box legend-box-blue">Hide</div>',
-        // '<div class="legend-box legend-box-white">Display</div>',
         '<script src="js/actorDoubleSlider.js"></script>',
-        //'<label class="sub-label">Num Relative Time Points</label>',
-		//'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"> </input>',
         '</div>',
         '</script>'
     ].join(''),
@@ -125,7 +102,6 @@ var ActorInspector = Backbone.View.extend({
         if (event.which === 13) {
             event.preventDefault();
         }
-        console.log("waaaaaaa");
 
         // Do not allow special characters in names, replace them with spaces.
         var text = this.$('.cell-attrs-text').val().replace(/[^\w\n-]/g, ' ');
@@ -179,28 +155,10 @@ var ActorInspector = Backbone.View.extend({
         var assignmentsListView = new AssignmentsListView({});
         $('#max-time').append(assignmentsListView.el);
         assignmentsListView.render();
-        // console.log("waaaaaa");
-        
-    },
-    maxTime: function(){
-        var assignmentsListView = new AssignmentsListView({});
-        var x = document.getElementById("slider-1").max;
-        var absMaxTime = assignmentsListView.getMaxTime();
-        absMaxTime.innerHTML = x;
-        console.log("waaaaaaa");
-        // var cellsView = []
-        // var cellView = absMaxTime.findView(paper);
-        // cellsView.push(cellView);
-
-        // console.log("cells!");
-        // console.log(cellView);
     },
 });
 var AssignmentsListView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
-    // initialize: function (options) {
-    //     this.nodeActorID = options.nodeActorID;
-    // },
     template: ['<script type="text/template" id="item-template">',
     '<div class="container">',
     '<div class="slider-track">',
@@ -225,18 +183,6 @@ var AssignmentsListView = Backbone.View.extend({
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
         this.$('#max-abs-time').text(graph.get('maxAbsTime'));
         return this;
-    },
-    updateMaxAbsTime: function () {
-        var maxTimeElement = this.$('#max-abs-time');
-        if (maxTimeElement.val() !== "") {
-            graph.set('maxAbsTime', maxTimeElement.val());
-        } else {
-            maxTimeElement.val(graph.prop('maxAbsTime'));
-        }
-    },
-
-    getMaxTime: function () {
-        return graph.get('maxAbsTime');
     },
 })
 
