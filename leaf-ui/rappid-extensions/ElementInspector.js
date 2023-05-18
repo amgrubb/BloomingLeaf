@@ -125,14 +125,25 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<br>',
         '<canvas id="chart" width="240" height="240"></canvas>',
-        // '</div>',
-        // '<button id="export-button">Export Max Abs Time</button>',
 
+        '<label for="interval"> Intervals </label>',
+        '<div id = max-time>',
+        '</div>',
+        // '<div class="container">',
+        // '<div class="slider-track">',
         // '</div>',
+        // '<input type="range" min="0" max="10" value="3", id="slider-1" oninput="slideOne()">',
+        // '<input type="range" min="0" max="10" value="7", id="slider-2" oninput="slideTwo()">',
         // '</div>',
-        // '<script src="js/max.js"></script>',
-        // '</div>',
-
+        // '<span id="range1">',
+        // '0',
+        // '</span>',
+        // '<span> &dash; </span>',
+        // '<span id="range2">',
+        // '10',
+        // '</span><br>',
+        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip interval</button>',
+        '<script src="js/actorDoubleSlider.js"></script>', // should be generalized?
         '</script>'].join(''),
 
     events: {
@@ -157,6 +168,7 @@ var ElementInspector = Backbone.View.extend({
      */
     render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
+        this.displayTimeRange();
 
         // Attributes
         this.chart = new ChartObj();
@@ -757,6 +769,12 @@ var ElementInspector = Backbone.View.extend({
         this.renderFunctionSegments();
         return this;
     },
+
+    displayTimeRange: function () {
+        var timeRangeView = new TimeRangeView({});
+        $('#max-time').append(timeRangeView.el);
+        timeRangeView.render();
+    },
 });
 
 /************************************************** FunctionSegmentBBM View **************************************************/
@@ -1241,5 +1259,32 @@ var FuncSegView = Backbone.View.extend({
             curr = String.fromCharCode(curr.charCodeAt(0) + 1);
         }
         return res;
+    },
+});
+
+var TimeRangeView = Backbone.View.extend({
+    model: joint.dia.BloomingGraph,
+
+    template: ['<script type="text/template" id="item-template">',
+    '<div class="container">',
+    '<div class="slider-track">',
+    '</div>',
+    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= .3*graph.get("maxAbsTime") %>", id="slider-1" oninput="slideOne()">',
+    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= .7*graph.get("maxAbsTime") %>", id="slider-2" oninput="slideTwo()">',
+    '</div>',
+    '<label for="range1">Available: ',
+    '<span id="range1">',
+    '<%= .3*graph.get("maxAbsTime") %>',
+    '</span>',
+    '<span> &dash; </span>',
+    '<span id="range2">',
+    '<%= .7*graph.get("maxAbsTime") %>', 
+    '</span><br>',
+    '</script>'
+    ].join(''),
+
+    render: function () {
+        this.$el.html(_.template($(this.template).html())(graph.toJSON()));
+        return this;
     },
 });
