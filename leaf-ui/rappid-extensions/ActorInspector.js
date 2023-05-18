@@ -1,4 +1,5 @@
 
+
 var ActorInspector = Backbone.View.extend({
     model: joint.shapes.basic.Actor,
 
@@ -19,6 +20,7 @@ var ActorInspector = Backbone.View.extend({
         '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
         '</select>',
         '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 75px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:20px">Hide Actor</label>',
+        '<br>',
         // '<label for="hidden"> Actor is hidden? </label><br>',
         // '<textarea readonly class="cell-attrs-hidden" maxlength=100> <%= isHidden %> </textarea>',
         // '<label for="interval"> Intervals </label><br>',
@@ -29,8 +31,8 @@ var ActorInspector = Backbone.View.extend({
         '<div class="container">',
         '<div class="slider-track">',
         '</div>',
-        '<input type="range" min="0" max="100"  value="30", id="slider-1" oninput="slideOne()">',
-        '<input type="range" min="0" max="100"  value="70", id="slider-2" oninput="slideTwo()">',
+        '<input type="range" min="0" max="maxTime()"  value="30", id="slider-1" oninput="slideOne()">',
+        '<input type="range" min="0" max="maxTime()"  value="70", id="slider-2" oninput="slideTwo()">',
         '</div>',
         '<label for="range1">Available: ',
         '<span id="range1">',
@@ -38,7 +40,7 @@ var ActorInspector = Backbone.View.extend({
         '</span>',
         '<span> &dash; </span>',
         '<span id="range2">',
-        '100',
+        'maxTime',
         '</span>',
         '</label>',
         '<br>',
@@ -56,6 +58,8 @@ var ActorInspector = Backbone.View.extend({
 
     events: {
         'keyup .cell-attrs-text': 'nameAction',
+        'click .slider1': 'maxTime',
+        'click .slider2': 'maxTime',
         'change #actor-type-ID': 'updateType',
         'change #actor-hidden' : 'updateHidden',
         //'change #num-rel-time': 'addRelTime',
@@ -104,8 +108,11 @@ var ActorInspector = Backbone.View.extend({
     render: function () {
         // If the clicked node is an actor, render the actor inspector
         this.$el.html(_.template($(this.template).html())(this.actor.toJSON()));
+        this.displayAssignmentsListView();
         //Checks for the correct font size
         changeFont(current_font, paper);
+        return this;
+        
     },
 
     /**
@@ -166,6 +173,50 @@ var ActorInspector = Backbone.View.extend({
             this.model.attr({ '.line': { 'stroke-width': 0 } });
         }
     },
+    displayAssignmentsListView: function(){
+        var graph = new joint.dia.BloomingGraph({});
+        var assignmentsListView = new AssignmentsListView({ model: graph });
+        assignmentsListView.render();
+        console.log("waaaaaa");
+        
+    },
+    maxTime: function(){
+        var absMaxTime = assignmentsListView.getMaxTime();
+        // var cellsView = []
+        // var cellView = absMaxTime.findView(paper);
+        // cellsView.push(cellView);
 
+        // console.log("cells!");
+        // console.log(cellView);
+    },
 });
+var AssignmentsListView = Backbone.View.extend({
+    model: joint.dia.BloomingGraph,
+    // initialize: function (options) {
+    //     this.nodeActorID = options.nodeActorID;
+    // },
+    template: ['<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Max Absolute Time</h3>',
+        '<input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="<%= maxAbsTime %>"/>',
+    ].join(''),
+    events: {
+        'change #max-abs-time': 'updateMaxAbsTime',
+    },
+    render: function () {
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.$('#max-abs-time').text(this.model.get('maxAbsTime'));
+        return this;
+    },
+    updateMaxAbsTime: function () {
+        var maxTimeElement = this.$('#max-abs-time');
+        if (maxTimeElement.val() !== "") {
+            this.model.set('maxAbsTime', maxTimeElement.val());
+        } else {
+            maxTimeElement.val(this.model.prop('maxAbsTime'));
+        }
+    },
+
+    getMaxTime: function () {
+        return this.model.get('maxAbsTime');
+    },
+})
 
