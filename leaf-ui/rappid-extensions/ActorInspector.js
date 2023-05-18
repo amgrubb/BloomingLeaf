@@ -11,8 +11,8 @@ var ActorInspector = Backbone.View.extend({
         //'<link rel="stylesheet" type="text/css" href="../css/actor.css">',
         '<script type="text/template" id="item-template">',
         '<div class="inspector-views" id="right-inspector">',
-        // '<label>Actor name</label>',
-        // '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
+        '<label>Actor name</label>',
+        '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
         '<label> Actor type </label>',
         '<select id="actor-type-ID" class="actor-type">',
         '<option value=A <%if (type === "A")  { %> selected <%} %>> Actor </option>',
@@ -31,8 +31,8 @@ var ActorInspector = Backbone.View.extend({
         '<div class="container">',
         '<div class="slider-track">',
         '</div>',
-        '<input type="range" min="0" max="maxTime()"  value="30", id="slider-1" oninput="slideOne()">',
-        '<input type="range" min="0" max="maxTime()"  value="70", id="slider-2" oninput="slideTwo()">',
+        '<input type="range" min="0" max="maxtime"  value="30", id="slider-1" oninput="slideOne()">',
+        '<input type="range" min="0" max="maxtime"  value="70", id="slider-2" oninput="slideTwo()">',
         '</div>',
         '<label for="range1">Available: ',
         '<span id="range1">',
@@ -49,6 +49,8 @@ var ActorInspector = Backbone.View.extend({
         // '<div class="legend-box legend-box-blue">Hide</div>',
         // '<div class="legend-box legend-box-white">Display</div>',
         '</div>',
+        '<div id = max-time>',
+        '</div>',
         '<script src="js/actorDoubleSlider.js"></script>',
         //'<label class="sub-label">Num Relative Time Points</label>',
 		//'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"> </input>',
@@ -58,8 +60,7 @@ var ActorInspector = Backbone.View.extend({
 
     events: {
         'keyup .cell-attrs-text': 'nameAction',
-        'click .slider1': 'maxTime',
-        'click .slider2': 'maxTime',
+        'click .slider-1': 'maxTime',
         'change #actor-type-ID': 'updateType',
         'change #actor-hidden' : 'updateHidden',
         //'change #num-rel-time': 'addRelTime',
@@ -124,6 +125,7 @@ var ActorInspector = Backbone.View.extend({
         if (event.which === 13) {
             event.preventDefault();
         }
+        console.log("waaaaaaa");
 
         // Do not allow special characters in names, replace them with spaces.
         var text = this.$('.cell-attrs-text').val().replace(/[^\w\n-]/g, ' ');
@@ -176,12 +178,18 @@ var ActorInspector = Backbone.View.extend({
     displayAssignmentsListView: function(){
         var graph = new joint.dia.BloomingGraph({});
         var assignmentsListView = new AssignmentsListView({ model: graph });
+        $('#max-time').append(assignmentsListView.el);
         assignmentsListView.render();
-        console.log("waaaaaa");
+        // console.log("waaaaaa");
         
     },
     maxTime: function(){
+        var graph = new joint.dia.BloomingGraph({});
+        var assignmentsListView = new AssignmentsListView({ model: graph });
+        var x = document.getElementById("slider-1").max;
         var absMaxTime = assignmentsListView.getMaxTime();
+        absMaxTime.innerHTML = x;
+        console.log("waaaaaaa");
         // var cellsView = []
         // var cellView = absMaxTime.findView(paper);
         // cellsView.push(cellView);
@@ -195,8 +203,8 @@ var AssignmentsListView = Backbone.View.extend({
     // initialize: function (options) {
     //     this.nodeActorID = options.nodeActorID;
     // },
-    template: ['<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Max Absolute Time</h3>',
-        '<input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="<%= maxAbsTime %>"/>',
+    template: ['<style="text-align:left; color:#1E85F7; margin-top: 50px; margin-bottom:5px;">Max Absolute Time</h3>',
+        '<input style="text-align: left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="<%= maxAbsTime %>"/>',
     ].join(''),
     events: {
         'change #max-abs-time': 'updateMaxAbsTime',

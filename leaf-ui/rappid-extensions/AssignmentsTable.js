@@ -77,10 +77,6 @@ var AssignmentsTable = Backbone.View.extend({
         '</tr>',
         '</table>',
         '</div>',
-        '<button id="export-button">Export Max Abs Time</button>',
-
-        '</div>',
-        '<script src="js/max.js"></script>',
         '</div>',
         '</script>'].join(''),
 
@@ -360,6 +356,7 @@ var IntentionRelationshipView = Backbone.View.extend({
 
     initialize: function (options) {
         this.funcType = options.funcType;
+        // console.log(funcType);
         this.intentionName = options.intentionName;
     },
 
@@ -438,6 +435,7 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 
     render: function () {
+        
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         // TODO: Write statement to handle this case in script
         // Or if absTime default changed to null just remove if statement
