@@ -176,16 +176,14 @@ var ActorInspector = Backbone.View.extend({
         }
     },
     displayAssignmentsListView: function(){
-        var graph = new joint.dia.BloomingGraph({});
-        var assignmentsListView = new AssignmentsListView({ model: graph });
+        var assignmentsListView = new AssignmentsListView({});
         $('#max-time').append(assignmentsListView.el);
         assignmentsListView.render();
         // console.log("waaaaaa");
         
     },
     maxTime: function(){
-        var graph = new joint.dia.BloomingGraph({});
-        var assignmentsListView = new AssignmentsListView({ model: graph });
+        var assignmentsListView = new AssignmentsListView({});
         var x = document.getElementById("slider-1").max;
         var absMaxTime = assignmentsListView.getMaxTime();
         absMaxTime.innerHTML = x;
@@ -203,28 +201,35 @@ var AssignmentsListView = Backbone.View.extend({
     // initialize: function (options) {
     //     this.nodeActorID = options.nodeActorID;
     // },
-    template: ['<style="text-align:left; color:#1E85F7; margin-top: 50px; margin-bottom:5px;">Max Absolute Time</h3>',
-        '<input style="text-align: left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="<%= maxAbsTime %>"/>',
+    template: ['<script type="text/template" id="assignments-template">',
+    '<span id="range1">',
+    '0',
+    '</span>',
+    '<span> &dash; </span>',
+    '<span id="range2">',
+    '<%= graph.get(\'maxAbsTime\') %>',
+    '</span><br>',
+    '</script>'
     ].join(''),
     events: {
         'change #max-abs-time': 'updateMaxAbsTime',
     },
     render: function () {
-        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        this.$('#max-abs-time').text(this.model.get('maxAbsTime'));
+        this.$el.html(_.template($(this.template).html())(graph.toJSON()));
+        this.$('#max-abs-time').text(graph.get('maxAbsTime'));
         return this;
     },
     updateMaxAbsTime: function () {
         var maxTimeElement = this.$('#max-abs-time');
         if (maxTimeElement.val() !== "") {
-            this.model.set('maxAbsTime', maxTimeElement.val());
+            graph.set('maxAbsTime', maxTimeElement.val());
         } else {
-            maxTimeElement.val(this.model.prop('maxAbsTime'));
+            maxTimeElement.val(graph.prop('maxAbsTime'));
         }
     },
 
     getMaxTime: function () {
-        return this.model.get('maxAbsTime');
+        return graph.get('maxAbsTime');
     },
 })
 

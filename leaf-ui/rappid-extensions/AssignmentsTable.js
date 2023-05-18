@@ -77,7 +77,10 @@ var AssignmentsTable = Backbone.View.extend({
         '</tr>',
         '</table>',
         '</div>',
+        // '<button id="export-button">Export Max Abs Time</button>',
         '</div>',
+        // '<script src="js/max.js"></script>',
+        // '</div>',
         '</script>'].join(''),
 
     events: {
