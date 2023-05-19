@@ -129,20 +129,7 @@ var ElementInspector = Backbone.View.extend({
         '<label for="interval"> Intervals </label>',
         '<div id = max-time>',
         '</div>',
-        // '<div class="container">',
-        // '<div class="slider-track">',
-        // '</div>',
-        // '<input type="range" min="0" max="10" value="3", id="slider-1" oninput="slideOne()">',
-        // '<input type="range" min="0" max="10" value="7", id="slider-2" oninput="slideTwo()">',
-        // '</div>',
-        // '<span id="range1">',
-        // '0',
-        // '</span>',
-        // '<span> &dash; </span>',
-        // '<span id="range2">',
-        // '10',
-        // '</span><br>',
-        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip interval</button>',
+        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip interval</button><br><br>',
         '<script src="js/actorDoubleSlider.js"></script>', // should be generalized?
         '</script>'].join(''),
 
@@ -168,7 +155,6 @@ var ElementInspector = Backbone.View.extend({
      */
     render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
-        this.displayTimeRange();
 
         // Attributes
         this.chart = new ChartObj();
@@ -209,6 +195,7 @@ var ElementInspector = Backbone.View.extend({
 
         }
         this.updateCell();
+        this.displayTimeRange();
     },
 
     /**
@@ -1269,17 +1256,32 @@ var TimeRangeView = Backbone.View.extend({
     '<div class="container">',
     '<div class="slider-track">',
     '</div>',
-    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= .3*graph.get("maxAbsTime") %>", id="slider-1" oninput="slideOne()">',
-    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= .7*graph.get("maxAbsTime") %>", id="slider-2" oninput="slideTwo()">',
+    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.3*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
+    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.7*graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
     '</div>',
     '<label for="range1">Available: ',
+    '<div id="not-flipped">',
     '<span id="range1">',
-    '<%= .3*graph.get("maxAbsTime") %>',
+    '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
     '</span>',
     '<span> &dash; </span>',
     '<span id="range2">',
-    '<%= .7*graph.get("maxAbsTime") %>', 
+    '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
     '</span><br>',
+    '</div>',
+    '<div id="flipped" style="display:none">',
+    '0',
+    '<span> &dash; </span>',
+    '<span id="range1">',
+    '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
+    '</span>',
+    ', ',
+    '<span id="range2">',
+    '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
+    '</span>',
+    '<span> &dash; </span>',
+    '<%= graph.get("maxAbsTime") %>',
+    '</div>',
     '</script>'
     ].join(''),
 
