@@ -60,6 +60,9 @@ function fillColor() {
     percent1 = (sliderOne.value / sliderMaxValue) * 100;
     percent2 = (sliderTwo.value / sliderMaxValue) * 100;
     sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #3264fe ${percent1}% , #3264fe ${percent2}%, #dadae5 ${percent2}%)`;
+
+    document.getElementById("not-flipped").style.display = "block";
+    document.getElementById("flipped").style.display = "none";
 }
 
 function fillColorReverse() {
@@ -68,6 +71,9 @@ function fillColorReverse() {
     percent1 = (sliderOne.value / sliderMaxValue) * 100;
     percent2 = (sliderTwo.value / sliderMaxValue) * 100;
     sliderTrack.style.background = `linear-gradient(to right, #3264fe ${percent1}% , #dadae5 ${percent1}% , #dadae5 ${percent2}%, #3264fe ${percent2}%)`;
+
+    document.getElementById("not-flipped").style.display = "none";
+    document.getElementById("flipped").style.display = "block";
 }
 
 function flipIntervals() {

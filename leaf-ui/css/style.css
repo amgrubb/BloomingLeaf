@@ -144,6 +144,7 @@ body {
   background-color: #333;
   color: #bcbcbc;
   text-align: center;
+  overflow: scroll;
 }
 
 /* Sets Margin distance for the right panel */
