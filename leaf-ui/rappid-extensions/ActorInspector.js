@@ -193,7 +193,7 @@ var AssignmentsListView = Backbone.View.extend({
     ].join(''),
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
-        console.log();
+        console.log("hi");
         return this;
     },
 })
