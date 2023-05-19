@@ -156,7 +156,7 @@ body {
 .inspector input, .inspector textarea {
   color: black;
   text-shadow: none;
-  border: 1px solid black;
+  border: 1px solid transparent;
   background: white;
   height: 20px;
   line-height: 20px;
@@ -692,7 +692,7 @@ padding: 0px 20px 0px 0px;
 
 .wrapper{
   position: relative;
-  background-color: #ffffff00;
+  background-color: transparent;
   border-radius: 10px;
 }
 .container{
