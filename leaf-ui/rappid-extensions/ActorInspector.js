@@ -21,7 +21,7 @@ var ActorInspector = Backbone.View.extend({
         '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
         '</select>',
         //Hide Actor checkbox and label
-        '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 75px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:40px">Hide Actor</label>',
+        '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 65px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:40px">Hide Actor</label>',
         '<br>',
         //Double slider
         '<div class="wrapper" style="margin-top: 40px">',
