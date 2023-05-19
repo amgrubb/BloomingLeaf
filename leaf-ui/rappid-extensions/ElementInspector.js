@@ -68,6 +68,7 @@ var ElementInspector = Backbone.View.extend({
         this.listenTo(this, 'change:intention', this.initSatValueChanged);
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
+        this.isNewSegment = false;
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -419,6 +420,7 @@ var ElementInspector = Backbone.View.extend({
      * constraints from previously stored.
      */
     addSegment: function () {
+        this.isNewSegment = true;
         // Adds a new FunctionSegmentBBM to the functionSegList
         this.intention.addUserDefinedSeg("C", "0000");
         var funcSegList = this.intention.getFuncSegments();
@@ -726,7 +728,7 @@ var ElementInspector = Backbone.View.extend({
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
                 funcSeg => {
-                    var functionSegView = new FuncSegView({ model: funcSeg, intention: this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart });
+                    var functionSegView = new FuncSegView({ model: funcSeg, intention: this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart, isNewSegment: this.isNewSegment });
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render();
                     i++;
@@ -748,6 +750,7 @@ var ElementInspector = Backbone.View.extend({
      * Called whenever the html is updated. Renders the views for the FunctionSegmentBBMs and adds an absTime label
      */
     rerender: function () {
+        this.isNewSegment = false;
         // Adds absTime label
         if (this.intention.getFuncSegments().length != 0) {
             $(".text-label").css("visibility", "visible");
@@ -789,6 +792,7 @@ var FuncSegView = Backbone.View.extend({
         }
         this.index = options.index;
         this.initSatValue = options.initSatValue;
+        this.isNewSegment = options.isNewSegment;
 
         // Listens to if the current parameter in the FunctionSegmentBBMs changes
         this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
@@ -954,7 +958,7 @@ var FuncSegView = Backbone.View.extend({
                     // If the initial satisfaction value is denied you can't select decreasing
                     this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
                 }
-                this.checkUDFunctionValues()
+                this.checkUDFunctionValues(this.isNewSegment);
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
@@ -1001,41 +1005,54 @@ var FuncSegView = Backbone.View.extend({
     * Adds appropriate satisfaction values option tags
     * for .user-sat-value, which is the select tag used to
     * indicate satisfaction values when creating a user defined function.
+    * 
+    * If the UD Segment is newly added, set the evidence pair to the function type's default:
+    * Increasing -> Fully Satisfied, Decreasing -> Fully Denied, Stocastic -> (no value), Constant -> initial sat val if first segment, none otherwise
     */
-    checkUDFunctionValues: function () {
+    checkUDFunctionValues: function (isNewSegment) {
         var func = this.$("#seg-function-type").val();
 
         if (func == 'I' || func == 'D') {
             var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
             if (func == 'I') {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
-                this.$("#seg-sat-value").val("0011");
-                this.model.set('refEvidencePair', "0011");
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', "0011");
+                }
             } else {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
-                this.$("#seg-sat-value").val("1100");
-                this.model.set('refEvidencePair', "1100");
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', "1100");
+                }
             }
         } else if (func == 'R') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
-            this.$("#seg-sat-value").val("(no value)");
             this.$("#seg-sat-value").prop('disabled', true);
-            this.model.set('refEvidencePair', '(no value)');
+            if(isNewSegment) {
+                this.model.set('refEvidencePair', '(no value)');
+            }
         } else if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsNoRandom());
             // Restrict input to initial satisfaction value if it is the first constraint
             if (this.index == 0) {
-                this.$("#seg-sat-value").val(this.initSatValue);
-                this.model.set('refEvidencePair', this.initSatValue);
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', this.initSatValue);
+                }
             } else if (this.index != 0 && this.model.get('current')) {
                 this.$("#seg-sat-value").prop('disabled', '');
-                this.model.set('refEvidencePair', "0000");
-                this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', "0000");
+                }
+                // TODO:Delete. - Remove during merge conflict.
+                //this.model.set('refEvidencePair', "0000");
+                //this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
+
             } else {
                 this.$("#seg-sat-value").prop('disabled', true);
-                this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
             }
         }
+        // Update the dropdown to display the UD segment's satisfaction value
+        this.$("#seg-sat-value").val(this.model.get('refEvidencePair')); 
         return;
     },
 
@@ -1270,17 +1287,17 @@ var TimeRangeView = Backbone.View.extend({
     '</span><br>',
     '</div>',
     '<div id="flipped" style="display:none">',
-    '0',
-    '<span> &dash; </span>',
-    '<span id="range1">',
-    '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
-    '</span>',
-    ', ',
-    '<span id="range2">',
-    '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
-    '</span>',
-    '<span> &dash; </span>',
-    '<%= graph.get("maxAbsTime") %>',
+        '0',
+        '<span> &dash; </span>',
+        '<span id="range1-flipped">',
+        '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
+        '</span>',
+        ', ',
+        '<span id="range2-flipped">',
+        '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
+        '</span>',
+        '<span> &dash; </span>',
+        '<%= graph.get("maxAbsTime") %>',
     '</div>',
     '</script>'
     ].join(''),

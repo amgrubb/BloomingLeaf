@@ -27,11 +27,17 @@ var flipIntervalsCheckbox;
 function getValues() {
     sliderOne = document.getElementById("slider-1");
     sliderTwo = document.getElementById("slider-2");
-    displayValOne = document.getElementById("range1");
-    displayValTwo = document.getElementById("range2");
     sliderTrack = document.querySelector(".slider-track");
     sliderMaxValue = document.getElementById("slider-1").max;
     flipIntervalsCheckbox = document.getElementById("intervals-flip-btn");
+    
+    if (flipIntervalsCheckbox.value == "true") {
+        displayValOne = document.getElementById("range1-flipped");
+        displayValTwo = document.getElementById("range2-flipped");
+    } else {
+        displayValOne = document.getElementById("range1");
+        displayValTwo = document.getElementById("range2");
+    }
 }
 
 function slideOne() {
@@ -41,7 +47,14 @@ function slideOne() {
         sliderOne.value = parseInt(sliderTwo.value) - minGap;
     }
     displayValOne.textContent = sliderOne.value;
-    fillColor();
+    document.getElementById("range1-flipped").textContent = sliderOne.value;
+    document.getElementById("range1").textContent = sliderOne.value;
+
+    if (flipIntervalsCheckbox.value == "true") {
+        fillColor();
+    } else {
+        fillColorReverse();
+    }
 }
 
 function slideTwo() {
@@ -51,7 +64,14 @@ function slideTwo() {
         sliderTwo.value = parseInt(sliderOne.value) + minGap;
     }
     displayValTwo.textContent = sliderTwo.value;
-    fillColor();
+    document.getElementById("range2-flipped").textContent = sliderTwo.value;
+    document.getElementById("range2").textContent = sliderTwo.value;
+
+    if (flipIntervalsCheckbox.value == "true") {
+        fillColor();
+    } else {
+        fillColorReverse();
+    }
 }
 
 function fillColor() {
