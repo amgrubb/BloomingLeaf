@@ -253,8 +253,13 @@ public class IMainBuilder {
 		// convert FunctionSegment[] into List<BIFunctionSegment>
 		ArrayList<BIFunctionSegment> funcSegList = new ArrayList<BIFunctionSegment>();
 		for (FunctionSegment func : evolvingFunctions) {
+//			if (func == evolvingFunctions.get(evolvingFunctions.size() - 2)) {
+//				func.setCurrent(true);
+//			}else {
+//				func.setCurrent(false);
+//			}
 			BIFunctionSegment funcSeg = new BIFunctionSegment(func.getRefEvidencePair(), func.getStartAT(),
-															  func.getStartTP(), func.getType());
+															  func.getStartTP(), func.getType(), func.getCurrent());
 			funcSegList.add(funcSeg);
 		}
 		
@@ -277,9 +282,14 @@ public class IMainBuilder {
 		// convert List<MFunctionSegment> into List<BIFunctionSegment>
 		ArrayList<BIFunctionSegment> funcSegList = new ArrayList<BIFunctionSegment>();
 		for (MFunctionSegment func : evolvingFunctions) {
+			if (func == evolvingFunctions.get(evolvingFunctions.size() - 1)) {
+				func.setCurrent(true);
+			}else {
+				func.setCurrent(false);
+			}
 			BIFunctionSegment funcSeg = new BIFunctionSegment(func.getStartEvidencePair(), func.getRefEvidencePair(), //(end pair)
 															  func.getRefEvidencePair(), func.getStartAT(),
-															  func.getStartTP(), func.getType());
+															  func.getStartTP(), func.getType(), func.getCurrent());
 			funcSegList.add(funcSeg);
 		}
 		
