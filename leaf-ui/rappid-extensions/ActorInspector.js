@@ -21,7 +21,7 @@ var ActorInspector = Backbone.View.extend({
         '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
         '</select>',
         //Hide Actor checkbox and label
-        '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 75px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:40px">Hide Actor</label>',
+        '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 65px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:40px">Hide Actor</label>',
         '<br>',
         //Double slider
         '<div class="wrapper" style="margin-top: 40px">',
@@ -159,27 +159,41 @@ var ActorInspector = Backbone.View.extend({
 });
 var AssignmentsListView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
-    template: [
-        '<script type="text/template" id="item-template">',
-        '<div class="container">',
-        '<div class="slider-track">',
-        '</div>',
-        '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.3*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
-        '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.7*graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
-        '</div>',
-        '<label for="range1">Available: ',
-        '<span id="range1">',
+    template: ['<script type="text/template" id="item-template">',
+    '<div class="container">',
+    '<div class="slider-track">',
+    '</div>',
+    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.3*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
+    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.7*graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
+    '</div>',
+    '<label for="range1">Available: ',
+    '<div id="not-flipped">',
+    '<span id="range1">',
+    '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
+    '</span>',
+    '<span> &dash; </span>',
+    '<span id="range2">',
+    '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
+    '</span><br>',
+    '</div>',
+    '<div id="flipped" style="display:none">',
+        '0',
+        '<span> &dash; </span>',
+        '<span id="range1-flipped">',
         '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
         '</span>',
-        '<span> &dash; </span>',
-        '<span id="range2">',
+        ', ',
+        '<span id="range2-flipped">',
         '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
-        '</span><br>',
-        '</script>'
+        '</span>',
+        '<span> &dash; </span>',
+        '<%= graph.get("maxAbsTime") %>',
+    '</div>',
+    '</script>'
     ].join(''),
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
-        console.log();
+        console.log("hi");
         return this;
     },
 })
