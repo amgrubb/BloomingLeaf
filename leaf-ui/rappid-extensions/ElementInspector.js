@@ -149,6 +149,8 @@ var ElementInspector = Backbone.View.extend({
         'click #constraint-restart': 'removeUserConstraints',
         'keyup .cell-attrs-text': 'nameAction',
         'clearInspector .inspector-views': 'removeView',
+
+        'change #max-time': 'updateTimePointsSet',
     },
 
     /**
@@ -197,26 +199,6 @@ var ElementInspector = Backbone.View.extend({
         }
         this.updateCell();
         this.displayTimeRange(this.findActor());
-    },
-
-    findActor: function() {
-        var elements = graph.getElements();
-        var actors = []
-        for (var i = 0; i < elements.length; i++) {
-            var cell = elements[i].findView(paper);
-            if (cell.model.attributes.type == "basic.Actor") {
-                actors.push(cell);
-            }
-        } 
-        for (var i = 0; i < actors.length; i++) {
-            if (actors[i].model.attributes.embeds) {
-                for (var j = 0; j < actors[i].model.attributes.embeds.length; j++) {
-                    if (actors[i].model.attributes.embeds[j] == this.model.id) {
-                        return actors[i];
-                    }
-                }
-            }
-        }
     },
 
     /**
@@ -780,11 +762,30 @@ var ElementInspector = Backbone.View.extend({
         return this;
     },
 
+    findActor: function() {
+        var elements = graph.getElements();
+        var actors = []
+        for (var i = 0; i < elements.length; i++) {
+            var cell = elements[i].findView(paper);
+            if (cell.model.attributes.type == "basic.Actor") {
+                actors.push(cell);
+            }
+        }
+        for (var i = 0; i < actors.length; i++) {
+            if (actors[i].model.attributes.embeds) {
+                for (var j = 0; j < actors[i].model.attributes.embeds.length; j++) {
+                    if (actors[i].model.attributes.embeds[j] == this.model.id) {
+                        return actors[i];
+                    }
+                }
+            }
+        }
+    },
+
     displayTimeRange: function (actor) {
         var timeRangeView = new TimeRangeView({actor: actor});
         $('#max-time').append(timeRangeView.el);
         timeRangeView.render();
-        timeRangeView.reload();
     },
 });
 
@@ -1329,15 +1330,13 @@ var TimeRangeView = Backbone.View.extend({
 
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
-        return this;
-    },
-
-    reload: function() {
         if (this.actor) {
             document.getElementById("range1").textContent = this.actor.model.attributes.actor.attributes.intervals[0][0];
             document.getElementById("slider-1").value = this.actor.model.attributes.actor.attributes.intervals[0][0];
             document.getElementById("range2").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
             document.getElementById("slider-2").value = this.actor.model.attributes.actor.attributes.intervals[0][1];
         }
-    }
+        return this;
+    },
+
 });

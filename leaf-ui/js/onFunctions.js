@@ -564,7 +564,6 @@ paper.on({
                 } else {
                     var elementInspector = new ElementInspector({ model: cell });
                     $('.inspector').append(elementInspector.el);
-                    elementInspector.render();
                     // If user was dragging element
                     if (evt.data.move) {
                         // Unembed intention from old actor
@@ -583,6 +582,7 @@ paper.on({
                             actorCell.embed(cell);
                         }
                     }
+                    elementInspector.render();
                 }
             }
         }
