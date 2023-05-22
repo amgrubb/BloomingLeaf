@@ -173,6 +173,7 @@ var ActorInspector = Backbone.View.extend({
         var flipBool = document.getElementById('intervals-flip-btn').value;
 
         if (flipBool == "true") {
+            this.actor.get('intervals').pop();
             timePointsArray.push(timePoints, timePoints2);
             if (this.actor.get('intervals') == []){
                 this.actor.get('intervals') .push(timePointsArray);
@@ -245,9 +246,6 @@ var AssignmentsListView = Backbone.View.extend({
         '<script src="js/actorDoubleSlider.js"></script>',
         '</script>'
     ].join(''),
-    events: {
-        'change .container': 'timePointsSet',
-    },
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
         return this;
