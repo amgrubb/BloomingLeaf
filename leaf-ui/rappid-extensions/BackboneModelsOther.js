@@ -21,10 +21,11 @@ var ActorBBM = Backbone.Model.extend({
             type: 'A',
             actorName: 'Actor',
             isHidden: false,
-            intervals:[[2,5],[8,10]], //TODO: remove hardcoded interval
+            intervals:[], //TODO: remove hardcoded interval
         }
     },
 });
+
 
 
 /** 
