@@ -28,18 +28,17 @@ var ActorInspector = Backbone.View.extend({
         '</div>',
         '<div id = max-time>',
         '</div>',
-        '<br>',
-        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Invert Slider</button>',
-        '<script src="js/actorDoubleSlider.js"></script>',
+        // '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip Interval</button>',
+        // '<script src="js/actorDoubleSlider.js"></script>',
         '</div>',
         '</script>'
     ].join(''),
 
     events: {
         'keyup .cell-attrs-text': 'nameAction',
-        'click .slider-1': 'maxTime',
         'change #actor-type-ID': 'updateType',
         'change #actor-hidden' : 'updateHidden',
+        'change #max-time': 'updateTimePointsSet',
         //'change #num-rel-time': 'addRelTime',
         'clearInspector .inspector-views': 'removeView'
     },
@@ -79,6 +78,8 @@ var ActorInspector = Backbone.View.extend({
         console.log(cellsView);
 
     },
+
+
 
     /**
      * Initializes the element inspector using previously defined templates
@@ -151,49 +152,102 @@ var ActorInspector = Backbone.View.extend({
             this.model.attr({ '.line': { 'stroke-width': 0 } });
         }
     },
-    displayAssignmentsListView: function(){
-        var assignmentsListView = new AssignmentsListView({});
-        $('#max-time').append(assignmentsListView.el);
-        assignmentsListView.render();
+
+    assignmentsListView: function(){
+        var display = new AssignmentsListView({});
+        return display;
     },
+    displayAssignmentsListView: function(){
+        var display = this.assignmentsListView();
+        this.$('#max-time').append(display.el);
+        display.render();
+
+
+    },
+    updateTimePointsSet: function () {
+        var display = this.assignmentsListView();
+        display.render();
+        var timePointsArray = [];
+        var timePoints = parseInt(document.getElementById('slider-1').value);
+        var timePoints2 = parseInt(document.getElementById('slider-2').value);
+        var flipBool = document.getElementById('intervals-flip-btn').value;
+
+        if (flipBool == "true") {
+            this.actor.get('intervals').pop();
+            timePointsArray.push(timePoints, timePoints2);
+            if (this.actor.get('intervals') == []){
+                this.actor.get('intervals') .push(timePointsArray);
+                console.log(this.actor.get('intervals'));
+                return this.actor.get('intervals') ;
+            } else {
+                this.actor.get('intervals').pop();
+                this.actor.get('intervals').push(timePointsArray);
+                console.log(this.actor.get('intervals'));
+                return this.actor.get('intervals');
+            }
+        }else{
+            var reverseTimePointArray1 = [];
+            var reverseTimePointArray2 = [];
+            var timePointMax = parseInt(document.getElementById('slider-1').max);
+            reverseTimePointArray1.push(0, timePoints);
+            reverseTimePointArray2.push(timePoints2, timePointMax);
+            if (this.actor.get('intervals') == []){
+                this.actor.get('intervals').push(reverseTimePointArray1);
+                this.actor.get('intervals').push(reverseTimePointArray2);
+                console.log(this.actor.get('intervals'));
+                return this.actor.get('intervals');
+            } else {
+                this.actor.get('intervals').pop();
+                this.actor.get('intervals').pop();
+                this.actor.get('intervals').push(reverseTimePointArray1);
+                this.actor.get('intervals').push(reverseTimePointArray2);
+                console.log(this.actor.get('intervals'));
+                return this.actor.get('intervals');
+            }
+
+        }
+    }
 });
 var AssignmentsListView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
-    template: ['<script type="text/template" id="item-template">',
-    '<div class="container">',
-    '<div class="slider-track">',
-    '</div>',
-    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.3*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
-    '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.7*graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
-    '</div>',
-    '<label for="range1">Available: ',
-    '<div id="not-flipped">',
-    '<span id="range1">',
-    '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
-    '</span>',
-    '<span> &dash; </span>',
-    '<span id="range2">',
-    '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
-    '</span><br>',
-    '</div>',
-    '<div id="flipped" style="display:none">',
-        '0',
-        '<span> &dash; </span>',
-        '<span id="range1-flipped">',
+    template: [
+        '<script type="text/template" id="item-template">',
+        '<div class="container">',
+        '<div class="slider-track">',
+        '</div>',
+        '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.3*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
+        '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.7*graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
+        '</div>',
+        '<label for="range1">Available: ',
+        '<div id="not-flipped">',
+        '<span id="range1">',
         '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
         '</span>',
-        ', ',
-        '<span id="range2-flipped">',
-        '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
-        '</span>',
         '<span> &dash; </span>',
-        '<%= graph.get("maxAbsTime") %>',
-    '</div>',
-    '</script>'
+        '<span id="range2">',
+        '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
+        '</span><br>',
+        '</div>',
+        '<div id="flipped" style="display:none">',
+            '0',
+            '<span> &dash; </span>',
+            '<span id="range1-flipped">',
+            '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
+            '</span>',
+            ', ',
+            '<span id="range2-flipped">',
+            '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
+            '</span>',
+            '<span> &dash; </span>',
+            '<%= graph.get("maxAbsTime") %>',
+        '</div>',
+        '<br>',
+        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip Interval</button>',
+        '<script src="js/actorDoubleSlider.js"></script>',
+        '</script>'
     ].join(''),
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
-        console.log("hi");
         return this;
     },
 })
