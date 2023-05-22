@@ -735,6 +735,7 @@ input[id="slider-2"]{
   top: 0;
   bottom: 0;
   border-radius: 5px;
+  background: rgb(99, 97, 97)
 }
 input[id="slider-1"]::-webkit-slider-runnable-track{
   -webkit-appearance: none;
