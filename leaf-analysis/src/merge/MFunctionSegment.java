@@ -23,24 +23,20 @@ public class MFunctionSegment extends FunctionSegment{
 	/**
 	 * For initial + middle segments: Build from the segment, following segment, and starting evidence pair
 	 */
-	// added false
 	public MFunctionSegment(FunctionSegment fSeg, FunctionSegment fSegNext, String startEvidencePair) {
 		super(fSeg.getType(), fSeg.getRefEvidencePair(), fSeg.getStartTP(), fSeg.getStartAT());
 		this.endTP = fSegNext.getStartTP();
 		this.endAT = fSegNext.getStartAT();
 		this.startEvidencePair = assignStartValue(startEvidencePair); // assign based on type and previous type
-//		this.setCurrent(true);
 	}
 	
 	/**
 	 * For final segments: build from segment, maxTime, and starting evidence pair
 	 */
-	// added true-- but true is not in the output file
 	public MFunctionSegment(FunctionSegment fSeg, Integer maxTime, String maxTimeName, String startEvidencePair) {
 		super(fSeg.getType(), fSeg.getRefEvidencePair(), fSeg.getStartTP(), fSeg.getStartAT());
 		this.endTP = maxTimeName;
 		this.endAT = maxTime;
-//		this.setCurrent(false);
 		if (this.getType().equals("I") || this.getType().equals("D")) {
 			this.startEvidencePair = startEvidencePair;  // for I or D functions, start != end
 		} else {

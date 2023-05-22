@@ -5,7 +5,6 @@ public class FunctionSegment {
 	private Integer startAT;
 	private String type;
 	private String refEvidencePair;
-	private boolean current;
 	
 	public FunctionSegment(String type, String refEvidencePair, String startTimePoint, Integer startAbsTime, String intentionID) {
 		if (startAbsTime != null && startAbsTime == 0)
@@ -16,20 +15,11 @@ public class FunctionSegment {
 		this.type = type;
 		this.refEvidencePair = refEvidencePair;
 	} 
-	 //added a constructor with current, tried without and didn't work
-//	public FunctionSegment(String type, String refEvidencePair, String startTimePoint, Integer startAbsTime, boolean current) {
-//		this.startTP = startTimePoint;
-//		this.startAT = startAbsTime;
-//		this.type = type;
-//		this.refEvidencePair = refEvidencePair;
-////		this.current = true;
-//	}
 	public FunctionSegment(String type, String refEvidencePair, String startTimePoint, Integer startAbsTime) {
 		this.startTP = startTimePoint;
 		this.startAT = startAbsTime;
 		this.type = type;
 		this.refEvidencePair = refEvidencePair;
-//		this.current = true;
 
 	}
 	public String getStartTP() {
@@ -41,14 +31,7 @@ public class FunctionSegment {
 	public Integer getStartAT() {
 		return startAT;
 	}
-//	// added getCurrent-- do we need this? 
-	public boolean getCurrent() {
-		return current;
-	}
-	
-	public void setCurrent(boolean value) {
-		current = value;
-	}
+
 	/**
 	 * Increment abs timepoint by delta if abs timepoint is known
 	 * @param delta
