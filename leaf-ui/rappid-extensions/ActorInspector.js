@@ -28,9 +28,6 @@ var ActorInspector = Backbone.View.extend({
         '</div>',
         '<div id = max-time>',
         '</div>',
-        // '<label for="interval"> Intervals </label><br>',
-        // '<textarea readonly class="cell-attrs-intervals" maxlength=100> <%= intervals %> </textarea>',
-        // '<br>',
         // '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip Interval</button>',
         // '<script src="js/actorDoubleSlider.js"></script>',
         '</div>',
@@ -170,34 +167,44 @@ var ActorInspector = Backbone.View.extend({
     updateTimePointsSet: function () {
         var display = this.assignmentsListView();
         display.render();
-        var timeInt = display.timePointsSet();
+        var timePointsArray = [];
+        var timePoints = parseInt(document.getElementById('slider-1').value);
+        var timePoints2 = parseInt(document.getElementById('slider-2').value);
         var flipBool = document.getElementById('intervals-flip-btn').value;
-        if (flipBool == 'true') {
-            console.log(this.actor.get('intervals'));
+
+        if (flipBool == "true") {
+            timePointsArray.push(timePoints, timePoints2);
             if (this.actor.get('intervals') == []){
-                this.actor.get('intervals').push(timeInt);
-                return this.actor.get('intervals');
+                this.actor.get('intervals') .push(timePointsArray);
+                console.log(this.actor.get('intervals'));
+                return this.actor.get('intervals') ;
             } else {
                 this.actor.get('intervals').pop();
-                this.actor.get('intervals').push(timeInt);
+                this.actor.get('intervals').push(timePointsArray);
+                console.log(this.actor.get('intervals'));
                 return this.actor.get('intervals');
             }
         }else{
-            console.log(this.actor.get('intervals'));
+            var reverseTimePointArray1 = [];
+            var reverseTimePointArray2 = [];
+            var timePointMax = parseInt(document.getElementById('slider-1').max);
+            reverseTimePointArray1.push(0, timePoints);
+            reverseTimePointArray2.push(timePoints2, timePointMax);
             if (this.actor.get('intervals') == []){
-                this.actor.get('intervals').push(timeInt[0]);
-                this.actor.get('intervals').push(timeInt[1]);
+                this.actor.get('intervals').push(reverseTimePointArray1);
+                this.actor.get('intervals').push(reverseTimePointArray2);
+                console.log(this.actor.get('intervals'));
                 return this.actor.get('intervals');
             } else {
                 this.actor.get('intervals').pop();
                 this.actor.get('intervals').pop();
-                this.actor.get('intervals').push(timeInt[0]);
-                this.actor.get('intervals').push(timeInt[1]);
+                this.actor.get('intervals').push(reverseTimePointArray1);
+                this.actor.get('intervals').push(reverseTimePointArray2);
+                console.log(this.actor.get('intervals'));
                 return this.actor.get('intervals');
             }
 
         }
-
     }
 });
 var AssignmentsListView = Backbone.View.extend({
@@ -243,48 +250,7 @@ var AssignmentsListView = Backbone.View.extend({
     },
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
-        this.returnFlipVal();
         return this;
-    },
-    timePointsSet: function () {
-        var timePointsArray = [];
-        var timePoints = parseInt(this.$('#range1').text());
-        var timePoints2 = parseInt(this.$('#range2').text());
-        // console.log(this.$('#intervals-flip-btn').val());
-        if (this.$('#intervals-flip-btn').val() == "true") {
-            timePointsArray.push(timePoints, timePoints2);
-            // console.log(timePointsArray);
-            // console.log(graph.get('absTimePtsArr'));
-            if (graph.get("absTimePtsArr") == []){
-                graph.get("absTimePtsArr").push(timePointsArray);
-                return graph.get('absTimePtsArr');
-            } else {
-                graph.get("absTimePtsArr").pop();
-                graph.get("absTimePtsArr").push(timePointsArray);
-                return graph.get('absTimePtsArr');
-            }
-        }else{
-            // console.log(graph.get('absTimePtsArr'));
-            var reverseTimePointArray1 = [];
-            var reverseTimePointArray2 = [];
-            var timePointMax = parseInt(this.$('#slider-1').attr('max'));
-            reverseTimePointArray1.push(0, timePoints);
-            reverseTimePointArray2.push(timePoints2, timePointMax);
-            if (graph.get("absTimePtsArr") == []){
-                graph.get('absTimePtsArr').push(reverseTimePointArray1, reverseTimePointArray2);
-                return graph.get('absTimePtsArr');
-            } else {
-                graph.get("absTimePtsArr").pop();
-                graph.get("absTimePtsArr").pop();
-                graph.get('absTimePtsArr').push(reverseTimePointArray1, reverseTimePointArray2);
-                return graph.get('absTimePtsArr');
-            }
-
-        }
-        },
-    returnFlipVal: function() {
-        var FlipVal =this.$('#intervals-flip-btn').val();
-        return FlipVal;
     },
 })
 
