@@ -31,8 +31,8 @@ var ActorInspector = Backbone.View.extend({
         '</div>',
         '<div id = max-time>',
         '</div>',
-        // '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip Interval</button>',
-        // '<script src="js/actorDoubleSlider.js"></script>',
+        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip Interval</button>',
+        '<script src="js/actorDoubleSlider.js"></script>',
         '</div>',
         '</script>'
     ].join(''),
@@ -42,6 +42,7 @@ var ActorInspector = Backbone.View.extend({
         'change #actor-type-ID': 'updateType',
         'change #actor-hidden' : 'updateHidden',
         'change #max-time': 'updateTimePointsSet',
+        'click #intervals-flip-btn': 'updateTimePointsSet',
         //'change #num-rel-time': 'addRelTime',
         'clearInspector .inspector-views': 'removeView'
     },
@@ -254,8 +255,6 @@ var TimePointListView = Backbone.View.extend({
         '<%= graph.get("maxAbsTime") %>',
         '</div>',
         '<br>',
-        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip Interval</button>',
-        '<script src="js/actorDoubleSlider.js"></script>',
         '</script>'
     ].join(''),
     render: function () {
