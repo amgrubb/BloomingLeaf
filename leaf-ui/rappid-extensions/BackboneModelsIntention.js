@@ -171,7 +171,8 @@ var IntentionBBM = Backbone.Model.extend({
         return {
             nodeName: 'untitled',
             evolvingFunction: null,
-            userEvaluationList: []
+            userEvaluationList: [],
+            intervals:[]
         }
     },
 
