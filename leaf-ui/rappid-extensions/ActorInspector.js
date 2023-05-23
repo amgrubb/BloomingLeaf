@@ -87,7 +87,7 @@ var ActorInspector = Backbone.View.extend({
     render: function () {
         // If the clicked node is an actor, render the actor inspector
         this.$el.html(_.template($(this.template).html())(this.actor.toJSON()));
-        this.displayAssignmentsListView();
+        this.displayTimePointListView();
         //Checks for the correct font size
         changeFont(current_font, paper);
         return this;
@@ -153,37 +153,40 @@ var ActorInspector = Backbone.View.extend({
         }
     },
 
-    assignmentsListView: function(){
-        var display = new AssignmentsListView({});
+    timePointListView: function(){
+        var display = new TimePointListView({});
         return display;
     },
-    displayAssignmentsListView: function(){
-        var display = this.assignmentsListView();
+    displayTimePointListView: function(){
+        var display = this.timePointListView();
         this.$('#max-time').append(display.el);
         display.render();
-
-
     },
+    /**
+     * 
+     * @returns 
+     */
     updateTimePointsSet: function () {
-        var display = this.assignmentsListView();
+        var display = this.timePointListView();
         display.render();
         var timePointsArray = [];
         var timePoints = parseInt(document.getElementById('slider-1').value);
         var timePoints2 = parseInt(document.getElementById('slider-2').value);
         var flipBool = document.getElementById('intervals-flip-btn').value;
+        var intervals = this.actor.get('intervals');
 
         if (flipBool == "true") {
-            this.actor.get('intervals').pop();
+            intervals.pop();
             timePointsArray.push(timePoints, timePoints2);
-            if (this.actor.get('intervals') == []){
-                this.actor.get('intervals') .push(timePointsArray);
-                console.log(this.actor.get('intervals'));
-                return this.actor.get('intervals') ;
+            if (intervals == []){
+                intervals.push(timePointsArray);
+                console.log(intervals);
+                return intervals ;
             } else {
-                this.actor.get('intervals').pop();
-                this.actor.get('intervals').push(timePointsArray);
-                console.log(this.actor.get('intervals'));
-                return this.actor.get('intervals');
+                intervals.pop();
+                intervals.push(timePointsArray);
+                console.log(intervals);
+                return intervals;
             }
         }else{
             var reverseTimePointArray1 = [];
@@ -191,24 +194,24 @@ var ActorInspector = Backbone.View.extend({
             var timePointMax = parseInt(document.getElementById('slider-1').max);
             reverseTimePointArray1.push(0, timePoints);
             reverseTimePointArray2.push(timePoints2, timePointMax);
-            if (this.actor.get('intervals') == []){
-                this.actor.get('intervals').push(reverseTimePointArray1);
-                this.actor.get('intervals').push(reverseTimePointArray2);
-                console.log(this.actor.get('intervals'));
-                return this.actor.get('intervals');
+            if (intervals == []){
+                intervals.push(reverseTimePointArray1);
+                intervals.push(reverseTimePointArray2);
+                console.log(intervals);
+                return intervals;
             } else {
-                this.actor.get('intervals').pop();
-                this.actor.get('intervals').pop();
-                this.actor.get('intervals').push(reverseTimePointArray1);
-                this.actor.get('intervals').push(reverseTimePointArray2);
-                console.log(this.actor.get('intervals'));
-                return this.actor.get('intervals');
+                intervals.pop();
+                intervals.pop();
+                intervals.push(reverseTimePointArray1);
+                intervals.push(reverseTimePointArray2);
+                console.log(intervals);
+                return intervals;
             }
 
         }
     }
 });
-var AssignmentsListView = Backbone.View.extend({
+var TimePointListView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
     template: [
         '<script type="text/template" id="item-template">',
