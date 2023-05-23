@@ -90,7 +90,7 @@ var ActorInspector = Backbone.View.extend({
     render: function () {
         // If the clicked node is an actor, render the actor inspector
         this.$el.html(_.template($(this.template).html())(this.actor.toJSON()));
-        this.displayAssignmentsListView();
+        this.displayTimePointListView();
         //Checks for the correct font size
         changeFont(current_font, paper);
         return this;
@@ -155,63 +155,72 @@ var ActorInspector = Backbone.View.extend({
             this.model.attr({ '.line': { 'stroke-width': 0 } });
         }
     },
-
-    assignmentsListView: function(){
-        var display = new AssignmentsListView({});
+    /**
+     * This function creates a new variable, display, as a new TimePointListView.
+     * @returns display
+     */
+    timePointListView: function(){
+        var display = new TimePointListView({});
         return display;
     },
-    displayAssignmentsListView: function(){
-        var display = this.assignmentsListView();
+    /**
+     * This function displays the tyemplate opf timePointListView
+     */
+    displayTimePointListView: function(){
+        var display = this.timePointListView();
         this.$('#max-time').append(display.el);
         display.render();
-
-
     },
+    /**
+     * This function updates the actor's intervals attribute.
+     * @returns the intervals attribute from BIActor
+     */
     updateTimePointsSet: function () {
-        var display = this.assignmentsListView();
-        display.render();
+        var display = this.timePointListView();
+        display.render(); //renders timePointListView
         var timePointsArray = [];
-        var timePoints = parseInt(document.getElementById('slider-1').value);
-        var timePoints2 = parseInt(document.getElementById('slider-2').value);
-        var flipBool = document.getElementById('intervals-flip-btn').value;
+        var timePoints = parseInt(document.getElementById('slider-1').value); //gets slider-1 value
+        var timePoints2 = parseInt(document.getElementById('slider-2').value); //gets slider-2 value
+        var flipBool = document.getElementById('intervals-flip-btn').value; //gets the intervals-flip-btn value
+        var intervals = this.actor.get('intervals');
 
-        if (flipBool == "true") {
-            this.actor.get('intervals').pop();
+        if (flipBool == "true") { //if the slider is not flipped
+            intervals.pop();
             timePointsArray.push(timePoints, timePoints2);
-            if (this.actor.get('intervals') == []){
-                this.actor.get('intervals') .push(timePointsArray);
-                console.log(this.actor.get('intervals'));
-                return this.actor.get('intervals') ;
+            if (intervals == []){
+                intervals.push(timePointsArray);
+                console.log(intervals);
+                return intervals ;
             } else {
-                this.actor.get('intervals').pop();
-                this.actor.get('intervals').push(timePointsArray);
-                console.log(this.actor.get('intervals'));
-                return this.actor.get('intervals');
+                intervals.pop();
+                intervals.push(timePointsArray);
+                console.log(intervals);
+                return intervals;
             }
-        }else{
+        }else{ //if the slider is flipped
             var reverseTimePointArray1 = [];
             var reverseTimePointArray2 = [];
             var timePointMax = parseInt(document.getElementById('slider-1').max);
             reverseTimePointArray1.push(0, timePoints);
             reverseTimePointArray2.push(timePoints2, timePointMax);
-            if (this.actor.get('intervals') == []){
-                this.actor.get('intervals').push(reverseTimePointArray1);
-                this.actor.get('intervals').push(reverseTimePointArray2);
-                console.log(this.actor.get('intervals'));
-                return this.actor.get('intervals');
+            if (intervals == []){
+                intervals.push(reverseTimePointArray1);
+                intervals.push(reverseTimePointArray2);
+                console.log(intervals);
+                return intervals;
             } else {
-                this.actor.get('intervals').pop();
-                this.actor.get('intervals').pop();
-                this.actor.get('intervals').push(reverseTimePointArray1);
-                this.actor.get('intervals').push(reverseTimePointArray2);
-                console.log(this.actor.get('intervals'));
-                return this.actor.get('intervals');
+                intervals.pop();
+                intervals.pop();
+                intervals.push(reverseTimePointArray1);
+                intervals.push(reverseTimePointArray2);
+                console.log(intervals);
+                return intervals;
             }
 
         }
     }
 });
-var AssignmentsListView = Backbone.View.extend({
+var TimePointListView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
     template: [
         '<script type="text/template" id="item-template">',
