@@ -155,30 +155,36 @@ var ActorInspector = Backbone.View.extend({
             this.model.attr({ '.line': { 'stroke-width': 0 } });
         }
     },
-
+    /**
+     * This function creates a new variable, display, as a new TimePointListView.
+     * @returns display
+     */
     timePointListView: function(){
         var display = new TimePointListView({});
         return display;
     },
+    /**
+     * This function displays the tyemplate opf timePointListView
+     */
     displayTimePointListView: function(){
         var display = this.timePointListView();
         this.$('#max-time').append(display.el);
         display.render();
     },
     /**
-     * 
-     * @returns 
+     * This function updates the actor's intervals attribute.
+     * @returns the intervals attribute from BIActor
      */
     updateTimePointsSet: function () {
         var display = this.timePointListView();
-        display.render();
+        display.render(); //renders timePointListView
         var timePointsArray = [];
-        var timePoints = parseInt(document.getElementById('slider-1').value);
-        var timePoints2 = parseInt(document.getElementById('slider-2').value);
-        var flipBool = document.getElementById('intervals-flip-btn').value;
+        var timePoints = parseInt(document.getElementById('slider-1').value); //gets slider-1 value
+        var timePoints2 = parseInt(document.getElementById('slider-2').value); //gets slider-2 value
+        var flipBool = document.getElementById('intervals-flip-btn').value; //gets the intervals-flip-btn value
         var intervals = this.actor.get('intervals');
 
-        if (flipBool == "true") {
+        if (flipBool == "true") { //if the slider is not flipped
             intervals.pop();
             timePointsArray.push(timePoints, timePoints2);
             if (intervals == []){
@@ -191,7 +197,7 @@ var ActorInspector = Backbone.View.extend({
                 console.log(intervals);
                 return intervals;
             }
-        }else{
+        }else{ //if the slider is flipped
             var reverseTimePointArray1 = [];
             var reverseTimePointArray2 = [];
             var timePointMax = parseInt(document.getElementById('slider-1').max);
