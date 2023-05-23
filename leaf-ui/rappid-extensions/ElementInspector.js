@@ -69,6 +69,7 @@ var ElementInspector = Backbone.View.extend({
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
         this.isNewSegment = false;
+        // console.log(this.intention);
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -151,6 +152,7 @@ var ElementInspector = Backbone.View.extend({
         'clearInspector .inspector-views': 'removeView',
 
         'change #max-time': 'updateTimePointsSet',
+        'click .interval-flip-btn': 'updateTimePointsSet',
     },
 
     /**
@@ -198,7 +200,7 @@ var ElementInspector = Backbone.View.extend({
 
         }
         this.updateCell();
-        this.displayTimeRange(this.findActor());
+        this.displayIntervals(this.findActor());
     },
 
     /**
@@ -782,11 +784,53 @@ var ElementInspector = Backbone.View.extend({
         }
     },
 
-    displayTimeRange: function (actor) {
-        var timeRangeView = new TimeRangeView({actor: actor});
-        $('#max-time').append(timeRangeView.el);
-        timeRangeView.render();
+    displayIntervals: function (actor) {
+        var intervalsView = new IntervalsView({actor: actor});
+        $('#max-time').append(intervalsView.el);
+        intervalsView.render();
     },
+
+    updateTimePointsSet: function () {
+        var timePointsArray = [];
+        var timePoints = parseInt(document.getElementById('slider-1').value);
+        var timePoints2 = parseInt(document.getElementById('slider-2').value);
+        var flipBool = document.getElementById('intervals-flip-btn').value;
+
+        if (flipBool == "true") {
+            this.intention.get('intervals').pop();
+            timePointsArray.push(timePoints, timePoints2);
+            if (this.intention.get('intervals') == []){
+                this.intention.get('intervals').push(timePointsArray);
+                console.log(this.intention.get('intervals'));
+                return this.intention.get('intervals') ;
+            } else {
+                this.intention.get('intervals').pop();
+                this.intention.get('intervals').push(timePointsArray);
+                console.log(this.intention.get('intervals'));
+                return this.intention.get('intervals');
+            }
+        }else{
+            var reverseTimePointArray1 = [];
+            var reverseTimePointArray2 = [];
+            var timePointMax = parseInt(document.getElementById('slider-1').max);
+            reverseTimePointArray1.push(0, timePoints);
+            reverseTimePointArray2.push(timePoints2, timePointMax);
+            if (this.intention.get('intervals') == []){
+                this.intention.get('intervals').push(reverseTimePointArray1);
+                this.intention.get('intervals').push(reverseTimePointArray2);
+                console.log(this.intention.get('intervals'));
+                return this.intention.get('intervals');
+            } else {
+                this.intention.get('intervals').pop();
+                this.intention.get('intervals').pop();
+                this.intention.get('intervals').push(reverseTimePointArray1);
+                this.intention.get('intervals').push(reverseTimePointArray2);
+                console.log(this.intention.get('intervals'));
+                return this.intention.get('intervals');
+            }
+
+        }
+    }
 });
 
 /************************************************** FunctionSegmentBBM View **************************************************/
@@ -1288,7 +1332,7 @@ var FuncSegView = Backbone.View.extend({
     },
 });
 
-var TimeRangeView = Backbone.View.extend({
+var IntervalsView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
 
     initialize: function (options) {
@@ -1302,7 +1346,7 @@ var TimeRangeView = Backbone.View.extend({
     '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.3*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
     '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.7*graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
     '</div>',
-    '<label for="range1">Available: ',
+    '<label for="range1">Available: </label>',
     '<div id="not-flipped">',
     '<span id="range1">',
     '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
@@ -1331,10 +1375,24 @@ var TimeRangeView = Backbone.View.extend({
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
         if (this.actor) {
-            document.getElementById("range1").textContent = this.actor.model.attributes.actor.attributes.intervals[0][0];
-            document.getElementById("slider-1").value = this.actor.model.attributes.actor.attributes.intervals[0][0];
-            document.getElementById("range2").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
-            document.getElementById("slider-2").value = this.actor.model.attributes.actor.attributes.intervals[0][1];
+            if (this.actor.model.attributes.actor.attributes.intervals[1]) {
+                document.getElementById("intervals-flip-btn").value = "false";
+                document.getElementById("range1").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                document.getElementById("range1-flipped").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                document.getElementById("slider-1").value = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                document.getElementById("range2").textContent = this.actor.model.attributes.actor.attributes.intervals[1][0];
+                document.getElementById("range2-flipped").textContent = this.actor.model.attributes.actor.attributes.intervals[1][0];
+                document.getElementById("slider-2").value = this.actor.model.attributes.actor.attributes.intervals[1][0];
+                document.getElementById("not-flipped").style.display = "none";
+                document.getElementById("flipped").style.display = "block";
+            } else {
+                document.getElementById("range1").textContent = this.actor.model.attributes.actor.attributes.intervals[0][0];
+                document.getElementById("range1-flipped").textContent = this.actor.model.attributes.actor.attributes.intervals[0][0];
+                document.getElementById("slider-1").value = this.actor.model.attributes.actor.attributes.intervals[0][0];
+                document.getElementById("range2").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                document.getElementById("range2-flipped").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                document.getElementById("slider-2").value = this.actor.model.attributes.actor.attributes.intervals[0][1];
+            }
         }
         return this;
     },
