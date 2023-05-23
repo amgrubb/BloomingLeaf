@@ -69,7 +69,6 @@ var ElementInspector = Backbone.View.extend({
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
         this.isNewSegment = false;
-        // console.log(this.intention);
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -152,7 +151,7 @@ var ElementInspector = Backbone.View.extend({
         'clearInspector .inspector-views': 'removeView',
 
         'change #max-time': 'updateTimePointsSet',
-        'click .interval-flip-btn': 'updateTimePointsSet',
+        'click #intervals-flip-btn': 'updateTimePointsSet',
     },
 
     /**
@@ -200,6 +199,8 @@ var ElementInspector = Backbone.View.extend({
 
         }
         this.updateCell();
+
+        this.setInitialInterval();
         this.displayIntervals(this.findActor());
     },
 
@@ -785,7 +786,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     displayIntervals: function (actor) {
-        var intervalsView = new IntervalsView({actor: actor});
+        var intervalsView = new IntervalsView({actor: actor, intention: this.intention});
         $('#max-time').append(intervalsView.el);
         intervalsView.render();
     },
@@ -829,6 +830,16 @@ var ElementInspector = Backbone.View.extend({
                 return this.intention.get('intervals');
             }
 
+        }
+    },
+
+    setInitialInterval: function() {
+        if (!this.intention.get('intervals')[0]) {
+            if (this.findActor()) {
+                this.intention.get('intervals').push(this.findActor().model.attributes.actor.attributes.intervals);
+            } else {
+                this.intention.get('intervals').push([Math.round(.3*graph.get("maxAbsTime")),Math.round(.7*graph.get("maxAbsTime"))]);
+            }
         }
     }
 });
@@ -1337,6 +1348,7 @@ var IntervalsView = Backbone.View.extend({
 
     initialize: function (options) {
         this.actor = options.actor;
+        this.intention = options.intention;
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -1392,6 +1404,25 @@ var IntervalsView = Backbone.View.extend({
                 document.getElementById("range2").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
                 document.getElementById("range2-flipped").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
                 document.getElementById("slider-2").value = this.actor.model.attributes.actor.attributes.intervals[0][1];
+            }
+        } else {
+            if (this.intention.attributes.intervals[1]) {
+                document.getElementById("intervals-flip-btn").value = "false";
+                document.getElementById("range1").textContent = this.intention.attributes.intervals[0][1];
+                document.getElementById("range1-flipped").textContent = this.intention.attributes.intervals[0][1];
+                document.getElementById("slider-1").value = this.intention.attributes.intervals[0][1];
+                document.getElementById("range2").textContent = this.intention.attributes.intervals[1][0];
+                document.getElementById("range2-flipped").textContent = this.intention.attributes.intervals[1][0];
+                document.getElementById("slider-2").value = this.intention.attributes.intervals[1][0];
+                document.getElementById("not-flipped").style.display = "none";
+                document.getElementById("flipped").style.display = "block";
+            } else {
+                document.getElementById("range1").textContent = this.intention.attributes.intervals[0][0];
+                document.getElementById("range1-flipped").textContent = this.intention.attributes.intervals[0][0];
+                document.getElementById("slider-1").value = this.intention.attributes.intervals[0][0];
+                document.getElementById("range2").textContent = this.intention.attributes.intervals[0][1];
+                document.getElementById("range2-flipped").textContent = this.intention.attributes.intervals[0][1];
+                document.getElementById("slider-2").value = this.intention.attributes.intervals[0][1];
             }
         }
         return this;
