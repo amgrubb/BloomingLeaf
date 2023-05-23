@@ -161,7 +161,7 @@ var ActorInspector = Backbone.View.extend({
      * @returns display
      */
     timePointListView: function(){
-        var display = new TimePointListView({});
+        var display = new TimePointListView({actor: this.actor});
         return display;
     },
     /**
@@ -177,8 +177,6 @@ var ActorInspector = Backbone.View.extend({
      * @returns the intervals attribute from BIActor
      */
     updateTimePointsSet: function () {
-        var display = this.timePointListView();
-        display.render(); //renders timePointListView
         var timePointsArray = [];
         var timePoints = parseInt(document.getElementById('slider-1').value); //gets slider-1 value
         var timePoints2 = parseInt(document.getElementById('slider-2').value); //gets slider-2 value
@@ -223,6 +221,10 @@ var ActorInspector = Backbone.View.extend({
 });
 var TimePointListView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
+
+    initialize: function (options) {
+        this.actor = options.actor;
+    },
     template: [
         '<script type="text/template" id="item-template">',
         '<div class="container">',
@@ -259,6 +261,25 @@ var TimePointListView = Backbone.View.extend({
     ].join(''),
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
+        if (this.actor.attributes.intervals[1]) {
+            document.getElementById("intervals-flip-btn").value = "false";
+            document.getElementById("range1").textContent = this.actor.attributes.intervals[0][1];
+            document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0][1];
+            document.getElementById("slider-1").value = this.actor.attributes.intervals[0][1];
+            document.getElementById("range2").textContent = this.actor.attributes.intervals[1][0];
+            document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[1][0];
+            document.getElementById("slider-2").value = this.actor.attributes.intervals[1][0];
+            document.getElementById("not-flipped").style.display = "none";
+            document.getElementById("flipped").style.display = "block";
+        } else {
+            document.getElementById("range1").textContent = this.actor.attributes.intervals[0][0];
+            document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0][0];
+            document.getElementById("slider-1").value = this.actor.attributes.intervals[0][0];
+            document.getElementById("range2").textContent = this.actor.attributes.intervals[0][1];
+            document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[0][1];
+            document.getElementById("slider-2").value = this.actor.attributes.intervals[0][1];
+        }
+         
         return this;
     },
 })
