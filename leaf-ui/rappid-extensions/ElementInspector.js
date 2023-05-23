@@ -149,6 +149,8 @@ var ElementInspector = Backbone.View.extend({
         'click #constraint-restart': 'removeUserConstraints',
         'keyup .cell-attrs-text': 'nameAction',
         'clearInspector .inspector-views': 'removeView',
+
+        'change #max-time': 'updateTimePointsSet',
     },
 
     /**
@@ -196,7 +198,7 @@ var ElementInspector = Backbone.View.extend({
 
         }
         this.updateCell();
-        this.displayTimeRange();
+        this.displayTimeRange(this.findActor());
     },
 
     /**
@@ -760,8 +762,28 @@ var ElementInspector = Backbone.View.extend({
         return this;
     },
 
-    displayTimeRange: function () {
-        var timeRangeView = new TimeRangeView({});
+    findActor: function() {
+        var elements = graph.getElements();
+        var actors = []
+        for (var i = 0; i < elements.length; i++) {
+            var cell = elements[i].findView(paper);
+            if (cell.model.attributes.type == "basic.Actor") {
+                actors.push(cell);
+            }
+        }
+        for (var i = 0; i < actors.length; i++) {
+            if (actors[i].model.attributes.embeds) {
+                for (var j = 0; j < actors[i].model.attributes.embeds.length; j++) {
+                    if (actors[i].model.attributes.embeds[j] == this.model.id) {
+                        return actors[i];
+                    }
+                }
+            }
+        }
+    },
+
+    displayTimeRange: function (actor) {
+        var timeRangeView = new TimeRangeView({actor: actor});
         $('#max-time').append(timeRangeView.el);
         timeRangeView.render();
     },
@@ -1269,6 +1291,10 @@ var FuncSegView = Backbone.View.extend({
 var TimeRangeView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
 
+    initialize: function (options) {
+        this.actor = options.actor;
+    },
+
     template: ['<script type="text/template" id="item-template">',
     '<div class="container">',
     '<div class="slider-track">',
@@ -1287,23 +1313,30 @@ var TimeRangeView = Backbone.View.extend({
     '</span><br>',
     '</div>',
     '<div id="flipped" style="display:none">',
-        '0',
-        '<span> &dash; </span>',
-        '<span id="range1-flipped">',
-        '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
-        '</span>',
-        ', ',
-        '<span id="range2-flipped">',
-        '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
-        '</span>',
-        '<span> &dash; </span>',
-        '<%= graph.get("maxAbsTime") %>',
+    '0',
+    '<span> &dash; </span>',
+    '<span id="range1-flipped">',
+    '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
+    '</span>',
+    ', ',
+    '<span id="range2-flipped">',
+    '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
+    '</span>',
+    '<span> &dash; </span>',
+    '<%= graph.get("maxAbsTime") %>',
     '</div>',
     '</script>'
     ].join(''),
 
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
+        if (this.actor) {
+            document.getElementById("range1").textContent = this.actor.model.attributes.actor.attributes.intervals[0][0];
+            document.getElementById("slider-1").value = this.actor.model.attributes.actor.attributes.intervals[0][0];
+            document.getElementById("range2").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
+            document.getElementById("slider-2").value = this.actor.model.attributes.actor.attributes.intervals[0][1];
+        }
         return this;
     },
+
 });

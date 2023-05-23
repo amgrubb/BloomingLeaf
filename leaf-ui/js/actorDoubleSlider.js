@@ -19,6 +19,8 @@ var sliderOne;
 var sliderTwo;
 var displayValOne;
 var displayValTwo;
+var displayValOneFlipped;
+var displayValTwoFlipped;
 var minGap = 0;
 var sliderTrack;
 var sliderMaxValue;
@@ -31,13 +33,10 @@ function getValues() {
     sliderMaxValue = document.getElementById("slider-1").max;
     flipIntervalsCheckbox = document.getElementById("intervals-flip-btn");
     
-    if (flipIntervalsCheckbox.value == "true") {
-        displayValOne = document.getElementById("range1-flipped");
-        displayValTwo = document.getElementById("range2-flipped");
-    } else {
-        displayValOne = document.getElementById("range1");
-        displayValTwo = document.getElementById("range2");
-    }
+    displayValOne = document.getElementById("range1");
+    displayValTwo = document.getElementById("range2");
+    displayValOneFlipped = document.getElementById("range1-flipped");
+    displayValTwoFlipped = document.getElementById("range2-flipped");
 }
 
 function slideOne() {
@@ -47,8 +46,7 @@ function slideOne() {
         sliderOne.value = parseInt(sliderTwo.value) - minGap;
     }
     displayValOne.textContent = sliderOne.value;
-    document.getElementById("range1-flipped").textContent = sliderOne.value;
-    document.getElementById("range1").textContent = sliderOne.value;
+    displayValOneFlipped.textContent = sliderOne.value;
 
     if (flipIntervalsCheckbox.value == "true") {
         fillColor();
@@ -64,6 +62,7 @@ function slideTwo() {
         sliderTwo.value = parseInt(sliderOne.value) + minGap;
     }
     displayValTwo.textContent = sliderTwo.value;
+    displayValTwoFlipped.textContent = sliderTwo.value;
     document.getElementById("range2-flipped").textContent = sliderTwo.value;
     document.getElementById("range2").textContent = sliderTwo.value;
 

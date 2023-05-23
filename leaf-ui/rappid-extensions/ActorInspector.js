@@ -5,6 +5,9 @@ var ActorInspector = Backbone.View.extend({
 
     initialize: function () {
         this.actor = this.model.get('actor');
+        if (!this.actor.get('intervals')[0]) {
+            this.actor.get('intervals').push([Math.round(.3*graph.get("maxAbsTime")),Math.round(.7*graph.get("maxAbsTime"))]);
+        }
     },
 
     template: [
@@ -232,17 +235,17 @@ var TimePointListView = Backbone.View.extend({
         '</span><br>',
         '</div>',
         '<div id="flipped" style="display:none">',
-            '0',
-            '<span> &dash; </span>',
-            '<span id="range1-flipped">',
-            '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
-            '</span>',
-            ', ',
-            '<span id="range2-flipped">',
-            '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
-            '</span>',
-            '<span> &dash; </span>',
-            '<%= graph.get("maxAbsTime") %>',
+        '0',
+        '<span> &dash; </span>',
+        '<span id="range1-flipped">',
+        '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
+        '</span>',
+        ', ',
+        '<span id="range2-flipped">',
+        '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
+        '</span>',
+        '<span> &dash; </span>',
+        '<%= graph.get("maxAbsTime") %>',
         '</div>',
         '<br>',
         '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip Interval</button>',
