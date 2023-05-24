@@ -803,7 +803,7 @@ var ElementInspector = Backbone.View.extend({
             var timePointsArray = [];
             timePointsArray.push(timePoints, timePoints2);
 
-            this.intention.set('intervals', timePointsArray);
+            this.intention.set('intervals', [timePointsArray]);
             console.log(this.intention.get('intervals'));
         } else {
             var reverseTimePointArray1 = [];
