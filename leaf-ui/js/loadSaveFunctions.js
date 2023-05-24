@@ -295,7 +295,7 @@ function createBBLink(cell) {
 function createBBElement(cell, funcsegs) {
 	var intention = cell.get('intention');
 	var evol = intention.attributes.evolvingFunction.attributes;
-	var intentionBBM = new IntentionBBM({ nodeName: intention.attributes.nodeName });
+	var intentionBBM = new IntentionBBM({ nodeName: intention.attributes.nodeName, intervals: intention.attributes.intervals });
 
 	var evolving = new EvolvingFunctionBBM({ type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime });
 	for (let funcseg of funcsegs) {
