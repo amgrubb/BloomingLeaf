@@ -273,7 +273,7 @@ function getFuncSegList(functionseg, oldConstraints) {
  */
 function createBBActor(cell) {
 	var actor = cell.get('actor');
-	var actorBBM = new ActorBBM({ type: actor.attributes.type, actorName: actor.attributes.actorName });
+	var actorBBM = new ActorBBM({ type: actor.attributes.type, actorName: actor.attributes.actorName, intervals: actor.attributes.intervals });
 	cell.set('actor', actorBBM)
 	cell.attr({'.label': {'cx': 20, 'cy' : 20}})
 }
