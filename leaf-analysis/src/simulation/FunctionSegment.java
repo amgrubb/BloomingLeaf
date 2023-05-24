@@ -20,6 +20,7 @@ public class FunctionSegment {
 		this.startAT = startAbsTime;
 		this.type = type;
 		this.refEvidencePair = refEvidencePair;
+
 	}
 	public String getStartTP() {
 		return startTP;
@@ -30,6 +31,7 @@ public class FunctionSegment {
 	public Integer getStartAT() {
 		return startAT;
 	}
+
 	/**
 	 * Increment abs timepoint by delta if abs timepoint is known
 	 * @param delta

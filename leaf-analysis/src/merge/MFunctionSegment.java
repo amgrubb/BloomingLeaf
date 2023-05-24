@@ -27,7 +27,7 @@ public class MFunctionSegment extends FunctionSegment{
 		super(fSeg.getType(), fSeg.getRefEvidencePair(), fSeg.getStartTP(), fSeg.getStartAT());
 		this.endTP = fSegNext.getStartTP();
 		this.endAT = fSegNext.getStartAT();
-		this.startEvidencePair = assignStartValue(startEvidencePair);  // assign based on type and previous type
+		this.startEvidencePair = assignStartValue(startEvidencePair); // assign based on type and previous type
 	}
 	
 	/**
