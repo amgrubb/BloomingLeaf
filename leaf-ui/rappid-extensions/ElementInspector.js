@@ -792,43 +792,28 @@ var ElementInspector = Backbone.View.extend({
     },
 
     updateTimePointsSet: function () {
-        var timePointsArray = [];
+        console.log(this.intention);
+        console.log(this.model);
+        
         var timePoints = parseInt(document.getElementById('slider-1').value);
         var timePoints2 = parseInt(document.getElementById('slider-2').value);
         var flipBool = document.getElementById('intervals-flip-btn').value;
 
         if (flipBool == "true") {
-            this.intention.get('intervals').pop();
+            var timePointsArray = [];
             timePointsArray.push(timePoints, timePoints2);
-            if (this.intention.get('intervals') == []){
-                this.intention.get('intervals').push(timePointsArray);
-                console.log(this.intention.get('intervals'));
-                return this.intention.get('intervals') ;
-            } else {
-                this.intention.get('intervals').pop();
-                this.intention.get('intervals').push(timePointsArray);
-                console.log(this.intention.get('intervals'));
-                return this.intention.get('intervals');
-            }
-        }else{
+
+            this.intention.set('intervals', timePointsArray);
+            console.log(this.intention.get('intervals'));
+        } else {
             var reverseTimePointArray1 = [];
             var reverseTimePointArray2 = [];
             var timePointMax = parseInt(document.getElementById('slider-1').max);
             reverseTimePointArray1.push(0, timePoints);
             reverseTimePointArray2.push(timePoints2, timePointMax);
-            if (this.intention.get('intervals') == []){
-                this.intention.get('intervals').push(reverseTimePointArray1);
-                this.intention.get('intervals').push(reverseTimePointArray2);
-                console.log(this.intention.get('intervals'));
-                return this.intention.get('intervals');
-            } else {
-                this.intention.get('intervals').pop();
-                this.intention.get('intervals').pop();
-                this.intention.get('intervals').push(reverseTimePointArray1);
-                this.intention.get('intervals').push(reverseTimePointArray2);
-                console.log(this.intention.get('intervals'));
-                return this.intention.get('intervals');
-            }
+
+            this.intention.set('intervals', [reverseTimePointArray1, reverseTimePointArray2]);
+            console.log(this.intention.get('intervals'));
 
         }
     },
