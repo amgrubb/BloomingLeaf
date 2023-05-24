@@ -43,7 +43,6 @@ var ActorInspector = Backbone.View.extend({
         'change #actor-hidden' : 'updateHidden',
         'change #max-time': 'updateTimePointsSet',
         'click #intervals-flip-btn': 'updateTimePointsSet',
-        //'change #num-rel-time': 'addRelTime',
         'clearInspector .inspector-views': 'removeView'
     },
 
