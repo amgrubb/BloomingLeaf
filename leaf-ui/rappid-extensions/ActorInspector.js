@@ -12,28 +12,28 @@ var ActorInspector = Backbone.View.extend({
 
     template: [
         '<script type="text/template" id="item-template">',
-        //Actor name label and text field
-        '<div class="inspector-views" id="right-inspector">',
-        '<label>Actor name</label>',
-        '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
-        //Actor type
-        '<label> Actor type </label>',
-        '<select id="actor-type-ID" class="actor-type">',
-        '<option value=A <%if (type === "A")  { %> selected <%} %>> Actor </option>',
-        '<option value=G <%if (type === "G")  { %> selected <%} %>> Agent </option>',
-        '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
-        '</select>',
-        //Hide Actor checkbox and label
-        '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 65px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:40px">Hide Actor</label>',
-        '<br>',
-        //Double slider
-        '<div class="wrapper" style="margin-top: 40px">',
-        '</div>',
-        '<div id = max-time>',
-        '</div>',
-        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip Interval</button>',
-        '<script src="js/actorDoubleSlider.js"></script>',
-        '</div>',
+        // Actor name label and text field
+            '<div class="inspector-views" id="right-inspector">',
+                '<label>Actor name</label>',
+                '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
+        // Actor type
+                '<label> Actor type </label>',
+                '<select id="actor-type-ID" class="actor-type">',
+                    '<option value=A <%if (type === "A")  { %> selected <%} %>> Actor </option>',
+                    '<option value=G <%if (type === "G")  { %> selected <%} %>> Agent </option>',
+                    '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
+                '</select>',
+        // Hide Actor checkbox and label
+                '<input type="checkbox" id="actor-hidden" name="hidden" value="true" style="float: left; margin-top: 25px; margin-left: 65px;"><label for="actor-hidden" style="float: left; margin-top: 25px; margin-left: 10px; margin-bottom:40px">Hide Actor</label>',
+                '<br>',
+        // Double slider
+                '<div class="wrapper" style="margin-top: 40px">',
+                '</div>',
+                '<div id = max-time>',
+                '</div>',
+                '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip Interval</button>',
+                '<script src="js/actorDoubleSlider.js"></script>',
+            '</div>',
         '</script>'
     ].join(''),
 
@@ -43,7 +43,6 @@ var ActorInspector = Backbone.View.extend({
         'change #actor-hidden' : 'updateHidden',
         'change #max-time': 'updateTimePointsSet',
         'click #intervals-flip-btn': 'updateTimePointsSet',
-        //'change #num-rel': 'addRelTime',
         'clearInspector .inspector-views': 'removeView'
     },
 
@@ -56,20 +55,16 @@ var ActorInspector = Backbone.View.extend({
             this.actor.set('isHidden', false);
             this.$('.cell-attrs-hidden').val(false);
         }
-
         // Gets j_ids of all intentions and actors in the current model
         var elements = graph.getElements();
         var cellsView = []
         for (var i = 0; i < elements.length; i++) {
             var cellView = elements[i].findView(paper);
             cellsView.push(cellView);
-        } 
-
+        }
         // Hide/Display the actor selected
         for (var i = 0; i < elements.length; i++) {
             if (cellsView[i].model.attributes.type == "basic.Actor" && cellsView[i].model.attributes.actor.cid == this.actor.cid) {
-                // console.log(cellsView[i].id);
-                // console.log(cellsView[i].model.attributes.actor.attributes.isHidden);
                 if (cellsView[i].model.attributes.actor.attributes.isHidden) {
                     $("#"+cellsView[i].id).css("display", "none");
                 } else {
@@ -77,13 +72,9 @@ var ActorInspector = Backbone.View.extend({
                 }
             }
         } 
-
         console.log("cells!");
         console.log(cellsView);
-
     },
-
-
 
     /**
      * Initializes the element inspector using previously defined templates
@@ -92,10 +83,9 @@ var ActorInspector = Backbone.View.extend({
         // If the clicked node is an actor, render the actor inspector
         this.$el.html(_.template($(this.template).html())(this.actor.toJSON()));
         this.displayTimePointListView();
-        //Checks for the correct font size
+        // Checks for the correct font size
         changeFont(current_font, paper);
-        return this;
-        
+        return this; 
     },
 
     /**
@@ -107,12 +97,10 @@ var ActorInspector = Backbone.View.extend({
         if (event.which === 13) {
             event.preventDefault();
         }
-
         // Do not allow special characters in names, replace them with spaces.
         var text = this.$('.cell-attrs-text').val().replace(/[^\w\n-]/g, ' ');
         this.model.attr({ '.name': { text: text } });
         this.actor.set('actorName', text);
-
     },
 
     /**
@@ -121,13 +109,13 @@ var ActorInspector = Backbone.View.extend({
     removeView: function () {
         this.remove();
     },
+
     /**
      * Changes the line that distinguishes the type of actor 
      */
     updateType: function () {
         var actorType = $('#actor-type-ID').val();
         this.actor.set('type', actorType);
-
         if (actorType == 'G') {
             this.model.attr({
                 '.line': {
@@ -156,6 +144,7 @@ var ActorInspector = Backbone.View.extend({
             this.model.attr({ '.line': { 'stroke-width': 0 } });
         }
     },
+
     /**
      * This function creates a new variable, display, as a new TimePointListView.
      * @returns display
@@ -164,6 +153,7 @@ var ActorInspector = Backbone.View.extend({
         var display = new TimePointListView({actor: this.actor});
         return display;
     },
+
     /**
      * This function displays the tyemplate opf timePointListView
      */
@@ -172,9 +162,11 @@ var ActorInspector = Backbone.View.extend({
         this.$('#max-time').append(display.el);
         display.render();
     },
+
     updateTimePointMax: function() {
         this.$('.slider-1').val(graph.get("maxAbsTime"));
     },
+
     /**
      * This function updates the actor's intervals attribute.
      * @returns the intervals attribute from BIActor
@@ -186,42 +178,33 @@ var ActorInspector = Backbone.View.extend({
         var flipBool = document.getElementById('intervals-flip-btn').value; //gets the intervals-flip-btn value
         var intervals = this.actor.get('intervals');
         console.log(intervals);
-        if (flipBool == "true") { //if the slider is not flipped
+        if (flipBool == "true") { // If the slider is not flipped
             intervals.pop();
             timePointsArray.push(timePoints, timePoints2);
-            if (intervals == []){
-                intervals.push(timePointsArray);
-                console.log(intervals);
-                return intervals ;
-            } else {
+            if (intervals != []){
                 intervals.pop();
-                intervals.push(timePointsArray);
-                console.log(intervals);
-                return intervals;
             }
-        }else{ //if the slider is flipped
+            intervals.push(timePointsArray);
+            console.log(intervals);
+            return intervals ;
+        }else{ // If the slider is flipped
             var reverseTimePointArray1 = [];
             var reverseTimePointArray2 = [];
             var timePointMax = parseInt(document.getElementById('slider-1').max);
             reverseTimePointArray1.push(0, timePoints);
             reverseTimePointArray2.push(timePoints2, timePointMax);
-            if (intervals == []){
-                intervals.push(reverseTimePointArray1);
-                intervals.push(reverseTimePointArray2);
-                console.log(intervals);
-                return intervals;
-            } else {
+            if (intervals != []){
                 intervals.pop();
                 intervals.pop();
-                intervals.push(reverseTimePointArray1);
-                intervals.push(reverseTimePointArray2);
-                console.log(intervals);
-                return intervals;
             }
-
+            intervals.push(reverseTimePointArray1);
+            intervals.push(reverseTimePointArray2);
+            console.log(intervals);
+            return intervals;
         }
     },
 });
+
 var TimePointListView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
 
@@ -231,33 +214,33 @@ var TimePointListView = Backbone.View.extend({
     template: [
         '<script type="text/template" id="item-template">',
         '<div class="container">',
-        '<div class="slider-track">',
-        '</div>',
-        '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.3*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
-        '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.7*graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
+            '<div class="slider-track">',
+            '</div>',
+            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.3*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
+            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.7*graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
         '</div>',
         '<label for="range1">Available: ',
         '<div id="not-flipped">',
-        '<span id="range1">',
-        '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
-        '</span>',
-        '<span> &dash; </span>',
-        '<span id="range2">',
-        '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
-        '</span><br>',
+            '<span id="range1">',
+                '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
+            '</span>',
+            '<span> &dash; </span>',
+            '<span id="range2">',
+                '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
+            '</span><br>',
         '</div>',
         '<div id="flipped" style="display:none">',
-        '0',
-        '<span> &dash; </span>',
-        '<span id="range1-flipped">',
-        '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
-        '</span>',
-        ', ',
-        '<span id="range2-flipped">',
-        '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
-        '</span>',
-        '<span> &dash; </span>',
-        '<%= graph.get("maxAbsTime") %>',
+            '0',
+            '<span> &dash; </span>',
+            '<span id="range1-flipped">',
+                '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
+            '</span>',
+            ', ',
+            '<span id="range2-flipped">',
+                '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
+            '</span>',
+            '<span> &dash; </span>',
+            '<%= graph.get("maxAbsTime") %>',
         '</div>',
         '<br>',
         '</script>'
@@ -266,24 +249,22 @@ var TimePointListView = Backbone.View.extend({
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
         if (this.actor.attributes.intervals[1]) {
             document.getElementById("intervals-flip-btn").value = "false";
-            document.getElementById("range1").textContent = this.actor.attributes.intervals[0][1];
+            document.getElementById("range1").textContent = this.actor.attributes.intervals[0];
             document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0][1];
-            document.getElementById("slider-1").value = this.actor.attributes.intervals[0][1];
             document.getElementById("range2").textContent = this.actor.attributes.intervals[1][0];
             document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[1][0];
             document.getElementById("slider-2").value = this.actor.attributes.intervals[1][0];
             document.getElementById("not-flipped").style.display = "none";
             document.getElementById("flipped").style.display = "block";
-            
+                
         } else {
             document.getElementById("range1").textContent = this.actor.attributes.intervals[0][0];
             document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0][0];
-            document.getElementById("slider-1").value = this.actor.attributes.intervals[0][0];
+            document.getElementById("slider-1").value = this.actor.attributes.intervals[0][0]; //:(((((
             document.getElementById("range2").textContent = this.actor.attributes.intervals[0][1];
             document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[0][1];
             document.getElementById("slider-2").value = this.actor.attributes.intervals[0][1];
         }
-         
         return this;
     },
 })
