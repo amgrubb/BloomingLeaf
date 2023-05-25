@@ -43,6 +43,7 @@ var ActorInspector = Backbone.View.extend({
         'change #actor-hidden' : 'updateHidden',
         'change #max-time': 'updateTimePointsSet',
         'click #intervals-flip-btn': 'updateTimePointsSet',
+        //'change #num-rel': 'addRelTime',
         'clearInspector .inspector-views': 'removeView'
     },
 
@@ -171,6 +172,9 @@ var ActorInspector = Backbone.View.extend({
         this.$('#max-time').append(display.el);
         display.render();
     },
+    updateTimePointMax: function() {
+        this.$('.slider-1').val(graph.get("maxAbsTime"));
+    },
     /**
      * This function updates the actor's intervals attribute.
      * @returns the intervals attribute from BIActor
@@ -181,7 +185,7 @@ var ActorInspector = Backbone.View.extend({
         var timePoints2 = parseInt(document.getElementById('slider-2').value); //gets slider-2 value
         var flipBool = document.getElementById('intervals-flip-btn').value; //gets the intervals-flip-btn value
         var intervals = this.actor.get('intervals');
-
+        console.log(intervals);
         if (flipBool == "true") { //if the slider is not flipped
             intervals.pop();
             timePointsArray.push(timePoints, timePoints2);
@@ -216,7 +220,7 @@ var ActorInspector = Backbone.View.extend({
             }
 
         }
-    }
+    },
 });
 var TimePointListView = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
@@ -270,6 +274,7 @@ var TimePointListView = Backbone.View.extend({
             document.getElementById("slider-2").value = this.actor.attributes.intervals[1][0];
             document.getElementById("not-flipped").style.display = "none";
             document.getElementById("flipped").style.display = "block";
+            
         } else {
             document.getElementById("range1").textContent = this.actor.attributes.intervals[0][0];
             document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0][0];

@@ -541,6 +541,8 @@ paper.on({
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
                     actorInspector.updateTimePointsSet();
+                    actorInspector.render();
+                    
                     // If user was dragging actor 
                     if (evt.data.move) {
                         // AND actor doesn't overlap with other actors
