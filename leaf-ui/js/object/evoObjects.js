@@ -56,19 +56,6 @@ class EVO {
         "1111": "#0D0221"  // Conflict (F, F)
     };
 
-    // Replaces all conflicting evals with dark grey
-    static colorVisDictColorBlind = {
-        "0000": "#D3D3D3",
-        "0011": "#003fff",
-        "0010": "#8FB8DE",
-        "0100": "#fbaca8",
-        "0110": "#333333",
-        "0111": "#333333",
-        "1100": "#FF2600",
-        "1110": "#333333",
-        "1111": "#333333"
-    };
-
     // The Red-Green Palette
     static colorVisDict2 = {
         "0000": "#bdaead",
@@ -105,6 +92,19 @@ class EVO {
         "0111": "#d69d00",
         "1100": "#A020F0",
         "1110": "#5946b2",
+        "1111": "#0D0221"
+    };
+
+    // Color Blind palette
+    static colorVisDictColorBlind = {
+        "0000": "#FFFF00",
+        "0011": "#FF0000",
+        "0010": "#CCCCCC",
+        "0100": "#CCCCCC",
+        "0110": "#CCCCCC",
+        "0111": "#CCCCCC",
+        "1100": "#0000FF",
+        "1110": "#CCCCCC",
         "1111": "#0D0221"
     };
 
@@ -640,7 +640,7 @@ class EVO {
      * Fill in self-dictionary
      */
     static fillInDictionary() {
-        if (EVO.paletteOption == 7 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value) {
+        if (EVO.paletteOption == 7 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-None").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-FF").value & document.getElementById("my-Denied").value!= document.getElementById("my-None").value & document.getElementById("my-FF").value!= document.getElementById("my-Denied").value & document.getElementById("my-None").value!= document.getElementById("my-FF").value ){
             EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
                 "0011": document.getElementById("my-Satisfied").value,

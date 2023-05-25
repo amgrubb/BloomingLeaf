@@ -257,7 +257,7 @@ function displayPalette(palette_number ) {
         '</tbody>'+
         '</table>',
     550, 'alert', 'warning');
-   
+
     //updates the color key based on the chosen palette 
     if(palette_number<6){
         //pre-made palettes
@@ -298,6 +298,8 @@ $('#evo-color-key').on('click', function () {
         'onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
         '</button><button type="button" class="model-editing" ' +
         'onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
+        '</button><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(5)" style="width:100%">Color-Blind Palette' +
         '</button><button type="button" class="model-editing" ' +
         'onclick="displayPalette(6)" style="width:100%"> My Palette' +
         '</button></p>',
@@ -1016,8 +1018,10 @@ paper.on("link:options", function (cell) {
             //changes the color for fully satisfied and fully denied to what they were 
             document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
             document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
+            document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
+            document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
             //error messsage 
-            swal("Please make sure your satisfied and denied values are different",   "", "error")
+            swal("Please make sure your satisfied, denied, none, and FF values are different from one another",   "", "error")
             
         }
         else{
