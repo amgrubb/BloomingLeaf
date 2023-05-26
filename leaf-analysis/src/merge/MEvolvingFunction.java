@@ -30,20 +30,12 @@ public class MEvolvingFunction {
 		this.timing = timing;
 		
 		// build evolving functions for merged intention
-//		buildSegments();
-//	}
-//	private void buildSegments() {
 		if (MMain.DEBUG) System.out.println("Starting: buildSegments");
 
 		this.segments = new ArrayList<>();
 
 		char letter = '0';
 		for (int i = 0; i < timing.size()-1; i++) {
-			// Old code that doesn't include absolute time points.
-//			String startTime = timing.get(i);			
-//			String endTime = timing.get(i+1);
-//			segments.add(new MFunctionSegment(startTime, startTimes.get(startTime),
-//												 endTime, endTimes.get(endTime)));
 			char startTP = letter;
 			if (i == 0) 
 				letter = 'A';
@@ -89,17 +81,9 @@ public class MEvolvingFunction {
 		this.startTimes = new HashMap<>();
 		this.endTimes = new HashMap<>();
 		
-		// find evidence pair (or lack thereof) for every timepoint in timing
-//		buildTimeline();
-//	}
-//
-//	private void buildTimeline() {
 		if (MMain.DEBUG) System.out.println("Starting: buildTimeline");
-		// adjust timing list to contain numeric times
-//		cleanTiming();
 
 		// find evolving function's value at each point in the union of model timelines
-	
 		System.out.println(timing.toString());
 		// add evidence pair for every time in given timeline
 		for (String time: timing) {
@@ -264,18 +248,6 @@ public class MEvolvingFunction {
 	public List<MFunctionSegment> getSegments(){
 		return segments;
 	}
-	
-//	private List<String> getTiming(){
-//		return timing;
-//	}
-	
-//	public HashMap<String, String> getStartTimeline(){
-//		return startTimes;
-//	}
-	
-//	public HashMap<String, String> getEndTimeline(){
-//		return endTimes;
-//	}
 	
 	public String getStartingEvidencePair(String time) {
 		return startTimes.get(time);
