@@ -177,7 +177,6 @@ public class MMain {
 	 */
 	public static ModelSpec convertBackboneModelFromFile(String filePath) {
 		GsonBuilder builder = new GsonBuilder();
-		//builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
 
 		try {
 			Gson gson = builder.create();
