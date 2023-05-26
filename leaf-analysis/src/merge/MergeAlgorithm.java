@@ -1164,7 +1164,6 @@ public class MergeAlgorithm {
 				timeOrder.set(i, post);
 			}
 		}
-		//}
 		
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
