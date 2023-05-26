@@ -21,24 +21,13 @@ public class LMain {
 	public final static boolean DEBUG = true;
 
 	public static void main(String[] args) {
-//	    String inPath = "temp/";
-//	    String outPath = "temp/";
 		String inPath = "data/mergedModels/";
 		String outPath = "data/laidoutModels/";
 	    String tracePath = "";
-//	    String inputFile = "S7-out.json";
 	    String inputFile = "S6-out.json";
 	    String outputFile = "output.json";
 	
 	    try {			
-	        /*if (args.length == 6) {
-	            //inPath = args[1];
-	            //outPath = args[2];
-	            //tracePath = args[1];
-	            inputFile = args[1];
-	            outputFile = args[2];
-	        } else throw new IOException("Tool: Command Line Inputs Incorrect.");*/
-	        
 	        if (DEBUG) System.out.println("AutoLayout for: " + inputFile);
 	
 	        Gson gson = new Gson();

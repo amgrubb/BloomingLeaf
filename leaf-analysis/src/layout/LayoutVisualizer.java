@@ -27,7 +27,6 @@ public class LayoutVisualizer {
                 Color myNewGreen = new Color (122, 179, 89); 
                 Color myNewBlue = new Color (118, 148, 214);
                 Color myNewRed = new Color (240, 135, 146);
-                //Color myColor = new Color((float)(Math.random()), (float)(Math.random()), (float)(Math.random()));
                 
                 g.setColor(myNewGreen);//actors
        
