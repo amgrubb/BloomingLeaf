@@ -24,6 +24,7 @@ var displayValTwoFlipped;
 var minGap = 0;
 var sliderTrack;
 var sliderMaxValue;
+var sliderMinValue;
 var flipIntervalsCheckbox;
 
 function getValues() {
@@ -31,6 +32,7 @@ function getValues() {
     sliderTwo = document.getElementById("slider-2");
     sliderTrack = document.querySelector(".slider-track");
     sliderMaxValue = document.getElementById("slider-1").max;
+    sliderMinValue = document.getElementById("slider-1").min;
     flipIntervalsCheckbox = document.getElementById("intervals-flip-btn");
     
     displayValOne = document.getElementById("range1");
@@ -40,11 +42,19 @@ function getValues() {
 }
 
 function slideOne() {
+    var limit = 30 // hard coded - need to change
     getValues();
 
     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap){
         sliderOne.value = parseInt(sliderTwo.value) - minGap;
     }
+
+    if (limit != null) {
+        if (parseInt(sliderOne.value) > limit){
+            sliderOne.value = limit;
+        }
+    }
+
     displayValOne.textContent = sliderOne.value;
     displayValOneFlipped.textContent = sliderOne.value;
 
@@ -55,12 +65,20 @@ function slideOne() {
     }
 }
 
-function slideTwo() {
+function slideTwo(limit = null) {
+    var limit = 70; // hard coded - need to change
     getValues();
 
     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap){
         sliderTwo.value = parseInt(sliderOne.value) + minGap;
     }
+
+    if (limit != null) {
+        if (parseInt(sliderTwo.value) < limit){
+            sliderTwo.value = limit;
+        }
+    }
+
     displayValTwo.textContent = sliderTwo.value;
     displayValTwoFlipped.textContent = sliderTwo.value;
     document.getElementById("range2-flipped").textContent = sliderTwo.value;
@@ -76,8 +94,8 @@ function slideTwo() {
 function fillColor() {
     getValues();
 
-    percent1 = (sliderOne.value / sliderMaxValue) * 100;
-    percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+    percent1 = ((sliderOne.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
+    percent2 = ((sliderTwo.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
     sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #3264fe ${percent1}% , #3264fe ${percent2}%, #dadae5 ${percent2}%)`;
 
     document.getElementById("not-flipped").style.display = "block";
@@ -87,8 +105,8 @@ function fillColor() {
 function fillColorReverse() {
     getValues();
 
-    percent1 = (sliderOne.value / sliderMaxValue) * 100;
-    percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+    percent1 = ((sliderOne.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
+    percent2 = ((sliderTwo.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
     sliderTrack.style.background = `linear-gradient(to right, #3264fe ${percent1}% , #dadae5 ${percent1}% , #dadae5 ${percent2}%, #3264fe ${percent2}%)`;
 
     document.getElementById("not-flipped").style.display = "none";
