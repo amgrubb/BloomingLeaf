@@ -540,8 +540,6 @@ paper.on({
                     var actorInspector = new ActorInspector({ model: cell });
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
-                    actorInspector.updateTimePointsSet();
-                    actorInspector.render();
                     
                     // If user was dragging actor 
                     if (evt.data.move) {
