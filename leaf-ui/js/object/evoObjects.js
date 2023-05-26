@@ -97,15 +97,18 @@ class EVO {
 
     // Color Blind palette
     static colorVisDictColorBlind = {
-        "0000": "#FFFF00",
-        "0011": "#FF0000",
-        "0010": "#CCCCCC",
-        "0100": "#CCCCCC",
-        "0110": "#CCCCCC",
-        "0111": "#CCCCCC",
-        "1100": "#0000FF",
-        "1110": "#CCCCCC",
-        "1111": "#0D0221"
+     
+        "0000": "#CCCCCC", // None (⊥, ⊥)
+        "0011": "#0000FF", // Satisfied (F, ⊥)
+        "0010": "#0000FF", // Partially satisfied (P, ⊥)
+        "0100": "#FF0000", // Partially denied (⊥, P)
+        "0110": "#FFFF00", // Conflict (P, P)
+        "0111": "#FFFF00", // Conflict (F, P)
+        "1100": "#FF0000", // Fully denied (⊥, F)
+        "1110": "#FFFF00", // Conflict (P, F)
+        "1111": "#FFFF00"  // Conflict (F, F)
+
+        
     };
 
     //Initialize user-created-palette as Red-Blue
