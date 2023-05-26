@@ -42,17 +42,17 @@ function getValues() {
 }
 
 function slideOne() {
-    var limit = 30 // hard coded - need to change
     getValues();
+    if (document.getElementById("limit2")) {
+        var limit = document.getElementById("limit1").value;
+    }
 
     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap){
         sliderOne.value = parseInt(sliderTwo.value) - minGap;
     }
 
-    if (limit != null) {
-        if (parseInt(sliderOne.value) > limit){
-            sliderOne.value = limit;
-        }
+    if (parseInt(sliderOne.value) > limit){
+        sliderOne.value = limit;
     }
 
     displayValOne.textContent = sliderOne.value;
@@ -66,17 +66,17 @@ function slideOne() {
 }
 
 function slideTwo(limit = null) {
-    var limit = 70; // hard coded - need to change
     getValues();
+    if (document.getElementById("limit2")) {
+        var limit = document.getElementById("limit2").value;
+    }
 
     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap){
         sliderTwo.value = parseInt(sliderOne.value) + minGap;
     }
 
-    if (limit != null) {
-        if (parseInt(sliderTwo.value) < limit){
-            sliderTwo.value = limit;
-        }
+    if (parseInt(sliderTwo.value) < limit){
+        sliderTwo.value = limit;
     }
 
     displayValTwo.textContent = sliderTwo.value;
