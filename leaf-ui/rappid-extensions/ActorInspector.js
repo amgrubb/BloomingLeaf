@@ -161,12 +161,9 @@ var ActorInspector = Backbone.View.extend({
         var display = this.timePointListView();
         this.$('#max-time').append(display.el);
         display.render();
+        this.updateTimePointsSet();
+        display.render();
     },
-
-    updateTimePointMax: function() {
-        this.$('.slider-1').val(graph.get("maxAbsTime"));
-    },
-
     /**
      * This function updates the actor's intervals attribute.
      * @returns the intervals attribute from BIActor
