@@ -104,7 +104,7 @@ public class BICSPPath {
     	CSPIntentions.initializeEvolvingFunctionsForIntentions(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
     	CSPIntentions.initializeUserEvaluationsForIntentions(this.constraints, this.spec, this.values, 
-    			this.uniqueIDToValueIndex, this.timePoints); //, this.timePointMap, this.infinity);
+    			this.uniqueIDToValueIndex, this.timePoints);
     	CSPIntentions.addNBFunctions(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity, this.store);
     	CSPPath.createLTConstraintsBetweenTimePoint(this.constraints, this.spec, 
@@ -138,7 +138,7 @@ public class BICSPPath {
 	 */
 	private IntVar[] createPathVarList(){
 		// Add full path to variables.
-		int fullListSize = (this.numIntentions * this.numTimePoints * 4) + this.timePoints.length;// + this.epochs.length; 
+		int fullListSize = (this.numIntentions * this.numTimePoints * 4) + this.timePoints.length;
 		IntVar[] fullList = new IntVar[fullListSize];
 		int fullListIndex = 0;
 		for (int i = 0; i < this.values.length; i++)
@@ -253,7 +253,7 @@ public class BICSPPath {
         		System.out.print("\t");
     		}
     		String name = this.spec.getIntentionByUniqueID(this.valueIndexToUniqueID[i]).getName();
-    		System.out.println(name); // + "\t" + element.dynamicType.toString());
+    		System.out.println(name);
     	} 
 	}	
 	

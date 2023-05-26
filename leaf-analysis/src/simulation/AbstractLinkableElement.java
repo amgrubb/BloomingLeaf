@@ -1,6 +1,3 @@
-/**
- * 
- */
 package simulation;
 
 import merge.VisualInfo;

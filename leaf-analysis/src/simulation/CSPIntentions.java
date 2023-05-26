@@ -330,8 +330,7 @@ public class CSPIntentions {
 	public static void initializeUserEvaluationsForIntentions(
 			List<Constraint> constraints, ModelSpec spec,  
 			BooleanVar[][][] values, HashMap<String, Integer> uniqueIDToValueIndex,
-			IntVar[] timePoints) { //, HashMap<IntVar, List<String>> timePointMap,
-			//IntVar infinity) {
+			IntVar[] timePoints) {
 	
     	for (Intention element : spec.getIntentions()){
     		if (Main.DEBUG) System.out.println("User Evaluations for " + element.id);

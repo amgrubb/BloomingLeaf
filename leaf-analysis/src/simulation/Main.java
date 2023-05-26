@@ -48,8 +48,6 @@ public class Main {
 	    		break;
 	    	case "allNextStates":
 	    		IOSolution outputModelNext = BICSPState.solveModel(modelSpec);
-//				BICSPAlgorithm solverNext = new BICSPAlgorithm(modelSpec);	
-//				IOSolution outputModelNext = solverNext.solveModel();
 				createOutputFile(outputModelNext, filePath + outputFile);	
 	    		break;    		
 	    	default:
@@ -126,7 +124,6 @@ public class Main {
 	 */
 	private static ModelSpec convertBackboneModelFromFile(String filePath) {
 		GsonBuilder builder = new GsonBuilder();
-		//builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
 
 		try {
 			Gson gson = builder.create();

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package simulation;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -77,15 +74,11 @@ public class Actor extends AbstractLinkableElement {
 
 		List<Intention> listOfIntentions = new ArrayList<Intention>();
 		
-		//System.out.println(embeds.length);
-		//System.out.println(Arrays.toString(embeds));
-		
 		for(Intention intention: myModel.getIntentions()) {
 			for(int i = 0; i < embeds.length; i++) {
 				if(intention.getUniqueID().equals(embeds[i])) {	
 					intention.setActor(this);
 					listOfIntentions.add(intention);
-					//System.out.println(intention.getName());
 				}
 			}
 		}

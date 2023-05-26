@@ -19,7 +19,6 @@ public class ScalabilityTestGenerator {
 				String funcSegList[] = new String[numIntentions];
 				String initVal[] = new String[numIntentions];
 				for (int i = 0; i < numIntentions; i ++){
-					//if (i%15==4){
 					if (i>numIntentions*2/3){
 						Random random = new Random();
 						int newRandom = random.nextInt(9);
