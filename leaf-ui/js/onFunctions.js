@@ -583,9 +583,12 @@ paper.on({
                         if (overlapCells.length > 0) {
                             var actorCell = overlapCells[0].model;
                             actorCell.embed(cell);
+                            cell.attributes.intention.attributes.intervals[0] = [];
                         }
                     }
                     elementInspector.render();
+                    // elementInspector.updateTimePointsSet();
+                    // elementInspector.render();
                 }
             }
         }
