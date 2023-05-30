@@ -1469,10 +1469,14 @@ var IntervalsView = Backbone.View.extend({
                 
             }
         }
-        if (document.getElementById("slider-2").value == graph.get('maxAbsTime')) {
-            document.getElementById("range2").textContent = graph.get('maxAbsTime');
-            document.getElementById("flipped-max").textContent = graph.get('maxAbsTime');
+        if (document.getElementById("slider-2").value == graph.get("maxAbsTime")) {
+            document.getElementById("range2").textContent = graph.get("maxAbsTime");
+            document.getElementById("flipped-max").textContent = graph.get("maxAbsTime");
         }
+        if(graph.get('maxAbsTime') == document.getElementById("slider-1").value){
+            document.getElementById("range1").textContent = graph.get("maxAbsTime");
+        }
+
         return this;
     },
 
