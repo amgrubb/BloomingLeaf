@@ -174,7 +174,7 @@ var ActorInspector = Backbone.View.extend({
         var timePoints2 = parseInt(document.getElementById('slider-2').value); //gets slider-2 value
         var flipBool = document.getElementById('intervals-flip-btn').value; //gets the intervals-flip-btn value
         var intervals = this.actor.get('intervals');
-        // console.log(intervals);
+        console.log(intervals);
         if (flipBool == "true") { // If the slider is not flipped
             intervals.pop();
             timePointsArray.push(timePoints, timePoints2);
@@ -182,7 +182,7 @@ var ActorInspector = Backbone.View.extend({
                 intervals.pop();
             }
             intervals.push(timePointsArray);
-            // console.log(intervals);
+            console.log(intervals);
             return intervals ;
         }else{ // If the slider is flipped
             var reverseTimePointArray1 = [];
@@ -196,7 +196,7 @@ var ActorInspector = Backbone.View.extend({
             }
             intervals.push(reverseTimePointArray1);
             intervals.push(reverseTimePointArray2);
-            // console.log(intervals);
+            console.log(intervals);
             return intervals;
         }
     },

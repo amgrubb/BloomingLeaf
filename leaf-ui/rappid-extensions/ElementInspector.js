@@ -151,7 +151,6 @@ var ElementInspector = Backbone.View.extend({
         'clearInspector .inspector-views': 'removeView',
 
         'change #max-time': 'updateTimePointsSet',
-        'keyup #max-time': 'updateTimePointsSet',
         'click #intervals-flip-btn': 'updateTimePointsSet',
     },
 
@@ -802,7 +801,7 @@ var ElementInspector = Backbone.View.extend({
             timePointsArray.push(timePoints, timePoints2);
 
             this.intention.set('intervals', [timePointsArray]);
-            // console.log(this.intention.get('intervals'));
+            console.log(this.intention.get('intervals'));
         } else {
             var reverseTimePointArray1 = [];
             var reverseTimePointArray2 = [];
@@ -812,7 +811,7 @@ var ElementInspector = Backbone.View.extend({
             reverseTimePointArray2.push(timePoints2, timePointMax);
 
             this.intention.set('intervals', [reverseTimePointArray1, reverseTimePointArray2]);
-            // console.log(this.intention.get('intervals'));
+            console.log(this.intention.get('intervals'));
 
         }
     },

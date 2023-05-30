@@ -585,10 +585,8 @@ paper.on({
                         }
                     }
                     elementInspector.render();
-                    if (elementInspector.intention.attributes.intervals[0].length == 0) {
-                        console.log("here");
-                        elementInspector.updateTimePointsSet();
-                    }
+                    // elementInspector.updateTimePointsSet();
+                    // elementInspector.render();
                 }
             }
         }
