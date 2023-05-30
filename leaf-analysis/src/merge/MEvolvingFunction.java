@@ -88,7 +88,7 @@ public class MEvolvingFunction {
 		// add evidence pair for every time in given timeline
 		for (String time: timing) {
 			// model is stochastic (no value) outside its segments' domain
-			if (!withinTimeline(time)) {		//TODO: Redo this part!!
+			if (!withinTimeline(time)) {		//if time is not within timeline put no value for start and end time
 				startTimes.put(time, "(no value)");
 				endTimes.put(time, "(no value)");
 				
@@ -138,7 +138,7 @@ public class MEvolvingFunction {
 		return this.segments.get(0).getStartTime();
 	}
 	
-	private String getTimelineEnd() {			//TODO: What about Max time.
+	private String getTimelineEnd() {
 		// return last time in segments list
 		System.out.println(this.segments.get(this.segments.size()-1).getEndTime());
 		return this.segments.get(this.segments.size()-1).getEndTime();

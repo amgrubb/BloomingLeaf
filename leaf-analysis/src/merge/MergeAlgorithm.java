@@ -1055,7 +1055,7 @@ public class MergeAlgorithm {
 		// merge overlapping evolving functions
 
 		// set maxtime names
-		String maxTimeName1, maxTimeName2;		//TODO: The timing files is not actually taken into account here.
+		String maxTimeName1, maxTimeName2;
 		Boolean modelMaxTimesMatch = (maxTime1.equals(maxTime2));
 		// models end at same maxtime
 		if (modelMaxTimesMatch) {
@@ -1135,11 +1135,11 @@ public class MergeAlgorithm {
 
 		// replace maxtime names with maxtime ints in timeOrder
 		if (modelMaxTimesMatch) {
-			if (timeOrder.contains("AB-MaxTime")) {		// TODO: Timing file does not auto-populate AB-MaxTime.
+			if (timeOrder.contains("AB-MaxTime")) {
 				timeOrder.set(timeOrder.indexOf("AB-MaxTime"), maxTime1.toString());
 			}
 		} else {
-			if (timeOrder.contains("A-MaxTime")) {		// TODO: pretends to take into account max time.
+			if (timeOrder.contains("A-MaxTime")) {
 				timeOrder.set(timeOrder.indexOf("A-MaxTime"), maxTime1.toString());
 			}
 			if (timeOrder.contains("B-MaxTime")) {
