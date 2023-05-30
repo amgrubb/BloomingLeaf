@@ -56,19 +56,6 @@ class EVO {
         "1111": "#0D0221"  // Conflict (F, F)
     };
 
-    // Replaces all conflicting evals with dark grey
-    static colorVisDictColorBlind = {
-        "0000": "#D3D3D3",
-        "0011": "#003fff",
-        "0010": "#8FB8DE",
-        "0100": "#fbaca8",
-        "0110": "#333333",
-        "0111": "#333333",
-        "1100": "#FF2600",
-        "1110": "#333333",
-        "1111": "#333333"
-    };
-
     // The Red-Green Palette
     static colorVisDict2 = {
         "0000": "#bdaead",
@@ -106,6 +93,22 @@ class EVO {
         "1100": "#A020F0",
         "1110": "#5946b2",
         "1111": "#0D0221"
+    };
+
+    // Color Blind palette
+    static colorVisDictColorBlind = {
+     
+        "0000": "#CCCCCC", // None (⊥, ⊥)
+        "0011": "#0000FF", // Satisfied (F, ⊥)
+        "0010": "#0000FF", // Partially satisfied (P, ⊥)
+        "0100": "#FF0000", // Partially denied (⊥, P)
+        "0110": "#FFFF00", // Conflict (P, P)
+        "0111": "#FFFF00", // Conflict (F, P)
+        "1100": "#FF0000", // Fully denied (⊥, F)
+        "1110": "#FFFF00", // Conflict (P, F)
+        "1111": "#FFFF00"  // Conflict (F, F)
+
+        
     };
 
     //Initialize user-created-palette as Red-Blue
@@ -640,7 +643,7 @@ class EVO {
      * Fill in self-dictionary
      */
     static fillInDictionary() {
-        if (EVO.paletteOption == 7) {
+        if (EVO.paletteOption == 7 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-None").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-FF").value & document.getElementById("my-Denied").value!= document.getElementById("my-None").value & document.getElementById("my-FF").value!= document.getElementById("my-Denied").value & document.getElementById("my-None").value!= document.getElementById("my-FF").value ){
             EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
                 "0011": document.getElementById("my-Satisfied").value,
@@ -651,8 +654,12 @@ class EVO {
                 "1100": document.getElementById("my-Denied").value,
                 "1110": document.getElementById("my-PF").value,
                 "1111": document.getElementById("my-FF").value
-            }
-        }    
+            };
+            return true
+        } else{
+            return false  
+        }
+        
     }
 }
 
@@ -778,15 +785,6 @@ class EVONextState {
             return selfVis[intentionEval];
         }
 
-    }
-
-
-    /**
-     * Validates if the input colors are hexcolor
-     */
-    static validateColor(color) {
-        const COLOR_PATTERN = new RegExp("^(#[a-fA-F0-9]{6})$");
-        return COLOR_PATTERN.test(color);
     }
 
 
