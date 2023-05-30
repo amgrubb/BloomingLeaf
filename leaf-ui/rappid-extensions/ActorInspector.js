@@ -6,7 +6,7 @@ var ActorInspector = Backbone.View.extend({
     initialize: function () {
         this.actor = this.model.get('actor');
         if (!this.actor.get('intervals')[0]) {
-            this.actor.get('intervals').push([Math.round(0*graph.get("maxAbsTime")),Math.round(graph.get("maxAbsTime"))]);
+            this.actor.get('intervals').push([Math.round(.3*graph.get("maxAbsTime")),Math.round(.7*graph.get("maxAbsTime"))]);
         }
     },
 
@@ -278,28 +278,28 @@ var TimePointListView = Backbone.View.extend({
         '<div class="container">',
             '<div class="slider-track">',
             '</div>',
-            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(0*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
-            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
+            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.3*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
+            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(.7*graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
         '</div>',
         '<label for="range1">Available: ',
         '<div id="not-flipped">',
             '<span id="range1">',
-                '<%= Math.round(0*graph.get("maxAbsTime")) %>',
+                '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
             '</span>',
             '<span> &dash; </span>',
             '<span id="range2">',
-                '<%= Math.round(graph.get("maxAbsTime")) %>', 
+                '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
             '</span><br>',
         '</div>',
         '<div id="flipped" style="display:none">',
             '0',
             '<span> &dash; </span>',
             '<span id="range1-flipped">',
-                '<%= Math.round(0*graph.get("maxAbsTime")) %>',
+                '<%= Math.round(.3*graph.get("maxAbsTime")) %>',
             '</span>',
             ', ',
             '<span id="range2-flipped">',
-                '<%= Math.round(graph.get("maxAbsTime")) %>', 
+                '<%= Math.round(.7*graph.get("maxAbsTime")) %>', 
             '</span>',
             '<span> &dash; </span>',
             '<%= graph.get("maxAbsTime") %>',
