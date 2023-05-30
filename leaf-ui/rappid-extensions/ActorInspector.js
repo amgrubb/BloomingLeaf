@@ -309,9 +309,10 @@ var TimePointListView = Backbone.View.extend({
     ].join(''),
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
+        console.log(this.actor.attributes.intervals);
         if (this.actor.attributes.intervals[1]) {
             document.getElementById("intervals-flip-btn").value = "false";
-            document.getElementById("range1").textContent = this.actor.attributes.intervals[0];
+            document.getElementById("range1").textContent = this.actor.attributes.intervals[0][1];
             document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0][1];
             document.getElementById("slider-1").value = this.actor.attributes.intervals[0][1];
             document.getElementById("range2").textContent = this.actor.attributes.intervals[1][0];
