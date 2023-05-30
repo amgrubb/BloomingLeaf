@@ -311,7 +311,7 @@ var TimePointListView = Backbone.View.extend({
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
         if (this.actor.attributes.intervals[1]) {
             document.getElementById("intervals-flip-btn").value = "false";
-            document.getElementById("range1").textContent = this.actor.attributes.intervals[0];
+            document.getElementById("range1").textContent = this.actor.attributes.intervals[0][1];
             document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0][1];
             document.getElementById("slider-1").value = this.actor.attributes.intervals[0][1];
             document.getElementById("range2").textContent = this.actor.attributes.intervals[1][0];
@@ -319,11 +319,10 @@ var TimePointListView = Backbone.View.extend({
             document.getElementById("slider-2").value = this.actor.attributes.intervals[1][0];
             document.getElementById("not-flipped").style.display = "none";
             document.getElementById("flipped").style.display = "block";
-                
         } else {
             document.getElementById("range1").textContent = this.actor.attributes.intervals[0][0];
             document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0][0];
-            document.getElementById("slider-1").value = this.actor.attributes.intervals[0][0]; //:(((((
+            document.getElementById("slider-1").value = this.actor.attributes.intervals[0][0];
             document.getElementById("range2").textContent = this.actor.attributes.intervals[0][1];
             document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[0][1];
             document.getElementById("slider-2").value = this.actor.attributes.intervals[0][1];
