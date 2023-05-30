@@ -41,8 +41,8 @@ var ActorInspector = Backbone.View.extend({
         'keyup .cell-attrs-text': 'nameAction',
         'change #actor-type-ID': 'updateType',
         'change #actor-hidden' : 'updateHidden',
-        'change #max-time': 'updateTimePointsSet',
-        'click #intervals-flip-btn': 'updateTimePointsSet',
+        'change #max-time': 'updateEmbeds',
+        'click #intervals-flip-btn': 'flipEmbeds',
         'clearInspector .inspector-views': 'removeView'
     },
 
@@ -200,6 +200,71 @@ var ActorInspector = Backbone.View.extend({
             return intervals;
         }
     },
+
+    flipEmbeds: function() {
+        this.updateTimePointsSet();
+        if (this.model.attributes.embeds) {
+            var elements = graph.getElements();
+            console.log(elements);
+            var intentions = []
+            for (var i = 0; i < elements.length; i++) {
+                var cell = elements[i].findView(paper);
+                if (cell.model.attributes.type == "basic.Goal" || cell.model.attributes.type == "basic.Task" || cell.model.attributes.type == "basic.Resource" || cell.model.attributes.type == "basic.Softgoal") {
+                    intentions.push(cell);
+                }
+            }
+            console.log(intentions);
+            for (var i = 0; i < intentions.length; i++) {
+                for (var j = 0; j < this.model.attributes.embeds.length; j++) {
+                    if (this.model.attributes.embeds[j] == intentions[i].model.id) {
+                        intentions[i].model.attributes.intention.attributes.intervals = this.actor.attributes.intervals;
+                    }
+                }
+            }
+        }
+    },
+
+    updateEmbeds: function () {
+        this.updateTimePointsSet();
+        if (this.model.attributes.embeds) {
+            var elements = graph.getElements();
+            console.log(elements);
+            var intentions = []
+            for (var i = 0; i < elements.length; i++) {
+                var cell = elements[i].findView(paper);
+                if (cell.model.attributes.type == "basic.Goal" || cell.model.attributes.type == "basic.Task" || cell.model.attributes.type == "basic.Resource" || cell.model.attributes.type == "basic.Softgoal") {
+                    intentions.push(cell);
+                }
+            }
+            for (var i = 0; i < intentions.length; i++) {
+                for (var j = 0; j < this.model.attributes.embeds.length; j++) {
+                    if (this.model.attributes.embeds[j] == intentions[i].model.id) {
+                        if (intentions[i].model.attributes.intention.attributes.intervals[0][0] < this.actor.attributes.intervals[0][0]) {
+                            intentions[i].model.attributes.intention.attributes.intervals[0][0] = this.actor.attributes.intervals[0][0];
+                        }
+                        if (this.actor.attributes.intervals[1] && intentions[i].model.attributes.intention.attributes.intervals[1]) { // both are flipped
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals[0][1] = this.actor.attributes.intervals[0][1];
+                            }
+                            if (intentions[i].model.attributes.intention.attributes.intervals[1][0] < this.actor.attributes.intervals[1][0]) {
+                                intentions[i].model.attributes.intention.attributes.intervals[1][0] = this.actor.attributes.intervals[1][0];
+                            }
+                            console.log("actor",this.actor.attributes.intervals);
+                            console.log("intentions",intentions[i].model.attributes.intention.attributes.intervals);
+                        } else if (intentions[i].model.attributes.intention.attributes.intervals[1]) { // intention is flipped
+                            if (intentions[i].model.attributes.intention.attributes.intervals[1][1] > this.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals[1][1] = this.actor.attributes.intervals[0][1];
+                            }
+                        } else { // neither are flipped
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals[0][1] = this.actor.attributes.intervals[0][1];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 });
 
 var TimePointListView = Backbone.View.extend({

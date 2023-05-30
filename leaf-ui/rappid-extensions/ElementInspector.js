@@ -812,7 +812,6 @@ var ElementInspector = Backbone.View.extend({
 
             this.intention.set('intervals', [reverseTimePointArray1, reverseTimePointArray2]);
             console.log(this.intention.get('intervals'));
-
         }
     },
 
@@ -1422,8 +1421,27 @@ var IntervalsView = Backbone.View.extend({
         } else { // intention is either not within an actor or has not been moved within the actor
             if (this.intention.attributes.intervals[1]) { // intention is flipped
                 pt2 = this.intention.attributes.intervals[0][1];
-                pt3 = this.intention.attributes.intervals[1][0]
+                pt3 = this.intention.attributes.intervals[1][0];
 
+                if (this.actor) { // intention is within an actor
+                    document.getElementById("slider-1").min = this.actor.model.attributes.actor.attributes.intervals[0][0];
+                    document.getElementById("slider-2").min = this.actor.model.attributes.actor.attributes.intervals[0][0];
+                    document.getElementById("flipped-min").textContent = this.actor.model.attributes.actor.attributes.intervals[0][0];
+                    if (this.actor.model.attributes.actor.attributes.intervals[1]) { // actor is flipped
+                        document.getElementById("slider-1").max = this.actor.model.attributes.actor.attributes.intervals[1][1];
+                        document.getElementById("slider-2").max = this.actor.model.attributes.actor.attributes.intervals[1][1];
+                        document.getElementById("flipped-max").textContent = this.actor.model.attributes.actor.attributes.intervals[1][1];
+                        document.getElementById("limit1").value = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                        document.getElementById("limit2").value = this.actor.model.attributes.actor.attributes.intervals[1][0];
+                    } else { // actor is not flipped
+                        document.getElementById("slider-1").max = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                        document.getElementById("slider-2").max = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                        document.getElementById("flipped-max").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                    }
+                } else { // intention is not within an actor
+                    document.getElementById("slider-1").max = graph.get("maxAbsTime");
+                    document.getElementById("slider-2").max = graph.get("maxAbsTime");
+                }
                 document.getElementById("intervals-flip-btn").value = "false";
                 document.getElementById("range1").textContent = pt2;
                 document.getElementById("range1-flipped").textContent = pt2;
@@ -1436,6 +1454,16 @@ var IntervalsView = Backbone.View.extend({
             } else { // intention is not flipped
                 pt1 = this.intention.attributes.intervals[0][0];
                 pt2 = this.intention.attributes.intervals[0][1];
+
+                if (this.actor) { // intention is within an actor
+                    document.getElementById("slider-1").min = this.actor.model.attributes.actor.attributes.intervals[0][0];
+                    document.getElementById("slider-2").min = this.actor.model.attributes.actor.attributes.intervals[0][0];
+                    document.getElementById("slider-1").max = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                    document.getElementById("slider-2").max = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                } else { // intention is not within an actor
+                    document.getElementById("slider-1").max = graph.get("maxAbsTime");
+                    document.getElementById("slider-2").max = graph.get("maxAbsTime");
+                }
                 document.getElementById("range1").textContent = pt1;
                 document.getElementById("range1-flipped").textContent = pt1;
                 document.getElementById("slider-1").value = pt1;
