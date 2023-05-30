@@ -1466,6 +1466,7 @@ var IntervalsView = Backbone.View.extend({
                 document.getElementById("range2").textContent = pt2;
                 document.getElementById("range2-flipped").textContent = pt2;
                 document.getElementById("slider-2").value = pt2;
+                
             }
         }
         return this;
