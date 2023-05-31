@@ -21,6 +21,7 @@ class SliderObj {
     constructor() {
         this.sliderElement = document.getElementById('slider');
         this.sliderValueElement = document.getElementById('sliderValue');
+        this.storedValue = null;
     }
 
 
@@ -85,7 +86,7 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
-
+            
             // Initialize an empty array for elements sat vals ex: 0111, 1100, 1110, 0110
             var SatList = [];
 
@@ -108,15 +109,26 @@ class SliderObj {
             //         SliderObj.hideElements(false, SatList);
             //     }
             // }
-
-            var t = parseInt(values[handle])%2;
-            if (t == 0) {
+            
+            console.log(SliderObj.storedValue);
+            
+            
+            //var t = parseInt(values[handle])%2;
+            //if (t == 0) {
+            const intervals = SliderObj.hideElements(false, SatList);
+            console.log(intervals);
+            console.log(intervals[0][0]);
+            console.log(intervals[0][1]);
+            // }
+            // else {
+            //     const intervals = SliderObj.hideElements(false, SatList);
+            //     console.log(intervals);
+            // }   
+            
+            if(intervals[0][0] > SliderObj.storedValue || intervals[0][1] < SliderObj.storedValue) {
                 SliderObj.hideElements(true, SatList);
             }
-            else {
-                SliderObj.hideElements(false, SatList);
-            }
-
+ 
 
         });
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
@@ -169,6 +181,9 @@ class SliderObj {
         $('#slider').width(new_width);
     }
 
+    // let sliderValue;
+    // console.log(sliderValue);
+
     /**
      * Updates the slider values at the bottom left hand side of the paper,
      * to represent the current slider's position.
@@ -181,16 +196,19 @@ class SliderObj {
      */
     static updateSliderValues(sliderValue, currentAnalysis) {
         currentAnalysis.set('selectedTimePoint', sliderValue);
-
         $('#sliderValue').text(sliderValue);
         var tpPath = currentAnalysis.get('timePointPath');
+        console.log(tpPath);
         currentAnalysis.get('slider').sliderValueElement.innerHTML = sliderValue + "|" + tpPath[sliderValue];
+        console.log(tpPath[sliderValue]);
+        this.storedValue = tpPath[sliderValue];
         // Update the analysisRequest current state.
         //analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;   //TODO: Perhalps this should be part of the call to simulate.
 
         currentAnalysis.get('elementList').forEach(element =>
             SliderObj.updateNodeValues(element, sliderValue));   
         EVO.setCurTimePoint(sliderValue, currentAnalysis);
+    
     }
 
     /**
@@ -353,6 +371,8 @@ class SliderObj {
             if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == actor_j_id) {
                 actor_full_j_id += cells[i].id;
                 console.log(actor_full_j_id);
+                var intervals = cells[i].model.attributes.actor.attributes.intervals;
+                console.log(intervals);
             }
         }
         if (bool) {
@@ -361,6 +381,7 @@ class SliderObj {
         else {
             $(actor_full_j_id).css("display", "");
         }
+        return intervals;
     }
 
     /**
@@ -380,7 +401,7 @@ class SliderObj {
 
         // TODO: target_actor is hardcoded as j_10 in merge1.json model for now. 
         // Will need to replce the hard code later.
-        var target_actor_j_id = "j_10"
+        var target_actor_j_id = "j_11"
 
         var cells = SliderObj.getIntentionsAndActorsView();
         console.log("Cells: ");
@@ -395,7 +416,8 @@ class SliderObj {
         console.log(firstActorEmbeds);
 
         // Call helper functions to hide embedded elements, links, and the actor itself
-        SliderObj.hideActor(cells, bool, target_actor_j_id);
+        const intervals = SliderObj.hideActor(cells, bool, target_actor_j_id);
+        console.log(intervals);
         SliderObj.hideConflictingSatVals(SatList);
         if ($("#" + target_actor_j_id).css("display") == "none") {
             SliderObj.hideEmbeddedElements(cells, firstActorEmbeds, bool);
@@ -403,6 +425,7 @@ class SliderObj {
         } else {
             SliderObj.hideConflictingSatVals(SatList);
         }
+        return intervals;
     }
 
     /**
