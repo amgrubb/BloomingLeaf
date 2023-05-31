@@ -265,6 +265,9 @@ class SliderObj {
             if (cells[i].id == actor_j_id && cells[i].model.attributes.type == 'basic.Actor') {
                 return cells[i].model.attributes.embeds;
             }
+            if (cells[i].id == actor_j_id && cells[i].model.attributes.type == 'basic.Goal') {
+                return cells[i].model.attributes.embeds;
+            }
         }
     }
 
@@ -385,6 +388,34 @@ class SliderObj {
     }
 
     /**
+     * Hides/Displays a specific actor
+     * @param {} cells
+     *  List of all cells (intentions and actors) in the current model
+     * @param {Boolean} bool
+     *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
+     * @param {String} actor_j_id
+     *  j_id of the target actor, without the "#"
+     */
+    static hideIntention(cells, bool, actor_j_id) {
+        var actor_full_j_id = "#";
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].model.attributes.type == 'basic.Goal' && cells[i].id == actor_j_id) {
+                actor_full_j_id += cells[i].id;
+                console.log(actor_full_j_id);
+                var intervals = cells[i].model.attributes.intention.attributes.intervals;
+                console.log(intervals);
+            }
+        }
+        if (bool) {
+            $(actor_full_j_id).css("display", "none");
+        }
+        else {
+            $(actor_full_j_id).css("display", "");
+        }
+        return intervals;
+    }
+
+    /**
      * Makes actors, intentions and links dissapear
      * @param {Boolean} bool
      *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
@@ -402,6 +433,7 @@ class SliderObj {
         // TODO: target_actor is hardcoded as j_10 in merge1.json model for now. 
         // Will need to replce the hard code later.
         var target_actor_j_id = "j_11"
+        var target_intention_j_id = "j_6"
 
         var cells = SliderObj.getIntentionsAndActorsView();
         console.log("Cells: ");
@@ -415,15 +447,28 @@ class SliderObj {
         console.log("First actor's embeds: ");
         console.log(firstActorEmbeds);
 
+        var firstIntentionEmbeds = SliderObj.getEmbeddedElements(target_intention_j_id);
+        console.log("First intention's embeds: ");
+        console.log(firstIntentionEmbeds);
+
         // Call helper functions to hide embedded elements, links, and the actor itself
-        const intervals = SliderObj.hideActor(cells, bool, target_actor_j_id);
+        //const intervals = SliderObj.hideActor(cells, bool, target_actor_j_id);
+        //console.log(intervals);
+
+        // Call helper functions to hide embedded elements, links, and the actor itself
+        const intervals = SliderObj.hideIntention(cells, bool, target_intention_j_id);
         console.log(intervals);
-        SliderObj.hideConflictingSatVals(SatList);
+
+        if ($("#" + target_intention_j_id).css("display") == "none") {
+            SliderObj.hideLinks(links, firstIntentionEmbeds, bool);
+        }
+
+        //SliderObj.hideConflictingSatVals(SatList);
         if ($("#" + target_actor_j_id).css("display") == "none") {
             SliderObj.hideEmbeddedElements(cells, firstActorEmbeds, bool);
             SliderObj.hideLinks(links, firstActorEmbeds, bool);
         } else {
-            SliderObj.hideConflictingSatVals(SatList);
+            //SliderObj.hideConflictingSatVals(SatList);
         }
         return intervals;
     }
