@@ -241,6 +241,34 @@ class SliderObj {
     }
 
     /**
+     * Returns the list of j_ids of all actors in the current model
+     */
+    static getActorsView(){
+        var actorsView = [];
+        var cells = SliderObj.getIntentionsAndActorsView();
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].model.attributes.type == 'basic.Actor') {
+                actorsView.push(cells[i]);//.model.attributes.embeds
+            }
+        }
+        return actorsView;
+    }
+
+    /**
+     * Returns the list of j_ids of all intentions in the current model
+     */
+    static getIntentionsView(){
+        var intentionsView = [];
+        var cells = SliderObj.getIntentionsAndActorsView();
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].model.attributes.type != 'basic.Actor') {
+                intentionsView.push(cells[i]);
+            }
+        }
+        return intentionsView;
+    }
+
+    /**
      * Returns the list of j_ids of all links in the current model
      */
     static getLinksView() {
@@ -455,6 +483,18 @@ class SliderObj {
         console.log("Cells: ");
         console.log(cells);
 
+        var actors = SliderObj.getActorsView();
+        console.log("Model's actors: ");
+        console.log(actors);
+        for (var i = 0; i < actors.length; i++) {
+            console.log((i+1) +"th actor's embeds: ");
+            console.log(SliderObj.getEmbeddedElements(actors[i].id));
+        }
+
+        var intentions = SliderObj.getIntentionsView();
+        console.log("Model's intenions: ");
+        console.log(intentions);
+        
         var links = SliderObj.getLinksView();
         console.log("Model's links: ");
         console.log(links);
@@ -463,14 +503,12 @@ class SliderObj {
         console.log("First actor's embeds: ");
         console.log(firstActorEmbeds);
 
-        var firstIntentionEmbeds = SliderObj.getEmbeddedElements(target_intention_j_id);
-        console.log("First intention's embeds: ");
-        console.log(firstIntentionEmbeds);
-
-        // Call helper functions to hide embedded elements, links, and the actor itself
+        //TODO: replace hardcoded target_actor_j_id with intentions list
+        //Call helper functions to hide embedded elements, links, and the actor itself
         //const intervals = SliderObj.hideActor(cells, bool, target_actor_j_id);
         //console.log(intervals);
 
+        //TODO: replace hardcoded target_intention_j_id with intentions list
         // Call helper functions to hide embedded elements, links, and the actor itself
         const intervals = SliderObj.hideIntention(cells, bool, target_intention_j_id, links);
         console.log(intervals);
