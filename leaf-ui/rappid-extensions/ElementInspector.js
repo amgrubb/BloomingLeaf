@@ -820,7 +820,7 @@ var ElementInspector = Backbone.View.extend({
             if (this.findActor()) {
                 this.intention.get('intervals').push(this.findActor().model.attributes.actor.attributes.intervals);
             } else {
-                this.intention.get('intervals').push([Math.round(.3*graph.get("maxAbsTime")),Math.round(.7*graph.get("maxAbsTime"))]);
+                this.intention.get('intervals').push([Math.round(0*graph.get("maxAbsTime")),Math.round(graph.get("maxAbsTime"))]);
             }
         }
     }
