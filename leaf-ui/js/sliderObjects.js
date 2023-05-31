@@ -117,16 +117,22 @@ class SliderObj {
             //if (t == 0) {
             const intervals = SliderObj.hideElements(false, SatList);
             console.log(intervals);
-            console.log(intervals[0][0]);
-            console.log(intervals[0][1]);
+            console.log(intervals[0]);
+            console.log(intervals[1]);
             // }
             // else {
             //     const intervals = SliderObj.hideElements(false, SatList);
             //     console.log(intervals);
             // }   
             
-            if(intervals[0][0] > SliderObj.storedValue || intervals[0][1] < SliderObj.storedValue) {
-                SliderObj.hideElements(true, SatList);
+            if (intervals[3]=="false") { // flipped
+                if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
+                    SliderObj.hideElements(true, SatList);
+                }
+            } else { // not flipped
+                if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
+                    SliderObj.hideElements(true, SatList);
+                }
             }
  
 
@@ -362,12 +368,13 @@ class SliderObj {
      *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
      */
     static hideLinks(links, embeds, bool) {
-        var linksToHide = []
-        for (var i = 0; i < links.length; i++) {
-            if (embeds.includes(links[i].model.attributes.source.id) || embeds.includes(links[i].model.attributes.target.id))  {
-                linksToHide.push(links[i].id);
-            }
-        }
+        var linksToHide = embeds;
+        // var linksToHide = []
+        // for (var i = 0; i < links.length; i++) {
+        //     if (embeds.includes(links[i].model.attributes.source.id) || embeds.includes(links[i].model.attributes.target.id))  {
+        //         linksToHide.push(links[i].id);
+        //     }
+        // }
 
         // Convert into valid j_ids
         for (var i = 0; i < linksToHide.length; i++) {
@@ -444,17 +451,15 @@ class SliderObj {
             $(intention_full_j_id).css("display", "");
         }
 
-        var linksToHide = [];
+        // var linksToHide = [];
       
-        for (var i = 0; i < links.length; i++) {
-            for (var j = 0; j < cells.length; j++) {
-                if(intention_id == links[i].model.attributes.source.id || intention_id == links[i].model.attributes.target.id){
-                    linksToHide.push(links[i].id);
-                }
-            }
-        }
+        // for (var i = 0; i < links.length; i++) {
+        //     if(intention_id == links[i].model.attributes.source.id || intention_id == links[i].model.attributes.target.id){
+        //         linksToHide.push(links[i].id);
+        //     }
+        // }
 
-        console.log(linksToHide);
+        // console.log(linksToHide);
 
         return intervals;
     }
@@ -482,7 +487,6 @@ class SliderObj {
         var cells = SliderObj.getIntentionsAndActorsView();
         console.log("Cells: ");
         console.log(cells);
-
         var actors = SliderObj.getActorsView();
         console.log("Model's actors: ");
         console.log(actors);
@@ -503,8 +507,12 @@ class SliderObj {
         console.log("First actor's embeds: ");
         console.log(firstActorEmbeds);
 
+        var firstIntentionLinks = SliderObj.getIntentionLinks(target_intention_j_id);
+        console.log("First intention's embeds: ");
+        console.log(firstIntentionLinks);
+
         //TODO: replace hardcoded target_actor_j_id with intentions list
-        //Call helper functions to hide embedded elements, links, and the actor itself
+        // Call helper functions to hide embedded elements, links, and the actor itself
         //const intervals = SliderObj.hideActor(cells, bool, target_actor_j_id);
         //console.log(intervals);
 
@@ -514,7 +522,9 @@ class SliderObj {
         console.log(intervals);
 
         if ($("#" + target_intention_j_id).css("display") == "none") {
-            //SliderObj.hideLinks(links, firstIntentionEmbeds, bool);
+            SliderObj.hideLinks(links, firstIntentionLinks, true);
+        } else {
+            SliderObj.hideLinks(links, firstIntentionLinks, false);
         }
 
         //SliderObj.hideConflictingSatVals(SatList);
@@ -579,5 +589,27 @@ class SliderObj {
             }    
         }
     }    
+
+    static getIntentionLinks(intention_j_id) {
+        var cells = SliderObj.getIntentionsAndActorsView();
+        var links = SliderObj.getLinksView();
+        var intention_id = null;
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].model.attributes.type == 'basic.Goal' && cells[i].id == intention_j_id) {
+                intention_id = cells[i].model.attributes.id; //model id
+            }
+        }
+
+        var linksToHide = [];
+      
+        for (var i = 0; i < links.length; i++) {
+            if(intention_id == links[i].model.attributes.source.id || intention_id == links[i].model.attributes.target.id){
+                linksToHide.push(links[i].id);
+            }
+        }
+
+        console.log(linksToHide);
+        return linksToHide;
+    }
 }
 // End of sliderObj scope
