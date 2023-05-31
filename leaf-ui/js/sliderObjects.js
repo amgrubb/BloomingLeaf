@@ -265,9 +265,9 @@ class SliderObj {
             if (cells[i].id == actor_j_id && cells[i].model.attributes.type == 'basic.Actor') {
                 return cells[i].model.attributes.embeds;
             }
-            if (cells[i].id == actor_j_id && cells[i].model.attributes.type == 'basic.Goal') {
-                return cells[i].model.attributes.embeds;
-            }
+            // if (cells[i].id == actor_j_id && cells[i].model.attributes.type == 'basic.Goal') {
+            //     return cells[i].model.attributes.embeds;
+            // }
         }
     }
 
@@ -388,30 +388,46 @@ class SliderObj {
     }
 
     /**
-     * Hides/Displays a specific actor
+     * Hides/Displays a specific intention
      * @param {} cells
      *  List of all cells (intentions and actors) in the current model
      * @param {Boolean} bool
      *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
-     * @param {String} actor_j_id
-     *  j_id of the target actor, without the "#"
+     * @param {String} intention_j_id
+     *  j_id of the target intention, without the "#"
      */
-    static hideIntention(cells, bool, actor_j_id) {
-        var actor_full_j_id = "#";
+    static hideIntention(cells, bool, intention_j_id, links) {
+        var intention_full_j_id = "#";
+        var intention_id = null;
         for (var i = 0; i < cells.length; i++) {
-            if (cells[i].model.attributes.type == 'basic.Goal' && cells[i].id == actor_j_id) {
-                actor_full_j_id += cells[i].id;
-                console.log(actor_full_j_id);
+            if (cells[i].model.attributes.type == 'basic.Goal' && cells[i].id == intention_j_id) {
+                intention_full_j_id += cells[i].id;
+                console.log(cells[i].model.attributes.id);
+                intention_id = cells[i].model.attributes.id; //model id
+                console.log(intention_full_j_id);
                 var intervals = cells[i].model.attributes.intention.attributes.intervals;
                 console.log(intervals);
             }
         }
         if (bool) {
-            $(actor_full_j_id).css("display", "none");
+            $(intention_full_j_id).css("display", "none");
         }
         else {
-            $(actor_full_j_id).css("display", "");
+            $(intention_full_j_id).css("display", "");
         }
+
+        var linksToHide = [];
+      
+        for (var i = 0; i < links.length; i++) {
+            for (var j = 0; j < cells.length; j++) {
+                if(intention_id == links[i].model.attributes.source.id || intention_id == links[i].model.attributes.target.id){
+                    linksToHide.push(links[i].id);
+                }
+            }
+        }
+
+        console.log(linksToHide);
+
         return intervals;
     }
 
@@ -456,20 +472,21 @@ class SliderObj {
         //console.log(intervals);
 
         // Call helper functions to hide embedded elements, links, and the actor itself
-        const intervals = SliderObj.hideIntention(cells, bool, target_intention_j_id);
+        const intervals = SliderObj.hideIntention(cells, bool, target_intention_j_id, links);
         console.log(intervals);
 
         if ($("#" + target_intention_j_id).css("display") == "none") {
-            SliderObj.hideLinks(links, firstIntentionEmbeds, bool);
+            //SliderObj.hideLinks(links, firstIntentionEmbeds, bool);
         }
 
         //SliderObj.hideConflictingSatVals(SatList);
-        if ($("#" + target_actor_j_id).css("display") == "none") {
-            SliderObj.hideEmbeddedElements(cells, firstActorEmbeds, bool);
-            SliderObj.hideLinks(links, firstActorEmbeds, bool);
-        } else {
-            //SliderObj.hideConflictingSatVals(SatList);
-        }
+        // if ($("#" + target_actor_j_id).css("display") == "none") {
+        //     SliderObj.hideEmbeddedElements(cells, firstActorEmbeds, bool);
+        //     SliderObj.hideLinks(links, firstActorEmbeds, bool);
+        // } else {
+        //     //SliderObj.hideConflictingSatVals(SatList);
+        // }
+
         return intervals;
     }
 
