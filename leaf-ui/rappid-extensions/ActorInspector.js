@@ -5,10 +5,6 @@ var ActorInspector = Backbone.View.extend({
 
     initialize: function () {
         this.actor = this.model.get('actor');
-        if (this.actor.get('intervals').length == 0) {
-            console.log("resetting");
-            this.actor.set('intervals', [0,graph.get("maxAbsTime"),"true"]);
-        }
         console.log(this.actor);
     },
 
@@ -177,7 +173,7 @@ var ActorInspector = Backbone.View.extend({
         timePointsArray.push(timePoints, timePoints2, flipBool);
 
         this.actor.set('intervals', timePointsArray);
-        
+        // use this.actor.set('intervals', []) ??
         console.log(this.actor.get('intervals'));
     },
 
@@ -258,13 +254,13 @@ var TimePointListView = Backbone.View.extend({
         '<div class="container">',
             '<div class="slider-track">',
             '</div>',
-            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(0*graph.get("maxAbsTime")) %>", id="slider-1" oninput="slideOne()">',
-            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(graph.get("maxAbsTime")) %>", id="slider-2" oninput="slideTwo()">',
+            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="0", id="slider-1" oninput="slideOne()">',
+            '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="<%= Math.round(graph.get("maxAbsTime"))%>", id="slider-2" oninput="slideTwo()">',
         '</div>',
         '<label for="range1">Available: ',
         '<div id="not-flipped">',
             '<span id="range1">',
-                '<%= Math.round(0*graph.get("maxAbsTime")) %>',
+                '0',
             '</span>',
             '<span> &dash; </span>',
             '<span id="range2">',
@@ -275,7 +271,7 @@ var TimePointListView = Backbone.View.extend({
             '0',
             '<span> &dash; </span>',
             '<span id="range1-flipped">',
-                '<%= Math.round(0*graph.get("maxAbsTime")) %>',
+                '0',
             '</span>',
             ', ',
             '<span id="range2-flipped">',
@@ -290,25 +286,25 @@ var TimePointListView = Backbone.View.extend({
     render: function () {
         console.log("abt to render",this.actor.attributes.intervals);
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
-        if (this.actor.attributes.intervals[2] == "false") { // flipped
-            document.getElementById("intervals-flip-btn").value = "false";
-            document.getElementById("range1").textContent = this.actor.attributes.intervals[0];
-            console.log("here")
-            document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0];
-            document.getElementById("slider-1").value = this.actor.attributes.intervals[0];
-            document.getElementById("range2").textContent = this.actor.attributes.intervals[1];
-            document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[1];
-            document.getElementById("slider-2").value = this.actor.attributes.intervals[1];
-            document.getElementById("not-flipped").style.display = "none";
-            document.getElementById("flipped").style.display = "block";
-        } else { // not flipped
-            console.log("here2");
-            document.getElementById("range1").textContent = this.actor.attributes.intervals[0];
-            document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0];
-            document.getElementById("slider-1").value = this.actor.attributes.intervals[0];
-            document.getElementById("range2").textContent = this.actor.attributes.intervals[1];
-            document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[1];
-            document.getElementById("slider-2").value = this.actor.attributes.intervals[1];
+        if(this.actor.attributes.intervals.length != 0){ // if the interval is not empty (for which it will default to the values set in the html)
+            if (this.actor.attributes.intervals[2] == "false") { // flipped
+                document.getElementById("intervals-flip-btn").value = "false";
+                document.getElementById("range1").textContent = this.actor.attributes.intervals[0];
+                document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0];
+                document.getElementById("slider-1").value = this.actor.attributes.intervals[0];
+                document.getElementById("range2").textContent = this.actor.attributes.intervals[1];
+                document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[1];
+                document.getElementById("slider-2").value = this.actor.attributes.intervals[1];
+                document.getElementById("not-flipped").style.display = "none";
+                document.getElementById("flipped").style.display = "block";
+            } else { // not flipped
+                document.getElementById("range1").textContent = this.actor.attributes.intervals[0];
+                document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0];
+                document.getElementById("slider-1").value = this.actor.attributes.intervals[0];
+                document.getElementById("range2").textContent = this.actor.attributes.intervals[1];
+                document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[1];
+                document.getElementById("slider-2").value = this.actor.attributes.intervals[1];
+            }
         }
         return this;
     },
