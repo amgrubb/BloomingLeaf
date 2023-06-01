@@ -149,9 +149,7 @@ public class LayoutAlgorithm {
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
 			if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
-            
-            double x_sum = 0;
-            double y_sum = 0;
+
 
             for(int j = 0; j < nodePositions.length; j++){
             	if (LMain.DEBUG) System.out.println(j + "th Node\n");
@@ -160,13 +158,11 @@ public class LayoutAlgorithm {
                     //TODO: Force constants, sizes? How to know...
                     if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
 
-                    double dist = getDist(nodePositions[j], nodePositions[k]);
                     double theta = angleBetween(nodePositions[k], nodePositions[j]);
 
                     //calculate attraction and repulsion force
                     double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
                     double repulsion = getRepulsion(nodePositions[j], nodePositions[k], constant);
-
 
                     //decompose attraction and repulsion, scale forces
                     double x_shift = c * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
