@@ -165,15 +165,31 @@ var ActorInspector = Backbone.View.extend({
      * @returns the intervals attribute from BIActor
      */
     updateTimePointsSet: function () {
+        var minRange = parseInt(document.getElementById('slider-1').min);
+        var maxRange = parseInt(document.getElementById('slider-1').max);  
         var timePoints = parseInt(document.getElementById('slider-1').value);
         var timePoints2 = parseInt(document.getElementById('slider-2').value);
         var flipBool = document.getElementById('intervals-flip-btn').value;
 
         var timePointsArray = [];
-        timePointsArray.push(timePoints, timePoints2, flipBool);
+        if (flipBool == "true") { // not flipped
+            if (timePoints != minRange) { // first slider is moved
+                timePointsArray.push([minRange, timePoints - 1]);
+            }
+            if (timePoints2 != maxRange) { // second slider is moved
+                timePointsArray.push([timePoints2 + 1, maxRange]);
+            }
+        } else { // flipped
+            if (timePoints != minRange) { 
+                timePoints += 1;
+            }
+            if (timePoints2 != maxRange) {
+                timePoints2 -= 1;
+            }
+            timePointsArray.push([timePoints, timePoints2]);
+        }
 
         this.actor.set('intervals', timePointsArray);
-        // use this.actor.set('intervals', []) ??
         console.log(this.actor.get('intervals'));
     },
 
@@ -215,9 +231,9 @@ var ActorInspector = Backbone.View.extend({
             for (var i = 0; i < intentions.length; i++) {
                 for (var j = 0; j < this.model.attributes.embeds.length; j++) {
                     if (this.model.attributes.embeds[j] == intentions[i].model.id) {
-                        if (intentions[i].model.attributes.intention.attributes.intervals[0][0] < this.actor.attributes.intervals[0][0]) {
-                            intentions[i].model.attributes.intention.attributes.intervals[0][0] = this.actor.attributes.intervals[0][0];
-                        }
+                        // if (intentions[i].model.attributes.intention.attributes.intervals[0] < this.actor.attributes.intervals[0]) {
+                        //     intentions[i].model.attributes.intention.attributes.intervals[0] = this.actor.attributes.intervals[0];
+                        // }
                         if (this.actor.attributes.intervals[1] && intentions[i].model.attributes.intention.attributes.intervals[1]) { // both are flipped
                             if (intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.actor.attributes.intervals[0][1]) {
                                 intentions[i].model.attributes.intention.attributes.intervals[0][1] = this.actor.attributes.intervals[0][1];
@@ -286,25 +302,38 @@ var TimePointListView = Backbone.View.extend({
     render: function () {
         console.log("abt to render",this.actor.attributes.intervals);
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
+
+        var intervals = this.actor.attributes.intervals;
+        var slider1 = document.getElementById('slider-1'); // left slider
+        var slider2 = document.getElementById('slider-2'); // right slider
+        var rangeMin = slider1.min;
+        var rangeMax = slider1.max;
+
         if(this.actor.attributes.intervals.length != 0){ // if the interval is not empty (for which it will default to the values set in the html)
-            if (this.actor.attributes.intervals[2] == "false") { // flipped
-                document.getElementById("intervals-flip-btn").value = "false";
-                document.getElementById("range1").textContent = this.actor.attributes.intervals[0];
-                document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0];
-                document.getElementById("slider-1").value = this.actor.attributes.intervals[0];
-                document.getElementById("range2").textContent = this.actor.attributes.intervals[1];
-                document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[1];
-                document.getElementById("slider-2").value = this.actor.attributes.intervals[1];
-                document.getElementById("not-flipped").style.display = "none";
-                document.getElementById("flipped").style.display = "block";
-            } else { // not flipped
-                document.getElementById("range1").textContent = this.actor.attributes.intervals[0];
-                document.getElementById("range1-flipped").textContent = this.actor.attributes.intervals[0];
-                document.getElementById("slider-1").value = this.actor.attributes.intervals[0];
-                document.getElementById("range2").textContent = this.actor.attributes.intervals[1];
-                document.getElementById("range2-flipped").textContent = this.actor.attributes.intervals[1];
-                document.getElementById("slider-2").value = this.actor.attributes.intervals[1];
+            
+            if(intervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
+                slider1.value = intervals[0][1] + 1;
+                slider2.value = intervals[1][0] - 1;
+            } else { // [slider1, slider2] (one exclusion interval)
+                 if(intervals[0][0] == rangeMin){ // slider1 is equal to rangeMin
+                    slider1.value = intervals[0][1] + 1;
+                    slider2.value = rangeMax;
+                 } else if(intervals[0][1] == rangeMax){ // slider2 is equal to rangeMax
+                    slider1.value = rangeMin;
+                    slider2.value = intervals[1][0] - 1;
+                 } else{ // from slider1 to slider2 is excluded
+                    document.getElementById('intervals-flip-btn').value = "false";
+                    slider1.value = intervals[0][0] - 1;
+                    slider2.value = intervals[0][1] + 1;
+                    document.getElementById('flipped').style.display = "";
+                    document.getElementById('not-flipped').style.display = "none";
+                 }
             }
+            document.getElementById('range1').textContent = slider1.value;
+            document.getElementById('range2').textContent = slider2.value;
+            document.getElementById('range1-flipped').textContent = slider1.value;
+            document.getElementById('range2-flipped').textContent = slider2.value;
+            
         }
         return this;
     },
