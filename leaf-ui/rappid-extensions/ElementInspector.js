@@ -796,33 +796,23 @@ var ElementInspector = Backbone.View.extend({
         var timePoints2 = parseInt(document.getElementById('slider-2').value);
         var flipBool = document.getElementById('intervals-flip-btn').value;
 
-        if (flipBool == "true") {
-            var timePointsArray = [];
-            timePointsArray.push(timePoints, timePoints2);
+        var timePointsArray = [];
+        timePointsArray.push(timePoints, timePoints2, flipBool);
 
-            this.intention.set('intervals', [timePointsArray]);
-            console.log(this.intention.get('intervals'));
-        } else {
-            var reverseTimePointArray1 = [];
-            var reverseTimePointArray2 = [];
-            var timePointMax = parseInt(document.getElementById('slider-1').max);
-            var timePointMin = parseInt(document.getElementById('slider-1').min);
-            reverseTimePointArray1.push(timePointMin, timePoints);
-            reverseTimePointArray2.push(timePoints2, timePointMax);
-
-            this.intention.set('intervals', [reverseTimePointArray1, reverseTimePointArray2]);
-            console.log(this.intention.get('intervals'));
-        }
+        this.intention.set('intervals', timePointsArray);
+        
+        console.log(this.intention.get('intervals'));
     },
 
     setInitialInterval: function() {
-        if (!this.intention.get('intervals')[0]) {
+        if (this.intention.get('intervals').length == 0) {
             if (this.findActor()) {
-                this.intention.get('intervals').push(this.findActor().model.attributes.actor.attributes.intervals);
+                this.intention.set('intervals', this.findActor().model.attributes.actor.attributes.intervals);
             } else {
-                this.intention.get('intervals').push([Math.round(0*graph.get("maxAbsTime")),Math.round(graph.get("maxAbsTime"))]);
+                this.intention.set('intervals', [0,graph.get("maxAbsTime"),"true"]);
             }
         }
+        console.log(this.intention.get('intervals'));
     }
 });
 
@@ -1376,13 +1366,12 @@ var IntervalsView = Backbone.View.extend({
         var pt3;
         var pt4;
 
-        if (this.actor && this.intention.attributes.intervals[0].length == 0) { // intention is dropped into an actor
-            if (this.actor.model.attributes.actor.attributes.intervals[1]) { // actor is flipped
-                pt1 = this.actor.model.attributes.actor.attributes.intervals[0][0];
-                pt2 = this.actor.model.attributes.actor.attributes.intervals[0][1];
-                pt3 = this.actor.model.attributes.actor.attributes.intervals[1][0];
-                pt4 = this.actor.model.attributes.actor.attributes.intervals[1][1];
-
+        if (this.actor && this.intention.attributes.intervals == []) { // intention is dropped into an actor
+            pt1 = 0;
+            pt2 = this.actor.model.attributes.actor.attributes.intervals[0];
+            pt3 = this.actor.model.attributes.actor.attributes.intervals[1];
+            pt4 = graph.get('maxAbsTime');
+            if (this.actor.model.attributes.actor.attributes.intervals[2] == "false") { // actor is flipped
                 document.getElementById("intervals-flip-btn").style.display = "none";
                 document.getElementById("intervals-flip-btn").value = "false";
                 document.getElementById("limit1").value = pt2;
@@ -1398,41 +1387,38 @@ var IntervalsView = Backbone.View.extend({
                 document.getElementById("not-flipped").style.display = "none";
                 document.getElementById("flipped").style.display = "block";
             } else { // actor is not flipped
-                pt1 = this.actor.model.attributes.actor.attributes.intervals[0][0];
-                pt2 = this.actor.model.attributes.actor.attributes.intervals[0][1];
-
-                document.getElementById("range1").textContent = pt1;
-                document.getElementById("range1-flipped").textContent = pt1;
-                document.getElementById("slider-1").value = pt1;
-                document.getElementById("range2").textContent = pt2;
-                document.getElementById("range2-flipped").textContent = pt2;
-                document.getElementById("slider-2").value = pt2; 
-                document.getElementById("slider-1").min = pt1;
-                document.getElementById("slider-1").max = pt2;
-                document.getElementById("slider-2").min = pt1;
-                document.getElementById("slider-2").max = pt2;
-                document.getElementById("flipped-min").textContent = pt1;
-                document.getElementById("flipped-max").textContent = pt2;
+                document.getElementById("range1").textContent = pt2;
+                document.getElementById("range1-flipped").textContent = pt2;
+                document.getElementById("slider-1").value = pt2;
+                document.getElementById("range2").textContent = pt3;
+                document.getElementById("range2-flipped").textContent = pt3;
+                document.getElementById("slider-2").value = pt3; 
+                document.getElementById("slider-1").min = pt2;
+                document.getElementById("slider-1").max = pt3;
+                document.getElementById("slider-2").min = pt2;
+                document.getElementById("slider-2").max = pt3;
+                document.getElementById("flipped-min").textContent = pt2;
+                document.getElementById("flipped-max").textContent = pt3;
             }
         } else { // intention is either not within an actor or has not been moved within the actor
-            if (this.intention.attributes.intervals[1]) { // intention is flipped
-                pt2 = this.intention.attributes.intervals[0][1];
-                pt3 = this.intention.attributes.intervals[1][0];
+            if (this.intention.attributes.intervals[2] == "false") { // intention is flipped
+                pt2 = this.intention.attributes.intervals[0];
+                pt3 = this.intention.attributes.intervals[1];
 
                 if (this.actor) { // intention is within an actor
-                    document.getElementById("slider-1").min = this.actor.model.attributes.actor.attributes.intervals[0][0];
-                    document.getElementById("slider-2").min = this.actor.model.attributes.actor.attributes.intervals[0][0];
-                    document.getElementById("flipped-min").textContent = this.actor.model.attributes.actor.attributes.intervals[0][0];
-                    if (this.actor.model.attributes.actor.attributes.intervals[1]) { // actor is flipped
-                        document.getElementById("slider-1").max = this.actor.model.attributes.actor.attributes.intervals[1][1];
-                        document.getElementById("slider-2").max = this.actor.model.attributes.actor.attributes.intervals[1][1];
-                        document.getElementById("flipped-max").textContent = this.actor.model.attributes.actor.attributes.intervals[1][1];
-                        document.getElementById("limit1").value = this.actor.model.attributes.actor.attributes.intervals[0][1];
-                        document.getElementById("limit2").value = this.actor.model.attributes.actor.attributes.intervals[1][0];
+                    document.getElementById("slider-1").min = this.actor.model.attributes.actor.attributes.intervals[0];
+                    document.getElementById("slider-2").min = this.actor.model.attributes.actor.attributes.intervals[0];
+                    document.getElementById("flipped-min").textContent = this.actor.model.attributes.actor.attributes.intervals[0];
+                    if (this.actor.model.attributes.actor.attributes.intervals[2] == "false") { // actor is flipped
+                        document.getElementById("slider-1").max = graph.get('maxAbsTime');
+                        document.getElementById("slider-2").max = graph.get('maxAbsTime');
+                        document.getElementById("flipped-max").textContent = graph.get('maxAbsTime');
+                        document.getElementById("limit1").value = this.actor.model.attributes.actor.attributes.intervals[0];
+                        document.getElementById("limit2").value = this.actor.model.attributes.actor.attributes.intervals[1];
                     } else { // actor is not flipped
-                        document.getElementById("slider-1").max = this.actor.model.attributes.actor.attributes.intervals[0][1];
-                        document.getElementById("slider-2").max = this.actor.model.attributes.actor.attributes.intervals[0][1];
-                        document.getElementById("flipped-max").textContent = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                        document.getElementById("slider-1").max = this.actor.model.attributes.actor.attributes.intervals[1];
+                        document.getElementById("slider-2").max = this.actor.model.attributes.actor.attributes.intervals[1];
+                        document.getElementById("flipped-max").textContent = this.actor.model.attributes.actor.attributes.intervals[1];
                     }
                 } else { // intention is not within an actor
                     document.getElementById("slider-1").max = graph.get("maxAbsTime");
@@ -1448,14 +1434,14 @@ var IntervalsView = Backbone.View.extend({
                 document.getElementById("not-flipped").style.display = "none";
                 document.getElementById("flipped").style.display = "block";
             } else { // intention is not flipped
-                pt1 = this.intention.attributes.intervals[0][0];
-                pt2 = this.intention.attributes.intervals[0][1];
+                pt1 = this.intention.attributes.intervals[0];
+                pt2 = this.intention.attributes.intervals[1];
 
                 if (this.actor) { // intention is within an actor
-                    document.getElementById("slider-1").min = this.actor.model.attributes.actor.attributes.intervals[0][0];
-                    document.getElementById("slider-2").min = this.actor.model.attributes.actor.attributes.intervals[0][0];
-                    document.getElementById("slider-1").max = this.actor.model.attributes.actor.attributes.intervals[0][1];
-                    document.getElementById("slider-2").max = this.actor.model.attributes.actor.attributes.intervals[0][1];
+                    document.getElementById("slider-1").min = this.actor.model.attributes.actor.attributes.intervals[0];
+                    document.getElementById("slider-2").min = this.actor.model.attributes.actor.attributes.intervals[0];
+                    document.getElementById("slider-1").max = this.actor.model.attributes.actor.attributes.intervals[1];
+                    document.getElementById("slider-2").max = this.actor.model.attributes.actor.attributes.intervals[1];
                 } else { // intention is not within an actor
                     document.getElementById("slider-1").max = graph.get("maxAbsTime");
                     document.getElementById("slider-2").max = graph.get("maxAbsTime");
