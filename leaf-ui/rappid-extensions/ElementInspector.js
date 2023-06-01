@@ -1385,8 +1385,38 @@ var IntervalsView = Backbone.View.extend({
         var intervals = this.intention.attributes.intervals;
         var slider1 = document.getElementById('slider-1'); // left slider
         var slider2 = document.getElementById('slider-2'); // right slider
+
         var rangeMin = slider1.min;
         var rangeMax = slider1.max;
+
+        if (this.actor) { // if intention is within an actor
+            var actorIntervals = this.actor.model.attributes.actor.attributes.intervals;
+            console.log(actorIntervals);
+            if (actorIntervals.length > 0) { // if actor is not always available
+                if (actorIntervals[1]){ // actor has two exclusion intervals
+                    rangeMin = actorIntervals[0][1] + 1;
+                    rangeMax = actorIntervals[1][0] - 1;
+                    slider1.value = rangeMin;
+                    slider2.value = rangeMax;
+                } else { // actor has one exclusion interval
+                    if (actorIntervals[0][0] == 0) { // [0-#] excluded
+                        rangeMin = actorIntervals[0][1] + 1;
+                        slider1.value = rangeMin;
+                    } else if (actorIntervals[0][1] == graph.get('maxAbsTime')) { // [#-max] excluded
+                        rangeMax = actorIntervals[0][0] - 1;
+                        slider2.value = rangeMax;
+                    } else { // [#-#] excluded
+                        document.getElementById('intervals-flip-btn').value = "false";
+                        slider1.value = actorIntervals[0][0] - 1;
+                        slider2.value = actorIntervals[0][1] + 1;
+                        document.getElementById('limit1').value = actorIntervals[0][0] - 1;
+                        document.getElementById('limit2').value = actorIntervals[0][1] + 1;
+                        document.getElementById('flipped').style.display = "";
+                        document.getElementById('not-flipped').style.display = "none";
+                    }
+                }
+            }
+        }
 
         console.log(this.intention);
 
@@ -1409,11 +1439,18 @@ var IntervalsView = Backbone.View.extend({
                     document.getElementById('not-flipped').style.display = "none";
                 }
             }
-            document.getElementById('range1').textContent = slider1.value;
-            document.getElementById('range2').textContent = slider2.value;
-            document.getElementById('range1-flipped').textContent = slider1.value;
-            document.getElementById('range2-flipped').textContent = slider2.value;
         }
+
+        document.getElementById('range1').textContent = slider1.value;
+        document.getElementById('range2').textContent = slider2.value;
+        document.getElementById('range1-flipped').textContent = slider1.value;
+        document.getElementById('range2-flipped').textContent = slider2.value;
+
+        console.log(rangeMin);
+        slider1.min = rangeMin;
+        slider2.min = rangeMin;
+        slider1.max = rangeMax;
+        slider2.max = rangeMax;
 
         return this;
     },
