@@ -117,23 +117,39 @@ class SliderObj {
             //if (t == 0) {
             const intervals = SliderObj.hideElements(false, SatList);
             console.log(intervals);
-            console.log(intervals[0]);
-            console.log(intervals[1]);
             // }
             // else {
             //     const intervals = SliderObj.hideElements(false, SatList);
             //     console.log(intervals);
             // }   
             
-            if (intervals[3]=="false") { // flipped
-                if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
+            console.log(intervals[0]);
+
+            if (intervals[0][2] == "false") { // flipped
+                if(intervals[0][0] < SliderObj.storedValue && intervals[0][1] > SliderObj.storedValue) {
                     SliderObj.hideElements(true, SatList);
-                }
+                } 
             } else { // not flipped
-                if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
+                if(intervals[0][0] > SliderObj.storedValue || intervals[0][1] < SliderObj.storedValue) {
                     SliderObj.hideElements(true, SatList);
                 }
             }
+
+            // for (var i = 0; i < intervals.length; i++) {
+            //     console.log(intervals[i][0]);
+            //     console.log(intervals[i][1]);
+            //     if (intervals[i][2] == "false") { // flipped
+            //         if(intervals[i][0] < SliderObj.storedValue && intervals[i][1] > SliderObj.storedValue) {
+            //             SliderObj.hideElements(true, SatList);
+            //         } 
+            //     } else { // not flipped
+            //         if(intervals[i][0] > SliderObj.storedValue || intervals[i][1] < SliderObj.storedValue) {
+            //             SliderObj.hideElements(true, SatList);
+            //         }
+            //     }
+            // }
+
+            
  
 
         });
@@ -254,7 +270,7 @@ class SliderObj {
         var cells = SliderObj.getIntentionsAndActorsView();
         for (var i = 0; i < cells.length; i++) {
             if (cells[i].model.attributes.type == 'basic.Actor') {
-                actorsView.push(cells[i]);//.model.attributes.embeds
+                actorsView.push(cells[i].id);//.model.attributes.embeds
             }
         }
         return actorsView;
@@ -268,7 +284,7 @@ class SliderObj {
         var cells = SliderObj.getIntentionsAndActorsView();
         for (var i = 0; i < cells.length; i++) {
             if (cells[i].model.attributes.type != 'basic.Actor') {
-                intentionsView.push(cells[i]);
+                intentionsView.push(cells[i].id);
             }
         }
         return intentionsView;
@@ -435,7 +451,7 @@ class SliderObj {
         var intention_full_j_id = "#";
         var intention_id = null;
         for (var i = 0; i < cells.length; i++) {
-            if (cells[i].model.attributes.type == 'basic.Goal' && cells[i].id == intention_j_id) {
+            if (cells[i].model.attributes.type != 'basic.Actor' && cells[i].id == intention_j_id) {
                 intention_full_j_id += cells[i].id;
                 console.log(cells[i].model.attributes.id);
                 intention_id = cells[i].model.attributes.id; //model id
@@ -444,6 +460,7 @@ class SliderObj {
                 console.log(intervals);
             }
         }
+        console.log(intention_full_j_id);
         if (bool) {
             $(intention_full_j_id).css("display", "none");
         }
@@ -451,6 +468,7 @@ class SliderObj {
             $(intention_full_j_id).css("display", "");
         }
 
+        //TODO: cleanup hide links inside this function
         // var linksToHide = [];
       
         // for (var i = 0; i < links.length; i++) {
@@ -511,14 +529,19 @@ class SliderObj {
         console.log("First intention's embeds: ");
         console.log(firstIntentionLinks);
 
-        //TODO: replace hardcoded target_actor_j_id with intentions list
+        //TODO: replace hardcoded target_actor_j_id with actors list
         // Call helper functions to hide embedded elements, links, and the actor itself
         //const intervals = SliderObj.hideActor(cells, bool, target_actor_j_id);
         //console.log(intervals);
 
-        //TODO: replace hardcoded target_intention_j_id with intentions list
-        // Call helper functions to hide embedded elements, links, and the actor itself
-        const intervals = SliderObj.hideIntention(cells, bool, target_intention_j_id, links);
+        var intervals = [];
+        //Call helper functions to hide intentions
+        for (var i = 0; i < intentions.length; i++) {
+            intervals.push(SliderObj.hideIntention(cells, bool, intentions[i], links));
+
+        }
+
+        //const intervals = SliderObj.hideIntention(cells, bool, target_intention_j_id, links);
         console.log(intervals);
 
         if ($("#" + target_intention_j_id).css("display") == "none") {
