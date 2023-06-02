@@ -367,13 +367,43 @@ class SliderObj {
      *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
      */
     static hideLinks(links, embeds, bool) {
-        //var linksToHide = embeds;
+
+        // var linksToHide = embeds;
         var linksToHide = []
         for (var i = 0; i < links.length; i++) {
             if (embeds.includes(links[i].model.attributes.source.id) || embeds.includes(links[i].model.attributes.target.id))  {
                 linksToHide.push(links[i].id);
             }
         }
+
+        // Convert into valid j_ids
+        for (var i = 0; i < linksToHide.length; i++) {
+            linksToHide[i] = "#" + linksToHide[i];
+        }
+
+        if (bool) {
+            for (var i = 0; i < linksToHide.length; i++) {
+                $(linksToHide[i]).css("display", "none");
+            }
+        }
+        else {
+            for (var i = 0; i < linksToHide.length; i++) {
+                $(linksToHide[i]).css("display", "");
+            }
+        }
+        
+    }
+
+    static hideIntentionLinks(links, embeds, bool) {
+        
+        var linksToHide = embeds;
+        // var linksToHide = []
+        // for (var i = 0; i < links.length; i++) {
+        //     if (embeds.includes(links[i].model.attributes.source.id) || embeds.includes(links[i].model.attributes.target.id))  {
+        //         linksToHide.push(links[i].id);
+        //     }
+        // }
+        console.log("hiding2",linksToHide);
 
         // Convert into valid j_ids
         for (var i = 0; i < linksToHide.length; i++) {
@@ -412,10 +442,10 @@ class SliderObj {
                 //actor_full_j_id += cells[i].id;
                 //console.log(actor_full_j_id);
                 intervals = cells[i].model.attributes.actor.attributes.intervals;
-                console.log(intervals);
+                // console.log(intervals);
             }
         }
-        console.log(actor_full_j_id);
+        // console.log(actor_full_j_id);
 
         if (intervals[2]=="false") { // flipped
             if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
@@ -446,37 +476,33 @@ class SliderObj {
      *  j_id of the target intention, without the "#"
      */
     static hideIntention(cells, bool, intention_j_id, links) {
-        var intention_full_j_id = "#";
-        var intention_id = null;
+        var intention_full_j_id = "#"+ intention_j_id.id;
+        var intervals;
+
         for (var i = 0; i < cells.length; i++) {
-            if (cells[i].model.attributes.type != 'basic.Actor' && cells[i].id == intention_j_id) {
-                intention_full_j_id += cells[i].id;
-                console.log(cells[i].model.attributes.id);
-                intention_id = cells[i].model.attributes.id; //model id
-                console.log(intention_full_j_id);
-                var intervals = cells[i].model.attributes.intention.attributes.intervals;
-                console.log(intervals);
+            if (cells[i].model.attributes.type != 'basic.Actor' && cells[i].id == intention_j_id.id) {
+                intervals = cells[i].model.attributes.intention.attributes.intervals;
+                // console.log(intervals);
             }
         }
-        console.log(intention_full_j_id);
+        // console.log(intention_full_j_id);
+
+        if (intervals[2]=="false") { // flipped
+            if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
+                bool = true;
+            }
+        } else { // not flipped
+            if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
+                bool = true;
+            }
+        }
+
         if (bool) {
             $(intention_full_j_id).css("display", "none");
         }
         else {
             $(intention_full_j_id).css("display", "");
         }
-
-        //TODO: cleanup hide links inside this function
-        // var linksToHide = [];
-      
-        // for (var i = 0; i < links.length; i++) {
-        //     if(intention_id == links[i].model.attributes.source.id || intention_id == links[i].model.attributes.target.id){
-        //         linksToHide.push(links[i].id);
-        //     }
-        // }
-
-        // console.log(linksToHide);
-
         return intervals;
     }
 
@@ -502,49 +528,69 @@ class SliderObj {
         // var target_intention_j_id = "j_6"
 
         var cells = SliderObj.getIntentionsAndActorsView();
-        console.log("Cells: ");
-        console.log(cells);
+        // console.log("Cells: ");
+        // console.log(cells);
         var actors = SliderObj.getActorsView();
-        console.log("Model's actors id: ");
-        console.log(actors);
+        // console.log("Model's actors id: ");
+        // console.log(actors);
 
         var target_actor_j_id = [];
         for (var i = 0; i < actors.length; i++) {
             target_actor_j_id.push(actors[i]);
         }
-        console.log("Model's actors id: ");
-        console.log(actors);
+        // console.log("Model's actors id: ");
+        // console.log(actors);
 
         for (var i = 0; i < actors.length; i++) {
-            console.log((i+1) +"th actor's embeds: ");
-            console.log(SliderObj.getEmbeddedElements(actors[i].id));
+            // console.log((i+1) +"th actor's embeds: ");
+            // console.log(SliderObj.getEmbeddedElements(actors[i].id));
         }
         
         var intentions = SliderObj.getIntentionsView();
-        console.log("Model's intenions: ");
-        console.log(intentions);
+        // console.log("Model's intenions: ");
+        // console.log(intentions);
+
+        var target_intention_j_id = [];
+        for (var i = 0; i < intentions.length; i++) {
+            target_intention_j_id.push(intentions[i]);
+        }
+        // console.log("Model's intentions id: ");
+        // console.log(target_intention_j_id);
         
         var links = SliderObj.getLinksView();
-        console.log("Model's links: ");
-        console.log(links);
+        // console.log("Model's links: ");
+        // console.log(links);
         
         var actorEmbeds = [];
         for(var i = 0; i < actors.length; i++){
             actorEmbeds.push(SliderObj.getEmbeddedElements(actors[i].id));
-            console.log((i+1)+ "th actor's embeds: ");
-            console.log(actorEmbeds[i]);
+            // console.log((i+1)+ "th actor's embeds: ");
+            // console.log(actorEmbeds[i]);
         }
         
         // var firstActorEmbeds = SliderObj.getEmbeddedElements(target_actor_j_id);
         // console.log("First actor's embeds: ");
         // console.log(firstActorEmbeds);
 
-        //var firstIntentionLinks = SliderObj.getIntentionLinks(target_intention_j_id);
-        //console.log("First intention's embeds: ");
-        //console.log(firstIntentionLinks);
+        // var firstIntentionLinks = SliderObj.getIntentionLinks(target_intention_j_id);
+        // console.log("First intention's embeds: ");
+        // console.log(firstIntentionLinks);
 
         //TODO: replace hardcoded target_actor_j_id with actors list
         // Call helper functions to hide embedded elements, links, and the actor itself
+
+        var intentionLinks = [];
+        for(var i = 0; i < intentions.length; i++){
+            console.log("id",intentions[i].id);
+            intentionLinks.push(SliderObj.getIntentionLinks(intentions[i].id));
+            // console.log((i+1)+ "th intention's links: ");
+            // console.log(intentionLinks[i]);
+        }
+
+        var intentionIntervals = [];
+        for(var i = 0; i < intentions.length; i++){
+            intentionIntervals.push(SliderObj.hideIntention(cells, bool, target_intention_j_id[i]));
+        }
 
         var intervals = [];
         for(var i = 0; i < actors.length; i++){//newly added
@@ -553,31 +599,34 @@ class SliderObj {
             //}
             //intervals.push(SliderObj.hideActor(cells, bool, target_actor_j_id[i]));
         }
-        console.log(intervals);
+        // console.log(intervals);
 
         //TODO: replace hardcoded target_intention_j_id with intentions list
         // Call helper functions to hide embedded elements, links, and the actor itself
         //const intervals = SliderObj.hideIntention(cells, bool, target_intention_j_id, links);
-        console.log(intervals);
-
-        // if ($("#" + target_intention_j_id).css("display") == "none") {
-        //     SliderObj.hideLinks(links, firstIntentionLinks, true);
-        // } else {
-        //     SliderObj.hideLinks(links, firstIntentionLinks, false);
-        // }
+        // console.log(intervals);
 
         //SliderObj.hideConflictingSatVals(SatList);
         for(var i = 0; i < actors.length; i++){//newly added
             if ($("#" + target_actor_j_id[i].id).css("display") == "none") {
                 SliderObj.hideEmbeddedElements(cells, actorEmbeds[i], true); //assuming the order of embeds is the same with actors array
                 SliderObj.hideLinks(links, actorEmbeds[i], true);
-            } else {
+            } else { 
                 SliderObj.hideLinks(links, actorEmbeds[i], false);
-                SliderObj.hideEmbeddedElements(cells, actorEmbeds[i], false);
+                // SliderObj.hideEmbeddedElements(cells, actorEmbeds[i], false);
                 //SliderObj.hideConflictingSatVals(SatList);
             }
         }
-        
+
+        for(var i = 0; i < intentions.length; i++){
+            console.log(target_intention_j_id);
+            if ($("#" + target_intention_j_id[i].id).css("display") == "none") {
+                console.log("hiding",intentionLinks[i]);
+                SliderObj.hideIntentionLinks(links, intentionLinks[i], true);
+            } else {
+                SliderObj.hideIntentionLinks(links, intentionLinks[i], false);
+            }
+        }
 
         return intervals;
     }
@@ -639,7 +688,7 @@ class SliderObj {
         var links = SliderObj.getLinksView();
         var intention_id = null;
         for (var i = 0; i < cells.length; i++) {
-            if (cells[i].model.attributes.type == 'basic.Goal' && cells[i].id == intention_j_id) {
+            if (cells[i].model.attributes.type != 'basic.Actor' && cells[i].id == intention_j_id) {
                 intention_id = cells[i].model.attributes.id; //model id
             }
         }
