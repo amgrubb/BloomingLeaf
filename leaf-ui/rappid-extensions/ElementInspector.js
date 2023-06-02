@@ -1369,6 +1369,7 @@ var IntervalsView = Backbone.View.extend({
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
 
         var intervals = this.intention.attributes.intervals;
+        console.log(intervals);
         var slider1 = document.getElementById('slider-1'); // left slider
         var slider2 = document.getElementById('slider-2'); // right slider
 
@@ -1385,6 +1386,7 @@ var IntervalsView = Backbone.View.extend({
                     slider2.value = rangeMax;
                 } else { // actor has one exclusion interval
                     if (actorIntervals[0][0] == 0) { // [0-#] excluded
+                        console.log("cccc");
                         rangeMin = actorIntervals[0][1] + 1;
                         slider1.value = rangeMin;
                     } else if (actorIntervals[0][1] == graph.get('maxAbsTime')) { // [#-max] excluded

@@ -200,7 +200,7 @@ var ActorInspector = Backbone.View.extend({
             var intentions = []
             for (var i = 0; i < elements.length; i++) {
                 var cell = elements[i].findView(paper);
-                if (cell.model.attributes.type == "basic.Goal" || cell.model.attributes.type == "basic.Task" || cell.model.attributes.type == "basic.Resource" || cell.model.attributes.type == "basic.Softgoal") {
+                if (cell.model.attributes.type != "basic.Actor") {
                     intentions.push(cell);
                 }
             }
@@ -208,6 +208,7 @@ var ActorInspector = Backbone.View.extend({
                 for (var j = 0; j < this.model.attributes.embeds.length; j++) {
                     if (this.model.attributes.embeds[j] == intentions[i].model.id) {
                         intentions[i].model.attributes.intention.attributes.intervals = this.actor.attributes.intervals;
+                        console.log(intentions[i].model.attributes.intention.attributes.intervals);
                     }
                 }
             }
@@ -221,33 +222,20 @@ var ActorInspector = Backbone.View.extend({
             var intentions = []
             for (var i = 0; i < elements.length; i++) {
                 var cell = elements[i].findView(paper);
-                if (cell.model.attributes.type == "basic.Goal" || cell.model.attributes.type == "basic.Task" || cell.model.attributes.type == "basic.Resource" || cell.model.attributes.type == "basic.Softgoal") {
+                if (cell.model.attributes.type != "basic.Actor") {
                     intentions.push(cell);
                 }
             }
             for (var i = 0; i < intentions.length; i++) {
                 for (var j = 0; j < this.model.attributes.embeds.length; j++) {
                     if (this.model.attributes.embeds[j] == intentions[i].model.id) {
-                        if (intentions[i].model.attributes.intention.attributes.intervals[0][0] < this.actor.attributes.intervals[0][0]) {
-                            intentions[i].model.attributes.intention.attributes.intervals[0][0] = this.actor.attributes.intervals[0][0];
-                        }
-                        if (this.actor.attributes.intervals[1] && intentions[i].model.attributes.intention.attributes.intervals[1]) { // both are flipped
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.actor.attributes.intervals[0][1]) {
-                                intentions[i].model.attributes.intention.attributes.intervals[0][1] = this.actor.attributes.intervals[0][1];
+                        if (this.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.shift();
                             }
-                        } else if (intentions[i].model.attributes.intention.attributes.intervals[2] == "false") { // intention is flipped
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0] < this.actor.attributes.intervals[0]) {
-                                intentions[i].model.attributes.intention.attributes.intervals[0] = this.actor.attributes.intervals[0];
-                            }
-                            if (intentions[i].model.attributes.intention.attributes.intervals[1] > this.actor.attributes.intervals[1]) {
-                                intentions[i].model.attributes.intention.attributes.intervals[1] = this.actor.attributes.intervals[1];
-                            }
-                        } else { // neither are flipped
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0] > this.actor.attributes.intervals[0]) {
-                                intentions[i].model.attributes.intention.attributes.intervals[0] = this.actor.attributes.intervals[0];
-                            }
-                            if (intentions[i].model.attributes.intention.attributes.intervals[1] > this.actor.attributes.intervals[1]) {
-                                intentions[i].model.attributes.intention.attributes.intervals[1] = this.actor.attributes.intervals[1];
+                        } else if(this.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.actor.attributes.intervals[0][0]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
                             }
                         }
                     }
@@ -317,7 +305,7 @@ var TimePointListView = Backbone.View.extend({
                     slider2.value = rangeMax;
                  } else if(intervals[0][1] == rangeMax){ // slider2 is equal to rangeMax
                     slider1.value = rangeMin;
-                    slider2.value = intervals[1][0] - 1;
+                    slider2.value = intervals[0][0] - 1;
                  } else{ // from slider1 to slider2 is excluded
                     document.getElementById('intervals-flip-btn').value = "false";
                     slider1.value = intervals[0][0] - 1;
