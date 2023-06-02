@@ -110,27 +110,27 @@ class SliderObj {
             //     }
             // }
             
-            console.log(SliderObj.storedValue);
+            console.log("stored value",SliderObj.storedValue);
             
             
             //var t = parseInt(values[handle])%2;
             //if (t == 0) {
             const intervals = SliderObj.hideElements(false, SatList);
-            console.log(intervals);
+            console.log("intervals",intervals);
             // }
             // else {
             //     const intervals = SliderObj.hideElements(false, SatList);
             //     console.log(intervals);
             // }   
             
-            for(var i=0; i<intervals.length;i++){
+            for(var i=0; i<intervals.length;i++){ // for each actor
                 if (intervals[i][2]=="false") { // flipped
                     if(intervals[i][0] < SliderObj.storedValue && intervals[i][1] > SliderObj.storedValue) {
-                        SliderObj.hideElements(true, SatList);
+                        SliderObj.hideElements(false, SatList);
                     }
                 } else { // not flipped
                     if(intervals[i][0] > SliderObj.storedValue || intervals[i][1] < SliderObj.storedValue) {
-                        SliderObj.hideElements(true, SatList);
+                        SliderObj.hideElements(false, SatList);
                     }
                 }
             }
@@ -416,6 +416,17 @@ class SliderObj {
             }
         }
         console.log(actor_full_j_id);
+
+        if (intervals[2]=="false") { // flipped
+            if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
+                bool = true;
+            }
+        } else { // not flipped
+            if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
+                bool = true;
+            }
+        }
+
         if (bool) {
             $(actor_full_j_id).css("display", "none");
         }
@@ -488,7 +499,7 @@ class SliderObj {
         // Will need to replce the hard code later.
         // start with targeting first actor, replace j_11
         //var target_actor_j_id = "j_11"
-        var target_intention_j_id = "j_6"
+        // var target_intention_j_id = "j_6"
 
         var cells = SliderObj.getIntentionsAndActorsView();
         console.log("Cells: ");
@@ -558,9 +569,11 @@ class SliderObj {
         //SliderObj.hideConflictingSatVals(SatList);
         for(var i = 0; i < actors.length; i++){//newly added
             if ($("#" + target_actor_j_id[i].id).css("display") == "none") {
-                SliderObj.hideEmbeddedElements(cells, actorEmbeds[i], bool); //assuming the order of embeds is the same with actors array
-                SliderObj.hideLinks(links, actorEmbeds[i], bool);
+                SliderObj.hideEmbeddedElements(cells, actorEmbeds[i], true); //assuming the order of embeds is the same with actors array
+                SliderObj.hideLinks(links, actorEmbeds[i], true);
             } else {
+                SliderObj.hideLinks(links, actorEmbeds[i], false);
+                SliderObj.hideEmbeddedElements(cells, actorEmbeds[i], false);
                 //SliderObj.hideConflictingSatVals(SatList);
             }
         }
