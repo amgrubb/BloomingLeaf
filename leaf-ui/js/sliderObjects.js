@@ -435,7 +435,7 @@ class SliderObj {
         var intention_full_j_id = "#";
         var intention_id = null;
         for (var i = 0; i < cells.length; i++) {
-            if (cells[i].model.attributes.type == 'basic.Goal' && cells[i].id == intention_j_id) {
+            if (cells[i].model.attributes.type != 'basic.Actor' && cells[i].id == intention_j_id) {
                 intention_full_j_id += cells[i].id;
                 console.log(cells[i].model.attributes.id);
                 intention_id = cells[i].model.attributes.id; //model id
@@ -451,6 +451,7 @@ class SliderObj {
             $(intention_full_j_id).css("display", "");
         }
 
+        //TODO: cleanup hide links inside this function
         // var linksToHide = [];
       
         // for (var i = 0; i < links.length; i++) {
@@ -511,7 +512,7 @@ class SliderObj {
         console.log("First intention's embeds: ");
         console.log(firstIntentionLinks);
 
-        //TODO: replace hardcoded target_actor_j_id with intentions list
+        //TODO: replace hardcoded target_actor_j_id with actors list
         // Call helper functions to hide embedded elements, links, and the actor itself
         //const intervals = SliderObj.hideActor(cells, bool, target_actor_j_id);
         //console.log(intervals);
