@@ -403,7 +403,6 @@ class SliderObj {
         //         linksToHide.push(links[i].id);
         //     }
         // }
-        console.log("hiding2",linksToHide);
 
         // Convert into valid j_ids
         for (var i = 0; i < linksToHide.length; i++) {
@@ -414,8 +413,7 @@ class SliderObj {
             for (var i = 0; i < linksToHide.length; i++) {
                 $(linksToHide[i]).css("display", "none");
             }
-        }
-        else {
+        } else {
             for (var i = 0; i < linksToHide.length; i++) {
                 $(linksToHide[i]).css("display", "");
             }
@@ -619,12 +617,8 @@ class SliderObj {
         }
 
         for(var i = 0; i < intentions.length; i++){
-            console.log(target_intention_j_id);
             if ($("#" + target_intention_j_id[i].id).css("display") == "none") {
-                console.log("hiding",intentionLinks[i]);
                 SliderObj.hideIntentionLinks(links, intentionLinks[i], true);
-            } else {
-                SliderObj.hideIntentionLinks(links, intentionLinks[i], false);
             }
         }
 
