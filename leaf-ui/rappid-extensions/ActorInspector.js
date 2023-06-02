@@ -300,16 +300,19 @@ var TimePointListView = Backbone.View.extend({
                 slider1.value = intervals[0][1] + 1;
                 slider2.value = intervals[1][0] - 1;
             } else { // [slider1, slider2] (one exclusion interval)
-                 if(intervals[0][0] == rangeMin){ // slider1 is equal to rangeMin
-                    slider1.value = intervals[0][1] + 1;
-                    slider2.value = rangeMax;
-                 } else if(intervals[0][1] == rangeMax){ // slider2 is equal to rangeMax
+                 if(intervals[0][0] == 0){ // [0-#]
+                    rangeMin = intervals[0][1] + 1;
                     slider1.value = rangeMin;
-                    slider2.value = intervals[0][0] - 1;
+                 } else if(intervals[0][1] == graph.get('maxAbsTime')){ // slider2 is equal to rangeMax
+                    rangeMax = intervals[0][0] - 1;
+                    slider2.value = rangeMax;
                  } else{ // from slider1 to slider2 is excluded
                     document.getElementById('intervals-flip-btn').value = "false";
+                    document.getElementById('intervals-flip-btn').style.display = "none";
                     slider1.value = intervals[0][0] - 1;
                     slider2.value = intervals[0][1] + 1;
+                    document.getElementById('limit1').value = actorIntervals[0][0] - 1;
+                    document.getElementById('limit2').value = actorIntervals[0][1] + 1;
                     document.getElementById('flipped').style.display = "";
                     document.getElementById('not-flipped').style.display = "none";
                  }
