@@ -200,7 +200,6 @@ var ElementInspector = Backbone.View.extend({
         }
         this.updateCell();
 
-        // this.setInitialInterval();
         this.displayIntervals(this.findActor());
     },
 
@@ -817,19 +816,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
         this.intention.set('intervals', timePointsArray);
-        console.log(this.intention.get('intervals'));
     },
-
-    setInitialInterval: function() {
-        if (this.intention.get('intervals').length == 0) {
-            if (this.findActor()) {
-                this.intention.set('intervals', this.findActor().model.attributes.actor.attributes.intervals);
-            } else {
-                this.intention.set('intervals', [0,graph.get("maxAbsTime"),"true"]);
-            }
-        }
-        console.log(this.intention.get('intervals'));
-    }
 });
 
 /************************************************** FunctionSegmentBBM View **************************************************/
@@ -1337,7 +1324,6 @@ var IntervalsView = Backbone.View.extend({
     initialize: function (options) {
         this.actor = options.actor;
         this.intention = options.intention;
-        console.log(this.intention.get('intervals'));
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -1391,7 +1377,6 @@ var IntervalsView = Backbone.View.extend({
 
         if (this.actor) { // if intention is within an actor
             var actorIntervals = this.actor.model.attributes.actor.attributes.intervals;
-            console.log(actorIntervals);
             if (actorIntervals.length > 0) { // if actor is not always available
                 if (actorIntervals[1]){ // actor has two exclusion intervals
                     rangeMin = actorIntervals[0][1] + 1;
@@ -1407,6 +1392,7 @@ var IntervalsView = Backbone.View.extend({
                         slider2.value = rangeMax;
                     } else { // [#-#] excluded
                         document.getElementById('intervals-flip-btn').value = "false";
+                        document.getElementById('intervals-flip-btn').style.display = "none";
                         slider1.value = actorIntervals[0][0] - 1;
                         slider2.value = actorIntervals[0][1] + 1;
                         document.getElementById('limit1').value = actorIntervals[0][0] - 1;
@@ -1417,8 +1403,6 @@ var IntervalsView = Backbone.View.extend({
                 }
             }
         }
-
-        console.log(this.intention);
 
         if (intervals.length > 0) { // if intention is not always available
             if (intervals[1]){ // two exclusion intervals
@@ -1446,7 +1430,6 @@ var IntervalsView = Backbone.View.extend({
         document.getElementById('range1-flipped').textContent = slider1.value;
         document.getElementById('range2-flipped').textContent = slider2.value;
 
-        console.log(rangeMin);
         slider1.min = rangeMin;
         slider2.min = rangeMin;
         slider1.max = rangeMax;
