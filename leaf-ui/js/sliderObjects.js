@@ -445,15 +445,21 @@ class SliderObj {
         }
         // console.log(actor_full_j_id);
 
-        if (intervals[2]=="false") { // flipped
-            if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
-                bool = true;
-            }
-        } else { // not flipped
-            if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
+        for (var i = 0; i < intervals.length; i++) {
+            if (intervals[i][0] <= SliderObj.storedValue && intervals[i][1] >= SliderObj.storedValue) {
                 bool = true;
             }
         }
+
+        // if (intervals[2]=="false") { // flipped
+        //     if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
+        //         bool = true;
+        //     }
+        // } else { // not flipped
+        //     if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
+        //         bool = true;
+        //     }
+        // }
 
         if (bool) {
             $(actor_full_j_id).css("display", "none");
@@ -485,15 +491,21 @@ class SliderObj {
         }
         // console.log(intention_full_j_id);
 
-        if (intervals[2]=="false") { // flipped
-            if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
-                bool = true;
-            }
-        } else { // not flipped
-            if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
+        for (var i = 0; i < intervals.length; i++) {
+            if (intervals[i][0] <= SliderObj.storedValue && intervals[i][1] >= SliderObj.storedValue) {
                 bool = true;
             }
         }
+
+        // if (intervals[2]=="false") { // flipped
+        //     if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
+        //         bool = true;
+        //     }
+        // } else { // not flipped
+        //     if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
+        //         bool = true;
+        //     }
+        // }
 
         if (bool) {
             $(intention_full_j_id).css("display", "none");
@@ -591,7 +603,6 @@ class SliderObj {
 
         var intentionLinks = [];
         for(var i = 0; i < intentions.length; i++){
-            console.log("id",intentions[i].id);
             intentionLinks.push(SliderObj.getIntentionLinks(intentions[i].id));
             // console.log((i+1)+ "th intention's links: ");
             // console.log(intentionLinks[i]);
@@ -707,7 +718,6 @@ class SliderObj {
             }
         }
 
-        console.log(linksToHide);
         return linksToHide;
     }
 }
