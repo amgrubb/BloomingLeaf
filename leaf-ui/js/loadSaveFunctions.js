@@ -6,6 +6,8 @@
 loader = document.getElementById("loader");
 layout_loader = document.getElementById("layout-loader");
 merge_button = document.getElementById("merge-button");
+merge_button_timing = document.getElementById("merge-button-timing");
+timing_input = document.getElementById("timing-input-window");
 merge_file_picker = document.getElementById("merge-file-picker");
 reader = new FileReader();
 
@@ -33,7 +35,25 @@ layout_loader.onchange = function () {
 	}
 };
 
+merge_button_timing.onclick = function(){
+	let editedInputValues = [];
+
+	var intention_list = document.getElementById('timing-input-intention-list');
+	timeOrders = intention_list.getElementsByTagName("input");
+
+	for (let i = 0; i < timeOrders.length; i++){
+		timeOrder = timeOrders[i].value;
+		editedInputValues.push(timeOrder);
+		globalTiming[i].newTimeOrder = timeOrder;
+		// console.log("globalTiming:", i," ", globalTiming[i].newTimeOrder);
+	}
+	timing_input.style.display = "none";
+	// console.log("new time Order: ", editedInputValues);
+	// console.log("globalTiming : ", globalTiming);
+
+}
 merge_button.onclick = function () {	
+	// console.log("Additional input")
 	var file1 = document.getElementById("merge-model1").files.item(0);
 	var file2 = document.getElementById("merge-model2").files.item(0);
 	var timingOffset = document.getElementById("merge-timingOffset").value;

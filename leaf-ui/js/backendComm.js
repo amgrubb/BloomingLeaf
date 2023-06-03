@@ -75,50 +75,61 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 
 	xhr.onload = function () {
 		// This function get called when the response is received.
-		console.log("Reading the response");
+		console.log("PreMerge: Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
-			console.log(response[130] + response[131] + response[132]);
-			var result = JSON.parse(response);
-			console.log(result);
+			// console.log(response[130] + response[131] + response[132]);
+			// console.log("Response: ", response)
+			var new_response = response.replace(/\n/g, " ")
+			// console.log("new_response: ", new_response)
+			var result = JSON.parse(new_response);
+			console.log("Result: ", result);
 			dealWithTimingObject(result);
 		}
 	}
 	xhr.send(data);
+	// xhr.send(updatedData);
 }
+
 
 function dealWithTimingObject(timing) {
 	// Detmermine if further user input is required
-
-	var input_required = false;
-	var timing_list = timing.timingList;
-	var indexes_to_modify = [];
-
-	for(var i = 0; i < timing_list.length - 1; i++) {
-		var intention = timing_list[i];
-		console.log(timing_list);
-		console.log(intention);
-		if(intention.itemsToAdd.length != 0) {
-			input_required = true;
-			indexes_to_modify.push(i);
+	
+	if(Object.keys(timing.timingList[0]).length == 0) {
+		// No changes required 
+		console.log("Noooooooooo changes");
+		backendMergeRequest(timing);
+	}
+	else {
+		var input_required = false;
+		var timing_list = timing.timingList;
+		var indexes_to_modify = [];
+		for(var i = 0; i < timing_list.length - 1; i++) {
+			var intention = timing_list[i];
+			// console.log(timing_list);
+			// console.log(intention);
+			if(intention.itemsToAdd.length != 0) {
+				input_required = true;
+				indexes_to_modify.push(i);
+			}
 		}
-	}
 
-	if(input_required) {
-		// call merge
-		globalTiming = timing_list;
-		globalTiming.indexes_to_modify = indexes_to_modify;
-		displayTimingInputWindow();
+		// TODO
+		// console.log("timing modifications required");
+		// console.log("input_required: ",  input_required)
+		if(input_required) {
+			// call merge
+			globalTiming = timing_list;
+			globalTiming.indexes_to_modify = indexes_to_modify;
+			// console.log("index to change: ", globalTiming.indexes_to_modify)
+			displayTimingInputWindow();
+		}
+		timing_list = globalTiming;
+		// console.log("new Timing: ", timing);
+		backendMergeRequest(timing);
 	}
-	// console.log(Object.keys(timing.timingList[0]).length);
-	// if(Object.keys(timing.timingList[0]).length == 0) {
-	// 	// No changes required 
-	// 	backendMergeRequest(timing);
-	// }
-	// else {
-	// 	// TODO
-	// 	console.log("timing modifications required");
-	// }
+	// console.log("new Timing: ", timing);
+	// backendMergeRequest(timing);
 }
 
 function displayTimingInputWindow() {
@@ -128,17 +139,20 @@ function displayTimingInputWindow() {
 	let intention_list = $('#timing-input-intention-list');
 
 	for(i in indexes) {
+		// console.log("Intention: ", globalTiming[i].intention);
+
+		let inputId = "#timing-input-order-" + i;
+		
 		intention_list.append(
 			"<div>" +
 			"<h3>" + globalTiming[i].intention + "</h3>" +
-			"<input type=\"text\" style=\"width:80%\" id=\"timing-input-order-" + i + "\" value=\"" + globalTiming[i].newTimeOrder +  "\"> " +
+			"<input type=\"text\" style=\"width:80%\" id=\"" + inputId + "\" value=\"" + globalTiming[i].newTimeOrder +  "\"> " +
 			"<span>New Time Order</span><br>" +
 			"<h4>Relative time points to add: <span id=\"timing-input-toAdd-" + i + "\">" + globalTiming[i].itemsToAdd + "</span></h4>" +
 			"</div>"
 		)
 	}
 }
-
 function backendMergeRequest(timing) {
 	var jsObject = {};
 	jsObject.analysisRequest = "merge";
@@ -151,10 +165,11 @@ function backendMergeRequest(timing) {
 
 	xhr.onload = function () {
 		// This function get called when the response is received.
-		console.log("Reading the response");
+		console.log("Merge: Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
 			var result = JSON.parse(response);
+			console.log("Result: ", result);
 			loadFromObject(result);
 		}
 	}
