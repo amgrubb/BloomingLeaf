@@ -231,7 +231,6 @@ public class ModelSpec {
 				}
 				for	(String key : affectedKeys) {
 					if (this.updateRefTP(this.changedTPElements.get(key), this.changedTPNames.get(key), mergeTP)) {
-						//this.changedTPNames.remove(key);
 						this.changedTPNames.put(key, mergeTP);
 					}else
 						throw new RuntimeException(); 

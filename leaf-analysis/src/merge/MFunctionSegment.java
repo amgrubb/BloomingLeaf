@@ -27,7 +27,7 @@ public class MFunctionSegment extends FunctionSegment{
 		super(fSeg.getType(), fSeg.getRefEvidencePair(), fSeg.getStartTP(), fSeg.getStartAT());
 		this.endTP = fSegNext.getStartTP();
 		this.endAT = fSegNext.getStartAT();
-		this.startEvidencePair = assignStartValue(startEvidencePair);  // assign based on type and previous type
+		this.startEvidencePair = assignStartValue(startEvidencePair); // assign based on type and previous type
 	}
 	
 	/**
@@ -47,13 +47,16 @@ public class MFunctionSegment extends FunctionSegment{
 	/**
 	 * For segments we build: assign start and endpoints and detect type
 	 */
-	public MFunctionSegment(String startTP, String startEvidencePair, String endTP, String endEvidencePair) {
-		super("", endEvidencePair, startTP, null);
+	public MFunctionSegment(String startTP, Integer startAT, String startEvidencePair, 
+			String endTP, Integer endAT, String endEvidencePair) {
+		super("", endEvidencePair, startTP, startAT);
 		this.setType(this.assignType(startEvidencePair, endEvidencePair));
 		this.endTP = endTP;
+		this.endAT = endAT;
 		this.startEvidencePair = startEvidencePair;
 		
-	}
+	}	
+	
 	
 	/**
 	 * Get Start Satisfaction Value

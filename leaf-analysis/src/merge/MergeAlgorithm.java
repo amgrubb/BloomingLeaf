@@ -1073,7 +1073,7 @@ public class MergeAlgorithm {
 			// get timing order from user input
 			TIntention intentionTiming = timings.getTiming(intention1.getName());
 			timeOrder = intentionTiming.getNewTimeOrder();
-		} else {
+		} else {								// TODO: If no timing file exists.
 			// doesn't have timing from user because simple merge
 			// see PreMerge conditions to skip inputting timing
 
@@ -1151,6 +1151,20 @@ public class MergeAlgorithm {
 		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
 		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getUserEvalAt(delta), maxTime2, maxTimeName2);
 
+		/*
+		 * Convert numeric timepoint names to just the number
+		 */
+		//private void cleanTiming() {
+		for (int i=0; i < timeOrder.size(); i++) {
+			String time = timeOrder.get(i);
+			// take time point order name after "-"
+			String post = time.substring(time.indexOf('-')+1);
+			// numeric - replace with just numbers
+			if (MEPOperators.isNumeric(post)) {
+				timeOrder.set(i, post);
+			}
+		}
+		
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
 

@@ -36,7 +36,6 @@ public class BICSPState {
 	
 	// Mappings for problem variables
 	private HashMap<IntVar, List<String>> timePointMap = new HashMap<IntVar, List<String>>(); // IntVar to list of unique time points from the model.
-//	private HashMap<String, List<String>> nextStateTPHash = new HashMap<String, List<String>>(); 	// Holds the time points in the next state analysis.
 	private HashMap<String, Integer> uniqueIDToValueIndex = new HashMap<String, Integer>();
 	private String[] valueIndexToUniqueID;
 	
@@ -96,7 +95,6 @@ public class BICSPState {
 			List<String> newItem = new ArrayList<String>();
 			newItem.add(item);
 			this.timePointMap.put(newTP, newItem);
-    		//nextStateTPHash.put(entry.getKey(), entry.getValue());
 		}
 		
 		this.numTimePoints = this.timePoints.length;

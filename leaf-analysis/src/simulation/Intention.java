@@ -17,8 +17,6 @@ public class Intention extends AbstractLinkableElement {
 	@SuppressWarnings("unused")
 	private Actor actor = null;
 	
-	//private IntentionalElementType type = IntentionalElementType.GOAL; 
-	
 	private HashMap<Integer, String> userEvals;
 	private FunctionSegment[] evolvingFunctions;
 	private List<MFunctionSegment> mergedEvolvingFunctions;  // more complete function info

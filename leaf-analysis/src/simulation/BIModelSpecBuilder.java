@@ -79,10 +79,6 @@ public class BIModelSpecBuilder {
 			// Back-end Model
 			ModelSpec modelSpec = new ModelSpec();	
 			
-			// Gson gson = new Gson();
-			// System.out.println("icell version:");
-			// System.out.println(gson.toJson(inObject));
-			
 			IGraph frontendModel = inObject.getGraph();
 			
 			// Collection of Cells

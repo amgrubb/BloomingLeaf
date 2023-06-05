@@ -6,16 +6,18 @@ public class BIFunctionSegment {
 	/*
 	 * Standard function segment
 	 */
-	public BIFunctionSegment(String refEvidencePair, Integer startAT, String startTP, String type) {
-		this.attributes = new Attributes(refEvidencePair, startAT, startTP, type);
+	// added current
+	public BIFunctionSegment(String refEvidencePair, Integer startAT, String startTP, String type, boolean current) {
+		this.attributes = new Attributes(refEvidencePair, startAT, startTP, type, current);
 	}
 	
 	/*
 	 * Function segment with additional info (start evidence pair) from merge algorithm
 	 */
+	// added current
 	public BIFunctionSegment(String startEvidencePair, String endEvidencePair, String refEvidencePair,
-								Integer startAT, String startTP, String type) {
-		this.attributes = new Attributes(startEvidencePair, endEvidencePair, refEvidencePair, startAT, startTP, type);
+								Integer startAT, String startTP, String type, boolean current) {
+		this.attributes = new Attributes(startEvidencePair, endEvidencePair, refEvidencePair, startAT, startTP, type, current);
 	}
 	
 	public String getStartEvidencePair() {
@@ -44,22 +46,31 @@ public class BIFunctionSegment {
         Integer startAT;
         String startTP;
         String type; 
+        // added
+        boolean current;
         
-        public Attributes(String refEvidencePair, Integer startAT, String startTP, String type) {
+        
+        // added current
+        public Attributes(String refEvidencePair, Integer startAT, String startTP, String type, boolean current) {
         	this.refEvidencePair = refEvidencePair;
         	this.startAT = startAT;
         	this.startTP = startTP;
         	this.type = type;
+        	this.current = current;
         }
         
+        // added current
         public Attributes(String startEvidencePair, String endEvidencePair, String refEvidencePair,
-        				Integer startAT, String startTP, String type) {
+        				Integer startAT, String startTP, String type, boolean current) {
         	this.startEvidencePair = startEvidencePair;
         	this.endEvidencePair = endEvidencePair;
         	this.refEvidencePair = refEvidencePair;
         	this.startAT = startAT;
         	this.startTP = startTP;
         	this.type = type;
+        	this.current = current;
         }
+        
+
 	}
 }

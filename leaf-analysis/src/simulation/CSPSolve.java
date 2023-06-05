@@ -29,8 +29,7 @@ public class CSPSolve {
         label.setTimeOut(timeOutValueInSeconds);
 		
         // Create selection and find solution.
-        SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>());//new MostConstrainedStatic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
-        //label.setSolutionListener(new PrintOutListener<IntVar>());         
+        SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
         label.getSolutionListener().searchAll(searchAll);  
         if(Main.DEBUG)	System.out.println("\nRunning Solver\n");
         boolean solutionFound = label.labeling(store, select);

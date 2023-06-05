@@ -1,6 +1,3 @@
-/**
- * 
- */
 package simulation;
 
 import java.util.ArrayList;

@@ -16,9 +16,11 @@ public class MergeEvolvingFunction {
 	private List<String> timing;
 	
 	public MergeEvolvingFunction(List<MFunctionSegment> segsA, List<MFunctionSegment> segsB, List<String> timing) {
+		this.timing = timing;
+		
 		this.funcA = new MEvolvingFunction(segsA, timing);
 		this.funcB = new MEvolvingFunction(segsB, timing);
-		this.timing = timing;
+
 		
 		if (MMain.DEBUG) System.out.println("------------------------------------------------------------");
 		if (MMain.DEBUG) System.out.println("Merging Evolving Functions:");
@@ -48,7 +50,7 @@ public class MergeEvolvingFunction {
 		String mergedEnd, mergedStart;
 		
 		// create new timeline
-		for (String time: timing) {
+		for (String time: this.timing) {
 			// find merged value at time
 			mergedEnd = getMergedValueAtTime(time, funcA.getEndingEvidencePair(time), funcB.getEndingEvidencePair(time));
 			mergedStart = getMergedValueAtTime(time, funcA.getStartingEvidencePair(time), funcB.getStartingEvidencePair(time));
@@ -69,7 +71,7 @@ public class MergeEvolvingFunction {
 		}
 		
 		// construct MEvolvingFunction from new timeline
-		this.funcMerged = new MEvolvingFunction(newStartingTimeline, newEndingTimeline, timing);
+		this.funcMerged = new MEvolvingFunction(newStartingTimeline, newEndingTimeline, this.timing);
 	}
 	
 	/**
@@ -84,23 +86,20 @@ public class MergeEvolvingFunction {
 		}
 		
 		// if stochastic with mid, use other value at point
-		if ((valueA.equals("(no value)") && valueB.equals("mid")) || (valueA.equals("mid") && valueB.equals("(no value)"))) {
-			return "other";  // other flag
-		}
+		if ((valueA.equals("(no value)") && valueB.equals("mid")) || (valueA.equals("mid") && valueB.equals("(no value)"))) 
+			return "other";  // other flag		
 		
 		// if valueA or valueB is a mid value, use mid operator
 		// note: from above, we don't need to calculate mid() with (no value)
-		if (valueA.equals("mid")) {
+		if (valueA.equals("mid")) 
 			return funcA.mid(time, valueB);
-		} else if (valueB.equals("mid")) {
+		if (valueB.equals("mid")) 
 			return funcB.mid(time, valueA);
-		}
 		
 		// otherwise, if we have values for both,
 		// use consensus operator
-		else {
-			return MEPOperators.consensus(valueA, valueB);
-		}
+		return MEPOperators.consensus(valueA, valueB);
+		
 	}
 	
 	/****************************
@@ -128,14 +127,6 @@ public class MergeEvolvingFunction {
 	/**********
 	 * Getters
 	 **********/
-	
-	public MEvolvingFunction getFuncA() {
-		return funcA;
-	}
-	
-	public MEvolvingFunction getFuncB() {
-		return funcB;
-	}
 	
 	public MEvolvingFunction getFuncMerged() {
 		return funcMerged;

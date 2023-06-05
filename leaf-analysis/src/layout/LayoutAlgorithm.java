@@ -11,7 +11,7 @@ public class LayoutAlgorithm {
 	ModelSpec model;
     int maxIter;
 
-    /**ƒ
+    /**
      * Initialize LayoutAlgorithm
      * @param model - model to be layed out
      * @param filename - file for tracking changes
@@ -70,9 +70,6 @@ public class LayoutAlgorithm {
 			VisualInfo[] intention_nodePos = initNodePositions(temp_arrayList);
 			if (LMain.DEBUG) System.out.println(Arrays.toString(intention_nodePos));
 
-			//sort intentions
-			// organizeIntentionTypes(intention_nodePos, a);
-
 			//layout intentions
 			layoutModel(intention_nodePos, false);
 
@@ -80,7 +77,6 @@ public class LayoutAlgorithm {
 			resizeActor(a, intention_nodePos);
 			if (a.getName().equals("temp-actor")) {
 				if (LMain.DEBUG) System.out.println(a.getVisualInfo());
-				//return model;
 			}
 		}
 
@@ -127,13 +123,11 @@ public class LayoutAlgorithm {
         //constants
         double c = .0002; //adjustment -- the speed at which actors move
         //TODO: solid piece wise function for c (scalable for big model)
-        //if (nodePositions.length >= 7) c = .0001;
         if(nodePositions.length < 7 && nodePositions.length > 3) c = .0006;
         else if(nodePositions.length < 4) c = .0015;
         double constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
         if(hasActors) {
             c = .01;
-        	//c = .02;
         }
         if (LMain.DEBUG) System.out.println(constant);
         double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
@@ -184,11 +178,9 @@ public class LayoutAlgorithm {
  
                 //adjust positions based on gravity from the center
                 double phi = angleBetween(center, nodePositions[j]);
-                //if (LMain.DEBUG) System.out.println("phi: " + phi);
+                if (LMain.DEBUG) System.out.println("phi: " + phi);
                 nodePositions[j].setX(nodePositions[j].getX() + gravitation*Math.cos(phi));
                 nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
-
-                //gravitation = getDist(nodePositions[j], center) * .2;
 
             }
 
@@ -226,24 +218,6 @@ public class LayoutAlgorithm {
             diffXByNodes.add(nodeDiffX);
             diffYByNodes.add(nodeDiffY);
         }
-
-        // // print out diffXByNodes
-        // System.out.println("Diff X by Nodes:");
-        //     for (ArrayList<Double> nodeDiffX : diffXByNodes) {
-        //         for (Double diffX : nodeDiffX) {
-        //         System.out.print(diffX + " ");
-        //         }
-        //         System.out.println();
-        //     }
-
-        // // print out diffYByNodes
-        // System.out.println("Diff Y by Nodes:");
-        // for (ArrayList<Double> nodeDiffY : diffYByNodes) {
-        //     for (Double diffY : nodeDiffY) {
-        //         System.out.print(diffY + " ");
-        //     }
-        //     System.out.println();
-        // }
         
         ArrayList<ArrayList<Double>> diffDistanceByNodes = new ArrayList<ArrayList<Double>>();
 
@@ -358,7 +332,7 @@ public class LayoutAlgorithm {
      */
 
     private double getRepulsion(VisualInfo n1, VisualInfo n2, double constant) {
-    	//if (LMain.DEBUG) System.out.println("Starting: getRepulsion");
+    	if (LMain.DEBUG) System.out.println("Starting: getRepulsion");
         if (n1 != n2) {
             double dist = getDist(n1,n2);
             if(dist == 0) return 99;
