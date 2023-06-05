@@ -228,11 +228,11 @@ var ActorInspector = Backbone.View.extend({
             for (var i = 0; i < intentions.length; i++) {
                 for (var j = 0; j < this.model.attributes.embeds.length; j++) {
                     if (this.model.attributes.embeds[j] == intentions[i].model.id) {
-                        if (this.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
+                        if (this.actor.attributes.intervals[0] && this.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
                             if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.actor.attributes.intervals[0][1]) {
                                 intentions[i].model.attributes.intention.attributes.intervals.shift();
                             }
-                        } else if(this.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
+                        } else if(this.actor.attributes.intervals[0] && this.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
                             if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.actor.attributes.intervals[0][0]) {
                                 intentions[i].model.attributes.intention.attributes.intervals.pop();
                             }
@@ -293,6 +293,16 @@ var TimePointListView = Backbone.View.extend({
         var rangeMin = slider1.min;
         var rangeMax = slider1.max;
 
+        for (var i = 0; i < intervals.length; i++) {
+            if (intervals[i][0] > rangeMax) {
+                intervals.pop();
+            } else if (intervals[i][1] > rangeMax) {
+                intervals[i][1] = rangeMax;
+            }
+        }
+
+        console.log(intervals);
+
         if(this.actor.attributes.intervals.length != 0){ // if the interval is not empty (for which it will default to the values set in the html)
             
             if(intervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
@@ -310,6 +320,8 @@ var TimePointListView = Backbone.View.extend({
                     document.getElementById('intervals-flip-btn').style.display = "none";
                     slider1.value = intervals[0][0] - 1;
                     slider2.value = intervals[0][1] + 1;
+                    document.getElementById('limit1').value = intervals[0][0] - 1;
+                    document.getElementById('limit2').value = intervals[0][1] + 1;
                     document.getElementById('flipped').style.display = "";
                     document.getElementById('not-flipped').style.display = "none";
                  }

@@ -815,7 +815,12 @@ var ElementInspector = Backbone.View.extend({
             timePointsArray.push([timePoints, timePoints2]);
         }
 
+        // updates display when flipped
+        document.getElementById('flipped-min').textContent = minRange;
+        document.getElementById('flipped-max').textContent = maxRange;
+
         this.intention.set('intervals', timePointsArray);
+        console.log(this.intention.get('intervals'));
     },
 });
 
@@ -1374,8 +1379,8 @@ var IntervalsView = Backbone.View.extend({
         var slider1 = document.getElementById('slider-1'); // left slider
         var slider2 = document.getElementById('slider-2'); // right slider
 
-        var rangeMin = slider1.min;
-        var rangeMax = slider1.max;
+        var rangeMin = 0;
+        var rangeMax = graph.get('maxAbsTime');
 
         if (this.actor) { // if intention is within an actor
             var actorIntervals = this.actor.model.attributes.actor.attributes.intervals;
@@ -1406,6 +1411,14 @@ var IntervalsView = Backbone.View.extend({
             }
         }
 
+        for (var i = 0; i < intervals.length; i++) {
+            if (intervals[i][0] > rangeMax) {
+                intervals.pop();
+            } else if (intervals[i][1] > rangeMax) {
+                intervals[i][1] = rangeMax;
+            }
+        }
+
         if (intervals.length > 0) { // if intention is not always available
             if (intervals[1]){ // two exclusion intervals
                 slider1.value = intervals[0][1] + 1;
@@ -1427,43 +1440,17 @@ var IntervalsView = Backbone.View.extend({
             }
         }
 
-        if (intervals.length == 0) {
-            document.getElementById('range1').textContent = rangeMin;
-            document.getElementById('range2').textContent = rangeMax;
-            document.getElementById('range1-flipped').textContent = rangeMin;
-            document.getElementById('range2-flipped').textContent = rangeMax;
-        } else if (intervals.length == 1) {
-            console.log(intervals);
-            console.log(rangeMin);
-            if (intervals[0][0] == rangeMin) { // [min-#] excluded
-                document.getElementById('range1').textContent = intervals[0][1] + 1;
-                document.getElementById('range2').textContent = rangeMax;
-                document.getElementById('range1-flipped').textContent = intervals[0][1] + 1;
-                document.getElementById('range2-flipped').textContent = rangeMax;
-            } else if (intervals[0][1] == rangeMax) { // [#-max] excluded
-                document.getElementById('range1').textContent = rangeMin;
-                document.getElementById('range2').textContent = intervals[0][0] - 1;
-                document.getElementById('range1-flipped').textContent = rangeMin;
-                document.getElementById('range2-flipped').textContent = intervals[0][0] - 1;
-            } else { // [#-#] excluded
-                document.getElementById('flipped').style.display = "";
-                document.getElementById('flipped-min') = rangeMin;
-                document.getElementById('range1-flipped').textContent = intervals[0][0] - 1;
-                document.getElementById('range2-flipped').textContent = intervals[0][0] + 1;
-                document.getElementById('flipped-max') = rangeMax;
-                document.getElementById('range1').textContent = intervals[0][0] - 1;
-                document.getElementById('range2').textContent = intervals[0][0] + 1;
-                document.getElementById('not-flipped').style.display = "none";
-            }
-        } else if (intervals.length == 2) {
-            document.getElementById('range1').textContent = intervals[0][1] + 1;
-            document.getElementById('range2').textContent = intervals[1][0] - 1;
-        }
+        document.getElementById('range1').textContent = slider1.value;
+        document.getElementById('range2').textContent = slider2.value;
+        document.getElementById('range1-flipped').textContent = slider1.value;
+        document.getElementById('range2-flipped').textContent = slider2.value;
 
-        // document.getElementById('range1').textContent = slider1.value;
-        // document.getElementById('range2').textContent = slider2.value;
-        // document.getElementById('range1-flipped').textContent = slider1.value;
-        // document.getElementById('range2-flipped').textContent = slider2.value;
+        if (intervals.length == 1 && intervals[0][0] != rangeMin && intervals[0][1] != rangeMax)  { // [#-#] excluded
+            document.getElementById('flipped-min').textContent = rangeMin;
+            document.getElementById('flipped-max').textContent = rangeMax;
+            document.getElementById('flipped').style.display = "";
+            document.getElementById('not-flipped').style.display = "none";
+        }
 
         slider1.min = rangeMin;
         slider2.min = rangeMin;
