@@ -21,7 +21,7 @@ var displayValOne;
 var displayValTwo;
 var displayValOneFlipped;
 var displayValTwoFlipped;
-var minGap = 0;
+var minGap = 1;
 var sliderTrack;
 var sliderMaxValue;
 var sliderMinValue;

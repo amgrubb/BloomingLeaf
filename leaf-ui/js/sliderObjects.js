@@ -108,15 +108,11 @@ class SliderObj {
             //         console.log(cells[i].model.attributes.actor.attributes.isHidden);
             //         SliderObj.hideElements(false, SatList);
             //     }
-            // }
-            
-            console.log("stored value",SliderObj.storedValue);
-            
+            // }            
             
             //var t = parseInt(values[handle])%2;
             //if (t == 0) {
             const intervals = SliderObj.hideElements(false, SatList);
-            console.log("intervals",intervals);
             // }
             // else {
             //     const intervals = SliderObj.hideElements(false, SatList);
@@ -620,7 +616,6 @@ class SliderObj {
             //}
             //intervals.push(SliderObj.hideActor(cells, bool, target_actor_j_id[i]));
         }
-        // console.log(intervals);
 
         //TODO: replace hardcoded target_intention_j_id with intentions list
         // Call helper functions to hide embedded elements, links, and the actor itself

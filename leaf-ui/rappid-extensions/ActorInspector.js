@@ -190,7 +190,6 @@ var ActorInspector = Backbone.View.extend({
 
         this.actor.set('intervals', timePointsArray);
         // use this.actor.set('intervals', []) ??
-        console.log(this.actor.get('intervals'));
     },
 
     flipEmbeds: function() {
@@ -230,11 +229,11 @@ var ActorInspector = Backbone.View.extend({
                 for (var j = 0; j < this.model.attributes.embeds.length; j++) {
                     if (this.model.attributes.embeds[j] == intentions[i].model.id) {
                         if (this.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.actor.attributes.intervals[0][1]) {
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.actor.attributes.intervals[0][1]) {
                                 intentions[i].model.attributes.intention.attributes.intervals.shift();
                             }
                         } else if(this.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.actor.attributes.intervals[0][0]) {
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.actor.attributes.intervals[0][0]) {
                                 intentions[i].model.attributes.intention.attributes.intervals.pop();
                             }
                         }

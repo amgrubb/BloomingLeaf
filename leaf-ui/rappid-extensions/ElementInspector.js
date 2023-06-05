@@ -1370,6 +1370,7 @@ var IntervalsView = Backbone.View.extend({
 
         var intervals = this.intention.attributes.intervals;
         console.log(intervals);
+        console.log(intervals);
         var slider1 = document.getElementById('slider-1'); // left slider
         var slider2 = document.getElementById('slider-2'); // right slider
 
@@ -1386,7 +1387,6 @@ var IntervalsView = Backbone.View.extend({
                     slider2.value = rangeMax;
                 } else { // actor has one exclusion interval
                     if (actorIntervals[0][0] == 0) { // [0-#] excluded
-                        console.log("cccc");
                         rangeMin = actorIntervals[0][1] + 1;
                         slider1.value = rangeMin;
                     } else if (actorIntervals[0][1] == graph.get('maxAbsTime')) { // [#-max] excluded
@@ -1427,10 +1427,43 @@ var IntervalsView = Backbone.View.extend({
             }
         }
 
-        document.getElementById('range1').textContent = slider1.value;
-        document.getElementById('range2').textContent = slider2.value;
-        document.getElementById('range1-flipped').textContent = slider1.value;
-        document.getElementById('range2-flipped').textContent = slider2.value;
+        if (intervals.length == 0) {
+            document.getElementById('range1').textContent = rangeMin;
+            document.getElementById('range2').textContent = rangeMax;
+            document.getElementById('range1-flipped').textContent = rangeMin;
+            document.getElementById('range2-flipped').textContent = rangeMax;
+        } else if (intervals.length == 1) {
+            console.log(intervals);
+            console.log(rangeMin);
+            if (intervals[0][0] == rangeMin) { // [min-#] excluded
+                document.getElementById('range1').textContent = intervals[0][1] + 1;
+                document.getElementById('range2').textContent = rangeMax;
+                document.getElementById('range1-flipped').textContent = intervals[0][1] + 1;
+                document.getElementById('range2-flipped').textContent = rangeMax;
+            } else if (intervals[0][1] == rangeMax) { // [#-max] excluded
+                document.getElementById('range1').textContent = rangeMin;
+                document.getElementById('range2').textContent = intervals[0][0] - 1;
+                document.getElementById('range1-flipped').textContent = rangeMin;
+                document.getElementById('range2-flipped').textContent = intervals[0][0] - 1;
+            } else { // [#-#] excluded
+                document.getElementById('flipped').style.display = "";
+                document.getElementById('flipped-min') = rangeMin;
+                document.getElementById('range1-flipped').textContent = intervals[0][0] - 1;
+                document.getElementById('range2-flipped').textContent = intervals[0][0] + 1;
+                document.getElementById('flipped-max') = rangeMax;
+                document.getElementById('range1').textContent = intervals[0][0] - 1;
+                document.getElementById('range2').textContent = intervals[0][0] + 1;
+                document.getElementById('not-flipped').style.display = "none";
+            }
+        } else if (intervals.length == 2) {
+            document.getElementById('range1').textContent = intervals[0][1] + 1;
+            document.getElementById('range2').textContent = intervals[1][0] - 1;
+        }
+
+        // document.getElementById('range1').textContent = slider1.value;
+        // document.getElementById('range2').textContent = slider2.value;
+        // document.getElementById('range1-flipped').textContent = slider1.value;
+        // document.getElementById('range2-flipped').textContent = slider2.value;
 
         slider1.min = rangeMin;
         slider2.min = rangeMin;
