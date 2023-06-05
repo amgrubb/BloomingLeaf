@@ -310,8 +310,6 @@ var TimePointListView = Backbone.View.extend({
                     document.getElementById('intervals-flip-btn').style.display = "none";
                     slider1.value = intervals[0][0] - 1;
                     slider2.value = intervals[0][1] + 1;
-                    document.getElementById('limit1').value = actorIntervals[0][0] - 1;
-                    document.getElementById('limit2').value = actorIntervals[0][1] + 1;
                     document.getElementById('flipped').style.display = "";
                     document.getElementById('not-flipped').style.display = "none";
                  }
