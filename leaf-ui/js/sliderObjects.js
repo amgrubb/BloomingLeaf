@@ -622,7 +622,7 @@ class SliderObj {
         //const intervals = SliderObj.hideIntention(cells, bool, target_intention_j_id, links);
         // console.log(intervals);
 
-        //SliderObj.hideConflictingSatVals(SatList);
+        SliderObj.hideConflictingSatVals(SatList);
         for(var i = 0; i < actors.length; i++){//newly added
             if ($("#" + target_actor_j_id[i].id).css("display") == "none") {
                 SliderObj.hideEmbeddedElements(cells, actorEmbeds[i], true); //assuming the order of embeds is the same with actors array

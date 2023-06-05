@@ -764,6 +764,9 @@ var ElementInspector = Backbone.View.extend({
         return this;
     },
 
+    /**
+     * Returns the actor that the intention belongs to
+     */
     findActor: function() {
         var elements = graph.getElements();
         var actors = []
@@ -784,12 +787,18 @@ var ElementInspector = Backbone.View.extend({
         }
     },
 
+    /**
+     * Creates and renders an instance of the IntervalsView subview 
+     */
     displayIntervals: function (actor) {
         var intervalsView = new IntervalsView({actor: actor, intention: this.intention});
         $('#max-time').append(intervalsView.el);
         intervalsView.render();
     },
 
+    /**
+     * Updates the intervals saved into the instance of the intention
+     */
     updateTimePointsSet: function () {  
         var minRange = parseInt(document.getElementById('slider-1').min);
         var maxRange = parseInt(document.getElementById('slider-1').max);  
@@ -806,20 +815,20 @@ var ElementInspector = Backbone.View.extend({
                 timePointsArray.push([timePoints2 + 1, maxRange]);
             }
         } else { // flipped
-            if (timePoints != minRange) { 
+            if (timePoints != minRange) { // first slider is moved
                 timePoints += 1;
             }
-            if (timePoints2 != maxRange) {
+            if (timePoints2 != maxRange) { // second slider is moved
                 timePoints2 -= 1;
             }
             timePointsArray.push([timePoints, timePoints2]);
         }
 
+        this.intention.set('intervals', timePointsArray);
+
         // updates display when flipped
         document.getElementById('flipped-min').textContent = minRange;
         document.getElementById('flipped-max').textContent = maxRange;
-
-        this.intention.set('intervals', timePointsArray);
     },
 });
 
@@ -1389,15 +1398,14 @@ var IntervalsView = Backbone.View.extend({
                     slider2.value = rangeMax;
                 } else { // actor has one exclusion interval
                     if (actorIntervals[0][0] == 0) { // [0-#] excluded
-                        if (actorIntervals[0][1] == graph.get('maxAbsTime')) { // special case [0-100]
-                            document.getElementById('intervals-flip-btn').style.display = "none";
+                        if (actorIntervals[0][1] == graph.get('maxAbsTime')) { // special case: [0-100] excluded
+                            document.getElementById('intervals-flip-btn').style.display = "none"; // cannot flip intention if it can never be available
                         }
                         rangeMin = actorIntervals[0][1] + 1;
                         slider1.value = rangeMin;
                     } else if (actorIntervals[0][1] >= graph.get('maxAbsTime')) { // [#-max] excluded
                         rangeMax = actorIntervals[0][0] - 1;
                         slider2.value = rangeMax;
-                        console.log("range max:", rangeMax);
                     } else { // [#-#] excluded
                         document.getElementById('intervals-flip-btn').value = "false";
                         document.getElementById('intervals-flip-btn').style.display = "none";
@@ -1412,6 +1420,7 @@ var IntervalsView = Backbone.View.extend({
             }
         }
 
+        // gets rid of exclusion intervals that are not within the range (as defined either by absolute time or by the actor)
         for (var i = 0; i < intervals.length; i++) {
             if (intervals[i][0] > rangeMax) {
                 intervals.pop();
@@ -1450,11 +1459,11 @@ var IntervalsView = Backbone.View.extend({
             }
         }
 
+        // update displayed numbers to match slider values
         document.getElementById('range1').textContent = slider1.value;
         document.getElementById('range2').textContent = slider2.value;
         document.getElementById('range1-flipped').textContent = slider1.value;
         document.getElementById('range2-flipped').textContent = slider2.value;
-
         if (intervals.length == 1 && intervals[0][0] != rangeMin && intervals[0][1] != rangeMax)  { // [#-#] excluded
             document.getElementById('flipped-min').textContent = rangeMin;
             document.getElementById('flipped-max').textContent = rangeMax;
@@ -1462,12 +1471,11 @@ var IntervalsView = Backbone.View.extend({
             document.getElementById('not-flipped').style.display = "none";
         }
 
+        // set bounds for how far sliders can slide
         slider1.min = rangeMin;
         slider2.min = rangeMin;
         slider1.max = rangeMax;
         slider2.max = rangeMax;
-
-        console.log(intervals);
 
         return this;
     },
