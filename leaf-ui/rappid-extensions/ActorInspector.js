@@ -38,7 +38,7 @@ var ActorInspector = Backbone.View.extend({
         'keyup .cell-attrs-text': 'nameAction',
         'change #actor-type-ID': 'updateType',
         'change #actor-hidden' : 'updateHidden',
-        'change #max-time': 'updateTimePointsSet',
+        'change #max-time': 'updateEmbeds',
         'click #intervals-flip-btn': 'flipEmbeds',
         'clearInspector .inspector-views': 'removeView'
     },
@@ -207,6 +207,35 @@ var ActorInspector = Backbone.View.extend({
             intentions[i].model.attributes.intention.attributes.intervals = [];
         }
     },
+
+    updateEmbeds: function () {
+        this.updateTimePointsSet();
+        if (this.model.attributes.embeds) {
+            var elements = graph.getElements();
+            var intentions = []
+            for (var i = 0; i < elements.length; i++) {
+                var cell = elements[i].findView(paper);
+                if (cell.model.attributes.type != "basic.Actor") {
+                    intentions.push(cell);
+                }
+            }
+            for (var i = 0; i < intentions.length; i++) {
+                for (var j = 0; j < this.model.attributes.embeds.length; j++) {
+                    if (this.model.attributes.embeds[j] == intentions[i].model.id) {
+                        if (this.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.shift();
+                            }
+                        } else if(this.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.actor.attributes.intervals[0][0]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 });
 
 var TimePointListView = Backbone.View.extend({
@@ -294,8 +323,6 @@ var TimePointListView = Backbone.View.extend({
                     document.getElementById('intervals-flip-btn').style.display = "none";
                     slider1.value = intervals[0][0] - 1;
                     slider2.value = intervals[0][1] + 1;
-                    document.getElementById('limit1').value = intervals[0][0] - 1;
-                    document.getElementById('limit2').value = intervals[0][1] + 1;
                     document.getElementById('flipped').style.display = "";
                     document.getElementById('not-flipped').style.display = "none";
                  }
