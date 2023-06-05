@@ -122,33 +122,41 @@ function dealWithTimingObject(timing) {
 		// console.log("input_required: ",  input_required)
 		if(input_required) {
 			// call merge
-			// globalTiming = timing_list;
-			timing_list.indexes_to_modify = indexes_to_modify;
-			// globalTiming.indexes_to_modify = indexes_to_modify;
+			// var isFinished = false;
+			globalTiming = timing_list;
+			// timing_list.indexes_to_modify = indexes_to_modify;
+			globalTiming.indexes_to_modify = indexes_to_modify;
 			// console.log("index to change: ", globalTiming.indexes_to_modify)
-			console.log("index to change: ", timing_list.indexes_to_modify);
+			console.log("index to change: ", globalTiming.indexes_to_modify);
 			displayTimingInputWindow(timing);
+			// while (!isFinished) {
+			// 	console.log('User is not finished.');
+			// }
 		}
 		// timing_list = globalTiming;
 		// console.log("new Timing: ", timing);
 		// backendMergeRequest(timing);
 	}
-	// console.log("new Timing: ", timing);
-	backendMergeRequest(timing);
+	console.log("new Timing: ", timing);
+	// backendMergeRequest(timing);
 }
 
 function displayTimingInputWindow(timing) {
 	$('#timing-input-window').css('display', '');
 
-	// let indexes = globalTiming.indexes_to_modify;
-	// let intention_list = $('#timing-input-intention-list');
-	console.log("timing in display: ", timing);
-	timing_list = timing.timingList;
-	let indexes = timing_list.indexes_to_modify;
-	// globalTiming.indexes_to_modify;
+	let indexes = globalTiming.indexes_to_modify;
 	let intention_list = $('#timing-input-intention-list');
+	console.log("timing in display: ", timing);
+	// timing_list = timing.timingList;
+	// let indexes = timing_list.indexes_to_modify;
+	// globalTiming.indexes_to_modify;
+	// let intention_list = $('#timing-input-intention-list');
 	
-	
+	// var isFinished = false;
+
+	// while (!isFinished) {
+	// 	console.log('User is not finished.');
+	// }
 
 	for(i in indexes) {
 		// console.log("Intention: ", globalTiming[i].intention);
@@ -157,15 +165,42 @@ function displayTimingInputWindow(timing) {
 		
 		intention_list.append(
 			"<div>" +
-			"<h3>" + timing_list[i].intention + "</h3>" +
-			"<input type=\"text\" style=\"width:80%\" id=\"" + inputId + "\" value=\"" + timing_list[i].newTimeOrder +  "\"> " +
+			"<h3>" + globalTiming[i].intention + "</h3>" +
+			"<input type=\"text\" style=\"width:80%\" id=\"" + inputId + "\" value=\"" + globalTiming[i].newTimeOrder +  "\"> " +
 			"<span>New Time Order</span><br>" +
-			"<h4>Relative time points to add: <span id=\"timing-input-toAdd-" + i + "\">" + timing_list[i].itemsToAdd + "</span></h4>" +
+			"<h4>Relative time points to add: <span id=\"timing-input-toAdd-" + i + "\">" + globalTiming[i].itemsToAdd + "</span></h4>" +
 			"</div>"
 		)
 	}
 	
-	// module.exports = { timing.timingList };
+	merge_button_timing = document.getElementById("merge-button-timing");
+
+	merge_button_timing.onclick = function(){
+		let editedInputValues = [];
+
+		var intentions_list = document.getElementById('timing-input-intention-list');
+		timeOrders = intentions_list.getElementsByTagName("input");
+		
+		// const { timing_list } = require('backendComm.js');
+
+		for (let i = 0; i < timeOrders.length; i++){
+			timeOrder = timeOrders[i].value;
+			editedInputValues.push(timeOrder);
+			// console.log("edits: ", editedInputValues);
+			// timing_list[i].newTimeOrder = timeOrder;
+			globalTiming[i].newTimeOrder = timeOrder;
+			
+			// console.log("globalTiming:", i," ", globalTiming[i].newTimeOrder);
+		}
+		timing_input.style.display = "none";
+		// isFinished = true;
+		// backendMergeRequest(timing);
+		// console.log("new time Order: ", editedInputValues);
+		// console.log("globalTiming : ", globalTiming);
+
+		// module.exports = { timing.timingList };
+		backendMergeRequest(timing);
+	}
 }
 function backendMergeRequest(timing) {
 	var jsObject = {};
