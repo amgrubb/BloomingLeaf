@@ -1394,9 +1394,10 @@ var IntervalsView = Backbone.View.extend({
                         }
                         rangeMin = actorIntervals[0][1] + 1;
                         slider1.value = rangeMin;
-                    } else if (actorIntervals[0][1] == graph.get('maxAbsTime')) { // [#-max] excluded
+                    } else if (actorIntervals[0][1] >= graph.get('maxAbsTime')) { // [#-max] excluded
                         rangeMax = actorIntervals[0][0] - 1;
                         slider2.value = rangeMax;
+                        console.log("range max:", rangeMax);
                     } else { // [#-#] excluded
                         document.getElementById('intervals-flip-btn').value = "false";
                         document.getElementById('intervals-flip-btn').style.display = "none";

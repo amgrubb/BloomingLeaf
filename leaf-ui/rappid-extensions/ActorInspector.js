@@ -193,9 +193,9 @@ var ActorInspector = Backbone.View.extend({
 
     flipEmbeds: function() {
         this.updateTimePointsSet();
+        var intentions = []
         if (this.model.attributes.embeds) {
             var elements = graph.getElements();
-            var intentions = []
             for (var i = 0; i < elements.length; i++) {
                 var cell = elements[i].findView(paper);
                 if (cell.model.attributes.type != "basic.Actor") {
@@ -222,12 +222,13 @@ var ActorInspector = Backbone.View.extend({
             for (var i = 0; i < intentions.length; i++) {
                 for (var j = 0; j < this.model.attributes.embeds.length; j++) {
                     if (this.model.attributes.embeds[j] == intentions[i].model.id) {
-                        if (this.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.actor.attributes.intervals[0][1]) {
+                        if (this.actor.attributes.intervals[0] && this.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] < this.actor.attributes.intervals[0][1]) {
                                 intentions[i].model.attributes.intention.attributes.intervals.shift();
                             }
-                        } else if(this.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.actor.attributes.intervals[0][0]) {
+                        } else if (this.actor.attributes.intervals[0] && this.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
+                            console.log("there");
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.actor.attributes.intervals[0][0]) {
                                 intentions[i].model.attributes.intention.attributes.intervals.pop();
                             }
                         }
@@ -291,14 +292,14 @@ var TimePointListView = Backbone.View.extend({
             if (intervals[i][0] > rangeMax) {
                 intervals.pop();
             } else if (intervals[i][1] > rangeMax) {
-                intervals[i][1] = rangeMax;
+                intervals[i][1] = parseInt(rangeMax);
             }
         }
 
         console.log(intervals);
 
         if(this.actor.attributes.intervals.length != 0){ // if the interval is not empty (for which it will default to the values set in the html)
-            
+
             if(intervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
                 slider1.value = intervals[0][1] + 1;
                 slider2.value = intervals[1][0] - 1;
@@ -306,7 +307,6 @@ var TimePointListView = Backbone.View.extend({
                  if (intervals[0][0] == 0){ // [0-#]
                     if (intervals [0][1] == graph.get('maxAbsTime')) { // special case [0-100]
                         document.getElementById('intervals-flip-btn').value = "false";
-                        document.getElementById('intervals-flip-btn').style.display = "none";
                         slider1.value = intervals[0][0] - 1;
                         slider2.value = intervals[0][1] + 1;
                         document.getElementById('flipped').style.display = "";
