@@ -69,8 +69,6 @@ var ActorInspector = Backbone.View.extend({
                 }
             }
         } 
-        console.log("cells!");
-        console.log(cellsView);
     },
 
     /**
@@ -101,14 +99,14 @@ var ActorInspector = Backbone.View.extend({
     },
 
     /**
-     * Removes the view so we don't have multiple ones in the sidebar
+     * Removes the view so we don't have multiple ones in the sidebar.
      */
     removeView: function () {
         this.remove();
     },
 
     /**
-     * Changes the line that distinguishes the type of actor 
+     * Changes the line that distinguishes the type of actor .
      */
     updateType: function () {
         var actorType = $('#actor-type-ID').val();
@@ -152,7 +150,7 @@ var ActorInspector = Backbone.View.extend({
     },
 
     /**
-     * This function displays the tyemplate opf timePointListView
+     * This function displays the tyemplate opf timePointListView.
      */
     displayTimePointListView: function(){
         var display = this.timePointListView();
@@ -191,6 +189,10 @@ var ActorInspector = Backbone.View.extend({
         this.actor.set('intervals', timePointsArray);
     },
 
+
+    /**
+     * This function flips the elements embedded in the actor.
+     */
     flipEmbeds: function() {
         this.updateTimePointsSet();
         var intentions = []
@@ -208,6 +210,9 @@ var ActorInspector = Backbone.View.extend({
         }
     },
 
+    /**
+     * This function updates the embedded elements' intervals based on the actor's interval.
+     */
     updateEmbeds: function () {
         this.updateTimePointsSet();
         if (this.model.attributes.embeds) {
@@ -227,7 +232,6 @@ var ActorInspector = Backbone.View.extend({
                                 intentions[i].model.attributes.intention.attributes.intervals.shift();
                             }
                         } else if (this.actor.attributes.intervals[0] && this.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
-                            console.log("there");
                             if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.actor.attributes.intervals[0][0]) {
                                 intentions[i].model.attributes.intention.attributes.intervals.pop();
                             }
@@ -295,8 +299,6 @@ var TimePointListView = Backbone.View.extend({
                 intervals[i][1] = parseInt(rangeMax);
             }
         }
-
-        console.log(intervals);
 
         if(this.actor.attributes.intervals.length != 0){ // if the interval is not empty (for which it will default to the values set in the html)
 

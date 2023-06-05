@@ -3,18 +3,6 @@ window.onload = function(){
     slideTwo();
 }
 
-console.log("Slider script here")
-
-
-// var sliderOne = document.getElementById("slider-1");
-// var sliderTwo = document.getElementById("slider-2");
-// var displayValOne = document.getElementById("range1");
-// var displayValTwo = document.getElementById("range2");
-// var minGap = 0;
-// var sliderTrack = document.querySelector(".slider-track");
-// var sliderMaxValue = document.getElementById("slider-1").max;
-// var flipIntervalsCheckbox = document.getElementById("intervals-flip-btn");
-
 var sliderOne;
 var sliderTwo;
 var displayValOne;
@@ -27,6 +15,10 @@ var sliderMaxValue;
 var sliderMinValue;
 var flipIntervalsCheckbox;
 
+
+/**
+ * This function gets the value for the slider element.
+ */
 function getValues() {
     sliderOne = document.getElementById("slider-1");
     sliderTwo = document.getElementById("slider-2");
@@ -41,6 +33,9 @@ function getValues() {
     displayValTwoFlipped = document.getElementById("range2-flipped");
 }
 
+/**
+ * This function defines the values of the first slider.
+ */
 function slideOne() {
     getValues();
     if (document.getElementById("limit2")) {
@@ -65,6 +60,9 @@ function slideOne() {
     }
 }
 
+/**
+ * This function defines the values of the second slider.
+ */
 function slideTwo(limit = null) {
     getValues();
     if (document.getElementById("limit2")) {
@@ -91,6 +89,9 @@ function slideTwo(limit = null) {
     }
 }
 
+/**
+ * This function fills the color or the slider bar in function of where the sliders are, when it is not flipped.
+ */
 function fillColor() {
     getValues();
 
@@ -102,6 +103,9 @@ function fillColor() {
     document.getElementById("flipped").style.display = "none";
 }
 
+/**
+ * This function fills the color or the slider bar in function of where the sliders are, when it is flipped.
+ */
 function fillColorReverse() {
     getValues();
 
@@ -113,13 +117,15 @@ function fillColorReverse() {
     document.getElementById("flipped").style.display = "block";
 }
 
+/**
+ * This function flips the slider.
+ */
 function flipIntervals() {
     getValues();
 
     if (flipIntervalsCheckbox.value == "true") {
         fillColorReverse();
         this.$('#intervals-flip-btn').val(false);
-        console.log(flipIntervalsCheckbox.value);
     } else {
         fillColor();
         this.$('#intervals-flip-btn').val(true);
