@@ -3,6 +3,11 @@
  *
  */
 // Simulator
+
+
+// import { timing_list } from "backendComm.js";
+// const { timing_list } = require('backendComm.js');
+
 loader = document.getElementById("loader");
 layout_loader = document.getElementById("layout-loader");
 merge_button = document.getElementById("merge-button");
@@ -35,19 +40,26 @@ layout_loader.onchange = function () {
 	}
 };
 
+
 merge_button_timing.onclick = function(){
+	
 	let editedInputValues = [];
 
 	var intention_list = document.getElementById('timing-input-intention-list');
 	timeOrders = intention_list.getElementsByTagName("input");
+	
+	// const { timing_list } = require('backendComm.js');
 
 	for (let i = 0; i < timeOrders.length; i++){
 		timeOrder = timeOrders[i].value;
 		editedInputValues.push(timeOrder);
+		console.log("edits: ", editedInputValues);
+		// timing_list[i].newTimeOrder = timeOrder;
 		globalTiming[i].newTimeOrder = timeOrder;
 		// console.log("globalTiming:", i," ", globalTiming[i].newTimeOrder);
 	}
 	timing_input.style.display = "none";
+	// backendMergeRequest(timing);
 	// console.log("new time Order: ", editedInputValues);
 	// console.log("globalTiming : ", globalTiming);
 
