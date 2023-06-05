@@ -253,8 +253,17 @@ public class IMainBuilder {
 		// convert FunctionSegment[] into List<BIFunctionSegment>
 		ArrayList<BIFunctionSegment> funcSegList = new ArrayList<BIFunctionSegment>();
 		for (FunctionSegment func : evolvingFunctions) {
-			BIFunctionSegment funcSeg = new BIFunctionSegment(func.getRefEvidencePair(), func.getStartAT(),
-															  func.getStartTP(), func.getType());
+			BIFunctionSegment funcSeg;
+			//if it's the last function segment, set current to true so it can be changed
+			if (func == evolvingFunctions[evolvingFunctions.length - 1]) {
+				funcSeg = new BIFunctionSegment(func.getRefEvidencePair(), func.getStartAT(),
+						  func.getStartTP(), func.getType(), true);
+			}
+			else {
+				funcSeg = new BIFunctionSegment(func.getRefEvidencePair(), func.getStartAT(),
+						  func.getStartTP(), func.getType(), false);
+			}
+			
 			funcSegList.add(funcSeg);
 		}
 		
@@ -277,9 +286,17 @@ public class IMainBuilder {
 		// convert List<MFunctionSegment> into List<BIFunctionSegment>
 		ArrayList<BIFunctionSegment> funcSegList = new ArrayList<BIFunctionSegment>();
 		for (MFunctionSegment func : evolvingFunctions) {
-			BIFunctionSegment funcSeg = new BIFunctionSegment(func.getStartEvidencePair(), func.getRefEvidencePair(), //(end pair)
-															  func.getRefEvidencePair(), func.getStartAT(),
-															  func.getStartTP(), func.getType());
+			// if it's the last function segment, set it to be current
+			BIFunctionSegment funcSeg;
+			if (func == evolvingFunctions.get(evolvingFunctions.size()-1)) {
+				funcSeg = new BIFunctionSegment(func.getRefEvidencePair(), func.getStartAT(),
+						  func.getStartTP(), func.getType(), true);
+			}
+			else {
+				funcSeg = new BIFunctionSegment(func.getRefEvidencePair(), func.getStartAT(),
+						  func.getStartTP(), func.getType(), false);
+			}
+			
 			funcSegList.add(funcSeg);
 		}
 		

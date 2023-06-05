@@ -2,3 +2,4 @@
 /models/
 /stored-models/
 *iml
+.project

@@ -3,6 +3,7 @@ package layout;
 import simulation.*;
 import merge.*;
 
+
 import java.util.*;
 
 public class LayoutAlgorithm {
@@ -10,7 +11,7 @@ public class LayoutAlgorithm {
 	ModelSpec model;
     int maxIter;
 
-    /**ƒ
+    /**
      * Initialize LayoutAlgorithm
      * @param model - model to be layed out
      * @param filename - file for tracking changes
@@ -69,9 +70,6 @@ public class LayoutAlgorithm {
 			VisualInfo[] intention_nodePos = initNodePositions(temp_arrayList);
 			if (LMain.DEBUG) System.out.println(Arrays.toString(intention_nodePos));
 
-			//sort intentions
-			// organizeIntentionTypes(intention_nodePos, a);
-
 			//layout intentions
 			layoutModel(intention_nodePos, false);
 
@@ -79,7 +77,6 @@ public class LayoutAlgorithm {
 			resizeActor(a, intention_nodePos);
 			if (a.getName().equals("temp-actor")) {
 				if (LMain.DEBUG) System.out.println(a.getVisualInfo());
-				//return model;
 			}
 		}
 
@@ -126,43 +123,40 @@ public class LayoutAlgorithm {
         //constants
         double c = .0002; //adjustment -- the speed at which actors move
         //TODO: solid piece wise function for c (scalable for big model)
-        //if (nodePositions.length >= 7) c = .0001;
         if(nodePositions.length < 7 && nodePositions.length > 3) c = .0006;
         else if(nodePositions.length < 4) c = .0015;
         double constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
         if(hasActors) {
             c = .01;
-        	//c = .02;
         }
         if (LMain.DEBUG) System.out.println(constant);
         double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
+   
+        ArrayList<ArrayList<VisualInfo>> nodePositionsRecord = new ArrayList<ArrayList<VisualInfo>>();
 
-        ArrayList<Double> x_means = new ArrayList<Double>();
-        ArrayList<Double> y_means = new ArrayList<Double>();
+        ArrayList<Double[]> adjustments = new ArrayList<Double[]>();
+        for (int k = 0; k < nodePositions.length; k++) {
+            adjustments.add(new Double[]{nodePositions[k].getX(), nodePositions[k].getY()});
+        } // initial positions stored
 
         //Layout forces applied maxIter times
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
 			if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 
-            
-            double x_sum = 0;
-            double y_sum = 0;
 
             for(int j = 0; j < nodePositions.length; j++){
             	if (LMain.DEBUG) System.out.println(j + "th Node\n");
                 for(int k = 0; k < nodePositions.length; k++){
-                    if(j ==k) continue;
+                    if(j == k) continue;
                     //TODO: Force constants, sizes? How to know...
                     if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
 
-                    double dist = getDist(nodePositions[j], nodePositions[k]);
                     double theta = angleBetween(nodePositions[k], nodePositions[j]);
 
                     //calculate attraction and repulsion force
                     double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
                     double repulsion = getRepulsion(nodePositions[j], nodePositions[k], constant);
-
 
                     //decompose attraction and repulsion, scale forces
                     double x_shift = c * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
@@ -170,9 +164,6 @@ public class LayoutAlgorithm {
 
                     if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
                     if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
-
-                    x_sum = x_sum + Math.abs(x_shift);
-                    y_sum = y_sum + Math.abs(y_shift);
 
                     //apply forces to node j
                     nodePositions[j].setX(nodePositions[j].getX() + x_shift);
@@ -182,55 +173,25 @@ public class LayoutAlgorithm {
                     nodePositions[k].setX(nodePositions[k].getX() - x_shift);
                     nodePositions[k].setY(nodePositions[k].getY() - y_shift);
                     
-
-                    //if either is an actor, add adjust to children nodes
-                    if(j < numActors) {
-                    	propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
-                    }
-
-                    if(k < numActors) {
-                    	propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
-                    }
-
                 }
 
+ 
                 //adjust positions based on gravity from the center
                 double phi = angleBetween(center, nodePositions[j]);
                 if (LMain.DEBUG) System.out.println("phi: " + phi);
                 nodePositions[j].setX(nodePositions[j].getX() + gravitation*Math.cos(phi));
                 nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
 
-                //gravitation = getDist(nodePositions[j], center) * .2;
+            }
 
-                //if j is an actor, add adjust to children nodes
-                if(j < numActors) {
-                	propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
+            if (i % 100 == 0) {
+                ArrayList<VisualInfo> positions = new ArrayList<VisualInfo>();
+                for(int k = 0; k < nodePositions.length; k++){
+                    positions.add(new VisualInfo(nodePositions[k].getWidth(), nodePositions[k].getHeight(),nodePositions[k].getX(), nodePositions[k].getY()));
                 }
-
+                nodePositionsRecord.add(positions);
             }
-
-            int count = nodePositions.length;
-            if (LMain.DEBUG) System.out.println("number of nodes" + count);
-            double x_mean = x_sum / count;
-            double y_mean = y_sum / count;
-
-            if (LMain.DEBUG) System.out.println(i + "th iteration \n" + "x_mean" + x_mean);
-            if (LMain.DEBUG) System.out.println("y_mean" + y_mean);
-
-
-            
-            if(i % 100 == 0) {
-                x_means.add(x_mean);
-                y_means.add(y_mean);
-            }
-
-            // for(Double x:x_means){
-            //     if (LMain.DEBUG) System.out.println(x);
-            // }
-            
-            if (LMain.DEBUG) System.out.println("x_means: "+x_means);
-            if (LMain.DEBUG) System.out.println("y_means: "+y_means);
-
+  
             //check if the layout is looking good --> if if it is, return model 
             if(checkConds(nodePositions, center, numActors)) {
             	if (LMain.DEBUG) System.out.println("Conditions Met");
@@ -241,8 +202,57 @@ public class LayoutAlgorithm {
             lV.update();
             if (LMain.DEBUG) System.out.println(constant);
         }
+
+        ArrayList<ArrayList<Double>> diffXByNodes = new ArrayList<ArrayList<Double>>();
+        ArrayList<ArrayList<Double>> diffYByNodes = new ArrayList<ArrayList<Double>>();
+
+        for (int k = 0; k < nodePositions.length; k++) {
+            ArrayList<Double> nodeDiffX = new ArrayList<Double>();
+            ArrayList<Double> nodeDiffY = new ArrayList<Double>();
+            for (int i = 0; i < nodePositionsRecord.size()-1; i++) {
+                ArrayList<VisualInfo> intervalNodePositions = nodePositionsRecord.get(i);
+                ArrayList<VisualInfo> nextIntervalNodePositions = nodePositionsRecord.get(i + 1);
+                nodeDiffX.add(nextIntervalNodePositions.get(k).getX() - intervalNodePositions.get(k).getX());
+                nodeDiffY.add(nextIntervalNodePositions.get(k).getX() - intervalNodePositions.get(k).getX());
+            }
+            diffXByNodes.add(nodeDiffX);
+            diffYByNodes.add(nodeDiffY);
+        }
+        
+        ArrayList<ArrayList<Double>> diffDistanceByNodes = new ArrayList<ArrayList<Double>>();
+
+        for (int i = 0; i < diffXByNodes.size(); i++) {
+            ArrayList<Double> nodeDiffDistance = new ArrayList<Double>();
+            for (int j = 0; j < diffXByNodes.get(i).size(); j++) {
+                double diffX = diffXByNodes.get(i).get(j);
+                double diffY = diffYByNodes.get(i).get(j);
+                double diffDistance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+                nodeDiffDistance.add(diffDistance);
+            }
+            diffDistanceByNodes.add(nodeDiffDistance);
+        }
+
+        // print out diffDistanceByNodes
+        System.out.println("Diff Distance by Nodes:");
+        for (ArrayList<Double> nodeDiffDistance : diffDistanceByNodes) {
+            for (Double diffDistance : nodeDiffDistance) {
+                String formattedDiffDistance = String.format("%.3f", diffDistance);
+                System.out.print(formattedDiffDistance + " ");
+            }
+            System.out.println();
+        }
+
+
 		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
+
+        for(int k = 0; k < nodePositions.length; k++){
+            adjustments.get(k)[0] -= nodePositions[k].getX();
+            adjustments.get(k)[1] -= nodePositions[k].getY();
+            if(k < numActors) {
+                propagateAdjustments(model.getActors().get(k), -adjustments.get(k)[0], -adjustments.get(k)[1]);
+            }
+        }
 
         //maximum iterations completed
 		return model;
@@ -322,7 +332,7 @@ public class LayoutAlgorithm {
      */
 
     private double getRepulsion(VisualInfo n1, VisualInfo n2, double constant) {
-    	//if (LMain.DEBUG) System.out.println("Starting: getRepulsion");
+    	if (LMain.DEBUG) System.out.println("Starting: getRepulsion");
         if (n1 != n2) {
             double dist = getDist(n1,n2);
             if(dist == 0) return 99;
@@ -342,7 +352,7 @@ public class LayoutAlgorithm {
      * @return
      */
     public double angleBetween(VisualInfo n1, VisualInfo n2) {
-    	//if (LMain.DEBUG) System.out.println("Starting: angleBetween");
+    	if (LMain.DEBUG) System.out.println("Starting: angleBetween");
         if(n1 != n2){
             double distX = n1.getX() - n2.getX();
             double distY = n1.getY() - n2.getY();

@@ -1,10 +1,13 @@
 package premerge;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.BufferedWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -81,7 +84,8 @@ public class PreMerge {
 
 
 	public static void detectIntentionMerge(ModelSpec modelA, ModelSpec modelB, Integer delta, String timingFilePath) {
-		startTimingFile(timingFilePath, delta);
+		
+		startTimingFile(timingFilePath, delta, modelA.getMaxTime(), modelB.getMaxTime());
 		// don't output timing if no overlap between A and B
 		if (modelA.getMaxTime() <= delta) {
 			endTimingFile(timingFilePath);
@@ -121,7 +125,7 @@ public class PreMerge {
 					}
 
 					// otherwise, output timing info to timing file for user to resolve
-					printTiming(intentionA, intentionB, delta, timingFilePath);
+					printTiming(intentionA, intentionB, delta, timingFilePath, modelA.getMaxTime(), modelB.getMaxTime());
 				}
 
 			}
@@ -129,7 +133,7 @@ public class PreMerge {
 		endTimingFile(timingFilePath);
 	}
 
-	private static void printTiming(Intention intentionA, Intention intentionB, Integer delta, String timingFilePath) {
+	private static void printTiming(Intention intentionA, Intention intentionB, Integer delta, String timingFilePath, Integer modelAMaxTime, Integer modelBMaxTime) {
 		Gson gson = new Gson(); 
 
 		try {
@@ -143,16 +147,104 @@ public class PreMerge {
 			// first, print intention name
 			printFile.printf("{%n\t\"intention\": \"%s\",%n", intentionA.getName().trim());
 
+			Integer modelBNewMaxTime = modelBMaxTime + delta;
+			boolean equalMax = modelAMaxTime == modelBNewMaxTime;
 			// timing for intention A
 			List<String> startTimesA = intentionA.getEvolvingFunctionStartTimes();
-			printTimingIntention(startTimesA, "A", printFile);
+			printTimingIntention(startTimesA, "A", printFile, equalMax);
 
 			// timing for intention B
 			List<String> startTimesB = intentionB.getEvolvingFunctionStartTimesIncremented(delta);
-			printTimingIntention(startTimesB, "B", printFile);
+			printTimingIntention(startTimesB, "B", printFile, equalMax);
 
+			// Create new list of time points and list of unassigned time points.
+			HashMap<Integer, String> combinedTimes = new HashMap<>();
+			List<Integer> justTimes = new ArrayList();
+			List<String> unassignedTimesPoints = new ArrayList();
+			for(String item : startTimesA) {
+				try {
+					Integer numToAdd = Integer.parseUnsignedInt(item);
+					combinedTimes.put(numToAdd, "A-"+item);
+					justTimes.add(numToAdd);
+				} catch (NumberFormatException nfe) {
+					unassignedTimesPoints.add("A-"+item);
+				}
+			}
+			for(String item : startTimesB) {
+				try {
+					Integer numToAdd = Integer.parseUnsignedInt(item);
+					combinedTimes.put(numToAdd, "B-"+item);
+					justTimes.add(numToAdd);
+				} catch (NumberFormatException nfe) {
+					unassignedTimesPoints.add("B-"+item);
+				}
+			}
+			Collections.sort(justTimes);
+			String outString = "";
+			boolean maxAFirst = (modelAMaxTime < modelBNewMaxTime);
+			boolean maxAAdded = false;
+			boolean maxBAdded = false;
+			for (Integer numTime : justTimes) {	
+				if ((maxAFirst && !maxAAdded && (numTime < modelAMaxTime)) ||
+					(!maxAFirst && !maxBAdded && (numTime < modelBNewMaxTime))) {
+					outString += "\"" + combinedTimes.get(numTime) + "\", ";
+				} else if ((maxAFirst && !maxAAdded && numTime > modelAMaxTime) ||
+						 	(!maxAFirst && maxBAdded && !maxAAdded && numTime > modelAMaxTime))  {
+					outString += "\"A-MaxTime\", ";
+					maxAAdded = true;
+					if (!maxBAdded && (numTime > modelBNewMaxTime)) {
+						outString += "\"B-MaxTime\", ";
+						maxBAdded = true;
+					}
+					outString += "\"" + combinedTimes.get(numTime) + "\", ";
+				} else if ((!maxAFirst && !maxBAdded && (numTime > modelBNewMaxTime)) ||
+							(maxAFirst && maxAAdded && !maxBAdded && (numTime > modelBNewMaxTime))) {
+					outString += "\"B-MaxTime\", ";
+					maxBAdded = true;
+					if (!maxAAdded && (numTime > modelAMaxTime)) {
+						outString += "\"A-MaxTime\", ";
+						maxAAdded = true;
+					}
+					outString += "\"" + combinedTimes.get(numTime) + "\", ";
+				} else
+					outString += "\"" + combinedTimes.get(numTime) + "\", ";					
+			}
+			if (equalMax && !maxAAdded && !maxBAdded) {
+				outString += "\"AB-MaxTime\", ";
+				maxAAdded = true;
+				maxBAdded = true;
+			}
+			if (maxAFirst && !maxAAdded) {
+				outString += "\"A-MaxTime\", ";
+				maxAAdded = true;
+			}
+			if (!maxBAdded) {
+				outString += "\"B-MaxTime\", ";
+				maxBAdded = true;
+			}
+			if (!maxAAdded) {
+				outString += "\"A-MaxTime\", ";
+				maxAAdded = true;
+			}
+			
+			// Remove last ',' from string.
+			outString = outString.substring(0, outString.length() - 2);
+			
 			// space for user to order the times
-			printFile.printf("\t\"newTimeOrder\": [\"A-0\", ..., \"A-MaxTime\", ..., \"B-MaxTime\"]%n");
+			printFile.printf("\t\"newTimeOrder\": [" + outString + "],%n");
+			//printFile.printf("\t\"newTimeOrder\": [\"A-0\", ..., \"A-MaxTime\", ..., \"B-MaxTime\"],%n");
+			
+			printFile.printf("\t\"itemsToAdd\":  [");
+			if (!unassignedTimesPoints.isEmpty()) {			
+				String itemsOut = "";
+				for (String uTP : unassignedTimesPoints) 
+					itemsOut += "\"" + uTP + "\", ";
+				itemsOut = itemsOut.substring(0, itemsOut.length() - 2);	
+			
+				printFile.printf(itemsOut);
+			}
+			printFile.printf("]%n");
+			
 			printFile.printf("},%n");
 
 			printFile.close();
@@ -161,7 +253,7 @@ public class PreMerge {
 		}
 	}
 
-	private static void printTimingIntention(List<String> startTimes, String modelChar, PrintWriter printFile) {
+	private static void printTimingIntention(List<String> startTimes, String modelChar, PrintWriter printFile, boolean equalMax) {
 		// print current times separated by ", "
 		printFile.printf("\t\"currentTimes%s\":  [", modelChar);
 		for (String start: startTimes) {
@@ -174,11 +266,14 @@ public class PreMerge {
 		for (String start: startTimes) {
 			printFile.printf("\"%s-%s\", ", modelChar, start);
 		}
-		printFile.printf("\"%s-MaxTime\"],%n", modelChar);
+		if (equalMax)
+			printFile.printf("\"AB-MaxTime\"],%n");
+		else
+			printFile.printf("\"%s-MaxTime\"],%n", modelChar);
 
 	}
 
-	private static void startTimingFile(String timingFilePath, Integer delta) {
+	private static void startTimingFile(String timingFilePath, Integer delta, Integer modelAMaxTime, Integer modelBMaxTime) {
 		try {
 			// create new file if doesn't already exist
 			File file;
@@ -191,6 +286,9 @@ public class PreMerge {
 			// (clears file from last output)
 			PrintWriter printFile = new PrintWriter(file);
 			printFile.printf("{\"timingOffset\": \"%d\", %n", delta);
+			printFile.printf("\"A-MaxTime\": \"%d\", %n", modelAMaxTime);
+			printFile.printf("\"B-MaxTime\": \"%d\", %n", modelBMaxTime);
+			printFile.printf("\"New-B-MaxTime\": \"%d\", %n", modelBMaxTime + delta);
 			printFile.println("\"timingList\": [");
 
 			printFile.close();

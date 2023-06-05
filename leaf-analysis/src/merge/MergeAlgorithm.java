@@ -63,7 +63,7 @@ public class MergeAlgorithm {
 	 * @param timings
 	 * @return the merged model
 	 */
-	public ModelSpec mergeModels(){
+	private void mergeModels(){
 		long startTime= System.currentTimeMillis();
 		if (MMain.DEBUG) System.out.println("Starting: mergeModels");
 
@@ -92,13 +92,12 @@ public class MergeAlgorithm {
 
 	    if (MMain.DEBUG) System.out.println("Merge complete.");
 
-		return mergedModel;
 	}
 
 	/**
 	 * Print traceability merge results to file
 	 */
-	public void printTraceability(long runtime) {
+	private void printTraceability(long runtime) {
 		trace.printDeletedToFile(deletedElements, deletedTimings);
 		trace.printConflictMessagesToFile(conflictMessages);
 		trace.printOutput(mergedModel);
@@ -113,7 +112,7 @@ public class MergeAlgorithm {
 	 * @param model2
 	 * @param delta
 	 */
-	public void updateTimeline() {
+	private void updateTimeline() {
 		// update max time for both models as the greater of model1 and model2's new times
 		Integer newMax = Math.max(model1.getMaxTime(), model2.getMaxTime() + delta);
 		model1.setMaxTime(newMax);
@@ -172,7 +171,7 @@ public class MergeAlgorithm {
 	}
 
 	// ******* Intention merging methods begin ******** //
-	public void mergeIntentions() {
+	private void mergeIntentions() {
 		ArrayList<Intention> mergedIntentions = new ArrayList<Intention>();
 		HashSet<String> mergedIntentionsNameSet = new HashSet<String>();
 		int currIDCount = 0;
@@ -266,7 +265,7 @@ public class MergeAlgorithm {
 	public static void updateRepeatedIntention(Intention newIntention, Intention oldIntention, ModelSpec model2){
 
 		//not both links
-		for(NotBothLink nbl: model2.getNotBothLink()){
+		for(NotBothLink nbl: model2.getNotBothLinks()){
 			//Check source intention
 			if(nbl.getElement1() == oldIntention){
 				nbl.setElement1(newIntention);
@@ -310,14 +309,11 @@ public class MergeAlgorithm {
 	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum, ModelSpec model1, ModelSpec model2) {
 		// type G > R > A (agent > role > actor)
 		
-		// use actorOne if >= type to actorTwo
+		// use actorOne if >= type to actorTwo 
+		// either the actor types are equal, OR actorOne is the greatest type, OR actor one is the second greatest type and actor two isn't the greatest
 		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("G")) || (actorOne.getActorType().equals("R") && !actorTwo.getActorType().equals("G"))) {
-	//	if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("G")) || (actorOne.getActorType().equals("R") && !actorTwo.getActorType().equals("G"))) {
-	// TODO: Verify that current conditionals are correct.
 			String newId = createID(actorNum, 12, actorOne.getId(), "Actor");
 			actorOne.setId(newId);
-		
-		
 
 			//transfer all children/attachments to actor 1
 			updateRepeatedActor(actorOne, actorTwo, model2);
@@ -334,7 +330,7 @@ public class MergeAlgorithm {
 
 	}
 
-	public void mergeActors() {
+	private void mergeActors() {
 		//to keep track of all the actors
 		HashSet<String> actorsNameSet = new HashSet<>();
 		ArrayList<Actor> mergedActors = new ArrayList<>();
@@ -428,7 +424,7 @@ public class MergeAlgorithm {
 	 * Merges actor links and deletes links if they conflict with actor types
 	 */
 
-	public void mergeActorLinks() {
+	private void mergeActorLinks() {
 		ArrayList<ActorLink> mergedAL = new ArrayList<>(); //ALs that will be preserved
 		ArrayList<ActorLink> deletedAL = new ArrayList<>(); //ALs that will be logged as deleted
 		
@@ -544,7 +540,7 @@ public class MergeAlgorithm {
 
 	// ******* Link merging methods begin ******** //
 
-	public void mergeLinks(){
+	private void mergeLinks(){
 
 		ArrayList<NotBothLink> mergedNBL = new ArrayList<>();
 		ArrayList<ContributionLink> mergedCL = new ArrayList<>();
@@ -552,7 +548,7 @@ public class MergeAlgorithm {
 		int linkCount = 0;
 
 		//add nbls from model1
-		for(NotBothLink nbl: model1.getNotBothLink()){
+		for(NotBothLink nbl: model1.getNotBothLinks()){
 			String newID = createID(linkCount, 1, nbl.getID(), "NotBothLink");
 
 			nbl.setID(newID);
@@ -577,7 +573,7 @@ public class MergeAlgorithm {
 		}
 
 		//merged nbl from model2 onto model1
-		for(NotBothLink nbl: model2.getNotBothLink()){
+		for(NotBothLink nbl: model2.getNotBothLinks()){
 			boolean isNewLink = true;
 			for(NotBothLink addednbl: mergedNBL){
 				if(isSameLink(addednbl, nbl)){
@@ -1077,7 +1073,7 @@ public class MergeAlgorithm {
 			// get timing order from user input
 			TIntention intentionTiming = timings.getTiming(intention1.getName());
 			timeOrder = intentionTiming.getNewTimeOrder();
-		} else {
+		} else {								// TODO: If no timing file exists.
 			// doesn't have timing from user because simple merge
 			// see PreMerge conditions to skip inputting timing
 
@@ -1155,6 +1151,20 @@ public class MergeAlgorithm {
 		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
 		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getUserEvalAt(delta), maxTime2, maxTimeName2);
 
+		/*
+		 * Convert numeric timepoint names to just the number
+		 */
+		//private void cleanTiming() {
+		for (int i=0; i < timeOrder.size(); i++) {
+			String time = timeOrder.get(i);
+			// take time point order name after "-"
+			String post = time.substring(time.indexOf('-')+1);
+			// numeric - replace with just numbers
+			if (MEPOperators.isNumeric(post)) {
+				timeOrder.set(i, post);
+			}
+		}
+		
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
 

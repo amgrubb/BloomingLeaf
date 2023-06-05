@@ -231,7 +231,6 @@ public class ModelSpec {
 				}
 				for	(String key : affectedKeys) {
 					if (this.updateRefTP(this.changedTPElements.get(key), this.changedTPNames.get(key), mergeTP)) {
-						//this.changedTPNames.remove(key);
 						this.changedTPNames.put(key, mergeTP);
 					}else
 						throw new RuntimeException(); 
@@ -370,19 +369,11 @@ public class ModelSpec {
 		this.decompositionLinks = decompositionLinks;
 	}
 	
-	public List<NotBothLink> getNotBothLinks() {		// TODO: Merge getNotBothLink with getNotBothLinks...they appear to be the same function.
+	public List<NotBothLink> getNotBothLinks() {		
 		return notBothLink;
 	}
 
 	public void setNotBothLinks(List<NotBothLink> notBothLinks) {
-		this.notBothLink = notBothLinks;
-	}
-	
-	public List<NotBothLink> getNotBothLink() {
-		return notBothLink;
-	}
-
-	public void setNotBothLink(List<NotBothLink> notBothLinks) {
 		this.notBothLink = notBothLinks;
 	}
 

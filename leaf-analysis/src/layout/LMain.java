@@ -23,6 +23,8 @@ public class LMain {
 	public static void main(String[] args) {
 	    String inPath = "temp/";
 	    String outPath = "temp/";
+		//String inPath = "data/mergedModels/";
+		//String outPath = "data/laidoutModels/";
 	    // String inPath = "src/layout/temp/";
 	    // String outPath = "src/layout/temp/";
 	    String tracePath = "";
@@ -31,14 +33,6 @@ public class LMain {
 	    String outputFile = "default-output.json";
 	
 	    try {			
-	        /*if (args.length == 6) {
-	            //inPath = args[1];
-	            //outPath = args[2];
-	            //tracePath = args[1];
-	            inputFile = args[1];
-	            outputFile = args[2];
-	        } else throw new IOException("Tool: Command Line Inputs Incorrect.");*/
-	        
 	        if (DEBUG) System.out.println("AutoLayout for: " + inputFile);
 	
 	        Gson gson = new Gson();
@@ -59,7 +53,7 @@ public class LMain {
 	        }
 	
 	        // run auto-layout
-	        LayoutAlgorithm layerOuter = new LayoutAlgorithm(modelSpec, "trace.txt", 5000);
+	        LayoutAlgorithm layerOuter = new LayoutAlgorithm(modelSpec, "trace.txt", 5001);
 	        ModelSpec layedOutModel = layerOuter.layout();
 	
 	        // Create output file that will be used by frontend
