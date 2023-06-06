@@ -30,6 +30,8 @@ class SliderObj {
      * @param {Boolean} isSwitch
      *   True if we are switching analysis results,
      *   false if new result from the back end
+     * 
+     * @return {Boolean} SliderObj.createSlider(analysisResult, isSwitch);
      */
     static displayAnalysis(analysisResult, isSwitch) {
         // Check if slider has already been initialized
@@ -48,6 +50,8 @@ class SliderObj {
      * @param {Boolean} isSwitch
      *   True if the slider is being created when we are switching analysis results,
      *   false if new result from the back end
+     * 
+     * @return {Boolean} 
      */
     static createSlider(currentAnalysis, isSwitch) {
         var sliderMax = currentAnalysis.get('timePointPath').length - 1; // .timeScale;
@@ -90,6 +94,8 @@ class SliderObj {
 
     /**
      * Resets display to default, before result is displayed
+     * 
+     * @param {ResultBBM} analysisResult 
      */
     static hideAnalysis(analysisResult) {
         revertNodeValuesToInitial();
@@ -101,6 +107,8 @@ class SliderObj {
 
     /**
      * Removes the slider from the UI
+     * 
+     * @param {ResultBBM} analysisResult 
      */
     static removeSlider(analysisResult) {
         // if there's a slider, remove it
@@ -159,6 +167,8 @@ class SliderObj {
     }
 
     /**
+     * 
+     * 
      * @param {map} element
      *  Map between element id and result data. 
      *   Satisfaction value in string form. ie: '0011' for satisfied
@@ -170,12 +180,15 @@ class SliderObj {
         var cell = graph.getCell(element.id);
         if ((cell != null) && (satValue in satisfactionValuesDict)) {
             cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
-            cell.attr({ text: { fill: 'white' } }); //satisfactionValuesDict[satValue].color        // TODO: Does this need updating?
+            cell.attr({ text: { fill: 'white' } }); 
+            //satisfactionValuesDict[satValue].color        // TODO: Does this need updating?
         }
     }
 
     /**
      * Returns the list of j_ids of all intentions and actors in the current model
+     * 
+     * @return {Array()} cellView ??
      */
     static getIntentionsAndActorsView() {
         var elements = graph.getElements();
@@ -189,6 +202,8 @@ class SliderObj {
 
     /**
      * Returns the list of j_ids of all actors in the current model
+     * 
+     * @return {array()} actorsView ??
      */
     static getActorsView(){
         var actorsView = [];
@@ -203,6 +218,8 @@ class SliderObj {
 
     /**
      * Returns the list of j_ids of all intentions in the current model
+     * 
+     * @return {Array()} intentionsView ??
      */
     static getIntentionsView(){
         var intentionsView = [];
@@ -217,6 +234,8 @@ class SliderObj {
 
     /**
      * Returns the list of j_ids of all links in the current model
+     * 
+     * @return {Array()} linksView ??
      */
     static getLinksView() {
         var links = graph.getLinks();
@@ -233,6 +252,7 @@ class SliderObj {
      * of an actor
      * @param {String} actor_j_id
      *  j_id of the target actor, without the "#"
+     * @return {??} cells[i].model.attributes.embeds
      */
     static getEmbeddedElements(actor_j_id) {
         var cells = SliderObj.getIntentionsAndActorsView();
@@ -246,6 +266,7 @@ class SliderObj {
     /**
      * Returns the list of j_ids and the list of model_ids of all intentions of the model,
      * respectively
+     * @return {Array()} ?? [intentionsJIds, intentionsModelIds]
      */
     static getIntentionsList() {
         var cells = paper.findViewsInArea(paper.getArea());
