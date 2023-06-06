@@ -1108,9 +1108,6 @@ var FuncSegView = Backbone.View.extend({
                 if(isNewSegment) {
                     this.model.set('refEvidencePair', "0000");
                 }
-                // TODO:Delete. - Remove during merge conflict.
-                //this.model.set('refEvidencePair', "0000");
-                //this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
 
             } else {
                 this.$("#seg-sat-value").prop('disabled', true);
