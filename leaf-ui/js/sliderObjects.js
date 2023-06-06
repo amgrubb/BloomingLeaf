@@ -3,11 +3,9 @@
  * that the web application would receive from the back end.
  * It also contains functions for the analysis configuration sidebar
  */
-// TODO: Update these functions to take in a ResultBBM instead of an AnalysisResult
-//{
+
 class SliderObj {
     /**
-     * TODO: finish docstring by figuring out what type of var params are
      * TODO: see if we can move createSlider, removeSlider, updateSliderValues, etc. to the class definition
      * TODO: integrate with the HTML implementation of the noUISlider lib in a Backbone template?
      * 
@@ -15,8 +13,8 @@ class SliderObj {
      * Holds the information displayed in the slider on the UI
      * JavaScript range slider library [noUISlider]
      * 
-     * @param {} sliderElement
-     * @param {} sliderValueElement
+     * @param {HTMLElement} sliderElement
+     * @param {HTMLElement} sliderValueElement
      */
     constructor() {
         this.sliderElement = document.getElementById('slider');
@@ -149,12 +147,10 @@ class SliderObj {
         currentAnalysis.set('selectedTimePoint', sliderValue);
         $('#sliderValue').text(sliderValue);
         var tpPath = currentAnalysis.get('timePointPath');
-        console.log(tpPath);
         currentAnalysis.get('slider').sliderValueElement.innerHTML = sliderValue + "|" + tpPath[sliderValue];
-        console.log(tpPath[sliderValue]);
         this.storedValue = tpPath[sliderValue];
         // Update the analysisRequest current state.
-        //analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;   //TODO: Perhalps this should be part of the call to simulate.
+        // analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;   //TODO: Perhaps this should be part of the call to simulate.
 
         currentAnalysis.get('elementList').forEach(element =>
             SliderObj.updateNodeValues(element, sliderValue));   
@@ -266,12 +262,14 @@ class SliderObj {
 
     /**
      * Hides/Displays the embedded elements of an actor
-     * @param {} cells
+     * @param {Array.<IntentionBBM, ActorBBM>} cells
      *  List of all cells (intentions and actors) in the current model
-     * @param {} embeds
+     * @param {Array.<IntentionBBM>} embeds
      *  List of all embeds inside the target actor
      */
     static hideEmbeddedElements(cells, embeds) {
+
+        console.log("cells", typeof cells, cells);
 
         var elementsToHide = [];
         for (var i = 0; i < embeds.length; i++) {
@@ -289,9 +287,9 @@ class SliderObj {
 
     /**
      * Hides/Displays the links associated with the actor to be hidden/displayed
-     * @param {} links
+     * @param {Array.<LinkBBM>} links
      *  List of all links in the current model
-     * @param {} embeds
+     * @param {array.<IntentionBBM>} embeds
      *  List of all embeds inside the target actor
      */
     static hideLinks(links, embeds) {
@@ -300,7 +298,6 @@ class SliderObj {
         for (var i = 0; i < links.length; i++) {
             if (embeds.includes(links[i].model.attributes.source.id) || embeds.includes(links[i].model.attributes.target.id))  {
                 linksToHide.push(links[i].id);
-                console.log("hiding ", links[i])
             }
         }
 
@@ -311,7 +308,7 @@ class SliderObj {
 
     /**
      * Hides/Displays a specific actor
-     * @param {} cells
+     * @param {Array<IntentionBBM, ActorBBM>} cells
      *  List of all cells (intentions and actors) in the current model
      * @param {String} actor_j_id
      *  j_id of the target actor, without the "#"
@@ -335,7 +332,7 @@ class SliderObj {
 
     /**
      * Hides/Displays a specific intention
-     * @param {} cells
+     * @param {Array.<IntentionBBM, ActorBBM>} cells
      *  List of all cells (intentions and actors) in the current model
      * @param {String} intention_j_id
      *  j_id of the target intention, without the "#"
@@ -359,7 +356,7 @@ class SliderObj {
     }
 
     /**
-     * Makes actors, intentions and links dissapear
+     * Makes actors, intentions and links disappear
      */
     static hideElements() {
 
@@ -386,14 +383,12 @@ class SliderObj {
         for (var i = 0; i < actors.length; i++){
             if ($("#" + actors[i].id).css("display") == "none") {
                 SliderObj.hideEmbeddedElements(cells, actorEmbeds[i]); //assuming the order of embeds is the same with actors array
-                console.log("actor", actorEmbeds[i]);
                 SliderObj.hideLinks(links, actorEmbeds[i]);
             }
         }
 
         for (var i = 0; i < intentions.length; i++){
             if ($("#" + intentions[i].id).css("display") == "none") {
-                console.log("intention", intentions[i]);
                 SliderObj.hideLinks(links, intentions[i].model.id);
             }
         }
@@ -401,11 +396,11 @@ class SliderObj {
 
     /**
      * Resets the style of all elements
-     * @param {} actors
+     * @param {Array.<ActorBBM>} actors
      *  List of all actors in the current model
-     * @param {} intentions
+     * @param {Array.<IntentionBBM>} intentions
      *  List of all actors in the current model
-     * * @param {} links
+     * * @param {Array.<LinkBBM>} links
      *  List of all links in the current model
      */
     static defaultToAppear(actors, intentions,links){
