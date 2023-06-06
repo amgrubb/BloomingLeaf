@@ -24,9 +24,6 @@ class SliderObj {
         this.storedValue = null;
     }
 
-
-    // let sliderObject = new SliderObj();
-
     /**
      * Displays the analysis to the web app, by creating the slider display
      *
@@ -78,58 +75,14 @@ class SliderObj {
                 density: density
             }
         });
-
-
         
         // Set initial value of the slider
         // 0 if switching between existing results; sliderMax if new result
         currentAnalysis.get('slider').sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
-            
-            // Initialize an empty array for elements sat vals ex: 0111, 1100, 1110, 0110
-            var SatList = [];
-
-            // Loops through each intention on the paper and pushes each sat val into the array
-            currentAnalysis.get('elementList').forEach(element =>
-                SliderObj.storeSatVals(element,parseInt(values[handle]),SatList)); 
     
-            // Presence conditions behavior: Based on whether the timepoint is odd or even, 
-            // a selected actor should disappear or appear
-           
-            // var cells = SliderObj.getIntentionsAndActorsView();
-            // console.log("print out intentions and actors");
-            // console.log(cells);
-            // for (var i = 0; i < cells.length; i++) {
-            //     if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].model.attributes.actor.attributes.isHidden == true) {
-            //         console.log(cells[i].model.attributes.actor.attributes.isHidden);
-            //         SliderObj.hideElements(true, SatList);
-            //     } else {
-            //         console.log(cells[i].model.attributes.actor.attributes.isHidden);
-            //         SliderObj.hideElements(false, SatList);
-            //     }
-            // }            
-            
-            //var t = parseInt(values[handle])%2;
-            //if (t == 0) {
-            const intervals = SliderObj.hideElements(false, SatList);
-            // }
-            // else {
-            //     const intervals = SliderObj.hideElements(false, SatList);
-            //     console.log(intervals);
-            // }   
-            
-            for(var i=0; i<intervals.length;i++){ // for each actor
-                if (intervals[i][2]=="false") { // flipped
-                    if(intervals[i][0] < SliderObj.storedValue && intervals[i][1] > SliderObj.storedValue) {
-                        SliderObj.hideElements(false, SatList);
-                    }
-                } else { // not flipped
-                    if(intervals[i][0] > SliderObj.storedValue || intervals[i][1] < SliderObj.storedValue) {
-                        SliderObj.hideElements(false, SatList);
-                    }
-                }
-            }
+             SliderObj.hideElements(false);
         });
         
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
@@ -181,9 +134,6 @@ class SliderObj {
         }
         $('#slider').width(new_width);
     }
-
-    // let sliderValue;
-    // console.log(sliderValue);
 
     /**
      * Updates the slider values at the bottom left hand side of the paper,
@@ -294,9 +244,6 @@ class SliderObj {
             if (cells[i].id == actor_j_id && cells[i].model.attributes.type == 'basic.Actor') {
                 return cells[i].model.attributes.embeds;
             }
-            // if (cells[i].id == actor_j_id && cells[i].model.attributes.type == 'basic.Goal') {
-            //     return cells[i].model.attributes.embeds;
-            // }
         }
     }
 
@@ -323,13 +270,11 @@ class SliderObj {
      *  List of all cells (intentions and actors) in the current model
      * @param {} embeds
      *  List of all embeds inside the target actor
-     * @param {Boolean} bool
-     *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
      */
-    static hideEmbeddedElements(cells, embeds, bool) {
+    static hideEmbeddedElements(cells, embeds) {
+
         var elementsToHide = [];
         for (var i = 0; i < embeds.length; i++) {
-
             for (var j = 0; j < cells.length; j ++) {
                 if (embeds[i] == cells[j].model.id) {
                     elementsToHide.push(cells[j].id);
@@ -337,19 +282,8 @@ class SliderObj {
             }
         }
         
-        // Convert into valid j_ids
         for (var i = 0; i < elementsToHide.length; i++) {
-            elementsToHide[i] = "#" + elementsToHide[i];
-        }
-        if (bool) {
-            for (var i = 0; i < elementsToHide.length; i++) {
-                $(elementsToHide[i]).css("display", "none");
-            }
-        }
-        else {
-            for (var i = 0; i < elementsToHide.length; i++) {
-                $(elementsToHide[i]).css("display", "");
-            }
+            $("#" + elementsToHide[i]).css("display", "none");
         }
     }
 
@@ -359,361 +293,131 @@ class SliderObj {
      *  List of all links in the current model
      * @param {} embeds
      *  List of all embeds inside the target actor
-     * @param {Boolean} bool
-     *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
      */
-    static hideLinks(links, embeds, bool) {
+    static hideLinks(links, embeds) {
 
-        // var linksToHide = embeds;
         var linksToHide = []
         for (var i = 0; i < links.length; i++) {
             if (embeds.includes(links[i].model.attributes.source.id) || embeds.includes(links[i].model.attributes.target.id))  {
                 linksToHide.push(links[i].id);
+                console.log("hiding ", links[i])
             }
         }
 
-        // Convert into valid j_ids
         for (var i = 0; i < linksToHide.length; i++) {
-            linksToHide[i] = "#" + linksToHide[i];
+            $("#" + linksToHide[i]).css("display", "none");
         }
-
-        if (bool) {
-            for (var i = 0; i < linksToHide.length; i++) {
-                $(linksToHide[i]).css("display", "none");
-            }
-        }
-        else {
-            for (var i = 0; i < linksToHide.length; i++) {
-                $(linksToHide[i]).css("display", "");
-            }
-        }
-        
-    }
-
-    static hideIntentionLinks(links, embeds, bool) {
-        
-        var linksToHide = embeds;
-        // var linksToHide = []
-        // for (var i = 0; i < links.length; i++) {
-        //     if (embeds.includes(links[i].model.attributes.source.id) || embeds.includes(links[i].model.attributes.target.id))  {
-        //         linksToHide.push(links[i].id);
-        //     }
-        // }
-
-        // Convert into valid j_ids
-        for (var i = 0; i < linksToHide.length; i++) {
-            linksToHide[i] = "#" + linksToHide[i];
-        }
-
-        if (bool) {
-            for (var i = 0; i < linksToHide.length; i++) {
-                $(linksToHide[i]).css("display", "none");
-            }
-        } else {
-            for (var i = 0; i < linksToHide.length; i++) {
-                $(linksToHide[i]).css("display", "");
-            }
-        }
-        
     }
 
     /**
      * Hides/Displays a specific actor
      * @param {} cells
      *  List of all cells (intentions and actors) in the current model
-     * @param {Boolean} bool
-     *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
      * @param {String} actor_j_id
      *  j_id of the target actor, without the "#"
      */
-    static hideActor(cells, bool, actor_j_id) {
-        //console.log(actor_j_id);
+    static hideActor(cells, actor_j_id) {
         var actor_full_j_id = "#"+ actor_j_id.id;
         var intervals;
         
         for (var i = 0; i < cells.length; i++) {
             if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == actor_j_id.id) {
-                //actor_full_j_id += cells[i].id;
-                //console.log(actor_full_j_id);
                 intervals = cells[i].model.attributes.actor.attributes.intervals;
-                // console.log(intervals);
             }
         }
-        // console.log(actor_full_j_id);
 
         for (var i = 0; i < intervals.length; i++) {
             if (intervals[i][0] <= SliderObj.storedValue && intervals[i][1] >= SliderObj.storedValue) {
-                bool = true;
+                $(actor_full_j_id).css("display", "none");
             }
         }
-
-        // if (intervals[2]=="false") { // flipped
-        //     if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
-        //         bool = true;
-        //     }
-        // } else { // not flipped
-        //     if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
-        //         bool = true;
-        //     }
-        // }
-
-        if (bool) {
-            $(actor_full_j_id).css("display", "none");
-        }
-        else {
-            $(actor_full_j_id).css("display", "");
-        }
-        return intervals;
     }
 
     /**
      * Hides/Displays a specific intention
      * @param {} cells
      *  List of all cells (intentions and actors) in the current model
-     * @param {Boolean} bool
-     *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
      * @param {String} intention_j_id
      *  j_id of the target intention, without the "#"
      */
-    static hideIntention(cells, bool, intention_j_id, links) {
+    static hideIntention(cells, intention_j_id, links) {
         var intention_full_j_id = "#"+ intention_j_id.id;
         var intervals;
 
         for (var i = 0; i < cells.length; i++) {
             if (cells[i].model.attributes.type != 'basic.Actor' && cells[i].id == intention_j_id.id) {
                 intervals = cells[i].model.attributes.intention.attributes.intervals;
-                // console.log(intervals);
             }
         }
-        // console.log(intention_full_j_id);
 
         for (var i = 0; i < intervals.length; i++) {
             if (intervals[i][0] <= SliderObj.storedValue && intervals[i][1] >= SliderObj.storedValue) {
-                bool = true;
+                $(intention_full_j_id).css("display", "none");
+
             }
         }
-
-        // if (intervals[2]=="false") { // flipped
-        //     if(intervals[0] < SliderObj.storedValue && intervals[1] > SliderObj.storedValue) {
-        //         bool = true;
-        //     }
-        // } else { // not flipped
-        //     if(intervals[0] > SliderObj.storedValue || intervals[1] < SliderObj.storedValue) {
-        //         bool = true;
-        //     }
-        // }
-
-        if (bool) {
-            $(intention_full_j_id).css("display", "none");
-        }
-        else {
-            $(intention_full_j_id).css("display", "");
-        }
-
-        //TODO: cleanup hide links inside this function
-        // var linksToHide = [];
-      
-        // for (var i = 0; i < links.length; i++) {
-        //     if(intention_id == links[i].model.attributes.source.id || intention_id == links[i].model.attributes.target.id){
-        //         linksToHide.push(links[i].id);
-        //     }
-        // }
-
-        // console.log(linksToHide);
-
-        return intervals;
     }
 
     /**
      * Makes actors, intentions and links dissapear
-     * @param {Boolean} bool
-     *  A boolean value indicating whether the current timestamp is even (true) or odd (false)
-     * @param {} SatList
-     *  List of all intentions' satisfaction values 
      */
-    static hideElements(bool, SatList) {
-        // Testing merge1.json
-        // links: j_10, j_13, j_14
-        // actors: j_10 (self), j_11 (parents)
-        // resource: j_9
-        // tasks: j_7, j_8
-        // goals: j_6
-
-        // TODO: target_actor is hardcoded as j_10 in merge1.json model for now. 
-        // Will need to replce the hard code later.
-        // start with targeting first actor, replace j_11
-        //var target_actor_j_id = "j_11"
-        // var target_intention_j_id = "j_6"
+    static hideElements() {
 
         var cells = SliderObj.getIntentionsAndActorsView();
-        // console.log("Cells: ");
-        // console.log(cells);
         var actors = SliderObj.getActorsView();
-        // console.log("Model's actors id: ");
-        // console.log(actors);
-
-        var target_actor_j_id = [];
-        for (var i = 0; i < actors.length; i++) {
-            target_actor_j_id.push(actors[i]);
-        }
-        // console.log("Model's actors id: ");
-        // console.log(actors);
-
-        for (var i = 0; i < actors.length; i++) {
-            // console.log((i+1) +"th actor's embeds: ");
-            // console.log(SliderObj.getEmbeddedElements(actors[i].id));
-        }
-        
         var intentions = SliderObj.getIntentionsView();
-        // console.log("Model's intenions: ");
-        // console.log(intentions);
-
-        var target_intention_j_id = [];
-        for (var i = 0; i < intentions.length; i++) {
-            target_intention_j_id.push(intentions[i]);
-        }
-        // console.log("Model's intentions id: ");
-        // console.log(target_intention_j_id);
-        
         var links = SliderObj.getLinksView();
-        // console.log("Model's links: ");
-        // console.log(links);
+
+        SliderObj.defaultToAppear(actors, intentions, links);
         
         var actorEmbeds = [];
         for(var i = 0; i < actors.length; i++){
             actorEmbeds.push(SliderObj.getEmbeddedElements(actors[i].id));
-            // console.log((i+1)+ "th actor's embeds: ");
-            // console.log(actorEmbeds[i]);
-        }
-        
-        // var firstActorEmbeds = SliderObj.getEmbeddedElements(target_actor_j_id);
-        // console.log("First actor's embeds: ");
-        // console.log(firstActorEmbeds);
-
-        // var firstIntentionLinks = SliderObj.getIntentionLinks(target_intention_j_id);
-        // console.log("First intention's embeds: ");
-        // console.log(firstIntentionLinks);
-
-        //TODO: replace hardcoded target_actor_j_id with actors list
-        // Call helper functions to hide embedded elements, links, and the actor itself
-
-        var intentionLinks = [];
-        for(var i = 0; i < intentions.length; i++){
-            intentionLinks.push(SliderObj.getIntentionLinks(intentions[i].id));
-            // console.log((i+1)+ "th intention's links: ");
-            // console.log(intentionLinks[i]);
         }
 
-        var intentionIntervals = [];
-        for(var i = 0; i < intentions.length; i++){
-            intentionIntervals.push(SliderObj.hideIntention(cells, bool, target_intention_j_id[i]));
+        for(var i = 0; i < actors.length; i++){
+            SliderObj.hideActor(cells, actors[i]);
         }
 
-        var intervals = [];
-        for(var i = 0; i < actors.length; i++){//newly added
-            //if (actors[i].id === target_actor_j_id) {
-                intervals.push(SliderObj.hideActor(cells, bool, target_actor_j_id[i]));
-            //}
-            //intervals.push(SliderObj.hideActor(cells, bool, target_actor_j_id[i]));
+        for (var i = 0; i < intentions.length; i++){
+            SliderObj.hideIntention(cells, intentions[i]);
         }
 
-        //TODO: replace hardcoded target_intention_j_id with intentions list
-        // Call helper functions to hide embedded elements, links, and the actor itself
-        //const intervals = SliderObj.hideIntention(cells, bool, target_intention_j_id, links);
-        // console.log(intervals);
-
-        SliderObj.hideConflictingSatVals(SatList);
-        for(var i = 0; i < actors.length; i++){//newly added
-            if ($("#" + target_actor_j_id[i].id).css("display") == "none") {
-                SliderObj.hideEmbeddedElements(cells, actorEmbeds[i], true); //assuming the order of embeds is the same with actors array
-                SliderObj.hideLinks(links, actorEmbeds[i], true);
-            } else { 
-                SliderObj.hideLinks(links, actorEmbeds[i], false);
-                // SliderObj.hideEmbeddedElements(cells, actorEmbeds[i], false);
-                //SliderObj.hideConflictingSatVals(SatList);
+        for (var i = 0; i < actors.length; i++){
+            if ($("#" + actors[i].id).css("display") == "none") {
+                SliderObj.hideEmbeddedElements(cells, actorEmbeds[i]); //assuming the order of embeds is the same with actors array
+                console.log("actor", actorEmbeds[i]);
+                SliderObj.hideLinks(links, actorEmbeds[i]);
             }
         }
 
-        for(var i = 0; i < intentions.length; i++){
-            if ($("#" + target_intention_j_id[i].id).css("display") == "none") {
-                SliderObj.hideIntentionLinks(links, intentionLinks[i], true);
+        for (var i = 0; i < intentions.length; i++){
+            if ($("#" + intentions[i].id).css("display") == "none") {
+                console.log("intention", intentions[i]);
+                SliderObj.hideLinks(links, intentions[i].model.id);
             }
         }
-
-        return intervals;
     }
 
     /**
-     * Given an intention push the sat val into the given SatList array
-     * @param {map} element
-     *  Map between element id and result data. 
-     *  Satisfaction value in string form. ie: '0011' for satisfied
-     * @param {Number} sliderValue
-     *  Current value of the slider
-     * @param {Array} SatList
-     *  Array of Sat values
+     * Resets the style of all elements
+     * @param {} actors
+     *  List of all actors in the current model
+     * @param {} intentions
+     *  List of all actors in the current model
+     * * @param {} links
+     *  List of all links in the current model
      */
-    static storeSatVals(element, sliderValue, SatList) { //Deals with finding satVal for each individual intention
-        var satValue = element.status[sliderValue]; //accesses sat value of current intention
-        SatList.push(satValue);
-    }
-    
-    /**
-     * Makes intentions with conflicting satisfaction values, along with all the links related to the intentions 
-     * with conflicting satisfaction values, disappear
-     * @param {} SatList
-     *  List of all intentions' satisfaction values
-     */
-    static hideConflictingSatVals(SatList) {
-        var intentionsJIdList = SliderObj.getIntentionsList()[0];
-        var intentionsModelIdList = SliderObj.getIntentionsList()[1];
-        var links = SliderObj.getLinksView();
-
-        // Make all links reappear
-        for (var k = 0; k < links.length; k++) {
-            
-            $("#"+links[k].id).css("display", "");
+    static defaultToAppear(actors, intentions,links){
+        for (var i = 0; i < actors.length; i++) {
+            $("#"+actors[i].id).css("display", "");
         }
-
-        for (var i = 0; i < SatList.length; i++) {
-            // Make intention reappear
-            $("#"+intentionsJIdList[i]).css("display", "");
-
-            // Make elements with conflicting values disappear
-            if (SatList[i] == '1110' || SatList[i] == '1111' || SatList[i] == '0111'|| SatList[i] == '0110') {
-                // Make intention with conflicting values disappear
-                $("#"+intentionsJIdList[i]).css("display", "none");
-
-                // Make links connecting conflicting values disappear
-                for (var j = 0; j < links.length; j++) {      
-                    if (links[j].model.attributes.source.id == intentionsModelIdList[i] || links[j].model.attributes.target.id == intentionsModelIdList[i]) {
-                        var linksId = "#" + links[j].id;
-                        $(linksId).css("display", "none");
-                    }
-                }
-            }    
+        for (var i = 0; i < intentions.length; i++) {
+            $("#"+intentions[i].id).css("display", "");
         }
-    }    
-
-    static getIntentionLinks(intention_j_id) {
-        var cells = SliderObj.getIntentionsAndActorsView();
-        var links = SliderObj.getLinksView();
-        var intention_id = null;
-        for (var i = 0; i < cells.length; i++) {
-            if (cells[i].model.attributes.type != 'basic.Actor' && cells[i].id == intention_j_id) {
-                intention_id = cells[i].model.attributes.id; //model id
-            }
-        }
-
-        var linksToHide = [];
-      
         for (var i = 0; i < links.length; i++) {
-            if(intention_id == links[i].model.attributes.source.id || intention_id == links[i].model.attributes.target.id){
-                linksToHide.push(links[i].id);
-            }
+            $("#"+links[i].id).css("display", "");
         }
-
-        return linksToHide;
     }
 }
 // End of sliderObj scope
