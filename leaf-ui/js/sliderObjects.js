@@ -155,8 +155,6 @@ class SliderObj {
         var tpPath = currentAnalysis.get('timePointPath');
         currentAnalysis.get('slider').sliderValueElement.innerHTML = sliderValue + "|" + tpPath[sliderValue];
         this.storedValue = tpPath[sliderValue];
-        // Update the analysisRequest current state.
-        // analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;   //TODO: Perhaps this should be part of the call to simulate.
 
        currentAnalysis.get('elementList').forEach(element =>
             SliderObj.updateNodeValues(element, sliderValue));   
