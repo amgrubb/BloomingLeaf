@@ -69,11 +69,10 @@ var AssignmentsTable = Backbone.View.extend({
                         '</table>',
                     '</div>',
                     '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Presence Conditions Assignment</h3>',
-                    '<table id="link-list" class="abs-table">',
+                    '<table id="prescond-list" class="abs-table">',
                         '<tr>',
-                            '<th>Actor Name</th>',
-                            '<th>Actor Type</th>',
-                            '<th>Actor ID</th>',
+                            '<th>Element</th>',
+                            '<th>Available Interval</th>',
                         '</tr>',
                     '</table>',
                 '</div>',
@@ -98,6 +97,7 @@ var AssignmentsTable = Backbone.View.extend({
         this.loadRelativeIntentions();
         this.displayAbsoluteIntentionAssignments();
         this.displayAbsoluteRelationshipAssignments();
+        this.displayPresConditions();
         return this;
     },
 
@@ -189,6 +189,16 @@ var AssignmentsTable = Backbone.View.extend({
                 linkRelationshipView.render()
             }
         })
+    },
+
+    displayPresConditions: function () {
+        var actors = SliderObj.getActorsView();
+
+        for (var i = 0; i < actors.length; i++) {
+            var presConditionActorView = new PresConditionActorView({model: actors[i].model});
+            $('#prescond-list').append(presConditionActorView.el);
+            presConditionActorView.render();
+        }
     },
 
     /**
@@ -469,3 +479,52 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 });
 
+var PresConditionActorView = Backbone.View.extend({
+    model: ActorBBM,
+
+    initialize: function () {
+        this.name = this.model.attributes.actor.attributes.actorName;
+        this.intervals = this.convertIntervals();
+    },
+
+    template: [
+        '<script type="text/template" id="item-template">',
+        '<td id=pc-name></td>',
+        '<td id=pc-interval></td>',
+        '</script>'
+    ].join(''),
+
+    events: {
+    },
+
+    convertIntervals: function () {
+        var exclusionIntervals = this.model.attributes.actor.attributes.intervals;
+        var inclusionIntervals;
+        if(exclusionIntervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
+            inclusionIntervals = [[exclusionIntervals[0][1] + 1, exclusionIntervals[1][0] - 1]];
+        } else { // [slider1, slider2] (one exclusion interval)
+            if (exclusionIntervals[0][0] == 0){ // [0-#]
+                if (exclusionIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-100]
+                    inclusionIntervals = [[0, 0]];
+                } else {
+                    inclusionIntervals = [[exclusionIntervals [0][1] + 1, graph.get('maxAbsTime')]];
+                }
+            } else if(exclusionIntervals[0][1] == graph.get('maxAbsTime')){ // [#-max]
+                inclusionIntervals = [[0, exclusionIntervals[0][0] - 1]];
+            } else { // [#-#]
+                inclusionIntervals = [[0, exclusionIntervals[0][0] - 1][exclusionIntervals[0][1] + 1, graph.get('maxAbsTime')]];
+            }
+        }
+        return inclusionIntervals;
+    },
+
+    render: function () {
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+
+        this.$('#pc-name').text(this.name);
+        this.$('#pc-interval').text(this.intervals);
+
+        return this;
+    },
+
+});

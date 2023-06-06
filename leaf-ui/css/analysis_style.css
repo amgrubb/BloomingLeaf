@@ -41,6 +41,7 @@
 
  .popup_body {
     padding: 2px 16px;
+    overflow: auto;
  }
 
 /* Adds sliding Animation for popup window */
