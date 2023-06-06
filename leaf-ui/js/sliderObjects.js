@@ -46,7 +46,6 @@ class SliderObj {
      *
      * @param {ResultBBM} currentAnalysis
      *  an AnalysisResult object that contains data about the analysis that the back end performed
-     * @param {number} currentValueLimit
      * @param {Boolean} isSwitch
      *   True if the slider is being created when we are switching analysis results,
      *   false if new result from the back end
@@ -146,8 +145,7 @@ class SliderObj {
      * to represent the current slider's position.
      *
      * @param {Number} sliderValue
-     *   Current value of the slider
-     * @param {Number} currentValueLimit
+     *  Current value of the slider
      * @param {ResultBBM} currentAnalysis
      *  a ResultBBM object that contains data about the analysis that the back end performed
      */
@@ -288,9 +286,6 @@ class SliderObj {
      *  List of all embeds inside the target actor
      */
     static hideEmbeddedElements(cells, embeds) {
-
-        console.log("cells", typeof cells, cells);
-
         var elementsToHide = [];
         for (var i = 0; i < embeds.length; i++) {
             for (var j = 0; j < cells.length; j ++) {
