@@ -160,14 +160,14 @@ class SliderObj {
         // Update the analysisRequest current state.
         // analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;   //TODO: Perhaps this should be part of the call to simulate.
 
-        currentAnalysis.get('elementList').forEach(element =>
+       currentAnalysis.get('elementList').forEach(element =>
             SliderObj.updateNodeValues(element, sliderValue));   
         EVO.setCurTimePoint(sliderValue, currentAnalysis);
     
     }
 
     /**
-     * 
+     * Updates the satValue of the node.
      * 
      * @param {map} element
      *  Map between element id and result data. 
@@ -181,14 +181,13 @@ class SliderObj {
         if ((cell != null) && (satValue in satisfactionValuesDict)) {
             cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
             cell.attr({ text: { fill: 'white' } }); 
-            //satisfactionValuesDict[satValue].color        // TODO: Does this need updating?
         }
     }
 
     /**
      * Returns the list of j_ids of all intentions and actors in the current model
      * 
-     * @return {Array()} cellView ??
+     * @return {Array.<String>}
      */
     static getIntentionsAndActorsView() {
         var elements = graph.getElements();
@@ -203,7 +202,7 @@ class SliderObj {
     /**
      * Returns the list of j_ids of all actors in the current model
      * 
-     * @return {array()} actorsView ??
+     * @return {Array.<String>}
      */
     static getActorsView(){
         var actorsView = [];
@@ -219,7 +218,7 @@ class SliderObj {
     /**
      * Returns the list of j_ids of all intentions in the current model
      * 
-     * @return {Array()} intentionsView ??
+     * @return {Array.<String>} intentionsView
      */
     static getIntentionsView(){
         var intentionsView = [];
@@ -235,7 +234,7 @@ class SliderObj {
     /**
      * Returns the list of j_ids of all links in the current model
      * 
-     * @return {Array()} linksView ??
+     * @return {Array.<String>} linksView
      */
     static getLinksView() {
         var links = graph.getLinks();
@@ -252,7 +251,7 @@ class SliderObj {
      * of an actor
      * @param {String} actor_j_id
      *  j_id of the target actor, without the "#"
-     * @return {??} cells[i].model.attributes.embeds
+     * @return {Array.<IntentionBBM>} cells[i].model.attributes.embeds
      */
     static getEmbeddedElements(actor_j_id) {
         var cells = SliderObj.getIntentionsAndActorsView();
@@ -266,7 +265,7 @@ class SliderObj {
     /**
      * Returns the list of j_ids and the list of model_ids of all intentions of the model,
      * respectively
-     * @return {Array()} ?? [intentionsJIds, intentionsModelIds]
+     * @return {Array.<Array.<String>, Array.<String>>} [intentionsJIds, intentionsModelIds]
      */
     static getIntentionsList() {
         var cells = paper.findViewsInArea(paper.getArea());
@@ -421,7 +420,7 @@ class SliderObj {
      *  List of all actors in the current model
      * @param {Array.<IntentionBBM>} intentions
      *  List of all actors in the current model
-     * * @param {Array.<LinkBBM>} links
+     * @param {Array.<LinkBBM>} links
      *  List of all links in the current model
      */
     static defaultToAppear(actors, intentions,links){
