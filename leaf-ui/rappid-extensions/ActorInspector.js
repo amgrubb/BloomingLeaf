@@ -306,7 +306,7 @@ var TimePointListView = Backbone.View.extend({
                 slider1.value = intervals[0][1] + 1;
                 slider2.value = intervals[1][0] - 1;
             } else { // [slider1, slider2] (one exclusion interval)
-                if (intervals[0][0] == 0){ // [0-#]
+                 if (intervals[0][0] == 0){ // [0-#]
                     if (intervals [0][1] == graph.get('maxAbsTime')) { // special case [0-100]
                         document.getElementById('intervals-flip-btn').value = "false";
                         slider1.value = intervals[0][0] - 1;
@@ -317,17 +317,17 @@ var TimePointListView = Backbone.View.extend({
                         rangeMin = intervals[0][1] + 1;
                         slider1.value = rangeMin;
                     }
-                    } else if(intervals[0][1] == graph.get('maxAbsTime')){ // slider2 is equal to rangeMax
-                        rangeMax = intervals[0][0] - 1;
-                        slider2.value = rangeMax;
-                    } else { // from slider1 to slider2 is excluded
-                        document.getElementById('intervals-flip-btn').value = "false";
-                        document.getElementById('intervals-flip-btn').style.display = "none";
-                        slider1.value = intervals[0][0] - 1;
-                        slider2.value = intervals[0][1] + 1;
-                        document.getElementById('flipped').style.display = "";
-                        document.getElementById('not-flipped').style.display = "none";
-                }
+                 } else if(intervals[0][1] == graph.get('maxAbsTime')){ // slider2 is equal to rangeMax
+                    rangeMax = intervals[0][0] - 1;
+                    slider2.value = rangeMax;
+                 } else{ // from slider1 to slider2 is excluded
+                    document.getElementById('intervals-flip-btn').value = "false";
+                    document.getElementById('intervals-flip-btn').style.display = "none";
+                    slider1.value = intervals[0][0] - 1;
+                    slider2.value = intervals[0][1] + 1;
+                    document.getElementById('flipped').style.display = "";
+                    document.getElementById('not-flipped').style.display = "none";
+                 }
             }
             document.getElementById('range1').textContent = slider1.value;
             document.getElementById('range2').textContent = slider2.value;
