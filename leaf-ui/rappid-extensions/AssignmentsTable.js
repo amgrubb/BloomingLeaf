@@ -196,11 +196,28 @@ var AssignmentsTable = Backbone.View.extend({
 
     displayPresConditions: function () {
         var actors = SliderObj.getActorsView();
-
         for (var i = 0; i < actors.length; i++) {
             var presConditionActorView = new PresConditionActorView({model: actors[i].model});
+
             $('#prescond-list').append(presConditionActorView.el);
             presConditionActorView.render();
+
+            var element = [];
+            var cells = SliderObj.getIntentionsAndActorsView();
+            var embeds = SliderObj.getEmbeddedElements(actors[i].id);
+
+            for(var k = 0; k < cells.length; k++){
+                if (embeds.includes(cells[k].model.id))  {
+                    element.push(cells[k]);
+                }
+            }
+
+            console.log(element)
+            for(var j = 0; j < element.length; j++){
+                var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model});
+                $('#prescond-list').append(presConditionIntentionView.el);
+                presConditionIntentionView.render();
+            }
         }
     },
 
@@ -496,7 +513,7 @@ var PresConditionActorView = Backbone.View.extend({
     template: [
         '<script type="text/template" id="item-template">',
             '<td id=pc-name></td>',
-            '<td id=type></td>',
+            '<td id=pc-type></td>',
             '<td id=pc-interval></td>',
         '</script>'
     ].join(''),
@@ -511,16 +528,90 @@ var PresConditionActorView = Backbone.View.extend({
             if(exclusionIntervals[1]){ // two exclusion intervals
                 inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${exclusionIntervals[1][0] - 1}]`;
             } else { // one exclusion interval
+        // if(exclusionIntervals[0]){
+        //     if(exclusionIntervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
+        //         inclusionIntervals = [[exclusionIntervals[0][1] + 1, exclusionIntervals[1][0] - 1]];
+            // } else { // [slider1, slider2] (one exclusion interval)
                 if (exclusionIntervals[0][0] == 0){ // [0-#]
-                    if (exclusionIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-max]
-                        inclusionIntervals = `[${0}, ${0}]`;
+                    if (exclusionIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-100]
+                        inclusionIntervals = [[0, 0]];
                     } else {
-                        inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
+                        inclusionIntervals = [[exclusionIntervals [0][1] + 1, graph.get('maxAbsTime')]];
                     }
                 } else if(exclusionIntervals[0][1] == graph.get('maxAbsTime')){ // [#-max]
-                    inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}]`;
+                    inclusionIntervals = [[0, exclusionIntervals[0][0] - 1]];
                 } else { // [#-#]
-                    inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}], [${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
+                    inclusionIntervals = [[0, exclusionIntervals[0][0] - 1][exclusionIntervals[0][1] + 1, graph.get('maxAbsTime')]];
+                }
+            }
+        } else{
+            inclusionIntervals = [[0, graph.get('maxAbsTime')]];
+        }
+        return inclusionIntervals;
+    },
+
+    render: function () {
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+
+        this.$('#pc-name').text(this.name);
+        this.$('#pc-type').text(this.type);
+        this.$('#pc-interval').text(this.intervals);
+
+        return this;
+    },
+
+});
+
+
+var PresConditionIntentionView = Backbone.View.extend({
+    model: IntentionBBM,
+    tagName: 'tr',
+
+    initialize: function () {
+        this.name = this.model.attributes.intention.attributes.nodeName;
+        this.intervals = this.convertIntentionIntervals();
+        if(this.model.attributes.type == "basic.Goal"){
+            this.type = "Goal";
+        } else if (this.model.attributes.type == "basic.Task"){
+            this.type = "Task";
+        } else if (this.model.attributes.type == "basic.Softgoal"){
+            this.type = "Soft Goal";
+        } else if (this.model.attributes.type == "basic.Resource"){
+            this.type = "Resource";
+        } 
+    },
+
+
+
+    template: [
+        '<script type="text/template" id="item-template">',
+        //'<h3>oui</h3>',
+        '<td id=pc-name></td>',
+        '<td id=pc-type></td>',
+        '<td id=pc-interval></td>',
+        '</script>'
+    ].join(''),
+
+    events: {
+    },
+
+    convertIntentionIntervals: function () {
+        var exclusionIntervals = this.model.attributes.intention.attributes.intervals;
+        var inclusionIntervals;
+        if(exclusionIntervals[0]){
+            if(exclusionIntervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
+                inclusionIntervals = [[exclusionIntervals[0][1] + 1, exclusionIntervals[1][0] - 1]];
+            } else { // [slider1, slider2] (one exclusion interval)
+                if (exclusionIntervals[0][0] == 0){ // [0-#]
+                    if (exclusionIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-100]
+                        inclusionIntervals = [[0, 0]];
+                    } else {
+                        inclusionIntervals = [[exclusionIntervals [0][1] + 1, graph.get('maxAbsTime')]];
+                    }
+                } else if(exclusionIntervals[0][1] == graph.get('maxAbsTime')){ // [#-max]
+                    inclusionIntervals = [[0, exclusionIntervals[0][0] - 1]];
+                } else { // [#-#]
+                    inclusionIntervals = [[0, exclusionIntervals[0][0] - 1][exclusionIntervals[0][1] + 1, graph.get('maxAbsTime')]];
                 }
             }
         } else { // always available
@@ -533,7 +624,7 @@ var PresConditionActorView = Backbone.View.extend({
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
 
         this.$('#pc-name').text(this.name);
-        this.$('#type').text(this.type);
+        this.$('#pc-type').text(this.type);
         this.$('#pc-interval').text(this.intervals);
 
         return this;
