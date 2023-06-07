@@ -198,11 +198,6 @@ var AssignmentsTable = Backbone.View.extend({
         var actors = SliderObj.getActorsView();
         var cells = SliderObj.getIntentionsAndActorsView();
         for (var i = 0; i < actors.length; i++) {
-            var presConditionActorView = new PresConditionActorView({model: actors[i].model});
-
-            $('#prescond-list').append(presConditionActorView.el);
-            presConditionActorView.render();
-
             var element = [];
             var embeds = SliderObj.getEmbeddedElements(actors[i].id);
 
@@ -216,12 +211,39 @@ var AssignmentsTable = Backbone.View.extend({
                 }
             }
 
-            for(var j = 0; j < element.length; j++){
-                var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model, actor: actors[i]});
-                $('#prescond-list').append(presConditionIntentionView.el);
-                presConditionIntentionView.render();
+            if (actors[i].model.attributes.actor.attributes.intervals.length > 0) { // if actor's interval is changed, display actor and all of its intentions
+                var presConditionActorView = new PresConditionActorView({model: actors[i].model});
+                $('#prescond-list').append(presConditionActorView.el);
+                presConditionActorView.render();
+
+                for(var j = 0; j < element.length; j++){
+                    var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model, actor: actors[i]});
+                    $('#prescond-list').append(presConditionIntentionView.el);
+                    presConditionIntentionView.render();
+                }
+
+                element = [];
+            }
+
+            if (element) {
+                for (var j = 0; j < element.length; j++){
+                    if (element[j].model.attributes.intention.attributes.intervals.length > 0) { // if intention is changed, display actor
+                        var presConditionActorView = new PresConditionActorView({model: actors[i].model});
+                        $('#prescond-list').append(presConditionActorView.el);
+                        presConditionActorView.render();
+                        for (var k = 0; k < element.length; k++){
+                            if (element[j].model.attributes.intention.attributes.intervals.length > 0) { // display all intentions in that actor that are changed
+                                var presConditionIntentionView = new PresConditionIntentionView({model: element[k].model, actor: actors[i]});
+                                $('#prescond-list').append(presConditionIntentionView.el);
+                                presConditionIntentionView.render();
+                            }
+                        }
+                        continue;
+                    }
+                }
             }
         }
+        
         for (var i = 0; i < cells.length; i++) {
             if (cells[i].model.attributes.type != "basic.Actor") {
                 var presConditionIntentionView = new PresConditionIntentionView({model: cells[i].model});
@@ -550,9 +572,7 @@ var PresConditionActorView = Backbone.View.extend({
                     inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}], [${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
                 }
             }
-        } else {
-            inclusionIntervals = `[${0}, ${graph.get('maxAbsTime')}]`;
-        }
+        } 
         return inclusionIntervals;
     },
 
