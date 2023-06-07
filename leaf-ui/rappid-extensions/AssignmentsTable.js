@@ -203,7 +203,7 @@ var AssignmentsTable = Backbone.View.extend({
 
             if (embeds) {
                 for(var k = 0; k < cells.length; k++){
-                    if (embeds.includes(cells[k].model.id))  {
+                    if (embeds.includes(cells[k].model.id) && cells[k].model.attributes.intention.attributes.intervals.length > 0)  {
                         element.push(cells[k]);
                         cells.splice(k, 1);
                         k--;
@@ -211,41 +211,23 @@ var AssignmentsTable = Backbone.View.extend({
                 }
             }
 
-            if (actors[i].model.attributes.actor.attributes.intervals.length > 0) { // if actor's interval is changed, display actor and all of its intentions
+            if (actors[i].model.attributes.actor.attributes.intervals.length > 0 || element.length > 0) { // if actor's interval is changed, display actor
                 var presConditionActorView = new PresConditionActorView({model: actors[i].model});
                 $('#prescond-list').append(presConditionActorView.el);
                 presConditionActorView.render();
 
                 for(var j = 0; j < element.length; j++){
-                    var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model, actor: actors[i]});
-                    $('#prescond-list').append(presConditionIntentionView.el);
-                    presConditionIntentionView.render();
-                }
-
-                element = [];
-            }
-
-            if (element) {
-                for (var j = 0; j < element.length; j++){
-                    if (element[j].model.attributes.intention.attributes.intervals.length > 0) { // if intention is changed, display actor
-                        var presConditionActorView = new PresConditionActorView({model: actors[i].model});
-                        $('#prescond-list').append(presConditionActorView.el);
-                        presConditionActorView.render();
-                        for (var k = 0; k < element.length; k++){
-                            if (element[j].model.attributes.intention.attributes.intervals.length > 0) { // display all intentions in that actor that are changed
-                                var presConditionIntentionView = new PresConditionIntentionView({model: element[k].model, actor: actors[i]});
-                                $('#prescond-list').append(presConditionIntentionView.el);
-                                presConditionIntentionView.render();
-                            }
-                        }
-                        continue;
+                    if (element[j].model.attributes.intention.attributes.intervals.length > 0) {
+                        var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model, actor: actors[i]});
+                        $('#prescond-list').append(presConditionIntentionView.el);
+                        presConditionIntentionView.render();
                     }
                 }
             }
         }
         
         for (var i = 0; i < cells.length; i++) {
-            if (cells[i].model.attributes.type != "basic.Actor") {
+            if (cells[i].model.attributes.type != "basic.Actor" && cells[i].model.attributes.intention.attributes.intervals.length > 0) {
                 var presConditionIntentionView = new PresConditionIntentionView({model: cells[i].model});
                 $('#prescond-list').append(presConditionIntentionView.el);
                 presConditionIntentionView.render();
