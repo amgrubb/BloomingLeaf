@@ -74,6 +74,10 @@ var AssignmentsTable = Backbone.View.extend({
                             '<th>Element</th>',
                             '<th>Available Interval</th>',
                         '</tr>',
+                        '<tr>',
+                            '<td>test</td>',
+                            '<td>width</td>',
+                        '</tr>',
                     '</table>',
                 '</div>',
             '</div>',
@@ -487,10 +491,14 @@ var PresConditionActorView = Backbone.View.extend({
         this.intervals = this.convertIntervals();
     },
 
+    className: "pc-row",
+
     template: [
         '<script type="text/template" id="item-template">',
-        '<td id=pc-name></td>',
-        '<td id=pc-interval></td>',
+        '<tr>',
+            '<td id=pc-name></td>',
+            '<td id=pc-interval></td>',
+        '</tr>',
         '</script>'
     ].join(''),
 
@@ -500,20 +508,24 @@ var PresConditionActorView = Backbone.View.extend({
     convertIntervals: function () {
         var exclusionIntervals = this.model.attributes.actor.attributes.intervals;
         var inclusionIntervals;
-        if(exclusionIntervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
-            inclusionIntervals = [[exclusionIntervals[0][1] + 1, exclusionIntervals[1][0] - 1]];
-        } else { // [slider1, slider2] (one exclusion interval)
-            if (exclusionIntervals[0][0] == 0){ // [0-#]
-                if (exclusionIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-100]
-                    inclusionIntervals = [[0, 0]];
-                } else {
-                    inclusionIntervals = [[exclusionIntervals [0][1] + 1, graph.get('maxAbsTime')]];
+        if (exclusionIntervals[0]){
+            if(exclusionIntervals[1]){ // two exclusion intervals
+                inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${exclusionIntervals[1][0] - 1}]`;
+            } else { // one exclusion interval
+                if (exclusionIntervals[0][0] == 0){ // [0-#]
+                    if (exclusionIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-max]
+                        inclusionIntervals = `[${0}, ${0}]`;
+                    } else {
+                        inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
+                    }
+                } else if(exclusionIntervals[0][1] == graph.get('maxAbsTime')){ // [#-max]
+                    inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}]`;
+                } else { // [#-#]
+                    inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}], [${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
                 }
-            } else if(exclusionIntervals[0][1] == graph.get('maxAbsTime')){ // [#-max]
-                inclusionIntervals = [[0, exclusionIntervals[0][0] - 1]];
-            } else { // [#-#]
-                inclusionIntervals = [[0, exclusionIntervals[0][0] - 1][exclusionIntervals[0][1] + 1, graph.get('maxAbsTime')]];
             }
+        } else {
+            inclusionIntervals = `[${0}, ${graph.get('maxAbsTime')}]`;
         }
         return inclusionIntervals;
     },
