@@ -10,7 +10,7 @@
 
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 var globalAnalysisResult; 
-var globalTiming;
+//var globalTiming;
 
 /** Makes a request for the backend and calls the response function.
  * {ConfigBBM} analysisRequest
@@ -44,6 +44,7 @@ function backendLayoutRequest(model) {
 	jsObject.analysisRequest = "layout";
 	jsObject.model = model;
 	var data = backendStringifyCirc(jsObject);
+	console.log("data in layout backendComm: ", data);
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -51,9 +52,11 @@ function backendLayoutRequest(model) {
 
 	xhr.onload = function () {
 		// This function get called when the response is received.
-		console.log("Reading the response");
+		//console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
+			//console.log("Response type: ", typeof response);
+			//console.log("Response: ", response);
 			var result = JSON.parse(response);
 			loadFromObject(result);
 		}
@@ -70,6 +73,7 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 	jsObject.model2 = model2;
 	jsObject.timingOffset = timing_offset;
 	var data = backendStringifyCirc(jsObject);
+	console.log("data in premerge backendComm: ", data);
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -79,16 +83,22 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 		// This function get called when the response is received.
 		console.log("PreMerge: Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
+			console.log("in the if");
 			var response = xhr.responseText;
+			console.log("xhr.responseText: ", xhr.responseText);
+			console.log("Response type: ", typeof response);
 			// console.log(response[130] + response[131] + response[132]);
-			// console.log("Response: ", response)
-			var new_response = response.replace(/\n/g, " ")
-			// console.log("new_response: ", new_response)
+			console.log("Response: ", response);
+			var new_response = response.replace(/\n/g, " ");
+			console.log("new_response: ", new_response);
 			var result = JSON.parse(new_response);
-			// console.log("Result1 : ", result);
+			console.log("Result type: ", typeof result);
+			console.log("Result1 : ", result);
 			dealWithTimingObject(result);
+			//backendMergeRequest(result);
 		}
 	}
+	console.log("before data is being sent");
 	xhr.send(data);
 	// xhr.send(updatedData);
 }
@@ -123,11 +133,11 @@ function dealWithTimingObject(timing) {
 		if(input_required) {
 			// call merge
 			// var isFinished = false;
-			globalTiming = timing_list;
-			// timing_list.indexes_to_modify = indexes_to_modify;
-			globalTiming.indexes_to_modify = indexes_to_modify;
+			//globalTiming = timing_list;
+			timing_list.indexes_to_modify = indexes_to_modify;
+			//globalTiming.indexes_to_modify = indexes_to_modify;
 			// console.log("index to change: ", globalTiming.indexes_to_modify)
-			console.log("index to change: ", globalTiming.indexes_to_modify);
+			//console.log("index to change: ", globalTiming.indexes_to_modify);
 			displayTimingInputWindow(timing);
 			// while (!isFinished) {
 			// 	console.log('User is not finished.');
@@ -143,8 +153,8 @@ function dealWithTimingObject(timing) {
 
 function displayTimingInputWindow(timing) {
 	$('#timing-input-window').css('display', '');
-
-	let indexes = globalTiming.indexes_to_modify;
+	var timing_list = timing.timingList;
+	let indexes = timing_list.indexes_to_modify;
 	let intention_list = $('#timing-input-intention-list');
 	console.log("timing in display: ", timing);
 	// timing_list = timing.timingList;
@@ -165,10 +175,10 @@ function displayTimingInputWindow(timing) {
 		
 		intention_list.append(
 			"<div>" +
-			"<h3>" + globalTiming[i].intention + "</h3>" +
-			"<input type=\"text\" style=\"width:80%\" id=\"" + inputId + "\" value=\"" + globalTiming[i].newTimeOrder +  "\"> " +
+			"<h3>" + timing_list[i].intention + "</h3>" +
+			"<input type=\"text\" style=\"width:80%\" id=\"" + inputId + "\" value=\"" + timing_list[i].newTimeOrder +  "\"> " +
 			"<span>New Time Order</span><br>" +
-			"<h4>Relative time points to add: <span id=\"timing-input-toAdd-" + i + "\">" + globalTiming[i].itemsToAdd + "</span></h4>" +
+			"<h4>Relative time points to add: <span id=\"timing-input-toAdd-" + i + "\">" + timing_list[i].itemsToAdd + "</span></h4>" +
 			"</div>"
 		)
 	}
@@ -185,10 +195,13 @@ function displayTimingInputWindow(timing) {
 
 		for (let i = 0; i < timeOrders.length; i++){
 			timeOrder = timeOrders[i].value;
+			timeOrder = timeOrder.split(",");
+			console.log("TimeOrder: ", typeof timeOrder);
+			console.log("object? ", timeOrder);
 			editedInputValues.push(timeOrder);
 			// console.log("edits: ", editedInputValues);
 			// timing_list[i].newTimeOrder = timeOrder;
-			globalTiming[i].newTimeOrder = timeOrder;
+			timing_list[i].newTimeOrder = timeOrder;
 			
 			// console.log("globalTiming:", i," ", globalTiming[i].newTimeOrder);
 		}
@@ -218,6 +231,7 @@ function backendMergeRequest(timing) {
 		console.log("Merge: Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
+			//var new_response = response.replace(/\n/g, " ")
 			var result = JSON.parse(response);
 			console.log("Result2 : ", result);
 			loadFromObject(result);
