@@ -210,7 +210,7 @@ var AssignmentsTable = Backbone.View.extend({
                 for(var k = 0; k < cells.length; k++){
                     if (embeds.includes(cells[k].model.id))  {
                         element.push(cells[k]);
-                        cells.splice(k, 1);
+                        k--;
                     }
                 }
             }
@@ -585,7 +585,6 @@ var PresConditionIntentionView = Backbone.View.extend({
         } else if (this.model.attributes.type == "basic.Resource"){
             this.type = "Resource";
         } 
-        console.log(this.actor);
     },
 
     template: [
@@ -602,7 +601,6 @@ var PresConditionIntentionView = Backbone.View.extend({
     convertIntentionIntervals: function () {
         var exclusionIntervals = this.model.attributes.intention.attributes.intervals;
 
-        console.log(exclusionIntervals);
         var inclusionIntervals;
 
         var minRange = 0;
@@ -610,7 +608,6 @@ var PresConditionIntentionView = Backbone.View.extend({
 
         if (this.actor) {
             var actorExcIntervals = this.actor.model.attributes.actor.attributes.intervals;
-            console.log(actorExcIntervals);
             if (actorExcIntervals[0]) {
                 if(actorExcIntervals[1]){ // two exclusion intervals
                     minRange = actorExcIntervals[0][1] + 1;
