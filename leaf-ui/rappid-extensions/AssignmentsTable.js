@@ -634,7 +634,7 @@ var PresConditionIntentionView = Backbone.View.extend({
             if(exclusionIntervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
                 inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${exclusionIntervals[1][0] - 1}]`;
             } else { // [slider1, slider2] (one exclusion interval)
-                if (exclusionIntervals[0][0] == 0){ // [0-#]
+                if (exclusionIntervals[0][0] == minRange){ // [0-#]
                     if (exclusionIntervals [0][1] == maxRange) { // special case [0-100]
                         inclusionIntervals = `[${0}, ${0}]`;
                     } else {
@@ -647,7 +647,9 @@ var PresConditionIntentionView = Backbone.View.extend({
                 }
             }
         } else { // always available
-            inclusionIntervals = `[${minRange}, ${maxRange}]`;
+            if (!inclusionIntervals) {
+                inclusionIntervals = `[${minRange}, ${maxRange}]`;
+            }
         }
         return inclusionIntervals;
     },

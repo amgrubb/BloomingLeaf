@@ -322,7 +322,6 @@ var TimePointListView = Backbone.View.extend({
                         slider2.value = rangeMax;
                     } else { // from slider1 to slider2 is excluded
                         document.getElementById('intervals-flip-btn').value = "false";
-                        document.getElementById('intervals-flip-btn').style.display = "none";
                         slider1.value = intervals[0][0] - 1;
                         slider2.value = intervals[0][1] + 1;
                         document.getElementById('flipped').style.display = "";
