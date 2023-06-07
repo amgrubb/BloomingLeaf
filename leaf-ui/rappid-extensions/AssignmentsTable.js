@@ -68,17 +68,16 @@ var AssignmentsTable = Backbone.View.extend({
                             '</tr>',
                         '</table>',
                     '</div>',
-                    '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Presence Conditions Assignment</h3>',
-                    '<table id="prescond-list" class="abs-table">',
-                        '<tr>',
-                            '<th>Element</th>',
-                            '<th>Available Interval</th>',
-                        '</tr>',
-                        '<tr>',
-                            '<td>test</td>',
-                            '<td>width</td>',
-                        '</tr>',
-                    '</table>',
+                    '<div class="presConditions">',
+                        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Presence Conditions Assignment</h3>',
+                        '<table id="prescond-list" class="abs-table">',
+                            '<tr>',
+                                '<th>Element</th>',
+                                '<th>Type</th>',
+                                '<th>Available Interval</th>',
+                            '</tr>',
+                        '</table>',
+                    '</div>',
                 '</div>',
             '</div>',
         '</div>',
@@ -489,16 +488,16 @@ var PresConditionActorView = Backbone.View.extend({
     initialize: function () {
         this.name = this.model.attributes.actor.attributes.actorName;
         this.intervals = this.convertIntervals();
+        this.type = "Actor";
     },
 
-    className: "pc-row",
+    tagName: 'tr',
 
     template: [
         '<script type="text/template" id="item-template">',
-        '<tr>',
             '<td id=pc-name></td>',
+            '<td id=type></td>',
             '<td id=pc-interval></td>',
-        '</tr>',
         '</script>'
     ].join(''),
 
@@ -508,7 +507,7 @@ var PresConditionActorView = Backbone.View.extend({
     convertIntervals: function () {
         var exclusionIntervals = this.model.attributes.actor.attributes.intervals;
         var inclusionIntervals;
-        if (exclusionIntervals[0]){
+        if (exclusionIntervals[0]){ // not always available
             if(exclusionIntervals[1]){ // two exclusion intervals
                 inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${exclusionIntervals[1][0] - 1}]`;
             } else { // one exclusion interval
@@ -524,7 +523,7 @@ var PresConditionActorView = Backbone.View.extend({
                     inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}], [${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
                 }
             }
-        } else {
+        } else { // always available
             inclusionIntervals = `[${0}, ${graph.get('maxAbsTime')}]`;
         }
         return inclusionIntervals;
@@ -534,6 +533,7 @@ var PresConditionActorView = Backbone.View.extend({
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
 
         this.$('#pc-name').text(this.name);
+        this.$('#type').text(this.type);
         this.$('#pc-interval').text(this.intervals);
 
         return this;
