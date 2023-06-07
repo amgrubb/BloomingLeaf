@@ -196,6 +196,7 @@ var AssignmentsTable = Backbone.View.extend({
 
     displayPresConditions: function () {
         var actors = SliderObj.getActorsView();
+        var cells = SliderObj.getIntentionsAndActorsView();
         for (var i = 0; i < actors.length; i++) {
             var presConditionActorView = new PresConditionActorView({model: actors[i].model});
 
@@ -203,18 +204,26 @@ var AssignmentsTable = Backbone.View.extend({
             presConditionActorView.render();
 
             var element = [];
-            var cells = SliderObj.getIntentionsAndActorsView();
             var embeds = SliderObj.getEmbeddedElements(actors[i].id);
 
-            for(var k = 0; k < cells.length; k++){
-                if (embeds.includes(cells[k].model.id))  {
-                    element.push(cells[k]);
+            if (embeds) {
+                for(var k = 0; k < cells.length; k++){
+                    if (embeds.includes(cells[k].model.id))  {
+                        element.push(cells[k]);
+                        cells.splice(k, 1);
+                    }
                 }
             }
 
-            console.log(element)
             for(var j = 0; j < element.length; j++){
-                var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model});
+                var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model, actor: actors[i]});
+                $('#prescond-list').append(presConditionIntentionView.el);
+                presConditionIntentionView.render();
+            }
+        }
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].model.attributes.type != "basic.Actor") {
+                var presConditionIntentionView = new PresConditionIntentionView({model: cells[i].model});
                 $('#prescond-list').append(presConditionIntentionView.el);
                 presConditionIntentionView.render();
             }
@@ -528,24 +537,20 @@ var PresConditionActorView = Backbone.View.extend({
             if(exclusionIntervals[1]){ // two exclusion intervals
                 inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${exclusionIntervals[1][0] - 1}]`;
             } else { // one exclusion interval
-        // if(exclusionIntervals[0]){
-        //     if(exclusionIntervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
-        //         inclusionIntervals = [[exclusionIntervals[0][1] + 1, exclusionIntervals[1][0] - 1]];
-            // } else { // [slider1, slider2] (one exclusion interval)
                 if (exclusionIntervals[0][0] == 0){ // [0-#]
-                    if (exclusionIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-100]
-                        inclusionIntervals = [[0, 0]];
+                    if (exclusionIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-max]
+                        inclusionIntervals = `[${0}, ${0}]`;
                     } else {
-                        inclusionIntervals = [[exclusionIntervals [0][1] + 1, graph.get('maxAbsTime')]];
+                        inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
                     }
                 } else if(exclusionIntervals[0][1] == graph.get('maxAbsTime')){ // [#-max]
-                    inclusionIntervals = [[0, exclusionIntervals[0][0] - 1]];
+                    inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}]`;
                 } else { // [#-#]
-                    inclusionIntervals = [[0, exclusionIntervals[0][0] - 1][exclusionIntervals[0][1] + 1, graph.get('maxAbsTime')]];
+                    inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}], [${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
                 }
             }
-        } else{
-            inclusionIntervals = [[0, graph.get('maxAbsTime')]];
+        } else {
+            inclusionIntervals = `[${0}, ${graph.get('maxAbsTime')}]`;
         }
         return inclusionIntervals;
     },
@@ -567,8 +572,9 @@ var PresConditionIntentionView = Backbone.View.extend({
     model: IntentionBBM,
     tagName: 'tr',
 
-    initialize: function () {
+    initialize: function (options) {
         this.name = this.model.attributes.intention.attributes.nodeName;
+        this.actor = options.actor;
         this.intervals = this.convertIntentionIntervals();
         if(this.model.attributes.type == "basic.Goal"){
             this.type = "Goal";
@@ -579,13 +585,11 @@ var PresConditionIntentionView = Backbone.View.extend({
         } else if (this.model.attributes.type == "basic.Resource"){
             this.type = "Resource";
         } 
+        console.log(this.actor);
     },
-
-
 
     template: [
         '<script type="text/template" id="item-template">',
-        //'<h3>oui</h3>',
         '<td id=pc-name></td>',
         '<td id=pc-type></td>',
         '<td id=pc-interval></td>',
@@ -597,25 +601,55 @@ var PresConditionIntentionView = Backbone.View.extend({
 
     convertIntentionIntervals: function () {
         var exclusionIntervals = this.model.attributes.intention.attributes.intervals;
+
+        console.log(exclusionIntervals);
         var inclusionIntervals;
+
+        var minRange = 0;
+        var maxRange = graph.get('maxAbsTime');
+
+        if (this.actor) {
+            var actorExcIntervals = this.actor.model.attributes.actor.attributes.intervals;
+            console.log(actorExcIntervals);
+            if (actorExcIntervals[0]) {
+                if(actorExcIntervals[1]){ // two exclusion intervals
+                    minRange = actorExcIntervals[0][1] + 1;
+                    maxRange = actorExcIntervals[1][0] - 1;
+                } else { // one exclusion interval
+                    if (actorExcIntervals[0][0] == 0){ // [0-#]
+                        if (actorExcIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-max]
+                            minRange = 0;
+                            maxRange = 0;
+                        } else {
+                            minRange = actorExcIntervals[0][1] + 1;
+                        }
+                    } else if(actorExcIntervals[0][1] == graph.get('maxAbsTime')){ // [#-max]
+                        maxRange = actorExcIntervals[0][0] - 1;
+                    } else { // [#-#]
+                        inclusionIntervals = `[${0}, ${actorExcIntervals[0][0] - 1}], [${actorExcIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
+                    }
+                }
+            }
+        }
+
         if(exclusionIntervals[0]){
             if(exclusionIntervals[1]){ // [[rangeMin, slider1],[slider2, rangeMax]] (two exclusion intervals)
-                inclusionIntervals = [[exclusionIntervals[0][1] + 1, exclusionIntervals[1][0] - 1]];
+                inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${exclusionIntervals[1][0] - 1}]`;
             } else { // [slider1, slider2] (one exclusion interval)
                 if (exclusionIntervals[0][0] == 0){ // [0-#]
-                    if (exclusionIntervals [0][1] == graph.get('maxAbsTime')) { // special case [0-100]
-                        inclusionIntervals = [[0, 0]];
+                    if (exclusionIntervals [0][1] == maxRange) { // special case [0-100]
+                        inclusionIntervals = `[${0}, ${0}]`;
                     } else {
-                        inclusionIntervals = [[exclusionIntervals [0][1] + 1, graph.get('maxAbsTime')]];
+                        inclusionIntervals = `[${exclusionIntervals[0][1] + 1}, ${maxRange}]`;
                     }
-                } else if(exclusionIntervals[0][1] == graph.get('maxAbsTime')){ // [#-max]
-                    inclusionIntervals = [[0, exclusionIntervals[0][0] - 1]];
+                } else if(exclusionIntervals[0][1] == maxRange){ // [#-max]
+                    inclusionIntervals = `[${minRange}, ${exclusionIntervals[0][0] - 1}]`;
                 } else { // [#-#]
-                    inclusionIntervals = [[0, exclusionIntervals[0][0] - 1][exclusionIntervals[0][1] + 1, graph.get('maxAbsTime')]];
+                    inclusionIntervals = `[${minRange}, ${exclusionIntervals[0][0] - 1}], [${exclusionIntervals[0][1] + 1}, ${maxRange}]`;
                 }
             }
         } else { // always available
-            inclusionIntervals = `[${0}, ${graph.get('maxAbsTime')}]`;
+            inclusionIntervals = `[${minRange}, ${maxRange}]`;
         }
         return inclusionIntervals;
     },
@@ -624,6 +658,9 @@ var PresConditionIntentionView = Backbone.View.extend({
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
 
         this.$('#pc-name').text(this.name);
+        if (this.actor) {
+            this.$('#pc-name').css("padding-left", "40px");
+        }
         this.$('#pc-type').text(this.type);
         this.$('#pc-interval').text(this.intervals);
 
