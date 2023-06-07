@@ -210,6 +210,7 @@ var AssignmentsTable = Backbone.View.extend({
                 for(var k = 0; k < cells.length; k++){
                     if (embeds.includes(cells[k].model.id))  {
                         element.push(cells[k]);
+                        cells.splice(k, 1);
                         k--;
                     }
                 }
