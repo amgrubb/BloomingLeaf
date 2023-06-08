@@ -751,6 +751,15 @@ paper.on("link:options", function (cell) {
                 selectResult.set('selected', false);
             }
 
+            var elements = SliderObj.getIntentionsAndActorsView();
+            var links = SliderObj.getLinksView();
+            for (var i = 0; i < elements.length; i ++) {
+                $("#" + elements[i].id).css("display", "");
+            }
+            for (var i = 0; i < links.length; i ++) {
+                $("#" + links[i].id).css("display", "");
+            }
+
             // Reset to initial graph prior to analysis
             revertNodeValuesToInitial(selectResult);
 
