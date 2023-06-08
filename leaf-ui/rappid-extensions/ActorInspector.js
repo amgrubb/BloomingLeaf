@@ -235,6 +235,12 @@ var ActorInspector = Backbone.View.extend({
                             if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.actor.attributes.intervals[0][0]) {
                                 intentions[i].model.attributes.intention.attributes.intervals.pop();
                             }
+                        } else if (this.actor.attributes.intervals[0] && !this.actor.attributes.intervals[1] && this.actor.attributes.intervals[0][0] != 0 && this.actor.attributes.intervals[0][1] != graph.get('maxAbsTime')) { // interval is flipped
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.actor.attributes.intervals[0][0]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
+                            } else if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
+                            }
                         }
                     }
                 }

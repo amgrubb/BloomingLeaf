@@ -69,12 +69,19 @@ var AssignmentsTable = Backbone.View.extend({
                         '</table>',
                     '</div>',
                     '<div class="presConditions">',
-                        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Presence Conditions Assignment</h3>',
+                        '<div class=headings>',
+                            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top:50px">Presence Condition Assignments',
+                                '<div id="add-prescondition" style="display:inline">',
+                                    '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
+                                '</div>',
+                            '</h3>',
+                        '</div>',
                         '<table id="prescond-list" class="abs-table">',
                             '<tr>',
                                 '<th>Element</th>',
                                 '<th>Type</th>',
                                 '<th>Available Interval</th>',
+                                '<th></th>',
                             '</tr>',
                         '</table>',
                     '</div>',
@@ -87,6 +94,7 @@ var AssignmentsTable = Backbone.View.extend({
         'click #add-intention': 'addRelIntentionRow',
         'change #max-abs-time': 'updateMaxAbsTime',
         'change #abs-time-pts': 'updateAbsTimePts',
+        'click #add-prescondition': 'addPresCondition',
         'click .close': 'closeView'
     },
 
@@ -192,6 +200,12 @@ var AssignmentsTable = Backbone.View.extend({
                 linkRelationshipView.render()
             }
         })
+    },
+
+    addPresCondition: function() {
+        var presConditionEditView = new PresConditionEditView({});
+        $('#prescond-list').append(presConditionEditView.el);
+        presConditionEditView.render();
     },
 
     displayPresConditions: function () {
@@ -401,7 +415,6 @@ var IntentionRelationshipView = Backbone.View.extend({
 
     initialize: function (options) {
         this.funcType = options.funcType;
-        // console.log(funcType);
         this.intentionName = options.intentionName;
     },
 
@@ -533,6 +546,11 @@ var PresConditionActorView = Backbone.View.extend({
     ].join(''),
 
     events: {
+        'change #pc-name': 'changeType',
+    },
+
+    changeType: function() {
+        this.$('#pc-type').text("aaa");
     },
 
     convertIntervals: function () {
@@ -554,7 +572,9 @@ var PresConditionActorView = Backbone.View.extend({
                     inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}], [${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
                 }
             }
-        } 
+        }  // else { // always available
+        //     inclusionIntervals = `[${0}, ${graph.get('maxAbsTime')}]`;
+        // }
         return inclusionIntervals;
     },
 
@@ -665,6 +685,130 @@ var PresConditionIntentionView = Backbone.View.extend({
         }
         this.$('#pc-type').text(this.type);
         this.$('#pc-interval').text(this.intervals);
+
+        return this;
+    },
+
+});
+
+var PresConditionEditView = Backbone.View.extend({
+    // TODO: only allow dropdown options of elements that are not already in the table
+    // TODO: restrict intentions' intervals by their actor's intervals
+    // TODO: when an intention pc is added, put it below its actor without having to close and reopen the window (would this involve rerendering the table?)
+    // TODO: default to having and model/type, even before clicking a new option
+    // TODO: test to make sure it doesn't do anything weird when saving intervals
+
+    model: joint.dia.BloomingGraph,
+
+    initialize: function () {
+        this.existingRows = document.getElementById("prescond-list").rows;
+    },
+
+    tagName: 'tr',
+
+    template: [
+        '<script type="text/template" id="item-template">',
+            '<td>',
+                '<select id=edit-name>',
+                '<% for (var i = 0; i < SliderObj.getIntentionsAndActorsView().length; i++) { %>',
+                    '<% if (SliderObj.getIntentionsAndActorsView()[i].model.attributes.type == "basic.Actor") { %>',
+                        '<option value=<%= i %>><%= SliderObj.getIntentionsAndActorsView()[i].model.attributes.actor.attributes.actorName %></option>',
+                    '<% } else { %>',
+                        '<option value=<%= i %>><%= SliderObj.getIntentionsAndActorsView()[i].model.attributes.intention.attributes.nodeName %></option>',
+                    '<% } %>',
+                '<% } %>',
+                '</select>',
+            '</td>',
+            '<td id=edit-type></td>',
+            '<td>',
+                '<input id=edit-interval1 type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-interval2 type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
+            '</td>',
+            '<td><button id=save>Save</button></td>',
+        '</script>'
+    ].join(''),
+
+    events: {
+        'change #edit-name': 'updateType',
+        'click #save': 'save',
+    },
+
+    getSelectedModel: function() {
+        var elements = SliderObj.getIntentionsAndActorsView();
+        console.log(elements);
+        console.log($("#edit-name").val());
+        return elements[$("#edit-name").val()].model;
+    },
+
+    updateType: function() {
+        this.model = this.getSelectedModel();
+
+        // type
+        if (this.model.attributes.type == "basic.Actor") {
+            this.type = "Actor";
+        } else if (this.model.attributes.type == "basic.Goal") {
+            this.type = "Goal";
+        } else if (this.model.attributes.type == "basic.Task") {
+            this.type = "Task";
+        } else if (this.model.attributes.type == "basic.Softgoal") {
+            this.type = "Soft Goal";
+        } else if (this.model.attributes.type == "basic.Resource") {
+            this.type = "Resource";
+        } 
+        this.$('#edit-type').text(this.type);
+    },
+
+    save: function() {
+        var value1 = parseInt(document.getElementById('edit-interval1').value);
+        var value2 = parseInt(document.getElementById('edit-interval2').value);
+
+        if (value1 > value2) {
+            console.log("error");
+            return;
+        }
+
+        if (this.model.attributes.type == "basic.Actor") {
+            if (value1 != 0) {
+                if (value2 != graph.get('maxAbsTime')) {
+                    this.model.attributes.actor.attributes.intervals = [[0, value1 - 1], [value2 + 1, graph.get('maxAbsTime')]];
+                } else {
+                    this.model.attributes.actor.attributes.intervals = [[0, value1 - 1]];
+                }
+            } else {
+                console.log("here");
+                this.model.attributes.actor.attributes.intervals = [[value2 + 1, graph.get('maxAbsTime')]];
+            }
+
+            var presConditionActorView = new PresConditionActorView({model: this.model});
+            $('#prescond-list').append(presConditionActorView.el);
+            presConditionActorView.render();
+        } else {
+            if (value1 != 0) {
+                if (value2 != graph.get('maxAbsTime')) {
+                    this.model.attributes.intention.attributes.intervals = [[0, value1 - 1], [value2 + 1, graph.get('maxAbsTime')]];
+                } else {
+                    this.model.attributes.intention.attributes.intervals = [[0, value1 - 1]];
+                }
+            } else {
+                this.model.attributes.intention.attributes.intervals = [[value2 + 1, graph.get('maxAbsTime')]];
+            }
+
+            var presConditionIntentionView = new PresConditionIntentionView({model: this.model});
+            $('#prescond-list').append(presConditionIntentionView.el);
+            presConditionIntentionView.render();
+        }
+        this.remove();
+        console.log("remove");
+    },
+
+    remove: function() {
+        this.$el.remove();
+        this.stopListening();
+        return this;
+    },
+
+    render: function () {
+        this.$el.html(_.template($(this.template).html()));
+        this.$('#edit-type').text(this.type);
 
         return this;
     },
