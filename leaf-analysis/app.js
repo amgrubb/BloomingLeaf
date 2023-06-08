@@ -59,10 +59,11 @@ function processPost(queryObj,req,res) {
             queryObj.message = body; // specific to the chat application
             qs.processQuery(queryObj,res);
         }
-    //console.log("body: ", body);
     obj = JSON.parse(body);
 
     if(obj.analysisRequest == "premerge") {
+
+        console.log("we are running premerge");
 
         var model1_json = JSON.stringify(obj.model1);
         var model2_json = JSON.stringify(obj.model2);
@@ -70,25 +71,26 @@ function processPost(queryObj,req,res) {
         fs.writeFileSync(userPath+"/leaf-analysis/temp/merge_model1.json",model1_json);
         fs.writeFileSync(userPath+"/leaf-analysis/temp/merge_model2.json",model2_json);
 
-        //console.log("res before premerge: ", res);
         console.log("timing offset: ", obj.timingOffset);
         passIntoPreMergeJar(res, obj.timingOffset);
     }
     else if(obj.analysisRequest == "merge") {
         // Save timing file to temp
+        console.log("we are running merge");
         var timing_json = JSON.stringify(obj.timing);
         fs.writeFileSync(userPath+"/leaf-analysis/temp/timing.json",timing_json);
 
-        //console.log("res before merge: ", res);
         passIntoMergeJar(res);
     }
     else if(obj.analysisRequest == "layout") {
+        console.log("we are running layout");
         var model_json = JSON.stringify(obj.model);
         fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",model_json);
 
         passIntoLayoutJar(res);
     }
     else {
+        console.log("we are running main");
         fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
         passIntoJar(res);
     }
@@ -172,14 +174,11 @@ function passIntoLayoutJar(res) {
 
                 res.writeHead(200, { "Content-Type" : 'text/plain'});
                 res.write(analysisFileString);
-                //res.write("Hi from app.js");
                 res.end();
-                //console.log("res in layout: ", res);
             
                 return stdout;
             }
         });
-    //console.log("layout child: ", child);
     return child;
 }
 
@@ -199,14 +198,11 @@ function passIntoPreMergeJar(res, timingOffset) {
 
                 res.writeHead(200, { "Content-Type" : 'text/plain'});
                 res.write(analysisFileString);
-                //console.log("res in premerge: ", res);
                 res.end();
             
                 return stdout;
-                // passIntoMergeJar(res)
             }
         });
-    //console.log("premerge child: ", child);
     return child;
 }
 
@@ -217,8 +213,17 @@ function passIntoMergeJar(res) { // TODO
             if(error !== null){
                 console.log('exec error: ' + error);
             }
-            else{               
-                passIntoLayoutJar(res)
+            else{     
+                analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/default.json");
+                analysisFileString = String(analysisFile);
+                console.log("analysis file string: ", analysisFileString);
+
+                res.writeHead(200, { "Content-Type" : 'text/plain'});
+                res.write(analysisFileString);
+                res.end();
+            
+                return stdout;          
+                //passIntoLayoutJar(res)
             }
         });
     return child;

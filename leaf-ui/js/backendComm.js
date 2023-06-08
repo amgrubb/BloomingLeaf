@@ -10,7 +10,6 @@
 
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 var globalAnalysisResult; 
-//var globalTiming;
 
 /** Makes a request for the backend and calls the response function.
  * {ConfigBBM} analysisRequest
@@ -52,11 +51,8 @@ function backendLayoutRequest(model) {
 
 	xhr.onload = function () {
 		// This function get called when the response is received.
-		//console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
-			//console.log("Response type: ", typeof response);
-			//console.log("Response: ", response);
 			var result = JSON.parse(response);
 			loadFromObject(result);
 		}
@@ -73,7 +69,6 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 	jsObject.model2 = model2;
 	jsObject.timingOffset = timing_offset;
 	var data = backendStringifyCirc(jsObject);
-	console.log("data in premerge backendComm: ", data);
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -81,26 +76,17 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 
 	xhr.onload = function () {
 		// This function get called when the response is received.
-		console.log("PreMerge: Reading the response");
+		//console.log("PreMerge: Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
-			console.log("in the if");
 			var response = xhr.responseText;
-			console.log("xhr.responseText: ", xhr.responseText);
-			console.log("Response type: ", typeof response);
 			// console.log(response[130] + response[131] + response[132]);
 			console.log("Response: ", response);
 			var new_response = response.replace(/\n/g, " ");
-			console.log("new_response: ", new_response);
 			var result = JSON.parse(new_response);
-			console.log("Result type: ", typeof result);
-			console.log("Result1 : ", result);
 			dealWithTimingObject(result);
-			//backendMergeRequest(result);
 		}
 	}
-	console.log("before data is being sent");
 	xhr.send(data);
-	// xhr.send(updatedData);
 }
 
 
@@ -232,9 +218,12 @@ function backendMergeRequest(timing) {
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
 			//var new_response = response.replace(/\n/g, " ")
+			console.log("xhr response text: ", xhr.responseText);
+			console.log("response: ", response);
 			var result = JSON.parse(response);
 			console.log("Result2 : ", result);
-			loadFromObject(result);
+			//console.log("you are going to load from object");
+			backendLayoutRequest(result);
 		}
 	}
 	xhr.send(data);
