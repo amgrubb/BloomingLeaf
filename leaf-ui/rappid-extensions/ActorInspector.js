@@ -43,6 +43,9 @@ var ActorInspector = Backbone.View.extend({
         'clearInspector .inspector-views': 'removeView'
     },
 
+    /**
+     * Updates if the element is hidden or not, displays it, or not, accordingly.
+     */
     updateHidden: function (event){
         var isHidden = event.target.checked;
         if(isHidden){
@@ -159,7 +162,6 @@ var ActorInspector = Backbone.View.extend({
     },
     /**
      * This function updates the actor's intervals attribute.
-     * @returns the intervals attribute from BIActor
      */
     updateTimePointsSet: function () {
         var minRange = parseInt(document.getElementById('slider-1').min);
@@ -283,6 +285,7 @@ var TimePointListView = Backbone.View.extend({
         '<br>',
         '</script>'
     ].join(''),
+    
     render: function () {
         this.$el.html(_.template($(this.template).html())(graph.toJSON()));
 
