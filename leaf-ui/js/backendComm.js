@@ -6,10 +6,8 @@
  * which returns the analysisResult.
  */
 
-// export{ timing_list };
-
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
-var globalAnalysisResult; 
+var globalAnalysisResult;
 
 /** Makes a request for the backend and calls the response function.
  * {ConfigBBM} analysisRequest
@@ -76,13 +74,12 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 
 	xhr.onload = function () {
 		// This function get called when the response is received.
-		//console.log("PreMerge: Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
-			// console.log(response[130] + response[131] + response[132]);
-			console.log("Response: ", response);
+			//console.log("Response: ", response);
 			var new_response = response.replace(/\n/g, " ");
 			var result = JSON.parse(new_response);
+			console.log("result: ", result);
 			dealWithTimingObject(result);
 		}
 	}
@@ -92,49 +89,26 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 
 function dealWithTimingObject(timing) {
 	// Detmermine if further user input is required
-	
-	if(Object.keys(timing.timingList[0]).length == 0) {
-		// No changes required 
+	var input_required = false;
+	var timing_list = timing.timingList;
+	var indexes_to_modify = [];
+	for (var i = 0; i < timing_list.length - 1; i++) {
+		var intention = timing_list[i]; //recording every intention that need to be altered
+		if (intention.itemsToAdd.length != 0) {
+			console.log("input is required");
+			input_required = true;
+			indexes_to_modify.push(i);
+		}
+	}
+	if (!input_required) {
 		console.log("Noooooooooo changes");
 		backendMergeRequest(timing);
 	}
 	else {
-		var input_required = false;
-		var timing_list = timing.timingList;
-		var indexes_to_modify = [];
-		for(var i = 0; i < timing_list.length - 1; i++) {
-			var intention = timing_list[i]; //recording every intention that need to be altered
-			// console.log(timing_list);
-			// console.log(intention);
-			if(intention.itemsToAdd.length != 0) {
-				input_required = true;
-				indexes_to_modify.push(i);
-			}
-		}
-
-
-		// TODO
 		console.log("timing modifications required");
-		// console.log("input_required: ",  input_required)
-		if(input_required) {
-			// call merge
-			// var isFinished = false;
-			//globalTiming = timing_list;
-			timing_list.indexes_to_modify = indexes_to_modify;
-			//globalTiming.indexes_to_modify = indexes_to_modify;
-			// console.log("index to change: ", globalTiming.indexes_to_modify)
-			//console.log("index to change: ", globalTiming.indexes_to_modify);
-			displayTimingInputWindow(timing);
-			// while (!isFinished) {
-			// 	console.log('User is not finished.');
-			// }
-		}
-		// timing_list = globalTiming;
-		// console.log("new Timing: ", timing);
-		// backendMergeRequest(timing);
+		timing_list.indexes_to_modify = indexes_to_modify;
+		//displayTimingInputWindow(timing);
 	}
-	console.log("new Timing: ", timing);
-	// backendMergeRequest(timing);
 }
 
 function displayTimingInputWindow(timing) {
@@ -143,65 +117,39 @@ function displayTimingInputWindow(timing) {
 	let indexes = timing_list.indexes_to_modify;
 	let intention_list = $('#timing-input-intention-list');
 	console.log("timing in display: ", timing);
-	// timing_list = timing.timingList;
-	// let indexes = timing_list.indexes_to_modify;
-	// globalTiming.indexes_to_modify;
-	// let intention_list = $('#timing-input-intention-list');
-	
-	// var isFinished = false;
 
-	// while (!isFinished) {
-	// 	console.log('User is not finished.');
-	// }
-
-	for(i in indexes) {
-		// console.log("Intention: ", globalTiming[i].intention);
+	for (i in indexes) {
 
 		let inputId = "#timing-input-order-" + i;
-		
+
 		intention_list.append(
 			"<div>" +
 			"<h3>" + timing_list[i].intention + "</h3>" +
-			"<input type=\"text\" style=\"width:80%\" id=\"" + inputId + "\" value=\"" + timing_list[i].newTimeOrder +  "\"> " +
+			"<input type=\"text\" style=\"width:80%\" id=\"" + inputId + "\" value=\"" + timing_list[i].newTimeOrder + "\"> " +
 			"<span>New Time Order</span><br>" +
 			"<h4>Relative time points to add: <span id=\"timing-input-toAdd-" + i + "\">" + timing_list[i].itemsToAdd + "</span></h4>" +
 			"</div>"
 		)
 	}
-	
+
 	merge_button_timing = document.getElementById("merge-button-timing");
 
-	merge_button_timing.onclick = function(){
-		let editedInputValues = [];
+	merge_button_timing.onclick = function () {
 
 		var intentions_list = document.getElementById('timing-input-intention-list');
 		timeOrders = intentions_list.getElementsByTagName("input");
-		
-		// const { timing_list } = require('backendComm.js');
 
-		for (let i = 0; i < timeOrders.length; i++){
+		for (let i = 0; i < timeOrders.length; i++) {
 			timeOrder = timeOrders[i].value;
 			timeOrder = timeOrder.split(",");
-			console.log("TimeOrder: ", typeof timeOrder);
-			console.log("object? ", timeOrder);
-			editedInputValues.push(timeOrder);
-			// console.log("edits: ", editedInputValues);
-			// timing_list[i].newTimeOrder = timeOrder;
 			timing_list[i].newTimeOrder = timeOrder;
-			
-			// console.log("globalTiming:", i," ", globalTiming[i].newTimeOrder);
 		}
 		timing_input.style.display = "none";
-		// isFinished = true;
-		// backendMergeRequest(timing);
-		// console.log("new time Order: ", editedInputValues);
-		// console.log("globalTiming : ", globalTiming);
-
-		// module.exports = { timing.timingList };
 		backendMergeRequest(timing);
 	}
 }
 function backendMergeRequest(timing) {
+	console.log("timing type: ", typeof timing);
 	var jsObject = {};
 	jsObject.analysisRequest = "merge";
 	jsObject.timing = timing;
@@ -389,9 +337,9 @@ function getElementByNum(num) {
 	var count = -1;
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++) {
-		if (elements[i].get('type')!== 'basic.Actor') {
+		if (elements[i].get('type') !== 'basic.Actor') {
 			count++;
-			if (count == num){
+			if (count == num) {
 				return elements[i];
 			}
 		}
