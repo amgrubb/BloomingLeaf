@@ -107,7 +107,7 @@ function dealWithTimingObject(timing) {
 	else {
 		console.log("timing modifications required");
 		timing_list.indexes_to_modify = indexes_to_modify;
-		//displayTimingInputWindow(timing);
+		displayTimingInputWindow(timing);
 	}
 }
 
@@ -137,8 +137,11 @@ function displayTimingInputWindow(timing) {
 	merge_button_timing.onclick = function () {
 
 		var intentions_list = document.getElementById('timing-input-intention-list');
+		// console.log("Intentions_list: ", intention_list);
 		timeOrders = intentions_list.getElementsByTagName("input");
-
+		// console.log("timeOrder before for loop: ", timeOrders);
+		inputsToAdd = intention_list.getElemenyByTagName("span");
+		console.log("timeOrder before for loop: ", inputsToAdd);
 		for (let i = 0; i < timeOrders.length; i++) {
 			timeOrder = timeOrders[i].value;
 			timeOrder = timeOrder.split(",");
