@@ -115,6 +115,8 @@ var AssignmentsTable = Backbone.View.extend({
         } else {
             maxTimeElement.val(this.model.prop('maxAbsTime'));
         }
+
+        this.presConditionTableView.render();
     },
 
     /** 
