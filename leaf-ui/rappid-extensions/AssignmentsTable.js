@@ -707,6 +707,12 @@ var PresConditionEditView = Backbone.View.extend({
             '</td>',
             '<td id=edit-type></td>',
             '<td>',
+                // '<div id="intervalActor">',
+                //     '<input id=edit-act-interval1 type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-act-interval2 type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
+                // '</div>',
+                // '<div id="intervalIntention">',
+                //     '<input id=edit-int-interval1 type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-int-interval2 type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
+                // '</div>',
                 '<input id=edit-interval1 type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-interval2 type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
             '</td>',
             '<td><button id=save>Save</button></td>',
@@ -723,6 +729,7 @@ var PresConditionEditView = Backbone.View.extend({
         console.log($("#edit-name").val());
         this.model = this.listElements[$("#edit-name").val()].model;
 
+        // type
         if (this.model.attributes.type == "basic.Actor") {
             this.type = "Actor";
         } else if (this.model.attributes.type == "basic.Goal") {
@@ -737,12 +744,41 @@ var PresConditionEditView = Backbone.View.extend({
         this.$('#edit-type').text(this.type);
 
         if (this.type != "Actor") {
-            this.actor = this.findActor;
-        }
 
-        if (this.actor) {
-            document.getElementById('edit-interval1').value = 40; // change
-        }
+            var box1 = document.getElementById('edit-interval1');
+            var box2 = document.getElementById('edit-interval2');
+            var rangeMin = 0;
+            var rangeMax = graph.get('maxAbsTime');
+            this.actor = this.findActor();
+            if (this.actor) {
+                var actorIntervals = this.actor.model.attributes.actor.attributes.intervals;
+                if (actorIntervals.length > 0) { // if actor is not always available
+                    if (actorIntervals[1]){ // actor has two exclusion intervals
+                        rangeMin = actorIntervals[0][1] + 1;
+                        rangeMax = actorIntervals[1][0] - 1;
+                        box1.value = rangeMin;
+                        box2.value = rangeMax;
+                    } else { // actor has one exclusion interval
+                        if (actorIntervals[0][0] == 0) { // [0-#] excluded
+                            if (actorIntervals[0][1] == graph.get('maxAbsTime')) { // special case: [0-100] excluded
+                            }
+                            rangeMin = actorIntervals[0][1] + 1;
+                            box1.value = rangeMin;
+                        } else if (actorIntervals[0][1] >= graph.get('maxAbsTime')) { // [#-max] excluded
+                            rangeMax = actorIntervals[0][0] - 1;
+                            box2.value = rangeMax;
+                        } else { // [#-#] excluded
+                            box1.value = actorIntervals[0][0] - 1;
+                            box2.value = actorIntervals[0][1] + 1;
+                        }
+                    }
+                }
+            }
+            document.getElementById('edit-interval1').min = rangeMin;
+            document.getElementById('edit-interval1').max = rangeMax;
+            document.getElementById('edit-interval2').min = rangeMin;
+            document.getElementById('edit-interval2').max = rangeMax;
+        } 
     },
 
     findActor: function() {
