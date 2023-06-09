@@ -2,12 +2,15 @@
  * This file contains functions that help display the analysis
  * that the web application would receive from the back end.
  * It also contains functions for the analysis configuration sidebar
+ * 
+ * When functions in this class are called, they are called statically. 
+ * An alternative implementation would be to move functions into the class definition to be able to create an instance of sliderObj when needed.
+ * In the current state of the class, this is not necessary as there is only one SliderObj.
+ * 
  */
 
 class SliderObj {
     /**
-     * TODO: see if we can move createSlider, removeSlider, updateSliderValues, etc. to the class definition
-     * TODO: integrate with the HTML implementation of the noUISlider lib in a Backbone template?
      * 
      * Used for displaying, updating, and removing slider in analysis view.
      * Holds the information displayed in the slider on the UI
@@ -84,7 +87,7 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
     
-             SliderObj.hideElements(false);
+            SliderObj.hideElements(false);
         });
         
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
