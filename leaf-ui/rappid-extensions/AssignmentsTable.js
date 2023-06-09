@@ -684,7 +684,7 @@ var PresConditionEditView = Backbone.View.extend({
             this.type = "Soft Goal";
         } else if (this.model.attributes.type == "basic.Resource") {
             this.type = "Resource";
-        } 
+        }
     },
 
     tagName: 'tr',
@@ -693,11 +693,14 @@ var PresConditionEditView = Backbone.View.extend({
         '<script type="text/template" id="item-template">',
             '<td>',
                 '<select id=edit-name>',
+                '<% var j = 0 %>',
                 '<% for (var i = 0; i < SliderObj.getIntentionsAndActorsView().length; i++) { %>',
                     '<% if (SliderObj.getIntentionsAndActorsView()[i].model.attributes.type == "basic.Actor" && SliderObj.getIntentionsAndActorsView()[i].model.attributes.actor.attributes.intervals.length == 0) { %>',
-                        '<option value=<%= i %>><%= SliderObj.getIntentionsAndActorsView()[i].model.attributes.actor.attributes.actorName %></option>',
+                        '<option value=<%= j %>><%= SliderObj.getIntentionsAndActorsView()[i].model.attributes.actor.attributes.actorName %></option>',
+                        '<% j++ %>',
                     '<% } else if (SliderObj.getIntentionsAndActorsView()[i].model.attributes.type != "basic.Actor" && SliderObj.getIntentionsAndActorsView()[i].model.attributes.intention.attributes.intervals.length == 0) { %>',
-                        '<option value=<%= i %>><%= SliderObj.getIntentionsAndActorsView()[i].model.attributes.intention.attributes.nodeName %></option>',
+                        '<option value=<%= j %>><%= SliderObj.getIntentionsAndActorsView()[i].model.attributes.intention.attributes.nodeName %></option>',
+                        '<% j++ %>',
                     '<% } %>',
                 '<% } %>',
                 '</select>',
@@ -716,9 +719,10 @@ var PresConditionEditView = Backbone.View.extend({
     },
 
     updateType: function() {
+        console.log(this.listElements);
+        console.log($("#edit-name").val());
         this.model = this.listElements[$("#edit-name").val()].model;
 
-        // type
         if (this.model.attributes.type == "basic.Actor") {
             this.type = "Actor";
         } else if (this.model.attributes.type == "basic.Goal") {
@@ -731,6 +735,34 @@ var PresConditionEditView = Backbone.View.extend({
             this.type = "Resource";
         } 
         this.$('#edit-type').text(this.type);
+
+        if (this.type != "Actor") {
+            this.actor = this.findActor;
+        }
+
+        if (this.actor) {
+            document.getElementById('edit-interval1').value = 40; // change
+        }
+    },
+
+    findActor: function() {
+        var elements = graph.getElements();
+        var actors = []
+        for (var i = 0; i < elements.length; i++) {
+            var cell = elements[i].findView(paper);
+            if (cell.model.attributes.type == "basic.Actor") {
+                actors.push(cell);
+            }
+        }
+        for (var i = 0; i < actors.length; i++) {
+            if (actors[i].model.attributes.embeds) {
+                for (var j = 0; j < actors[i].model.attributes.embeds.length; j++) {
+                    if (actors[i].model.attributes.embeds[j] == this.model.id) {
+                        return actors[i];
+                    }
+                }
+            }
+        }
     },
 
     save: function() {
