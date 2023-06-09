@@ -20,6 +20,7 @@ class SliderObj {
         this.sliderElement = document.getElementById('slider');
         this.sliderValueElement = document.getElementById('sliderValue');
         this.storedValue = null;
+        document.getElementById('colorResetAnalysis').addEventListener('change', this.hideSlider);
     }
 
     /**
@@ -115,6 +116,17 @@ class SliderObj {
             analysisResult.get('slider').sliderElement.noUiSlider.destroy();
         }
         $('#sliderValue').text("");
+    }
+
+    /**
+     * Hides slider in percent and time modes
+     */
+    hideSlider() {
+        if (document.getElementById('colorResetAnalysis').value == 1 || document.getElementById('colorResetAnalysis').value == 2) {
+            document.getElementById('slider').style.display = "none";
+        } else {
+            document.getElementById('slider').style.display = "";
+        }
     }
 
     /**
