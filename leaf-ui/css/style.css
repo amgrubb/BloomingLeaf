@@ -868,3 +868,17 @@ input[id="slider-2"]:active::-webkit-slider-thumb{
   background-color: #ffffff;
   color: #3264fe;
 }
+
+/** buttons for the palette customization */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.top-left-button {
+  align-self: flex-start;
+}
+
+.top-right-button {
+  align-self: flex-start;
+}
