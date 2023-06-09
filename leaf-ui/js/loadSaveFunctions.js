@@ -40,31 +40,6 @@ layout_loader.onchange = function () {
 	}
 };
 
-
-// merge_button_timing.onclick = function(){
-	
-	// let editedInputValues = [];
-
-	// var intention_list = document.getElementById('timing-input-intention-list');
-	// timeOrders = intention_list.getElementsByTagName("input");
-	
-	// // const { timing_list } = require('backendComm.js');
-
-	// for (let i = 0; i < timeOrders.length; i++){
-	// 	timeOrder = timeOrders[i].value;
-	// 	editedInputValues.push(timeOrder);
-	// 	// console.log("edits: ", editedInputValues);
-	// 	// timing_list[i].newTimeOrder = timeOrder;
-	// 	globalTiming[i].newTimeOrder = timeOrder;
-		
-	// 	// console.log("globalTiming:", i," ", globalTiming[i].newTimeOrder);
-	// }
-	// timing_input.style.display = "none";
-	// // backendMergeRequest(timing);
-	// // console.log("new time Order: ", editedInputValues);
-	// // console.log("globalTiming : ", globalTiming);
-
-// }
 merge_button.onclick = function () {	
 	// console.log("Additional input")
 	var file1 = document.getElementById("merge-model1").files.item(0);
@@ -485,3 +460,33 @@ if (document.cookie && document.cookie.indexOf('all=') !== -1) {
 		alert('Previously stored cookies contains invalid JSON data. Please clear your cookies.');
 	}
 }
+
+var buttons = document.querySelectorAll('.popup_button');
+    let draggedButton = null;
+
+    buttons.forEach(button => {
+      button.addEventListener('dragstart', dragStart);
+      button.addEventListener('dragend', dragEnd);
+    });
+
+    function dragStart(event) {
+      draggedButton = event.target;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/html', draggedButton.innerHTML);
+    }
+
+    function dragEnd(event) {
+      draggedButton = null;
+    }
+
+    document.addEventListener('dragover', event => {
+      event.preventDefault();
+    });
+
+    document.addEventListener('drop', event => {
+      event.preventDefault();
+      if (event.target.classList.contains('draggables')) {
+        var container = event.target;
+        container.appendChild(draggedButton);
+      }
+    });

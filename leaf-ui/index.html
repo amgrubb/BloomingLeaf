@@ -68,7 +68,7 @@
 
         <input type="file" id="loader" style="display:none">
         <input type="file" id="layout-loader" style="display:none">
-        
+
         <div class="dropdown">
             <div class="btn">Help</div>
             <div class="dropdown-toolbar">
@@ -77,7 +77,7 @@
                 <a id="evo-color-key">EVO Color Key</a>
                 <!-- <a id="load-sample">Load Sample Model</a> -->
 
-                
+
             </div>
         </div>
 
@@ -93,10 +93,10 @@
                 <a id="color-palette-3"> Green-Black Palette</a>
                 <a id="color-palette-4"> Yellow-Purple Palette</a>
                 <a id="color-palette-5"> EVO Colorblind Mode</a>
-                <a id="color-palette-6"> My Palette</a> 
-                <a id="color-palette-7">  Edit My Palette</a> 
-                </div>
-                </div>
+                <a id="color-palette-6"> My Palette</a>
+                <a id="color-palette-7"> Edit My Palette</a>
+            </div>
+        </div>
         <!-- modeling mode slider: simple off/on option-->
         <div class="EVO-whole-button" id="modelingSlider">
             <!-- slider div -->
@@ -105,8 +105,8 @@
             <p class="on-off" class="analysis-only"> Off &ensp; On</p>
             <!--  on/off label -->
         </div>
-        
-        
+
+
         <!-- Analysis mode slider: option to fill by percentage of timepoints -->
         <div class="EVO-whole-button" id='analysisSlider' style='display: none'>
             <!-- slider div -->
@@ -115,15 +115,15 @@
             <p class="on-off"> Off &ensp; % &ensp; Time &ensp; State </p>
             <!--  on/off label -->
         </div>
-        
+
         <!--This is the modal box of assignments-->
         <button id="btn-view-assignment" class="btn model-only" style="position:relative; border-radius:none;">View
             Assignments List</button>
-        
+
         <!--This is the modal box of Intermediate Values-->
         <button id="btn-view-intermediate" class="btn model-only">Intermediate
             Values</button>
-        
+
         <!-- This is simulate path button-->
         <button id="simulate-path-btn" class="btn analysis-only" style="border-radius: none; display: none" ;>Simulate
             Path</button>
@@ -135,119 +135,129 @@
         <div id="color-input" class="popup_frame" style="display: none;width: 1000px;">
 
             <div id="page-mask"></div>
-                    <div class="popup_content">
-                    
-                        <div class="popup_header">
+            <div class="popup_content">
 
-                            <span id="submit-color" class="close" onclick=" $('#color-input').css('display', 'none');">&times;</span>
+                <div class="popup_header">
 
-                            <h2>Create My Palette</h2>
-                        </div>
-                        <div class="popup_body">
-                            <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfied Value</h3>
-                            <table id="initial-satisfied-list" class="abs-table">
-                                <tbody>
-                                    <tr>
-                                        <th>None (⊥, ⊥)</th>
-                                        <th>Satisfied (F, ⊥)</th>
-                                        <th>Partially Satisfied (P, ⊥)</th>
-                                        <th>Partially Denied (⊥, P)</th>
-                                        <th>Denied (⊥, F)</th>
-                            
-                                    </tr>
-                                    <tr>
-                                        <td><input type="color" value="#D3D3D3" id="my-None" class="analysis-input" /></td>
-                                        <td><input type="color" value="#003fff" id="my-Satisfied" class="analysis-input" /></td>
-                                        <td><input type="color" value="#8FB8DE" id="my-PS" class="analysis-input" /></td>
-                                        <td><input type="color" value="#fbaca8" id="my-PD" class="analysis-input" /></td>
-                                        <td><input type="color" value="#9400D3" id="my-Denied" class="analysis-input" /></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Satisfied Value</h3>
-                            <table id="conflict-satisfied-list" class="abs-table">
-                                <tbody>
-                                    <tr>
-                                        <th>(P, P)</th>
-                                        <th>(F, P)</th>
-                                        <th>(P, F)</th>
-                                        <th>(F, F)</th>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="color" value="#5946b2" id="my-PP" class="analysis-input" type="number" /></td>
-                                        <td><input type="color" value="#FF2600" id="my-FP" class="analysis-input" type="number" /></td>
-                                        <td><input type="color" value="#ca2c92" id="my-PF" class="analysis-input" type="number" /></td>
-                                        <td><input type="color" value="#0D0221" id="my-FF" class="analysis-input" type="number" /></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="button" style="text-align: right;  padding: 10px">
-                               <span id="saved-options-message" style = "display: none;">   Your options are now saved! </span>
-                               <span>  <button id="submit-color" class="popup_button"> Save my palette </button> </span>
-                            </div>
-                        </div>
+                    <span id="submit-color" class="close"
+                        onclick=" $('#color-input').css('display', 'none');">&times;</span>
+
+                    <h2>Create My Palette</h2>
+                </div>
+                <div class="popup_body">
+                    <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfied Value</h3>
+                    <table id="initial-satisfied-list" class="abs-table">
+                        <tbody>
+                            <tr>
+                                <th>None (⊥, ⊥)</th>
+                                <th>Satisfied (F, ⊥)</th>
+                                <th>Partially Satisfied (P, ⊥)</th>
+                                <th>Partially Denied (⊥, P)</th>
+                                <th>Denied (⊥, F)</th>
+
+                            </tr>
+                            <tr>
+                                <td><input type="color" value="#D3D3D3" id="my-None" class="analysis-input" /></td>
+                                <td><input type="color" value="#003fff" id="my-Satisfied" class="analysis-input" /></td>
+                                <td><input type="color" value="#8FB8DE" id="my-PS" class="analysis-input" /></td>
+                                <td><input type="color" value="#fbaca8" id="my-PD" class="analysis-input" /></td>
+                                <td><input type="color" value="#9400D3" id="my-Denied" class="analysis-input" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Satisfied Value</h3>
+                    <table id="conflict-satisfied-list" class="abs-table">
+                        <tbody>
+                            <tr>
+                                <th>(P, P)</th>
+                                <th>(F, P)</th>
+                                <th>(P, F)</th>
+                                <th>(F, F)</th>
+                            </tr>
+                            <tr>
+                                <td><input type="color" value="#5946b2" id="my-PP" class="analysis-input"
+                                        type="number" /></td>
+                                <td><input type="color" value="#FF2600" id="my-FP" class="analysis-input"
+                                        type="number" /></td>
+                                <td><input type="color" value="#ca2c92" id="my-PF" class="analysis-input"
+                                        type="number" /></td>
+                                <td><input type="color" value="#0D0221" id="my-FF" class="analysis-input"
+                                        type="number" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="button" style="text-align: right;  padding: 10px">
+                        <span id="saved-options-message" style="display: none;"> Your options are now saved! </span>
+                        <span> <button id="submit-color" class="popup_button"> Save my palette </button> </span>
                     </div>
+                </div>
+            </div>
         </div>
 
         <!-- Create Dual File Picker for Merge -->
         <div id="merge-file-picker" class="popup_frame" style="display: none;width: 1000px;">
 
             <div id="page-mask"></div>
-                    <div class="popup_content">
-                    
-                        <div class="popup_header">
-                            <span class="close" onclick=" $('#merge-file-picker').css('display', 'none');">&times;</span>
-                            <h2>Merge Models</h2>
+            <div class="popup_content">
+
+                <div class="popup_header">
+                    <span class="close" onclick=" $('#merge-file-picker').css('display', 'none');">&times;</span>
+                    <h2>Merge Models</h2>
+                </div>
+                <div class="popup_body">
+                    <h3>Models To Merge</h3><br>
+                    <!-- <div style="display: flex; justify-content: space-around; align-items: center"> -->
+                    <label for="merge-model1">
+                        <div>
+                            <span class="popup_button">
+                                Select Model 1
+                            </span>&nbsp;
+                            <span id="name-merge-model1"></span>
                         </div>
-                        <div class="popup_body">
-                            <h3>Models To Merge</h3><br>
-                            <!-- <div style="display: flex; justify-content: space-around; align-items: center"> -->
-                            <label for="merge-model1">
-                                <div>
-                                    <span class="popup_button">
-                                        Select Model 1
-                                    </span>&nbsp;
-                                    <span id="name-merge-model1"></span>
-                                </div>
-                            </label>
-                            <input type="file" id="merge-model1" onchange="{document.getElementById('name-merge-model1').innerHTML = this.files[0].name}">
-                            <br><br>
+                    </label>
+                    <input type="file" id="merge-model1"
+                        onchange="{document.getElementById('name-merge-model1').innerHTML = this.files[0].name}">
+                    <br><br>
+                    <div>
+                        <label for="merge-model2">
                             <div>
-                                <label for="merge-model2">
-                                    <div>
-                                        <span class="popup_button">
-                                            Select Model 2
-                                        </span>&nbsp;
-                                        <span id="name-merge-model2"></span>
-                                    </div>
-                                </label>
-                                <input type="file" id="merge-model2" onchange="{document.getElementById('name-merge-model2').innerHTML = this.files[0].name}">
-                            </div><!-- </div> -->
-                            <h3>Timing Offset</h3>
-                            <input type="text" id="merge-timingOffset" value="0"><br><br>
-                            <button id= "merge-button" class="popup_button"> Merge Models </button><br><br>
-                        </div>
-                    </div>
+                                <span class="popup_button">
+                                    Select Model 2
+                                </span>&nbsp;
+                                <span id="name-merge-model2"></span>
+                            </div>
+                        </label>
+                        <input type="file" id="merge-model2"
+                            onchange="{document.getElementById('name-merge-model2').innerHTML = this.files[0].name}">
+                    </div><!-- </div> -->
+                    <h3>Timing Offset</h3>
+                    <input type="text" id="merge-timingOffset" value="0"><br><br>
+                    <button id="merge-button" class="popup_button"> Merge Models </button><br><br>
+                </div>
+            </div>
         </div>
-        
+
         <!-- Get user input for timing file -->
         <div id="timing-input-window" class="popup_frame" style="display: none; width: 1000px;">
 
             <div id="page-mask"></div>
-                    <div class="popup_content">
-                    
-                        <div class="popup_header">
-                            <span class="close" onclick=" $('#timing-input-window').css('display', 'none');">&times;</span>
-                            <h2>Input Relative Timepoints</h2>
-                        </div>
-                        <div class="popup_body" id="timing-input-intention-list">
-                            <!-- <h3>Intention Name</h3>
-                            <input type="text" id="timing-input-order" value="">  <span>New Time Order</span><br>
-                            <h4>Relative time points to add: <span id="timing-input-toAdd"></span></h4> -->
-                        </div>
-                            &nbsp;&nbsp;<button id= "merge-button-timing" class="popup_button"> Finish Merge </button><br><br>
+            <div class="popup_content">
+
+                <div class="popup_header">
+                    <span class="close" onclick=" $('#timing-input-window').css('display', 'none');">&times;</span>
+                    <h2>Input Relative Timepoints</h2>
+                </div>
+                <div class="popup_body" id="timing-input-intention-list">
+                    <div class="draggables">
+                        <button id="testing" draggable="true" class="popup_button">
+                            BackendBudies</button>
+                        <button id="testing" draggable="true" class="popup_button">
+                            BackendBudies23</button>
                     </div>
-        </div>  
+                </div>
+                &nbsp;&nbsp;<button id="merge-button-timing" class="popup_button"> Finish Merge </button><br><br>
+            </div>
+        </div>
         <!-- <div id="dropdown-model" class="dropdown analysis-only" style="display: none">
             <button id="modeling-btn" class="red-btn btn">Model</button>
             <div class="dropdown-toolbar">
