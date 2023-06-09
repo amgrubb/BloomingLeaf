@@ -87,7 +87,7 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
     
-            SliderObj.hideElements(false);
+            SliderObj.hideElements();
         });
         
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
@@ -127,8 +127,19 @@ class SliderObj {
     hideSlider() {
         if (document.getElementById('colorResetAnalysis').value == 1 || document.getElementById('colorResetAnalysis').value == 2) {
             document.getElementById('slider').style.display = "none";
+
+            var elements = SliderObj.getIntentionsAndActorsView();
+            var links = SliderObj.getLinksView();
+            for (var i = 0; i < elements.length; i ++) {
+                $("#" + elements[i].id).css("display", "");
+            }
+            for (var i = 0; i < links.length; i ++) {
+                $("#" + links[i].id).css("display", "");
+            }
         } else {
             document.getElementById('slider').style.display = "";
+
+            SliderObj.hideElements();
         }
     }
 
