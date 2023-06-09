@@ -117,6 +117,7 @@ var AssignmentsTable = Backbone.View.extend({
         }
 
         this.presConditionTableView.render();
+        document.getElementById('add-prescondition').style.display = "";
     },
 
     /** 
@@ -707,14 +708,13 @@ var PresConditionEditView = Backbone.View.extend({
             '</td>',
             '<td id=edit-type></td>',
             '<td>',
-                // '<div id="intervalActor">',
-                //     '<input id=edit-act-interval1 type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-act-interval2 type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
-                // '</div>',
-                // '<div id="intervalIntention">',
-                //     '<input id=edit-int-interval1 type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-int-interval2 type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
-                // '</div>',
-                '<input id=edit-interval1 type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-interval2 type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
-            '</td>',
+                '<div id=not-flipped>',
+                    '<input id=edit-interval1 type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-interval2 type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
+                '</div>',
+                '<div id=flipped style="display:none">',
+                    '0 - <input id=edit-interval1-flip type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>>, <input id=edit-interval2-flip type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>> - <%= graph.get("maxAbsTime") %>',
+                '</div>',
+                '</td>',
             '<td><button id=save>Save</button></td>',
         '</script>'
     ].join(''),
@@ -725,8 +725,9 @@ var PresConditionEditView = Backbone.View.extend({
     },
 
     updateType: function() {
-        console.log(this.listElements);
-        console.log($("#edit-name").val());
+        document.getElementById("not-flipped").style.display = "";
+        document.getElementById("flipped").style.display = "none";
+
         this.model = this.listElements[$("#edit-name").val()].model;
 
         // type
@@ -768,16 +769,22 @@ var PresConditionEditView = Backbone.View.extend({
                             rangeMax = actorIntervals[0][0] - 1;
                             box2.value = rangeMax;
                         } else { // [#-#] excluded
-                            box1.value = actorIntervals[0][0] - 1;
-                            box2.value = actorIntervals[0][1] + 1;
+                            document.getElementById("flipped").style.display = "";
+                            document.getElementById("not-flipped").style.display = "none";
+                            document.getElementById("edit-interval1-flip").value = actorIntervals[0][0] - 1;
+                            document.getElementById("edit-interval2-flip").value = actorIntervals[0][1] + 1;
+                            document.getElementById("edit-interval2-flip").min = actorIntervals[0][1] + 1;
+                            document.getElementById("edit-interval2-flip").max = graph.get('maxAbsTime');
+                            document.getElementById("edit-interval1-flip").min = 0;
+                            document.getElementById("edit-interval1-flip").max = actorIntervals[0][0] - 1;
                         }
                     }
                 }
+                document.getElementById('edit-interval1').min = rangeMin;
+                document.getElementById('edit-interval1').max = rangeMax;
+                document.getElementById('edit-interval2').min = rangeMin;
+                document.getElementById('edit-interval2').max = rangeMax;
             }
-            document.getElementById('edit-interval1').min = rangeMin;
-            document.getElementById('edit-interval1').max = rangeMax;
-            document.getElementById('edit-interval2').min = rangeMin;
-            document.getElementById('edit-interval2').max = rangeMax;
         } 
     },
 
@@ -802,8 +809,13 @@ var PresConditionEditView = Backbone.View.extend({
     },
 
     save: function() {
-        var value1 = parseInt(document.getElementById('edit-interval1').value);
-        var value2 = parseInt(document.getElementById('edit-interval2').value);
+        if (document.getElementById('flipped').style.display == "none") {
+            var value1 = parseInt(document.getElementById('edit-interval1').value);
+            var value2 = parseInt(document.getElementById('edit-interval2').value);
+        } else {
+            var value1 = parseInt(document.getElementById('edit-interval1-flip').value);
+            var value2 = parseInt(document.getElementById('edit-interval2-flip').value);
+        }
 
         if (value1 > value2) {
             console.log("error");
@@ -821,14 +833,26 @@ var PresConditionEditView = Backbone.View.extend({
                 this.model.attributes.actor.attributes.intervals = [[value2 + 1, graph.get('maxAbsTime')]];
             }
         } else {
-            if (value1 != 0) {
-                if (value2 != graph.get('maxAbsTime')) {
-                    this.model.attributes.intention.attributes.intervals = [[0, value1 - 1], [value2 + 1, graph.get('maxAbsTime')]];
-                } else {
-                    this.model.attributes.intention.attributes.intervals = [[0, value1 - 1]];
+            if (document.getElementById('flipped').style.display == "none") { //  not flipped
+                if (value1 != 0) {
+                    if (value2 != graph.get('maxAbsTime')) {
+                        this.model.attributes.intention.attributes.intervals = [[0, value1 - 1], [value2 + 1, graph.get('maxAbsTime')]];
+                    } else {
+                        this.model.attributes.intention.attributes.intervals = [[0, value1 - 1]];
+                    }
+                } else if (value2 != graph.get('maxAbsTime')) {
+                    this.model.attributes.intention.attributes.intervals = [[value2 + 1, graph.get('maxAbsTime')]];
                 }
-            } else if (value2 != graph.get('maxAbsTime')) {
-                this.model.attributes.intention.attributes.intervals = [[value2 + 1, graph.get('maxAbsTime')]];
+            } else {
+                if (value1 != this.actor.model.attributes.actor.attributes.intervals[0][0] - 1) {
+                    if (value2 != this.actor.model.attributes.actor.attributes.intervals[0][1] + 1) {
+                        this.model.attributes.intention.attributes.intervals = [[value1 + 1, value2 - 1]];
+                    } else {
+                        this.model.attributes.intention.attributes.intervals = [[value1 + 1, graph.get('maxAbsTime')]];
+                    }
+                } else if (value2 != this.actor.model.attributes.actor.attributes.intervals[0][1] + 1) {
+                    this.model.attributes.intention.attributes.intervals = [[0, value2 - 1]];
+                }
             }
 
             var presConditionIntentionView = new PresConditionIntentionView({model: this.model});
