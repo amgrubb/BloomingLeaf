@@ -501,6 +501,7 @@ var PresConditionActorView = Backbone.View.extend({
             '<td id=pc-name></td>',
             '<td id=pc-type></td>',
             '<td id=pc-interval></td>',
+            '<td></td>',
         '</script>'
     ].join(''),
 
@@ -574,6 +575,7 @@ var PresConditionIntentionView = Backbone.View.extend({
         '<td id=pc-name></td>',
         '<td id=pc-type></td>',
         '<td id=pc-interval></td>',
+        '<td></td>',
         '</script>'
     ].join(''),
 
@@ -652,13 +654,35 @@ var PresConditionIntentionView = Backbone.View.extend({
 
 var PresConditionEditView = Backbone.View.extend({
     // TODO: restrict intentions' intervals by their actor's intervals
-    // TODO: default to having model/type, even before clicking a new option
     // TODO: test to make sure it doesn't do anything weird when saving intervals
 
     model: joint.dia.BloomingGraph,
 
     initialize: function (options) {
         this.table = options.table;
+
+        var elements = SliderObj.getIntentionsAndActorsView();
+        this.listElements = [];
+        for (var i = 0; i < elements.length; i++) {
+            if (elements[i].model.attributes.type == "basic.Actor" && elements[i].model.attributes.actor.attributes.intervals.length == 0) {
+                this.listElements.push(elements[i]);
+            } else if (elements[i].model.attributes.type != "basic.Actor" && elements[i].model.attributes.intention.attributes.intervals.length == 0) {
+                this.listElements.push(elements[i]);
+            }
+        }
+
+        this.model = this.listElements[0].model;
+        if (this.model.attributes.type == "basic.Actor") {
+            this.type = "Actor";
+        } else if (this.model.attributes.type == "basic.Goal") {
+            this.type = "Goal";
+        } else if (this.model.attributes.type == "basic.Task") {
+            this.type = "Task";
+        } else if (this.model.attributes.type == "basic.Softgoal") {
+            this.type = "Soft Goal";
+        } else if (this.model.attributes.type == "basic.Resource") {
+            this.type = "Resource";
+        } 
     },
 
     tagName: 'tr',
@@ -689,13 +713,8 @@ var PresConditionEditView = Backbone.View.extend({
         'click #save': 'save',
     },
 
-    getSelectedModel: function() {
-        var elements = SliderObj.getIntentionsAndActorsView();
-        return elements[$("#edit-name").val()].model;
-    },
-
     updateType: function() {
-        this.model = this.getSelectedModel();
+        this.model = this.listElements[$("#edit-name").val()].model;
 
         // type
         if (this.model.attributes.type == "basic.Actor") {
