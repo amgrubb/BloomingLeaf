@@ -491,10 +491,11 @@ var LinkRelationshipView = Backbone.View.extend({
 var PresConditionActorView = Backbone.View.extend({
     model: ActorBBM,
 
-    initialize: function () {
+    initialize: function (options) {
         this.name = this.model.attributes.actor.attributes.actorName;
         this.intervals = this.convertIntervals();
         this.type = "Actor";
+        this.table = options.table;
     },
 
     tagName: 'tr',
@@ -504,16 +505,12 @@ var PresConditionActorView = Backbone.View.extend({
             '<td id=pc-name></td>',
             '<td id=pc-type></td>',
             '<td id=pc-interval></td>',
-            '<td></td>',
+            '<td><i class="fa fa-trash-o fa-2x" id="remove-interval"</i></td>',
         '</script>'
     ].join(''),
 
     events: {
-        'change #pc-name': 'changeType',
-    },
-
-    changeType: function() {
-        this.$('#pc-type').text("aaa");
+        'click #remove-interval': 'removeInterval',
     },
 
     convertIntervals: function () {
@@ -539,6 +536,11 @@ var PresConditionActorView = Backbone.View.extend({
         //     inclusionIntervals = `[${0}, ${graph.get('maxAbsTime')}]`;
         // }
         return inclusionIntervals;
+    },
+
+    removeInterval: function () {
+        this.model.attributes.actor.attributes.intervals = [];
+        this.table.render();
     },
 
     render: function () {
@@ -571,6 +573,7 @@ var PresConditionIntentionView = Backbone.View.extend({
         } else if (this.model.attributes.type == "basic.Resource"){
             this.type = "Resource";
         } 
+        this.table = options.table;
     },
 
     template: [
@@ -578,11 +581,12 @@ var PresConditionIntentionView = Backbone.View.extend({
         '<td id=pc-name></td>',
         '<td id=pc-type></td>',
         '<td id=pc-interval></td>',
-        '<td></td>',
+        '<td><i class="fa fa-trash-o fa-2x" id="remove-interval"></i></td>',
         '</script>'
     ].join(''),
 
     events: {
+        'click #remove-interval': 'removeInterval',
     },
 
     convertIntentionIntervals: function () {
@@ -640,6 +644,11 @@ var PresConditionIntentionView = Backbone.View.extend({
         return inclusionIntervals;
     },
 
+    removeInterval: function () {
+        this.model.attributes.intention.attributes.intervals = [];
+        this.table.render();
+    },
+
     render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
 
@@ -656,8 +665,9 @@ var PresConditionIntentionView = Backbone.View.extend({
 });
 
 var PresConditionEditView = Backbone.View.extend({
-    // TODO: restrict intentions' intervals by their actor's intervals
     // TODO: test to make sure it doesn't do anything weird when saving intervals
+    // TODO: css of dropdown, input boxes, and save button
+    // TODO: make delete button not appear for actor who don't have intervals
 
     model: joint.dia.BloomingGraph,
 
@@ -693,7 +703,7 @@ var PresConditionEditView = Backbone.View.extend({
     template: [
         '<script type="text/template" id="item-template">',
             '<td>',
-                '<select id=edit-name>',
+                '<select id=edit-name class=epochLists>',
                 '<% var j = 0 %>',
                 '<% for (var i = 0; i < SliderObj.getIntentionsAndActorsView().length; i++) { %>',
                     '<% if (SliderObj.getIntentionsAndActorsView()[i].model.attributes.type == "basic.Actor" && SliderObj.getIntentionsAndActorsView()[i].model.attributes.actor.attributes.intervals.length == 0) { %>',
@@ -709,7 +719,7 @@ var PresConditionEditView = Backbone.View.extend({
             '<td id=edit-type></td>',
             '<td>',
                 '<div id=not-flipped>',
-                    '<input id=edit-interval1 type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-interval2 type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
+                    '<input id=edit-interval1 class="new-interval" type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>> - <input id=edit-interval2 class=new-interval type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>>',
                 '</div>',
                 '<div id=flipped style="display:none">',
                     '0 - <input id=edit-interval1-flip type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>>, <input id=edit-interval2-flip type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>> - <%= graph.get("maxAbsTime") %>',
@@ -822,36 +832,58 @@ var PresConditionEditView = Backbone.View.extend({
             return;
         }
 
+        var rangeMin = 0;
+        var rangeMax = parseInt(graph.get('maxAbsTime'));
         if (this.model.attributes.type == "basic.Actor") {
             if (value1 != 0) {
                 if (value2 != graph.get('maxAbsTime')) {
-                    this.model.attributes.actor.attributes.intervals = [[0, value1 - 1], [value2 + 1, graph.get('maxAbsTime')]];
+                    this.model.attributes.actor.attributes.intervals = [[rangeMin, value1 - 1], [value2 + 1, rangeMax]];
                 } else {
-                    this.model.attributes.actor.attributes.intervals = [[0, value1 - 1]];
+                    this.model.attributes.actor.attributes.intervals = [[rangeMin, value1 - 1]];
                 }
             } else if (value2 != graph.get('maxAbsTime')) {
-                this.model.attributes.actor.attributes.intervals = [[value2 + 1, graph.get('maxAbsTime')]];
+                this.model.attributes.actor.attributes.intervals = [[value2 + 1, rangeMax]];
             }
         } else {
-            if (document.getElementById('flipped').style.display == "none") { //  not flipped
-                if (value1 != 0) {
-                    if (value2 != graph.get('maxAbsTime')) {
-                        this.model.attributes.intention.attributes.intervals = [[0, value1 - 1], [value2 + 1, graph.get('maxAbsTime')]];
-                    } else {
-                        this.model.attributes.intention.attributes.intervals = [[0, value1 - 1]];
+            this.actor = this.findActor();
+            if (this.actor) {
+                var actorIntervals = this.actor.model.attributes.actor.attributes.intervals;
+                if (actorIntervals.length > 0) { // if actor is not always available
+                    if (actorIntervals[1]){ // actor has two exclusion intervals
+                        rangeMin = actorIntervals[0][1] + 1;
+                        rangeMax = actorIntervals[1][0] - 1;
+                    } else { // actor has one exclusion interval
+                        if (actorIntervals[0][0] == 0) { // [0-#] excluded
+                            if (actorIntervals[0][1] == graph.get('maxAbsTime')) { // special case: [0-100] excluded
+                            }
+                            rangeMin = actorIntervals[0][1] + 1;
+                        } else if (actorIntervals[0][1] >= graph.get('maxAbsTime')) { // [#-max] excluded
+                            rangeMax = actorIntervals[0][0] - 1;
+                        } else { // [#-#] excluded
+                            
+                        }
                     }
-                } else if (value2 != graph.get('maxAbsTime')) {
-                    this.model.attributes.intention.attributes.intervals = [[value2 + 1, graph.get('maxAbsTime')]];
+                }
+            }
+            if (document.getElementById('flipped').style.display == "none") { //  not flipped
+                if (value1 != rangeMin) {
+                    if (value2 != rangeMax) {
+                        this.model.attributes.intention.attributes.intervals = [[rangeMin, value1 - 1], [value2 + 1, rangeMax]];
+                    } else {
+                        this.model.attributes.intention.attributes.intervals = [[rangeMin, value1 - 1]];
+                    }
+                } else if (value2 != rangeMax) {
+                    this.model.attributes.intention.attributes.intervals = [[value2 + 1, rangeMax]];
                 }
             } else {
                 if (value1 != this.actor.model.attributes.actor.attributes.intervals[0][0] - 1) {
                     if (value2 != this.actor.model.attributes.actor.attributes.intervals[0][1] + 1) {
                         this.model.attributes.intention.attributes.intervals = [[value1 + 1, value2 - 1]];
                     } else {
-                        this.model.attributes.intention.attributes.intervals = [[value1 + 1, graph.get('maxAbsTime')]];
+                        this.model.attributes.intention.attributes.intervals = [[value1 + 1, rangeMax]];
                     }
                 } else if (value2 != this.actor.model.attributes.actor.attributes.intervals[0][1] + 1) {
-                    this.model.attributes.intention.attributes.intervals = [[0, value2 - 1]];
+                    this.model.attributes.intention.attributes.intervals = [[rangeMin, value2 - 1]];
                 }
             }
 
@@ -859,6 +891,7 @@ var PresConditionEditView = Backbone.View.extend({
             $('#prescond-list').append(presConditionIntentionView.el);
             presConditionIntentionView.render();
         }
+        console.log(this.model.attributes.actor.attributes.intervals);
         this.remove();
         document.getElementById('add-prescondition').style.display = "";
         this.table.render();
@@ -911,13 +944,13 @@ var PresConditionTableView = Backbone.View.extend({
             }
 
             if (actors[i].model.attributes.actor.attributes.intervals.length > 0 || element.length > 0) { // if actor's interval is changed, display actor
-                var presConditionActorView = new PresConditionActorView({model: actors[i].model});
+                var presConditionActorView = new PresConditionActorView({model: actors[i].model, table: this});
                 $('#prescond-list').append(presConditionActorView.el);
                 presConditionActorView.render();
 
                 for(var j = 0; j < element.length; j++){
                     if (element[j].model.attributes.intention.attributes.intervals.length > 0) {
-                        var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model, actor: actors[i]});
+                        var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model, actor: actors[i], table: this});
                         $('#prescond-list').append(presConditionIntentionView.el);
                         presConditionIntentionView.render();
                     }
