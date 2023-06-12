@@ -970,6 +970,7 @@ var PresConditionTableView = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html()));
         this.displayRows();
+        document.getElementById("add-prescondition").style.display = "";
         return this;
     }
 });
