@@ -124,37 +124,35 @@ function displayTimingInputWindow(timing) {
 
 		intention_list.append(
 			"<div>" +
-			"<h3>" + timing_list[i].intention + "</h3>"
+			"<h3>" + timing_list[i].intention + "</h3><table class='timelisttable'><tr id='tablerow_" + i + "'></tr></table>"
 		)
 		
-		for (var j = 0; j < timing_list[i].newTimeOrder.length - 1; j ++) {
-			
-			intention_list.append(
-				"<p>" + timing_list[i].newTimeOrder[j] + "</p>"
-			)
-			for (var k = 0; k < timing_list[i].itemsToAdd.length; k ++) {
-				intention_list.append(
-					'<div style="width:40px;height:20px;border:1px solid #000;" ondrop="drop(event)" ondragover="dragover(event)" class="dropbox" id="dropbox'+ i + '_' + j + '"></div>'
+		var row = $('#tablerow_' + i);
+		for (var j = 0; j < timing_list[i].newTimeOrder.length; j ++) {
+			if (j == 0) {
+				row.append(
+					'<td class="dropbox" id="dropbox_'+ i + '_' + j + '">' +
+					timing_list[i].newTimeOrder[j] + "</td>"
+				)
+			} else {
+				row.append(
+					'<td ondrop="drop(event)" ondragover="dragover(event)" class="dropbox" id="dropbox_'+ i + '_' + j + '">' +
+					timing_list[i].newTimeOrder[j] + "</td>"
 				)
 			}
 		}
 
 		intention_list.append(
-			"<p>" + timing_list[i].newTimeOrder[j] + "</p>" + 
-			"<h4>Relative time points to add: "
+			"<br/><div class=line><h4>Relative time points to add: </h4>"
 		)
 
 		for (var j = 0; j < timing_list[i].itemsToAdd.length; j ++) {
 			intention_list.append(
-				'<div style="width:40px;height:20px;border:1px solid #000;" ondrop="drop(event)" ondragover="dragover(event)">' +
-				"<button draggable = 'true' class='popup_button_timing' ondragstart='dragStart(event)' id=\"timing-input-toAdd-" + i + "\">" + timing_list[i].itemsToAdd[j] + "</button></h4>" + 
+				"<button draggable = 'true' class='popup_button_timing' ondragstart='dragStart(event)' id=\"timing-input-toAdd_" + i + "\">" +
+				timing_list[i].itemsToAdd[j] + "</button></div>" + 
 				'</div>'
 			)
 		}
-
-		intention_list.append(
-			"</div>"
-		)
 	}
 
 	merge_button_timing = document.getElementById("merge-button-timing");
@@ -406,3 +404,39 @@ function getNums(backendErrorMsg) {
 
 	return arr;
 }
+
+// var buttons = document.querySelectorAll('.popup_button');
+//     let draggedButton = null;
+
+//     buttons.forEach(button => {
+//       button.addEventListener('dragstart', dragStart);
+//       button.addEventListener('dragend', dragEnd);
+//     });
+
+//     function dragStart(event) {
+//       draggedButton = event.target;
+// 	  console.log("dragged button 1:", draggedButton);
+//       event.dataTransfer.effectAllowed = 'move';
+//       event.dataTransfer.setData('text/html', draggedButton.innerHTML);
+// 	  console.log("dragged button 2:", draggedButton);
+//     }
+
+//     function dragEnd(event) {
+// 		console.log(draggedButton.innerHTML);
+// 		event.target.insert('<div class="dropbox" id="dropbox'+ i + '_' + j + '"><li class=fixedtime>' + draggedButton.innerHTML + '</li></div>');
+// 		draggedButton = null;
+//     }
+
+//     function dragover(event) {
+//       event.preventDefault();
+//     }
+
+//     function drop(event) {
+// 		event.preventDefault();
+// 		if (event.target.classList.contains('draggables')) {
+// 			var container = event.target;
+// 			container.appendChild(draggedButton);
+// 		}
+// 		console.log("dragged butotn", draggedButton.innerHTML);
+// 		$().insert('<div class="dropbox"><li class=fixedtime>' + draggedButton.innerHTML + '</li></div>');
+//     }

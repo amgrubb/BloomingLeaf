@@ -420,8 +420,17 @@ select::-ms-expand {
     transform: rotate(15deg);
 }
 
+.timelisttable td {
+    padding: 10px 10px;
+    border: 1px solid black;
+}
+
 .popup_button_timing {
-    background-color: white;
-    color: #1E85F7; 
-    font-size:12px
+    background-color: #dddddd;
+    border: 1px solid black;
+    height: 40px;
+}
+
+.highlight {
+    border: 3px blue;
 }

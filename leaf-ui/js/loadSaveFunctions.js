@@ -471,14 +471,12 @@ var buttons = document.querySelectorAll('.popup_button');
 
     function dragStart(event) {
       draggedButton = event.target;
-	  console.log("dragged button 1:", draggedButton);
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/html', draggedButton.innerHTML);
-	  console.log("dragged button 2:", draggedButton);
     }
 
     function dragEnd(event) {
-      draggedButton = null;
+		draggedButton = null;
     }
 
     function dragover(event) {
@@ -486,11 +484,22 @@ var buttons = document.querySelectorAll('.popup_button');
     }
 
     function drop(event) {
-      event.preventDefault();
-    //   if (event.target.classList.contains('draggables')) {
-        var container = event.target;
-		console.log("container: ", container);
-		console.log("type of button: ", draggedButton);
-        container.appendChild(draggedButton);
-    //   }
+		event.preventDefault();
+		var container = event.target;
+		
+
+		var dragIdx = parseInt(draggedButton.id.split("_")[1])
+		var rowIdx = parseInt(container.id.split("_")[1]);
+		var colIdx = parseInt(container.id.split("_")[2]);
+
+		if (dragIdx == rowIdx) {
+			container.appendChild(draggedButton);
+
+			var newCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
+			newCell.setAttribute('ondrop', 'drop(event)');
+			newCell.setAttribute('ondragover', 'dragover(event)');
+			newCell.setAttribute('id', 'dropbox_' + rowIdx + "_" + (colIdx));
+			newCell.innerHTML = draggedButton.innerHTML;
+			draggedButton.remove();
+		}
     }
