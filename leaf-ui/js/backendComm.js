@@ -124,10 +124,35 @@ function displayTimingInputWindow(timing) {
 
 		intention_list.append(
 			"<div>" +
-			"<h3>" + timing_list[i].intention + "</h3>" +
-			"<input type=\"text\" style=\"width:80%\" id=\"" + inputId + "\" value=\"" + timing_list[i].newTimeOrder + "\"> " +
-			"<span>New Time Order</span><br>" +
-			"<h4>Relative time points to add: <span id=\"timing-input-toAdd-" + i + "\">" + timing_list[i].itemsToAdd + "</span></h4>" +
+			"<h3>" + timing_list[i].intention + "</h3>"
+		)
+		
+		for (var j = 0; j < timing_list[i].newTimeOrder.length - 1; j ++) {
+			
+			intention_list.append(
+				"<p>" + timing_list[i].newTimeOrder[j] + "</p>"
+			)
+			for (var k = 0; k < timing_list[i].itemsToAdd.length; k ++) {
+				intention_list.append(
+					'<div style="width:40px;height:20px;border:1px solid #000;" ondrop="drop(event)" ondragover="dragover(event)" class="dropbox" id="dropbox'+ i + '_' + j + '"></div>'
+				)
+			}
+		}
+
+		intention_list.append(
+			"<p>" + timing_list[i].newTimeOrder[j] + "</p>" + 
+			"<h4>Relative time points to add: "
+		)
+
+		for (var j = 0; j < timing_list[i].itemsToAdd.length; j ++) {
+			intention_list.append(
+				'<div style="width:40px;height:20px;border:1px solid #000;" ondrop="drop(event)" ondragover="dragover(event)">' +
+				"<button draggable = 'true' class='popup_button_timing' ondragstart='dragStart(event)' id=\"timing-input-toAdd-" + i + "\">" + timing_list[i].itemsToAdd[j] + "</button></h4>" + 
+				'</div>'
+			)
+		}
+
+		intention_list.append(
 			"</div>"
 		)
 	}
@@ -140,8 +165,8 @@ function displayTimingInputWindow(timing) {
 		// console.log("Intentions_list: ", intention_list);
 		timeOrders = intentions_list.getElementsByTagName("input");
 		// console.log("timeOrder before for loop: ", timeOrders);
-		inputsToAdd = intention_list.getElemenyByTagName("span");
-		console.log("timeOrder before for loop: ", inputsToAdd);
+		// inputsToAdd = intention_list.getElementsByTagName("button");
+		// console.log("timeOrder before for loop: ", inputsToAdd);
 		for (let i = 0; i < timeOrders.length; i++) {
 			timeOrder = timeOrders[i].value;
 			timeOrder = timeOrder.split(",");

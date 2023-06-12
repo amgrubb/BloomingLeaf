@@ -419,3 +419,9 @@ select::-ms-expand {
     background-color: #dddddd;
     transform: rotate(15deg);
 }
+
+.popup_button_timing {
+    background-color: white;
+    color: #1E85F7; 
+    font-size:12px
+}

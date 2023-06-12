@@ -471,22 +471,26 @@ var buttons = document.querySelectorAll('.popup_button');
 
     function dragStart(event) {
       draggedButton = event.target;
+	  console.log("dragged button 1:", draggedButton);
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/html', draggedButton.innerHTML);
+	  console.log("dragged button 2:", draggedButton);
     }
 
     function dragEnd(event) {
       draggedButton = null;
     }
 
-    document.addEventListener('dragover', event => {
+    function dragover(event) {
       event.preventDefault();
-    });
+    }
 
-    document.addEventListener('drop', event => {
+    function drop(event) {
       event.preventDefault();
-      if (event.target.classList.contains('draggables')) {
+    //   if (event.target.classList.contains('draggables')) {
         var container = event.target;
+		console.log("container: ", container);
+		console.log("type of button: ", draggedButton);
         container.appendChild(draggedButton);
-      }
-    });
+    //   }
+    }
