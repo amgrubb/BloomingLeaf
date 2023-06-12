@@ -724,7 +724,7 @@ var PresConditionEditView = Backbone.View.extend({
                     '0 - <input id=edit-interval1-flip type="number" value="0" min="0" max=<%= graph.get("maxAbsTime") %>>, <input id=edit-interval2-flip type="number" value=<%= graph.get("maxAbsTime") %> min="0" max=<%= graph.get("maxAbsTime") %>> - <%= graph.get("maxAbsTime") %>',
                 '</div>',
                 '</td>',
-            '<td><button id=save>Save</button></td>',
+            '<td><button id=save>Add</button></td>',
         '</script>'
     ].join(''),
 
@@ -828,6 +828,7 @@ var PresConditionEditView = Backbone.View.extend({
 
         if (value1 > value2) {
             console.log("error");
+            alert("ERROR: the second value should be bigger than the first.")
             return;
         }
 
@@ -891,9 +892,51 @@ var PresConditionEditView = Backbone.View.extend({
             $('#prescond-list').append(presConditionIntentionView.el);
             presConditionIntentionView.render();
         }
+
+        if(value1 >= rangeMax+1 || value2 >= rangeMax+1){
+            alert("ERROR: the values should be smaller or equal to their element's maximum time point.")
+        } else{
+
+        console.log(this.model.attributes.actor.attributes.intervals);
         this.remove();
         document.getElementById('add-prescondition').style.display = "";
         this.table.render();
+        }
+
+    },
+
+    updateEmbeds: function() {
+        if (this.model.attributes.embeds) {
+            var elements = graph.getElements();
+            var intentions = []
+            for (var i = 0; i < elements.length; i++) {
+                var cell = elements[i].findView(paper);
+                if (cell.model.attributes.type != "basic.Actor") {
+                    intentions.push(cell);
+                }
+            }
+            for (var i = 0; i < intentions.length; i++) {
+                for (var j = 0; j < this.model.attributes.embeds.length; j++) {
+                    if (this.model.attributes.embeds[j] == intentions[i].model.id) {
+                        if (this.model.attributes.actor.attributes.intervals[0] && this.model.attributes.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] < this.model.attributes.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.shift();
+                            }
+                        } else if (this.model.attributes.actor.attributes.intervals[0] && this.model.attributes.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.model.attributes.actor.attributes.intervals[0][0]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
+                            }
+                        } else if (this.model.attributes.actor.attributes.intervals[0] && !this.model.attributes.actor.attributes.intervals[1] && this.model.attributes.actor.attributes.intervals[0][0] != 0 && this.model.attributes.actor.attributes.intervals[0][1] != graph.get('maxAbsTime')) { // interval is flipped
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.model.attributes.actor.attributes.intervals[0][0]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
+                            } else if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.model.attributes.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     },
 
     updateEmbeds: function() {

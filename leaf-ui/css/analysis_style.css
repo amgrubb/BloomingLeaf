@@ -397,3 +397,9 @@ select::-ms-expand {
     background-color: #dddddd;
     transform: rotate(15deg);
 }
+
+/* Sets the textboxes for Presence Condition Assignments*/
+.new-interval{
+    max-width: 50px;
+    max-height: 40px;
+}
