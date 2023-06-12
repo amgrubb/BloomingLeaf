@@ -532,8 +532,7 @@ var PresConditionActorView = Backbone.View.extend({
                     inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}], [${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
                 }
             }
-        }  // else { // always available
-        //     inclusionIntervals = `[${0}, ${graph.get('maxAbsTime')}]`;
+        }  //else { // always available
         // }
         return inclusionIntervals;
     },
@@ -844,6 +843,7 @@ var PresConditionEditView = Backbone.View.extend({
             } else if (value2 != graph.get('maxAbsTime')) {
                 this.model.attributes.actor.attributes.intervals = [[value2 + 1, rangeMax]];
             }
+            this.updateEmbeds();
         } else {
             this.actor = this.findActor();
             if (this.actor) {
@@ -891,10 +891,43 @@ var PresConditionEditView = Backbone.View.extend({
             $('#prescond-list').append(presConditionIntentionView.el);
             presConditionIntentionView.render();
         }
-        console.log(this.model.attributes.actor.attributes.intervals);
         this.remove();
         document.getElementById('add-prescondition').style.display = "";
         this.table.render();
+    },
+
+    updateEmbeds: function() {
+        if (this.model.attributes.embeds) {
+            var elements = graph.getElements();
+            var intentions = []
+            for (var i = 0; i < elements.length; i++) {
+                var cell = elements[i].findView(paper);
+                if (cell.model.attributes.type != "basic.Actor") {
+                    intentions.push(cell);
+                }
+            }
+            for (var i = 0; i < intentions.length; i++) {
+                for (var j = 0; j < this.model.attributes.embeds.length; j++) {
+                    if (this.model.attributes.embeds[j] == intentions[i].model.id) {
+                        if (this.model.attributes.actor.attributes.intervals[0] && this.model.attributes.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] < this.model.attributes.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.shift();
+                            }
+                        } else if (this.model.attributes.actor.attributes.intervals[0] && this.model.attributes.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.model.attributes.actor.attributes.intervals[0][0]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
+                            }
+                        } else if (this.model.attributes.actor.attributes.intervals[0] && !this.model.attributes.actor.attributes.intervals[1] && this.model.attributes.actor.attributes.intervals[0][0] != 0 && this.model.attributes.actor.attributes.intervals[0][1] != graph.get('maxAbsTime')) { // interval is flipped
+                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.model.attributes.actor.attributes.intervals[0][0]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
+                            } else if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.model.attributes.actor.attributes.intervals[0][1]) {
+                                intentions[i].model.attributes.intention.attributes.intervals.pop();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     },
 
     remove: function() {
