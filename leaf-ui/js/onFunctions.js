@@ -420,8 +420,7 @@ graph.on("add", function (cell) {
         } else {
             name = cell.attr('.name/text') + "_0";
         }
-
-        cell.set('actor', new ActorBBM({ actorName: name }));
+        cell.get('actor').actorName = name;
         cell.attr(".name/text", name);
 
         // Send actors to background so elements are placed on top

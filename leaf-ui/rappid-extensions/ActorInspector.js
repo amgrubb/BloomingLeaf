@@ -31,7 +31,7 @@ var ActorInspector = Backbone.View.extend({
      */
     render: function () {
         // If the clicked node is an actor, render the actor inspector
-        this.$el.html(_.template($(this.template).html())(this.actor.toJSON()));
+        this.$el.html(_.template($(this.template).html())(this.actor));
         //Checks for the correct font size
         changeFont(current_font, paper);
     },
@@ -49,7 +49,7 @@ var ActorInspector = Backbone.View.extend({
         // Do not allow special characters in names, replace them with spaces.
         var text = this.$('.cell-attrs-text').val().replace(/[^\w\n-]/g, ' ');
         this.model.attr({ '.name': { text: text } });
-        this.actor.set('actorName', text);
+        this.actor.actorName = text;
 
     },
     /**
@@ -63,9 +63,11 @@ var ActorInspector = Backbone.View.extend({
      */
     updateType: function () {
         var actorType = $('#actor-type-ID').val();
-        this.actor.set('type', actorType);
+        type = this.actor.type;
+        type =  actorType;
+        console.log(type);
 
-        if (actorType == 'G') {
+        if (type == 'G') {
             this.model.attr({
                 '.line': {
                     'ref': '.label',
@@ -77,7 +79,7 @@ var ActorInspector = Backbone.View.extend({
                 }
             });
         }
-        else if (actorType == 'R') {
+        else if (type == 'R') {
             this.model.attr({
                 '.line': {
                     'ref': '.label',
@@ -89,7 +91,7 @@ var ActorInspector = Backbone.View.extend({
                 }
             });
         }
-        else if (actorType == 'A') {
+        else if (type == 'A') {
             this.model.attr({ '.line': { 'stroke-width': 0 } });
         }
     },

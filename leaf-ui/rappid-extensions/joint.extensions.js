@@ -247,7 +247,7 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
         type: "basic.Actor",
         size: {
             width: 120,
-            height: 120
+            height: 120,
         },
         attrs: {
             ".label": {
@@ -280,7 +280,10 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             ".line": {
             }
         },
-        actor: null,
+        actor: {
+            type: 'A',
+            actorName: '',
+        },
     }, joint.dia.Element.prototype.defaults),
     changeToOriginalColour: function () {
         this.attr({ '.outer': { 'fill': '#EBFFEA' } });

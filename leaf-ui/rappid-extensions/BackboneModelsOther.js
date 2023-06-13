@@ -11,18 +11,18 @@ myNull = null;
 /** 
  * Backbone Model of Actor
  */
-var ActorBBM = Backbone.Model.extend({
-    initialize: function (options) {
-        _.extend({}, this.defaults, options);
-    },
+// var ActorBBM = Backbone.Model.extend({
+//     initialize: function (options) {
+//         _.extend({}, this.defaults, options);
+//     },
 
-    defaults: function () {
-        return {
-            type: 'A',
-            actorName: 'Actor'
-        }
-    },
-});
+//     defaults: function () {
+//         return {
+//             type: 'A',
+//             actorName: 'Actor'
+//         }
+//     },
+// });
 
 
 /** 
