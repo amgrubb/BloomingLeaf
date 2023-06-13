@@ -431,6 +431,6 @@ select::-ms-expand {
     height: 40px;
 }
 
-.highlight {
-    border: 3px blue;
+.draggedover {
+    border-left: 2px solid #1E85F7 !important;
 }

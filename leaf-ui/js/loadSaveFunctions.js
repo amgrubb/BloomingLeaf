@@ -481,12 +481,18 @@ var buttons = document.querySelectorAll('.popup_button');
 
     function dragover(event) {
       event.preventDefault();
+	  event.target.classList.add('draggedover');
     }
+
+	function dragleave(event) {
+		event.preventDefault();
+    	event.target.classList.remove('draggedover');
+	}
 
     function drop(event) {
 		event.preventDefault();
+		event.target.classList.remove('draggedover');
 		var container = event.target;
-		
 
 		var dragIdx = parseInt(draggedButton.id.split("_")[1])
 		var rowIdx = parseInt(container.id.split("_")[1]);
@@ -498,6 +504,7 @@ var buttons = document.querySelectorAll('.popup_button');
 			var newCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
 			newCell.setAttribute('ondrop', 'drop(event)');
 			newCell.setAttribute('ondragover', 'dragover(event)');
+			newCell.setAttribute('ondragleave', 'dragleave(event)');
 			newCell.setAttribute('id', 'dropbox_' + rowIdx + "_" + (colIdx));
 			newCell.innerHTML = draggedButton.innerHTML;
 			draggedButton.remove();

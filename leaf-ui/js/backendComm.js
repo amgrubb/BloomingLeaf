@@ -119,7 +119,6 @@ function displayTimingInputWindow(timing) {
 	console.log("timing in display: ", timing);
 
 	for (i in indexes) {
-
 		let inputId = "#timing-input-order-" + i;
 
 		intention_list.append(
@@ -136,7 +135,7 @@ function displayTimingInputWindow(timing) {
 				)
 			} else {
 				row.append(
-					'<td ondrop="drop(event)" ondragover="dragover(event)" class="dropbox" id="dropbox_'+ i + '_' + j + '">' +
+					'<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="dropbox" id="dropbox_'+ i + '_' + j + '">' +
 					timing_list[i].newTimeOrder[j] + "</td>"
 				)
 			}
@@ -158,6 +157,18 @@ function displayTimingInputWindow(timing) {
 	merge_button_timing = document.getElementById("merge-button-timing");
 
 	merge_button_timing.onclick = function () {
+
+		// started working on making it update the back end but it doesn't work yet
+		// for (var i = 0; i < timing.timingList.indexes_to_modify.length; i++) {
+		// 	var totalItems = timing.timingList[i].itemsToAdd.length + timing.timingList[i].newTimeOrder.length;
+		// 	console.log("index",timing.timingList[i].itemsToAdd.length,timing.timingList[i].newTimeOrder.length,totalItems);
+		// 	timing.timingList[i].newTimeOrder = [];
+		// 	for (var j = 0; j < totalItems; j++) {
+		// 		var item = document.getElementById("dropbox_" + i + "_" + j);
+		// 		timing.timingList[i].newTimeOrder.push(item.innerHTML);
+		// 		console.log(i,j,timing.timingList[i].newTimeOrder);
+		// 	}
+		// }
 
 		var intentions_list = document.getElementById('timing-input-intention-list');
 		// console.log("Intentions_list: ", intention_list);
