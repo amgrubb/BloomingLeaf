@@ -481,12 +481,34 @@ var buttons = document.querySelectorAll('.popup_button');
 
     function dragover(event) {
       event.preventDefault();
-	  event.target.classList.add('draggedover');
+	  if (checkBRange(event)) {
+	  	event.target.classList.add('draggedover');
+	  }
     }
 
 	function dragleave(event) {
 		event.preventDefault();
     	event.target.classList.remove('draggedover');
+	}
+
+	function checkBRange(event) {
+		var container = event.target;
+		var rowIdx = parseInt(container.id.split("_")[1]);
+		var colIdx = parseInt(container.id.split("_")[2]);
+		for (var i = document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length - 1; i >= 0; i--) {
+			if (document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i].innerHTML == "B-MaxTime") {
+				var bMaxIdx = i;
+			}
+			if (document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i].innerHTML[0] == "B") {
+				var bMinIdx = i;
+			}
+		}
+
+		if (draggedButton.innerHTML[0] == "B" && colIdx <= bMinIdx || draggedButton.innerHTML[0] == "B" && colIdx > bMaxIdx) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
     function drop(event) {
@@ -499,25 +521,27 @@ var buttons = document.querySelectorAll('.popup_button');
 		var colIdx = parseInt(container.id.split("_")[2]);
 
 		if (dragIdx == rowIdx && event.target != draggedButton) {
-			if (colIdx > parseInt(draggedButton.id.split("_")[2])) {
-				colIdx -= 1;
-			}
-			container.appendChild(draggedButton);
+			if (checkBRange(event)) {
+				if (colIdx > parseInt(draggedButton.id.split("_")[2])) {
+					colIdx -= 1;
+				}
+				container.appendChild(draggedButton);
 
-			var newCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
-			newCell.setAttribute('ondrop', 'drop(event)');
-			newCell.setAttribute('ondragover', 'dragover(event)');
-			newCell.setAttribute('ondragleave', 'dragleave(event)');
-			newCell.setAttribute('draggable', 'true');
-			newCell.setAttribute('ondragstart', 'dragStart(event)');
-			newCell.setAttribute('style', 'background-color: #dddddd');
-			newCell.innerHTML = draggedButton.innerHTML;
+				var newCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
+				newCell.setAttribute('ondrop', 'drop(event)');
+				newCell.setAttribute('ondragover', 'dragover(event)');
+				newCell.setAttribute('ondragleave', 'dragleave(event)');
+				newCell.setAttribute('draggable', 'true');
+				newCell.setAttribute('ondragstart', 'dragStart(event)');
+				newCell.setAttribute('style', 'background-color: #dddddd');
+				newCell.innerHTML = draggedButton.innerHTML;
 
-			draggedButton.remove();
+				draggedButton.remove();
 
-			var row = document.getElementById("tablerow_" + rowIdx);
-			for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
-				row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
+				var row = document.getElementById("tablerow_" + rowIdx);
+				for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
+					row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
+				}
 			}
 		}
     }
