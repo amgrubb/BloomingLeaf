@@ -481,7 +481,9 @@ var buttons = document.querySelectorAll('.popup_button');
 
     function dragover(event) {
       event.preventDefault();
-	  if (checkBRange(event)) {
+
+	  var firstLetter = draggedButton.innerHTML[0];
+	  if (checkInnerRange(event, firstLetter)) {
 	  	event.target.classList.add('draggedover');
 	  }
     }
@@ -491,20 +493,19 @@ var buttons = document.querySelectorAll('.popup_button');
     	event.target.classList.remove('draggedover');
 	}
 
-	function checkBRange(event) {
+	function checkInnerRange(event, letter) {
 		var container = event.target;
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
 		for (var i = document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length - 1; i >= 0; i--) {
-			if (document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i].innerHTML == "B-MaxTime") {
+			if (document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i].innerHTML == letter + "-MaxTime") {
 				var bMaxIdx = i;
 			}
-			if (document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i].innerHTML[0] == "B") {
+			if (document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i].innerHTML[0] == letter) {
 				var bMinIdx = i;
 			}
 		}
-
-		if (draggedButton.innerHTML[0] == "B" && colIdx <= bMinIdx || draggedButton.innerHTML[0] == "B" && colIdx > bMaxIdx) {
+		if (draggedButton.innerHTML[0] == letter && colIdx <= bMinIdx || draggedButton.innerHTML[0] == letter && colIdx > bMaxIdx) {
 			return false;
 		} else {
 			return true;
@@ -521,7 +522,8 @@ var buttons = document.querySelectorAll('.popup_button');
 		var colIdx = parseInt(container.id.split("_")[2]);
 
 		if (dragIdx == rowIdx && event.target != draggedButton) {
-			if (checkBRange(event)) {
+			var firstLetter = draggedButton.innerHTML[0];
+			if (checkInnerRange(event, firstLetter)) {
 				if (colIdx > parseInt(draggedButton.id.split("_")[2])) {
 					colIdx -= 1;
 				}
