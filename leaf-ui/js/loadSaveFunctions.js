@@ -501,12 +501,21 @@ var buttons = document.querySelectorAll('.popup_button');
 		if (dragIdx == rowIdx) {
 			container.appendChild(draggedButton);
 
+			var row = document.getElementById("tablerow_" + rowIdx);
+			for (var i = row.getElementsByTagName("td").length - 1; i >= colIdx; i--) {
+				document.getElementById("dropbox_" + rowIdx + "_" + i).id = "dropbox_" + rowIdx + "_" + (i + 1);
+			}
+
 			var newCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
 			newCell.setAttribute('ondrop', 'drop(event)');
 			newCell.setAttribute('ondragover', 'dragover(event)');
 			newCell.setAttribute('ondragleave', 'dragleave(event)');
 			newCell.setAttribute('id', 'dropbox_' + rowIdx + "_" + (colIdx));
+			// newCell.outerHTML = draggedButton.outerHTML;
 			newCell.innerHTML = draggedButton.innerHTML;
+
+			console.log(newCell.cellIndex);
+
 			draggedButton.remove();
 		}
     }

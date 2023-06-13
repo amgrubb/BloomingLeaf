@@ -158,29 +158,31 @@ function displayTimingInputWindow(timing) {
 
 	merge_button_timing.onclick = function () {
 
-		// started working on making it update the back end but it doesn't work yet
-		// for (var i = 0; i < timing.timingList.indexes_to_modify.length; i++) {
-		// 	var totalItems = timing.timingList[i].itemsToAdd.length + timing.timingList[i].newTimeOrder.length;
-		// 	console.log("index",timing.timingList[i].itemsToAdd.length,timing.timingList[i].newTimeOrder.length,totalItems);
-		// 	timing.timingList[i].newTimeOrder = [];
-		// 	for (var j = 0; j < totalItems; j++) {
-		// 		var item = document.getElementById("dropbox_" + i + "_" + j);
-		// 		timing.timingList[i].newTimeOrder.push(item.innerHTML);
-		// 		console.log(i,j,timing.timingList[i].newTimeOrder);
-		// 	}
-		// }
+		if (document.getElementsByClassName("popup_button_timing").length > 0) {
+			console.log("You must place all time points.");
+			return;
+		}
 
-		var intentions_list = document.getElementById('timing-input-intention-list');
+		for (var i = 0; i < timing.timingList.indexes_to_modify.length; i++) {
+			var totalItems = timing.timingList[i].itemsToAdd.length + timing.timingList[i].newTimeOrder.length;
+			timing.timingList[i].newTimeOrder = [];
+			for (var j = 0; j < totalItems; j++) {
+				var item = document.getElementById("dropbox_" + i + "_" + j);
+				timing.timingList[i].newTimeOrder.push(item.innerHTML);
+			}
+		}
+
+		// var intentions_list = document.getElementById('timing-input-intention-list');
 		// console.log("Intentions_list: ", intention_list);
-		timeOrders = intentions_list.getElementsByTagName("input");
+		// timeOrders = intentions_list.getElementsByTagName("input");
 		// console.log("timeOrder before for loop: ", timeOrders);
 		// inputsToAdd = intention_list.getElementsByTagName("button");
 		// console.log("timeOrder before for loop: ", inputsToAdd);
-		for (let i = 0; i < timeOrders.length; i++) {
-			timeOrder = timeOrders[i].value;
-			timeOrder = timeOrder.split(",");
-			timing_list[i].newTimeOrder = timeOrder;
-		}
+		// for (let i = 0; i < timeOrders.length; i++) {
+		// 	timeOrder = timeOrders[i].value;
+		// 	timeOrder = timeOrder.split(",");
+		// 	timing_list[i].newTimeOrder = timeOrder;
+		// }
 		timing_input.style.display = "none";
 		backendMergeRequest(timing);
 	}
