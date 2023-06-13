@@ -164,11 +164,10 @@ function displayTimingInputWindow(timing) {
 		}
 
 		for (var i = 0; i < timing.timingList.indexes_to_modify.length; i++) {
-			var totalItems = timing.timingList[i].itemsToAdd.length + timing.timingList[i].newTimeOrder.length;
 			timing.timingList[i].newTimeOrder = [];
-			for (var j = 0; j < totalItems; j++) {
-				var item = document.getElementById("dropbox_" + i + "_" + j);
-				timing.timingList[i].newTimeOrder.push(item.innerHTML);
+			var row = document.getElementById("tablerow_" + i);
+			for (var j = 0; j < row.getElementsByTagName("td").length; j++) {
+				timing.timingList[i].newTimeOrder.push(row.getElementsByTagName("td")[j].innerHTML);
 			}
 		}
 

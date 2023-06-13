@@ -432,5 +432,5 @@ select::-ms-expand {
 }
 
 .draggedover {
-    border-left: 2px solid #1E85F7 !important;
+    border-left: 4px solid #1E85F7 !important;
 }

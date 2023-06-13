@@ -498,24 +498,26 @@ var buttons = document.querySelectorAll('.popup_button');
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
 
-		if (dragIdx == rowIdx) {
-			container.appendChild(draggedButton);
-
-			var row = document.getElementById("tablerow_" + rowIdx);
-			for (var i = row.getElementsByTagName("td").length - 1; i >= colIdx; i--) {
-				document.getElementById("dropbox_" + rowIdx + "_" + i).id = "dropbox_" + rowIdx + "_" + (i + 1);
+		if (dragIdx == rowIdx && event.target != draggedButton) {
+			if (colIdx > parseInt(draggedButton.id.split("_")[2])) {
+				colIdx -= 1;
 			}
+			container.appendChild(draggedButton);
 
 			var newCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
 			newCell.setAttribute('ondrop', 'drop(event)');
 			newCell.setAttribute('ondragover', 'dragover(event)');
 			newCell.setAttribute('ondragleave', 'dragleave(event)');
-			newCell.setAttribute('id', 'dropbox_' + rowIdx + "_" + (colIdx));
-			// newCell.outerHTML = draggedButton.outerHTML;
+			newCell.setAttribute('draggable', 'true');
+			newCell.setAttribute('ondragstart', 'dragStart(event)');
+			newCell.setAttribute('style', 'background-color: #dddddd');
 			newCell.innerHTML = draggedButton.innerHTML;
 
-			console.log(newCell.cellIndex);
-
 			draggedButton.remove();
+
+			var row = document.getElementById("tablerow_" + rowIdx);
+			for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
+				row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
+			}
 		}
     }
