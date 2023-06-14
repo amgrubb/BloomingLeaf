@@ -421,6 +421,10 @@ select::-ms-expand {
 }
 
 .timelisttable td {
+    float:center;
+}
+
+.dropbox {
     padding: 10px 10px;
     border: 1px solid black;
 }
@@ -429,8 +433,22 @@ select::-ms-expand {
     background-color: #dddddd;
     border: 1px solid black;
     height: 40px;
+    float: center;
+    padding-top: 5px;
 }
 
-.draggedover {
-    border-left: 4px solid #1E85F7 !important;
+.fixed {
+    text-align: center;
+}
+
+.between {
+    width: 4px;
+}
+
+.dropbox.draggedover {
+    border: 2px solid #1E85F7;
+}
+
+.between.draggedover {
+    background-color: #1E85F7;
 }

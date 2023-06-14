@@ -464,11 +464,6 @@ if (document.cookie && document.cookie.indexOf('all=') !== -1) {
 var buttons = document.querySelectorAll('.popup_button');
     let draggedButton = null;
 
-    buttons.forEach(button => {
-      button.addEventListener('dragstart', dragStart);
-      button.addEventListener('dragend', dragEnd);
-    });
-
     function dragStart(event) {
       draggedButton = event.target;
       event.dataTransfer.effectAllowed = 'move';
@@ -480,12 +475,14 @@ var buttons = document.querySelectorAll('.popup_button');
     }
 
     function dragover(event) {
-      event.preventDefault();
+		event.preventDefault();
 
-	  var firstLetter = draggedButton.innerHTML[0];
-	  if (checkInnerRange(event, firstLetter)) {
-	  	event.target.classList.add('draggedover');
-	  }
+		var dragIdx = parseInt(draggedButton.id.split("_")[1])
+		var rowIdx = parseInt(event.target.id.split("_")[1]);
+		var firstLetter = draggedButton.innerHTML[0];
+		if (checkInnerRange(event, firstLetter) && dragIdx == rowIdx) {
+			event.target.classList.add('draggedover');
+		}
     }
 
 	function dragleave(event) {
@@ -505,7 +502,7 @@ var buttons = document.querySelectorAll('.popup_button');
 				var bMinIdx = i;
 			}
 		}
-		if (draggedButton.innerHTML[0] == letter && colIdx <= bMinIdx || draggedButton.innerHTML[0] == letter && colIdx > bMaxIdx) {
+		if (draggedButton.innerHTML[0] == letter && colIdx < bMinIdx || draggedButton.innerHTML[0] == letter && colIdx > bMaxIdx) {
 			return false;
 		} else {
 			return true;
@@ -521,28 +518,33 @@ var buttons = document.querySelectorAll('.popup_button');
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
 
-		if (dragIdx == rowIdx && event.target != draggedButton) {
+		if (dragIdx == rowIdx) {
 			var firstLetter = draggedButton.innerHTML[0];
 			if (checkInnerRange(event, firstLetter)) {
-				if (colIdx > parseInt(draggedButton.id.split("_")[2])) {
-					colIdx -= 1;
+				if (container.id.split("_")[0] == "between") {
+					container.appendChild(draggedButton);
+
+					var newLeftCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
+					newLeftCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
+					var newRightCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx+2);
+					newRightCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
+				} else if (container.id.split("_")[0] == "dropbox") {
+					container.append(draggedButton);
+				} else {
+					console.log("there is a problem");
 				}
-				container.appendChild(draggedButton);
-
-				var newCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
-				newCell.setAttribute('ondrop', 'drop(event)');
-				newCell.setAttribute('ondragover', 'dragover(event)');
-				newCell.setAttribute('ondragleave', 'dragleave(event)');
-				newCell.setAttribute('draggable', 'true');
-				newCell.setAttribute('ondragstart', 'dragStart(event)');
-				newCell.setAttribute('style', 'background-color: #dddddd');
-				newCell.innerHTML = draggedButton.innerHTML;
-
-				draggedButton.remove();
 
 				var row = document.getElementById("tablerow_" + rowIdx);
 				for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
-					row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
+					if (i%2 == 0) {
+						row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
+					} else {
+						row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
+					}
+					if (row.getElementsByTagName("td")[i].innerHTML.length == 0 && row.getElementsByTagName("td")[i+1].innerHTML.length == 0) {
+						row.deleteCell(i);
+						i--;
+					}
 				}
 			}
 		}

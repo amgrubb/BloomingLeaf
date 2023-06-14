@@ -130,25 +130,26 @@ function displayTimingInputWindow(timing) {
 		for (var j = 0; j < timing_list[i].newTimeOrder.length; j ++) {
 			if (j == 0) {
 				row.append(
-					'<td class="dropbox" id="dropbox_'+ i + '_' + j + '">' +
+					'<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="dropbox" id="dropbox_'+ i + '_' + j + '">' +
 					timing_list[i].newTimeOrder[j] + "</td>"
 				)
 			} else {
 				row.append(
-					'<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="dropbox" id="dropbox_'+ i + '_' + j + '">' +
+					'<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between" id="between_' + i + '_' + (2*j-1)+ '"></td>' +
+					'<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="dropbox" id="dropbox_'+ i + '_' + (2*j) + '">' +
 					timing_list[i].newTimeOrder[j] + "</td>"
 				)
 			}
 		}
 
 		intention_list.append(
-			"<br/><div class=line><h4>Relative time points to add: </h4>"
+			"<br/><h4>Relative time points to add: </h4>"
 		)
 
 		for (var j = 0; j < timing_list[i].itemsToAdd.length; j ++) {
 			intention_list.append(
 				"<button draggable = 'true' class='popup_button_timing' ondragstart='dragStart(event)' id=\"timing-input-toAdd_" + i + "\">" +
-				timing_list[i].itemsToAdd[j] + "</button></div>" + 
+				timing_list[i].itemsToAdd[j] + "</button>" + 
 				'</div>'
 			)
 		}
@@ -158,16 +159,25 @@ function displayTimingInputWindow(timing) {
 
 	merge_button_timing.onclick = function () {
 
-		if (document.getElementsByClassName("popup_button_timing").length > 0) {
-			console.log("You must place all time points.");
-			return;
-		}
+		// if (document.getElementsByClassName("popup_button_timing").length > 0) {
+		// 	console.log("You must place all time points.");
+		// 	return;
+		// }
 
 		for (var i = 0; i < timing.timingList.indexes_to_modify.length; i++) {
 			timing.timingList[i].newTimeOrder = [];
 			var row = document.getElementById("tablerow_" + i);
 			for (var j = 0; j < row.getElementsByTagName("td").length; j++) {
-				timing.timingList[i].newTimeOrder.push(row.getElementsByTagName("td")[j].innerHTML);
+				var array = [];
+				if (row.getElementsByTagName("td")[j].innerHTML.length > 0) {
+					var timePointsString = row.getElementsByTagName("td")[j].innerHTML.split(/[><]/);
+					for (var k = 0; k < timePointsString.length; k++) {
+						if (k%2 == 0 && timePointsString[k].length > 0) {
+							array.push(timePointsString[k]);
+						}
+					}
+					timing.timingList[i].newTimeOrder.push(array);
+				}
 			}
 		}
 
