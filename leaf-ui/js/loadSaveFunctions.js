@@ -470,6 +470,38 @@ var buttons = document.querySelectorAll('.popup_button');
       event.dataTransfer.setData('text/html', draggedButton.innerHTML);
     }
 
+	function getInnerHTML(td) {
+		if (td.innerHTML[0] == "<") {
+			var parts = td.innerHTML.split(/[><]/);
+			var elements = "";
+			for (var i = 0; i < parts.length; i++) {
+				if (parts[i][0] == "A" | parts[i][0] == "B") {
+					if (elements.length > 0) {
+						elements = elements + ",";
+					}
+					elements = elements + parts[i];
+				}
+			}
+			return elements;
+		} else {
+			if (td.innerHTML.includes("<")) {
+				var parts = td.innerHTML.split(/[><]/);
+				var elements = "";
+				for (var i = 0; i < parts.length; i++) {
+					if (parts[i][0] == "A" | parts[i][0] == "B") {
+						if (elements.length > 0) {
+							elements = elements + ",";
+						}
+						elements = elements + parts[i];
+					}
+				}
+				return elements;
+			} else {
+				return td.innerHTML;
+			}
+		}
+	}
+
     function dragEnd(event) {
 		draggedButton = null;
     }
@@ -477,10 +509,8 @@ var buttons = document.querySelectorAll('.popup_button');
     function dragover(event) {
 		event.preventDefault();
 
-		var dragIdx = parseInt(draggedButton.id.split("_")[1])
-		var rowIdx = parseInt(event.target.id.split("_")[1]);
 		var firstLetter = draggedButton.innerHTML[0];
-		if (checkInnerRange(event, firstLetter) && dragIdx == rowIdx) {
+		if (checkDroppability(event, firstLetter)) {
 			event.target.classList.add('draggedover');
 		}
     }
@@ -490,19 +520,48 @@ var buttons = document.querySelectorAll('.popup_button');
     	event.target.classList.remove('draggedover');
 	}
 
-	function checkInnerRange(event, letter) {
+	function checkDroppability(event, letter) {
 		var container = event.target;
+		var dragIdx = parseInt(draggedButton.id.split("_")[1])
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
+		var firstChars = draggedButton.innerHTML.slice(0,draggedButton.innerHTML.length-1);
+		var lastChar = draggedButton.innerHTML.slice(draggedButton.innerHTML.length-1);
+
 		for (var i = document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length - 1; i >= 0; i--) {
-			if (document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i].innerHTML == letter + "-MaxTime") {
+			if (getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]) == letter + "-MaxTime") {
 				var bMaxIdx = i;
 			}
-			if (document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i].innerHTML[0] == letter) {
+			if (getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i])[0] == letter) {
 				var bMinIdx = i;
 			}
 		}
-		if (draggedButton.innerHTML[0] == letter && colIdx < bMinIdx || draggedButton.innerHTML[0] == letter && colIdx > bMaxIdx) {
+
+		for (var i = bMinIdx; i < bMaxIdx; i++) {
+			var compareStr = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
+			for (var j = 0; j < compareStr.length; j++) {
+				if (compareStr[j] != draggedButton.innerHTML) {
+					if (compareStr[j].slice(0,draggedButton.innerHTML.length-1) == firstChars) {
+						var compareChar = compareStr[j].slice(draggedButton.innerHTML.length-1);
+						if (compareChar < lastChar && i > bMinIdx) {
+							bMinIdx = i;
+						} else if (compareChar > lastChar && i < bMaxIdx) {
+							bMaxIdx = i;
+						}
+					}
+				}
+			}
+		}
+
+		// console.log("min", bMinIdx, "max", bMaxIdx)
+
+		if (draggedButton.innerHTML[0] == letter && colIdx < bMinIdx || draggedButton.innerHTML[0] == letter && colIdx > bMaxIdx) { // being dragged outside of its model's range
+			return false;
+		} else if (dragIdx != rowIdx) { // being dragged into a different intention
+			return false;
+		} else if (letter == getInnerHTML(container)[0]) { // being dragged into another timepoint of the same model
+			return false;
+		} else if (getInnerHTML(container).includes(',')) { // container is full
 			return false;
 		} else {
 			return true;
@@ -514,37 +573,34 @@ var buttons = document.querySelectorAll('.popup_button');
 		event.target.classList.remove('draggedover');
 		var container = event.target;
 
-		var dragIdx = parseInt(draggedButton.id.split("_")[1])
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
 
-		if (dragIdx == rowIdx) {
-			var firstLetter = draggedButton.innerHTML[0];
-			if (checkInnerRange(event, firstLetter)) {
-				if (container.id.split("_")[0] == "between") {
-					container.appendChild(draggedButton);
+		var firstLetter = draggedButton.innerHTML[0];
+		if (checkDroppability(event, firstLetter)) {
+			if (container.id.split("_")[0] == "between") {
+				container.appendChild(draggedButton);
 
-					var newLeftCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
-					newLeftCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
-					var newRightCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx+2);
-					newRightCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
-				} else if (container.id.split("_")[0] == "dropbox") {
-					container.append(draggedButton);
+				var newLeftCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
+				newLeftCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
+				var newRightCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx+2);
+				newRightCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
+			} else if (container.id.split("_")[0] == "dropbox") {
+				container.append(draggedButton);
+			} else {
+				console.log("there is a problem");
+			}
+
+			var row = document.getElementById("tablerow_" + rowIdx);
+			for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
+				if (i%2 == 0) {
+					row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
 				} else {
-					console.log("there is a problem");
+					row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
 				}
-
-				var row = document.getElementById("tablerow_" + rowIdx);
-				for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
-					if (i%2 == 0) {
-						row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
-					} else {
-						row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
-					}
-					if (row.getElementsByTagName("td")[i].innerHTML.length == 0 && row.getElementsByTagName("td")[i+1].innerHTML.length == 0) {
-						row.deleteCell(i);
-						i--;
-					}
+				if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
+					row.deleteCell(i);
+					i--;
 				}
 			}
 		}
