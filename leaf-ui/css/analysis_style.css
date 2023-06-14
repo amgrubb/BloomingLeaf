@@ -427,12 +427,14 @@ select::-ms-expand {
 .dropbox {
     padding: 10px 10px;
     border: 1px solid black;
+    width: 100p;
 }
 
 .popup_button_timing {
     background-color: #dddddd;
     border: 1px solid black;
     height: 40px;
+    width: 90px;
     float: center;
     padding-top: 5px;
 }
@@ -442,13 +444,14 @@ select::-ms-expand {
 }
 
 .between {
-    width: 4px;
+    width: 7px;
 }
 
 .dropbox.draggedover {
-    border: 2px solid #1E85F7;
+    border: 4px solid #1E85F7;
 }
 
 .between.draggedover {
     background-color: #1E85F7;
+    width: 85px;
 }
