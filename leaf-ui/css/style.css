@@ -36,7 +36,7 @@ body {
   width: 200px;
   height: 40px;
   background-color: #333;
-  z-index: 2; /* To make it above the left panel */
+  z-index: 1; /* To make it above the left panel */
 }
 
 /* Sets attributes for BloomingLeaf title specifically */
