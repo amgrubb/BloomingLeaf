@@ -422,13 +422,14 @@ select::-ms-expand {
 
 .timelisttable td {
     display: inline-block; 
-    height: 40px;
+    height: fit-content;
     text-align: center;
 }
 
 .dropbox {
-    padding: 10px 10px;
+    padding: 10px 10px 10px 10px;
     border: 1px solid black;
+    height: fit-content;
 }
 
 .dropbox button {
@@ -439,6 +440,7 @@ select::-ms-expand {
     background-color: #dddddd;
     border: 1px solid black;
     float: center;
+    margin: 5px 5px 5px 5px;
 }
 
 .between {
@@ -452,4 +454,5 @@ select::-ms-expand {
 .between.draggedover {
     background-color: #1E85F7;
     width: 85px;
+    min-height: 40px
 }
