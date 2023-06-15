@@ -421,26 +421,24 @@ select::-ms-expand {
 }
 
 .timelisttable td {
-    float:center;
+    display: inline-block; 
+    height: 40px;
+    text-align: center;
 }
 
 .dropbox {
     padding: 10px 10px;
     border: 1px solid black;
-    width: 100p;
+}
+
+.dropbox button {
+    display:block;
 }
 
 .popup_button_timing {
     background-color: #dddddd;
     border: 1px solid black;
-    height: 40px;
-    width: 90px;
     float: center;
-    padding-top: 5px;
-}
-
-.fixed {
-    text-align: center;
 }
 
 .between {

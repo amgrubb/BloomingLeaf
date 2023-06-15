@@ -529,11 +529,14 @@ var buttons = document.querySelectorAll('.popup_button');
 		var lastChar = draggedButton.innerHTML.slice(draggedButton.innerHTML.length-1);
 
 		for (var i = document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length - 1; i >= 0; i--) {
-			if (getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]) == letter + "-MaxTime") {
-				var bMaxIdx = i;
-			}
-			if (getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i])[0] == letter) {
-				var bMinIdx = i;
+			var elements = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
+			for (var j = 0; j < elements.length; j++) {
+				if (elements[j] == letter + "-MaxTime") {
+					var bMaxIdx = i;
+				}
+				if (elements[j][0] == letter) {
+					var bMinIdx = i;
+				}
 			}
 		}
 
@@ -552,8 +555,6 @@ var buttons = document.querySelectorAll('.popup_button');
 				}
 			}
 		}
-
-		// console.log("min", bMinIdx, "max", bMaxIdx)
 
 		if (draggedButton.innerHTML[0] == letter && colIdx < bMinIdx || draggedButton.innerHTML[0] == letter && colIdx > bMaxIdx) { // being dragged outside of its model's range
 			return false;
@@ -580,7 +581,6 @@ var buttons = document.querySelectorAll('.popup_button');
 		if (checkDroppability(event, firstLetter)) {
 			if (container.id.split("_")[0] == "between") {
 				container.appendChild(draggedButton);
-
 				var newLeftCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
 				newLeftCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
 				var newRightCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx+2);
@@ -595,8 +595,10 @@ var buttons = document.querySelectorAll('.popup_button');
 			for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
 				if (i%2 == 0) {
 					row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
+					row.getElementsByTagName("td")[i].setAttribute('class', 'dropbox');
 				} else {
 					row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
+					row.getElementsByTagName("td")[i].setAttribute('class', 'between');
 				}
 				if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
 					row.deleteCell(i);
