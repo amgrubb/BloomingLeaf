@@ -126,6 +126,7 @@ function displayTimingInputWindow(timing) {
 			"<h3>" + timing_list[i].intention + "</h3><table class='timelisttable'><tr id='tablerow_" + i + "'></tr></table>"
 		)
 		
+		// row of absolute time points into which relative time points can be dragged
 		var row = $('#tablerow_' + i);
 		for (var j = 0; j < timing_list[i].newTimeOrder.length; j ++) {
 			if (j == 0) {
@@ -143,11 +144,14 @@ function displayTimingInputWindow(timing) {
 		}
 
 		intention_list.append(
-			"<br/><h4>Relative time points to add: </h4>"
+			"<br/><h4>Relative time points to add: </h4>" +
+			"<div id='startBox_" + i + "'></div>"
 		)
 
+		// relative time point tiles to be dragged
+		var start = $('#startBox_' + i);
 		for (var j = 0; j < timing_list[i].itemsToAdd.length; j ++) {
-			intention_list.append(
+			start.append(
 				"<button draggable = 'true' class='popup_button_timing' ondragstart='dragStart(event)' id=\"timing-input-toAdd_" + i + "\">" +
 				timing_list[i].itemsToAdd[j] + "</button>" + 
 				'</div>'
@@ -159,11 +163,16 @@ function displayTimingInputWindow(timing) {
 
 	merge_button_timing.onclick = function () {
 
-		// if (document.getElementsByClassName("popup_button_timing").length > 0) {
-		// 	console.log("You must place all time points.");
-		// 	return;
-		// }
+		// checks that all time points have been placed
+		for (var i = 0; i < timing.timingList.length-1; i++) {
+			if (document.getElementById('startBox_' + i).children.length != 0) {
+				console.log("You must place all time points.");
+				return;
+			}
+		}
 
+		// creates a list of lists showing time points in sequential order
+		// equivalent time points are in same inner list
 		for (var i = 0; i < timing.timingList.indexes_to_modify.length; i++) {
 			timing.timingList[i].newTimeOrder = [];
 			var row = document.getElementById("tablerow_" + i);

@@ -464,12 +464,21 @@ if (document.cookie && document.cookie.indexOf('all=') !== -1) {
 var buttons = document.querySelectorAll('.popup_button');
     let draggedButton = null;
 
+	/**
+	 * Tile is dragged out of its previous container
+	 */
     function dragStart(event) {
       draggedButton = event.target;
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/html', draggedButton.innerHTML);
     }
 
+	/**
+	 * Returns only the text inside of the box, separated by commas if more than one element
+	 * Does not include button tags, if applicable
+	 * 
+	 * @return String of the text inside the box
+	 */
 	function getInnerHTML(td) {
 		if (td.innerHTML[0] == "<") {
 			var parts = td.innerHTML.split(/[><]/);
@@ -502,10 +511,16 @@ var buttons = document.querySelectorAll('.popup_button');
 		}
 	}
 
+	/**
+	 * Tile is no longer being dragged
+	 */
     function dragEnd(event) {
 		draggedButton = null;
     }
 
+	/**
+	 * Highlights the container that the tile is over
+	 */
     function dragover(event) {
 		event.preventDefault();
 
@@ -515,11 +530,20 @@ var buttons = document.querySelectorAll('.popup_button');
 		}
     }
 
+	/**
+	 * Unhighlights the container when the tile is no long over it
+	 */
 	function dragleave(event) {
 		event.preventDefault();
     	event.target.classList.remove('draggedover');
 	}
 
+	/**
+	 * Validates that the tile can be dropped into the box it is over
+	 * 
+	 * @param String of first letter of the tile's text
+	 * @return boolean
+	 */
 	function checkDroppability(event, letter) {
 		var container = event.target;
 		var dragIdx = parseInt(draggedButton.id.split("_")[1])
@@ -528,6 +552,7 @@ var buttons = document.querySelectorAll('.popup_button');
 		var firstChars = draggedButton.innerHTML.slice(0,draggedButton.innerHTML.length-1);
 		var lastChar = draggedButton.innerHTML.slice(draggedButton.innerHTML.length-1);
 
+		// set min and max indexes for valid dropping based on first time point and maxtime
 		for (var i = document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length - 1; i >= 0; i--) {
 			var elements = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
 			for (var j = 0; j < elements.length; j++) {
@@ -540,6 +565,7 @@ var buttons = document.querySelectorAll('.popup_button');
 			}
 		}
 
+		// further restrict min and max indexes (if applicable) based on the other timepoints from the same model
 		for (var i = bMinIdx; i < bMaxIdx; i++) {
 			var compareStr = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
 			for (var j = 0; j < compareStr.length; j++) {
@@ -569,36 +595,44 @@ var buttons = document.querySelectorAll('.popup_button');
 		}
 	}
 
+	/**
+	 * Attaches tile to a new container and shifts ids of the row based on where the tile was dropped
+	 */
     function drop(event) {
 		event.preventDefault();
 		event.target.classList.remove('draggedover');
 		var container = event.target;
 
+		// find position where the tile was dropped
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
 
 		var firstLetter = draggedButton.innerHTML[0];
-		if (checkDroppability(event, firstLetter)) {
-			if (container.id.split("_")[0] == "between") {
+		if (checkDroppability(event, firstLetter)) { // if this is a valid place for the tile to be dropped
+			if (container.id.split("_")[0] == "between") { // if dropped into a new place, add a new time and add places to drop future tiles on either side
 				container.appendChild(draggedButton);
 				var newLeftCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
 				newLeftCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
 				var newRightCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx+2);
 				newRightCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
-			} else if (container.id.split("_")[0] == "dropbox") {
+			} else if (container.id.split("_")[0] == "dropbox") { // if dropped into an existing time point, add tile to that time
 				container.append(draggedButton);
 			} else {
 				console.log("there is a problem");
 			}
 
 			var row = document.getElementById("tablerow_" + rowIdx);
+			var height = getLargestHeight(row);
+			// reset the ids of the tiles based on their new order
 			for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
 				if (i%2 == 0) {
 					row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
 					row.getElementsByTagName("td")[i].setAttribute('class', 'dropbox');
+					row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
 				} else {
 					row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
 					row.getElementsByTagName("td")[i].setAttribute('class', 'between');
+					row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
 				}
 				if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
 					row.deleteCell(i);
@@ -607,3 +641,18 @@ var buttons = document.querySelectorAll('.popup_button');
 			}
 		}
     }
+
+	/**
+	 * Finds the height to be applied to the entire row, based on the maximum number of elements in any given column
+	 * 
+	 * @param HTMLElement of the row whose height is being found
+	 * @return integer of the height of the tallest column
+	 */
+	function getLargestHeight(row) {
+		for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
+			if (getInnerHTML(row.getElementsByTagName("td")[i]).split(",").length > 1) {
+				return 45;
+			}
+		}
+		return 25;
+	}

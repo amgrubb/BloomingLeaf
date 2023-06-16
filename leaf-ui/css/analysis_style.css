@@ -421,12 +421,11 @@ select::-ms-expand {
 }
 
 .timelisttable td {
-    display: table-cell; /* problem: doesn't go on second line*/
-    /* display: inline-block; */ /* problem: heights are all different */
-    vertical-align:top;
-    height:fit-content;
-    width:fit-content;
+    display: inline-block;
+    height: fit-content;
+    width: fit-content;
     text-align: center;
+    margin: 2px;
 }
 
 .dropbox {
@@ -446,7 +445,7 @@ select::-ms-expand {
 }
 
 .between {
-    width: 7px;
+    width: 10px;
     min-height: 30px;
 }
 
