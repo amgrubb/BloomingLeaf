@@ -50,6 +50,7 @@ function loadFromObject(obj) {
 	var cells = graph.getCells();
 	for (var i = 0; i < cells.length; i++) {
 		cell = cells[i];
+		console.log("hiiiii");
 		if (cell.get('type') == "basic.Actor") {
 			createBBActor(cell) //Create actor
 		} else if (cell.get('type') == "basic.CellLink") {
@@ -78,6 +79,7 @@ function loadOldVersion(obj) {
 	var cells = graph.getCells();
 	for (var i = 0; i < cells.length; i++) {
 		cell = cells[i];
+		consol.log(cell.get('actor'));
 		if (cell.get('type') == "basic.Actor") {
 			loadOldActor(cell); // Create actor
 		} else if (cell.get('type') == "basic.CellLink") {
@@ -273,8 +275,11 @@ function getFuncSegList(functionseg, oldConstraints) {
  */
 function createBBActor(cell) {
 	var actor = cell.get('actor');
-	var actorBBM = new ActorBBM({ type: actor.attributes.type, actorName: actor.attributes.actorName });
-	cell.set('actor', actorBBM)
+	console.log(actor);
+	cell.attributes.actor.actorName = cell.attributes.actor.attributes.actorName; 
+	// var actorBBM = new ActorBBM({ type: actor.attributes.type, actorName: actor.attributes.actorName });
+	// cell.set('actor', actorBBM);
+	console.log(actor);
 	cell.attr({'.label': {'cx': 20, 'cy' : 20}})
 }
 

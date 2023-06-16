@@ -2,7 +2,7 @@ var ActorInspector = Backbone.View.extend({
     model: joint.shapes.basic.Actor,
 
     initialize: function () {
-        this.actor = this.model.get('actor');
+        this.actor = this.model.attributes.actor;
     },
 
     template: [
@@ -32,6 +32,7 @@ var ActorInspector = Backbone.View.extend({
     render: function () {
         // If the clicked node is an actor, render the actor inspector
         this.$el.html(_.template($(this.template).html())(this.actor));
+        console.log(this.model);
         //Checks for the correct font size
         changeFont(current_font, paper);
     },
@@ -49,7 +50,7 @@ var ActorInspector = Backbone.View.extend({
         // Do not allow special characters in names, replace them with spaces.
         var text = this.$('.cell-attrs-text').val().replace(/[^\w\n-]/g, ' ');
         this.model.attr({ '.name': { text: text } });
-        this.actor.actorName = text;
+        this.model.attributes.actor.actorName = text;
 
     },
     /**
@@ -63,11 +64,13 @@ var ActorInspector = Backbone.View.extend({
      */
     updateType: function () {
         var actorType = $('#actor-type-ID').val();
-        type = this.actor.type;
-        type =  actorType;
-        console.log(type);
+        this.model.attributes.actor.type = actorType;
+        // console.log(type);
+        console.log(this.actor.actorName);
+        console.log(this.actor);
+        console.log(this.model.attributes.actor.type);
 
-        if (type == 'G') {
+        if (this.model.attributes.actor.type == 'G') {
             this.model.attr({
                 '.line': {
                     'ref': '.label',
@@ -79,7 +82,7 @@ var ActorInspector = Backbone.View.extend({
                 }
             });
         }
-        else if (type == 'R') {
+        else if (this.model.attributes.actor.type == 'R') {
             this.model.attr({
                 '.line': {
                     'ref': '.label',
@@ -91,7 +94,7 @@ var ActorInspector = Backbone.View.extend({
                 }
             });
         }
-        else if (type == 'A') {
+        else if (this.model.attributes.actor.type == 'A') {
             this.model.attr({ '.line': { 'stroke-width': 0 } });
         }
     },

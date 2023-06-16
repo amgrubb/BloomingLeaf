@@ -421,6 +421,7 @@ graph.on("add", function (cell) {
             name = cell.attr('.name/text') + "_0";
         }
         cell.get('actor').actorName = name;
+        console.log(cell.get('actor'));
         cell.attr(".name/text", name);
 
         // Send actors to background so elements are placed on top
