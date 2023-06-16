@@ -449,11 +449,19 @@ select::-ms-expand {
     min-height: 30px;
 }
 
+.dropbox.available {
+    border: 1px solid #1E85F7;
+}
+
+.between.available {
+    background-color: #1E85F7;
+}
+
 .dropbox.draggedover {
     border: 4px solid #1E85F7;
 }
 
 .between.draggedover {
-    background-color: #1E85F7;
+    /* background-color: #1E85F7; */
     width: 85px;
 }

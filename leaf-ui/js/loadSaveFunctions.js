@@ -471,6 +471,19 @@ var buttons = document.querySelectorAll('.popup_button');
       draggedButton = event.target;
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/html', draggedButton.innerHTML);
+
+	  var dropboxes = document.getElementsByClassName('dropbox');
+	  var betweens = document.getElementsByClassName('between');
+	  for (var i = 0; i < dropboxes.length; i++) {
+		if (checkDroppability(draggedButton.innerHTML[0], dropboxes[i])) {
+			dropboxes[i].classList.add('available');
+		}
+	  }
+	  for (var i = 0; i < betweens.length; i++) {
+		if (checkDroppability(draggedButton.innerHTML[0], betweens[i])) {
+			betweens[i].classList.add('available');
+		}
+	  }
     }
 
 	/**
@@ -516,6 +529,15 @@ var buttons = document.querySelectorAll('.popup_button');
 	 */
     function dragEnd(event) {
 		draggedButton = null;
+
+		var dropboxes = document.getElementsByClassName('dropbox');
+		var betweens = document.getElementsByClassName('between');
+		for (var i = 0; i < dropboxes.length; i++) {
+			dropboxes[i].classList.remove('available');
+		}
+		for (var i = 0; i < betweens.length; i++) {
+			betweens[i].classList.remove('available');
+		}
     }
 
 	/**
@@ -525,7 +547,7 @@ var buttons = document.querySelectorAll('.popup_button');
 		event.preventDefault();
 
 		var firstLetter = draggedButton.innerHTML[0];
-		if (checkDroppability(event, firstLetter)) {
+		if (checkDroppability(firstLetter, event.target)) {
 			event.target.classList.add('draggedover');
 		}
     }
@@ -544,8 +566,7 @@ var buttons = document.querySelectorAll('.popup_button');
 	 * @param String of first letter of the tile's text
 	 * @return boolean
 	 */
-	function checkDroppability(event, letter) {
-		var container = event.target;
+	function checkDroppability(letter, container) {
 		var dragIdx = parseInt(draggedButton.id.split("_")[1])
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
@@ -608,7 +629,7 @@ var buttons = document.querySelectorAll('.popup_button');
 		var colIdx = parseInt(container.id.split("_")[2]);
 
 		var firstLetter = draggedButton.innerHTML[0];
-		if (checkDroppability(event, firstLetter)) { // if this is a valid place for the tile to be dropped
+		if (checkDroppability(firstLetter, event.target)) { // if this is a valid place for the tile to be dropped
 			if (container.id.split("_")[0] == "between") { // if dropped into a new place, add a new time and add places to drop future tiles on either side
 				container.appendChild(draggedButton);
 				var newLeftCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
@@ -634,9 +655,14 @@ var buttons = document.querySelectorAll('.popup_button');
 					row.getElementsByTagName("td")[i].setAttribute('class', 'between');
 					row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
 				}
+
 				if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
 					row.deleteCell(i);
 					i--;
+				}
+
+				if (i == 0 || i == row.getElementsByTagName("td").length - 1) {
+					row.getElementsByTagName("td")[i].setAttribute('style', 'border:none');
 				}
 			}
 		}

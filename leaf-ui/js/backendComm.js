@@ -131,7 +131,13 @@ function displayTimingInputWindow(timing) {
 		for (var j = 0; j < timing_list[i].newTimeOrder.length; j ++) {
 			if (j == 0) {
 				row.append(
-					'<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="dropbox" id="dropbox_'+ i + '_' + j + '">' +
+					'<td class="dropbox" style="border:none" id="dropbox_'+ i + '_' + j + '">' +
+					timing_list[i].newTimeOrder[j] + "</td>"
+				)
+			} else if (j == timing_list[i].newTimeOrder.length - 1) {
+				row.append(
+					'<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between" id="between_' + i + '_' + (2*j-1)+ '"></td>' +
+					'<td style="border:none" class="dropbox" id="dropbox_'+ i + '_' + (2*j) + '">' +
 					timing_list[i].newTimeOrder[j] + "</td>"
 				)
 			} else {
@@ -152,7 +158,7 @@ function displayTimingInputWindow(timing) {
 		var start = $('#startBox_' + i);
 		for (var j = 0; j < timing_list[i].itemsToAdd.length; j ++) {
 			start.append(
-				"<button draggable = 'true' class='popup_button_timing' ondragstart='dragStart(event)' id=\"timing-input-toAdd_" + i + "\">" +
+				"<button draggable = 'true' class='popup_button_timing' ondragstart='dragStart(event)' ondragend='dragEnd(event)' id=\"timing-input-toAdd_" + i + "\">" +
 				timing_list[i].itemsToAdd[j] + "</button>" + 
 				'</div>'
 			)
