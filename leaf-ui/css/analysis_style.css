@@ -426,3 +426,7 @@ select::-ms-expand {
     border: 1px;
     border-radius: 2px;
 }
+
+#add-prescondition {
+    display: inline;
+}

@@ -101,6 +101,7 @@ var AssignmentsTable = Backbone.View.extend({
         this.loadRelativeIntentions();
         this.displayAbsoluteIntentionAssignments();
         this.displayAbsoluteRelationshipAssignments();
+        this.displayPresConditions();
         return this;
     },
 
