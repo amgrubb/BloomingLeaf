@@ -198,6 +198,9 @@ var AssignmentsTable = Backbone.View.extend({
         })
     },
 
+    /**
+     * Creates and attaches a new PresConditionEditView
+     */
     addPresCondition: function() {
         document.getElementById('add-prescondition').style.display = "none";
         var presConditionEditView = new PresConditionEditView({table: this.presConditionTableView});
@@ -205,6 +208,9 @@ var AssignmentsTable = Backbone.View.extend({
         presConditionEditView.render();
     },
 
+    /**
+     * Creates the PresConditionTableView
+     */
     displayPresConditions: function () {
         this.presConditionTableView = new PresConditionTableView({});
         $('#table-rows').append(this.presConditionTableView.el);
@@ -488,6 +494,90 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 });
 
+/**
+ * Backbone View for the Presence Condition Assignments, which contains a row for each of the elements with restricted intervals
+ */
+var PresConditionTableView = Backbone.View.extend({
+    template: [
+        '<script type="text/template" id="item-template">',
+            '<table id="prescond-list" class="abs-table">',
+                '<tr>',
+                    '<th>Element</th>',
+                    '<th>Type</th>',
+                    '<th>Available Interval</th>',
+                    '<th></th>',
+                '</tr>',
+            '</table>',
+        '</script>'
+    ].join(''),
+
+    /**
+     * Creates rows of the table for each actor and intention with a modified interval
+     */
+    displayRows: function() {
+        var actors = SliderObj.getActorsView();
+        var cells = SliderObj.getIntentionsAndActorsView();
+        for (var i = 0; i < actors.length; i++) {
+            var element = [];
+            var embeds = SliderObj.getEmbeddedElements(actors[i].id);
+
+            // finds embedded intentions within the actor
+            if (embeds) {
+                for(var k = 0; k < cells.length; k++){
+                    if (embeds.includes(cells[k].model.id) && cells[k].model.attributes.intention.attributes.intervals.length > 0)  {
+                        element.push(cells[k]);
+                        cells.splice(k, 1);
+                        k--;
+                    }
+                }
+            }
+
+            // displays actors with changed intervals
+            if (actors[i].model.attributes.actor.attributes.intervals.length > 0 || element.length > 0) { // if actor's interval is changed, display actor
+                var presConditionActorView = new PresConditionActorView({model: actors[i].model, table: this});
+                $('#prescond-list').append(presConditionActorView.el);
+                presConditionActorView.render();
+
+                // displays intentions with changed intervals inside their actor
+                for(var j = 0; j < element.length; j++){
+                    if (element[j].model.attributes.intention.attributes.intervals.length > 0) {
+                        var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model, actor: actors[i], table: this});
+                        $('#prescond-list').append(presConditionIntentionView.el);
+                        presConditionIntentionView.render();
+                    }
+                }
+            }
+        }
+        
+        // displays intentions with changed intervals that are not inside an actor
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].model.attributes.type != "basic.Actor" && cells[i].model.attributes.intention.attributes.intervals.length > 0) {
+                var presConditionIntentionView = new PresConditionIntentionView({model: cells[i].model, table: this});
+                $('#prescond-list').append(presConditionIntentionView.el);
+                presConditionIntentionView.render();
+            }
+        }
+
+        // do not display trash can if actor does not have a changed interval
+        for (var i = 0; i < document.getElementsByClassName('pcRow').length; i++) {
+            if (document.getElementsByClassName('pcRow')[i].getElementsByTagName('td')[2].innerHTML.length == 0) {
+                document.getElementsByClassName('pcRow')[i].getElementsByTagName('td')[3].innerHTML = "";
+            }
+        } 
+    },
+
+    render: function() {
+        this.$el.html(_.template($(this.template).html()));
+        this.displayRows();
+        document.getElementById("add-prescondition").style.display = "";
+        return this;
+    }
+});
+
+/**
+ * Backbone View for an Actor
+ * Represents one row of the table
+ */
 var PresConditionActorView = Backbone.View.extend({
     model: ActorBBM,
 
@@ -499,6 +589,7 @@ var PresConditionActorView = Backbone.View.extend({
     },
 
     tagName: 'tr',
+    className: 'pcRow',
 
     template: [
         '<script type="text/template" id="item-template">',
@@ -513,6 +604,9 @@ var PresConditionActorView = Backbone.View.extend({
         'click #remove-interval': 'removeInterval',
     },
 
+    /**
+     * Changes exclusion intervals into displayable inclusion intervals
+     */
     convertIntervals: function () {
         var exclusionIntervals = this.model.attributes.actor.attributes.intervals;
         var inclusionIntervals;
@@ -532,11 +626,13 @@ var PresConditionActorView = Backbone.View.extend({
                     inclusionIntervals = `[${0}, ${exclusionIntervals[0][0] - 1}], [${exclusionIntervals[0][1] + 1}, ${graph.get('maxAbsTime')}]`;
                 }
             }
-        }  //else { // always available
-        // }
+        }
         return inclusionIntervals;
     },
 
+    /**
+     * Deletes exclusion intervals, so actor is always available
+     */
     removeInterval: function () {
         this.model.attributes.actor.attributes.intervals = [];
         this.table.render();
@@ -554,7 +650,10 @@ var PresConditionActorView = Backbone.View.extend({
 
 });
 
-
+/**
+ * Backbone View for an Intention
+ * Represents one row of the table
+ */
 var PresConditionIntentionView = Backbone.View.extend({
     model: IntentionBBM,
     tagName: 'tr',
@@ -588,6 +687,9 @@ var PresConditionIntentionView = Backbone.View.extend({
         'click #remove-interval': 'removeInterval',
     },
 
+    /**
+     * Changes exclusion intervals into displayable inclusion intervals
+     */
     convertIntentionIntervals: function () {
         var exclusionIntervals = this.model.attributes.intention.attributes.intervals;
 
@@ -643,6 +745,9 @@ var PresConditionIntentionView = Backbone.View.extend({
         return inclusionIntervals;
     },
 
+    /**
+     * Deletes exclusion intervals, so intention is always available
+     */
     removeInterval: function () {
         this.model.attributes.intention.attributes.intervals = [];
         this.table.render();
@@ -663,11 +768,11 @@ var PresConditionIntentionView = Backbone.View.extend({
 
 });
 
+/**
+ * Backbone View for adding a new presence condition
+ * Represents the last row of the table while a new presence condition is being created by the user
+ */
 var PresConditionEditView = Backbone.View.extend({
-    // TODO: test to make sure it doesn't do anything weird when saving intervals
-    // TODO: css of dropdown, input boxes, and save button
-    // TODO: make delete button not appear for actor who don't have intervals
-
     model: joint.dia.BloomingGraph,
 
     initialize: function (options) {
@@ -729,11 +834,14 @@ var PresConditionEditView = Backbone.View.extend({
     ].join(''),
 
     events: {
-        'change #edit-name': 'updateType',
+        'change #edit-name': 'updateDefaults',
         'click #save': 'save',
     },
 
-    updateType: function() {
+    /**
+     * Updates Type column and Available Intervals column defaults when a new Element is selected
+     */
+    updateDefaults: function() {
         document.getElementById("not-flipped").style.display = "";
         document.getElementById("flipped").style.display = "none";
 
@@ -753,8 +861,8 @@ var PresConditionEditView = Backbone.View.extend({
         } 
         this.$('#edit-type').text(this.type);
 
+        // default intervals
         if (this.type != "Actor") {
-
             var box1 = document.getElementById('edit-interval1');
             var box2 = document.getElementById('edit-interval2');
             var rangeMin = 0;
@@ -797,6 +905,9 @@ var PresConditionEditView = Backbone.View.extend({
         } 
     },
 
+    /*
+     * Finds the actor associated with the intention
+     */
     findActor: function() {
         var elements = graph.getElements();
         var actors = []
@@ -817,7 +928,12 @@ var PresConditionEditView = Backbone.View.extend({
         }
     },
 
+    /*
+     * Converts the Edit row to either an Actor row or Intention row
+     * Updates the model with the new exclusion interval
+     */
     save: function() {
+        // find values of the input boxes
         if (document.getElementById('flipped').style.display == "none") {
             var value1 = parseInt(document.getElementById('edit-interval1').value);
             var value2 = parseInt(document.getElementById('edit-interval2').value);
@@ -826,12 +942,14 @@ var PresConditionEditView = Backbone.View.extend({
             var value2 = parseInt(document.getElementById('edit-interval2-flip').value);
         }
 
+        // check that the range is valid
         if (value1 > value2) {
             console.log("error");
             alert("ERROR: the second value should be bigger than the first.")
             return;
         }
 
+        // default min and max of exclusion intervals
         var rangeMin = 0;
         var rangeMax = parseInt(graph.get('maxAbsTime'));
         if (this.model.attributes.type == "basic.Actor") {
@@ -847,7 +965,7 @@ var PresConditionEditView = Backbone.View.extend({
             this.updateEmbeds();
         } else {
             this.actor = this.findActor();
-            if (this.actor) {
+            if (this.actor) { // 
                 var actorIntervals = this.actor.model.attributes.actor.attributes.intervals;
                 if (actorIntervals.length > 0) { // if actor is not always available
                     if (actorIntervals[1]){ // actor has two exclusion intervals
@@ -888,23 +1006,24 @@ var PresConditionEditView = Backbone.View.extend({
                 }
             }
 
-            var presConditionIntentionView = new PresConditionIntentionView({model: this.model});
+            var presConditionIntentionView = new PresConditionIntentionView({model: this.model, table: this.table});
             $('#prescond-list').append(presConditionIntentionView.el);
             presConditionIntentionView.render();
         }
 
         if(value1 >= rangeMax+1 || value2 >= rangeMax+1){
             alert("ERROR: the values should be smaller or equal to their element's maximum time point.")
-        } else{
-
-        console.log(this.model.attributes.actor.attributes.intervals);
-        this.remove();
-        document.getElementById('add-prescondition').style.display = "";
-        this.table.render();
+        } else {
+            this.remove();
+            document.getElementById('add-prescondition').style.display = "";
+            this.table.render();
         }
 
     },
 
+    /*
+     * If the model is an actor with embedded intentions, updates embedded intentions based on the actor's intervals
+     */
     updateEmbeds: function() {
         if (this.model.attributes.embeds) {
             var elements = graph.getElements();
@@ -939,40 +1058,9 @@ var PresConditionEditView = Backbone.View.extend({
         }
     },
 
-    updateEmbeds: function() {
-        if (this.model.attributes.embeds) {
-            var elements = graph.getElements();
-            var intentions = []
-            for (var i = 0; i < elements.length; i++) {
-                var cell = elements[i].findView(paper);
-                if (cell.model.attributes.type != "basic.Actor") {
-                    intentions.push(cell);
-                }
-            }
-            for (var i = 0; i < intentions.length; i++) {
-                for (var j = 0; j < this.model.attributes.embeds.length; j++) {
-                    if (this.model.attributes.embeds[j] == intentions[i].model.id) {
-                        if (this.model.attributes.actor.attributes.intervals[0] && this.model.attributes.actor.attributes.intervals[0][0] == 0){ // slider1 has been moved in
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] < this.model.attributes.actor.attributes.intervals[0][1]) {
-                                intentions[i].model.attributes.intention.attributes.intervals.shift();
-                            }
-                        } else if (this.model.attributes.actor.attributes.intervals[0] && this.model.attributes.actor.attributes.intervals[0][1] == graph.get('maxAbsTime')){ // slider2 has been moved in
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] > this.model.attributes.actor.attributes.intervals[0][0]) {
-                                intentions[i].model.attributes.intention.attributes.intervals.pop();
-                            }
-                        } else if (this.model.attributes.actor.attributes.intervals[0] && !this.model.attributes.actor.attributes.intervals[1] && this.model.attributes.actor.attributes.intervals[0][0] != 0 && this.model.attributes.actor.attributes.intervals[0][1] != graph.get('maxAbsTime')) { // interval is flipped
-                            if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][0] > this.model.attributes.actor.attributes.intervals[0][0]) {
-                                intentions[i].model.attributes.intention.attributes.intervals.pop();
-                            } else if (intentions[i].model.attributes.intention.attributes.intervals[0] && intentions[i].model.attributes.intention.attributes.intervals[0][1] < this.model.attributes.actor.attributes.intervals[0][1]) {
-                                intentions[i].model.attributes.intention.attributes.intervals.pop();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-
+    /*
+     * Deletes the Edit view
+     */
     remove: function() {
         this.$el.remove();
         this.stopListening();
@@ -986,67 +1074,4 @@ var PresConditionEditView = Backbone.View.extend({
         return this;
     },
 
-});
-
-var PresConditionTableView = Backbone.View.extend({
-    template: [
-        '<script type="text/template" id="item-template">',
-            '<table id="prescond-list" class="abs-table">',
-                '<tr>',
-                    '<th>Element</th>',
-                    '<th>Type</th>',
-                    '<th>Available Interval</th>',
-                    '<th></th>',
-                '</tr>',
-            '</table>',
-        '</script>'
-    ].join(''),
-
-    displayRows: function() {
-        var actors = SliderObj.getActorsView();
-        var cells = SliderObj.getIntentionsAndActorsView();
-        for (var i = 0; i < actors.length; i++) {
-            var element = [];
-            var embeds = SliderObj.getEmbeddedElements(actors[i].id);
-
-            if (embeds) {
-                for(var k = 0; k < cells.length; k++){
-                    if (embeds.includes(cells[k].model.id) && cells[k].model.attributes.intention.attributes.intervals.length > 0)  {
-                        element.push(cells[k]);
-                        cells.splice(k, 1);
-                        k--;
-                    }
-                }
-            }
-
-            if (actors[i].model.attributes.actor.attributes.intervals.length > 0 || element.length > 0) { // if actor's interval is changed, display actor
-                var presConditionActorView = new PresConditionActorView({model: actors[i].model, table: this});
-                $('#prescond-list').append(presConditionActorView.el);
-                presConditionActorView.render();
-
-                for(var j = 0; j < element.length; j++){
-                    if (element[j].model.attributes.intention.attributes.intervals.length > 0) {
-                        var presConditionIntentionView = new PresConditionIntentionView({model: element[j].model, actor: actors[i], table: this});
-                        $('#prescond-list').append(presConditionIntentionView.el);
-                        presConditionIntentionView.render();
-                    }
-                }
-            }
-        }
-        
-        for (var i = 0; i < cells.length; i++) {
-            if (cells[i].model.attributes.type != "basic.Actor" && cells[i].model.attributes.intention.attributes.intervals.length > 0) {
-                var presConditionIntentionView = new PresConditionIntentionView({model: cells[i].model});
-                $('#prescond-list').append(presConditionIntentionView.el);
-                presConditionIntentionView.render();
-            }
-        }
-    },
-
-    render: function() {
-        this.$el.html(_.template($(this.template).html()));
-        this.displayRows();
-        document.getElementById("add-prescondition").style.display = "";
-        return this;
-    }
 });
