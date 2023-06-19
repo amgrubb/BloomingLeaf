@@ -1134,8 +1134,6 @@ var FuncSegView = Backbone.View.extend({
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
             this.chart.reset();
-            // Get the chart canvas
-            var context = $("#chart").get(0).getContext("2d");
 
             // Render preview for user defined function types
             if (funcType == "UD") {
@@ -1179,7 +1177,11 @@ var FuncSegView = Backbone.View.extend({
                     this.chart.addDataSet(0, [initVal], false);
                 }
             }
-            this.chart.display(context);
+            if ($("#chart").get(0)) { // if the chart is displayed on the page
+                // Get the chart canvas
+                var context = $("#chart").get(0).getContext("2d");
+                this.chart.display(context);
+            }
         }
     },
 
