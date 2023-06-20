@@ -15,6 +15,7 @@ var ResultView = Backbone.View.extend({
     initialize: function (options) {
         this.config = options.config;
         this.model.on('change:selected', this.updateHighlight, this);
+        setSelectResult(this.model);
     },
 
     template: ['<script type="text/template" id="result-template">',
