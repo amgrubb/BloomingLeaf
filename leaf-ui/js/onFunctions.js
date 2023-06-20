@@ -1080,7 +1080,6 @@ paper.on("link:options", function (cell) {
      */
     document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
         var selectConfig;
-        //TODO: Find out why the selectResult is empty before we reassign it
         if (configCollection.length !== 0) {
             selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
             if (selectConfig.get('results') !== undefined) {
