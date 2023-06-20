@@ -240,34 +240,29 @@
      * The number of the page that is selected in the next State window 
      */
     function updatePagination(currentPage) {
+        var currentDigits = currentPage.toString().length;
         var pagination = document.getElementById("pagination");
         var nextSteps_array_size = allSolutionArray.length;
         if (nextSteps_array_size > 6) {
             renderPreviousBtn(pagination, currentPage);
             if (currentPage - 3 < 0) {
-                for (var i = 0; i < 6; i++) {
+                for (var i = 0; i < 7; i++) {
                     render_pagination_values(currentPage, i);
                 }
             } else {
-                if (currentPage < 100) {
-                    if (currentPage + 3 < nextSteps_array_size) {
-                        for (i = currentPage - 3; i < currentPage + 3; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
-                    } else {
-                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
+                var numBefore = Math.ceil((7 - currentDigits)/2);
+                var numAfter = Math.ceil((8 - currentDigits)/2);
+                if (numAfter < 1) {
+                    numAfter = 1;
+                }
+                console.log(numBefore, numAfter);
+                if (currentPage + numBefore < nextSteps_array_size) {
+                    for (i = currentPage - numBefore; i < currentPage + numAfter; i++) {
+                        render_pagination_values(currentPage, i);
                     }
                 } else {
-                    if (currentPage + 2 < nextSteps_array_size) {
-                        for (i = currentPage - 2; i < currentPage + 3; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
-                    } else {
-                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
+                    for (i = currentPage - numAfter; i < nextSteps_array_size; i++) {
+                        render_pagination_values(currentPage, i);
                     }
                 }
             }
