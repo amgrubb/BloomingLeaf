@@ -1,6 +1,7 @@
 package merge;
 
 import java.io.File;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,6 +14,8 @@ import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
 import simulation.Intention;
 import layout.LayoutAlgorithm;
+
+import java.util.HashMap;
 
 /**
  * MMain
@@ -57,6 +60,53 @@ public class MMain {
 
 			Gson gson = new Gson();
 			
+			// Loading in timing info
+			TMain timings = convertTimingFromFile(tPath + timingFile);
+			if (DEBUG) {
+				System.out.printf("Timing offset: %d%n", timings.getTimingOffset());
+			}
+			
+			//make hashmap to keep target and replacement time points
+			HashMap<String, String> simTPs = new HashMap<>();
+			
+			//make a for loop that is going to go through all the new time orders in timings and look for $
+			//can we print the new time order for each intention in this file
+			for (int i = 0; i < timings.getTimingList().size() - 1; i++) {
+				//System.out.println("NewTimeOrder: "+timings.getTimingList().get(i).getNewTimeOrder());
+				for (int j = 0; j < timings.getTimingList().get(i).getNewTimeOrder().size(); j++) {
+					if (timings.getTimingList().get(i).getNewTimeOrder().get(j).contains("$")) {
+						//System.out.println(timings.getTimingList().get(i).getNewTimeOrder().get(j));
+						//System.out.println("about to split");
+						String[] temp = timings.getTimingList().get(i).getNewTimeOrder().get(j).split("\\$");
+						if (temp[0].contains("TP") && temp[1].contains("TP")) {
+							simTPs.put(temp[0], temp[1]);
+						}
+						else if (temp[0].contains("TP")) {
+							simTPs.put(temp[0], temp[1]);
+						}
+						else {
+							simTPs.put(temp[1], temp[0]);
+						}
+						//no absolute tp pairs!!!
+						//System.out.println("adding " + temp[0] + " as the target and " + temp[1] + " as the replacement");
+					}
+				}	
+			}			
+			for (int i = 0; i < timings.getTimingList().size()-1; i++) {
+				//System.out.println("NewTimeOrder: "+timings.getTimingList().get(i).getNewTimeOrder());
+				for (int j = 0; j < timings.getTimingList().get(i).getNewTimeOrder().size(); j++) {
+					for (String target : simTPs.keySet()) {
+						if (timings.getTimingList().get(i).getNewTimeOrder().get(j).contains(target)) {
+							System.out.println("before replacement: " + timings.getTimingList().get(i).getNewTimeOrder().get(j));
+							timings.getTimingList().get(i).getNewTimeOrder().set(j, simTPs.get(target));
+							System.out.println("after replacement: " + timings.getTimingList().get(i).getNewTimeOrder().get(j));
+						}
+					}
+				}	
+			}
+			
+			
+			
 			// Creating the 1st back-end model to be merged
 			ModelSpec modelSpec1 = convertBackboneModelFromFile(inPath + inputFile1);
 
@@ -75,12 +125,6 @@ public class MMain {
 				System.out.println("M2:");
 				IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
 				System.out.println(gson.toJson(m2IMain));
-			}
-
-			// Loading in timing info
-			TMain timings = convertTimingFromFile(tPath + timingFile);
-			if (DEBUG) {
-				System.out.printf("Timing offset: %d%n", timings.getTimingOffset());
 			}
 
 			// run merge
