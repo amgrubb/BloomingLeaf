@@ -158,23 +158,41 @@ public class PreMerge {
 			printTimingIntention(startTimesB, "B", printFile, equalMax);
 
 			// Create new list of time points and list of unassigned time points.
-			HashMap<Integer, String> combinedTimes = new HashMap<>();
+			//HashMap<Integer, String> combinedTimes = new HashMap<>();
+			HashMap<Integer, ArrayList<String>> combinedTimes = new HashMap<>();
 			List<Integer> justTimes = new ArrayList();
 			List<String> unassignedTimesPoints = new ArrayList();
 			for(String item : startTimesA) {
 				try {
 					Integer numToAdd = Integer.parseUnsignedInt(item);
-					combinedTimes.put(numToAdd, "A-"+item);
-					justTimes.add(numToAdd);
+					if (!combinedTimes.containsKey(numToAdd)){
+						ArrayList<String> values = new ArrayList<>();
+						values.add("A-" + item);
+			            combinedTimes.put(numToAdd, values);
+//						combinedTimes.put(numToAdd, "A-"+item);
+						justTimes.add(numToAdd);
+					} else {
+						ArrayList<String> values = combinedTimes.get(numToAdd);
+			            values.add("A-" + item);
+					}
 				} catch (NumberFormatException nfe) {
 					unassignedTimesPoints.add("A-"+item);
 				}
 			}
+			
 			for(String item : startTimesB) {
 				try {
 					Integer numToAdd = Integer.parseUnsignedInt(item);
-					combinedTimes.put(numToAdd, "B-"+item);
-					justTimes.add(numToAdd);
+					if (!combinedTimes.containsKey(numToAdd)){
+						ArrayList<String> values = new ArrayList<>();
+						values.add("B-" + item);
+			            combinedTimes.put(numToAdd, values);
+//					combinedTimes.put(numToAdd, "B-"+item);
+			            justTimes.add(numToAdd);
+					} else {
+						ArrayList<String> values = combinedTimes.get(numToAdd);
+			            values.add("B-" + item);
+					}
 				} catch (NumberFormatException nfe) {
 					unassignedTimesPoints.add("B-"+item);
 				}
@@ -187,7 +205,15 @@ public class PreMerge {
 			for (Integer numTime : justTimes) {	
 				if ((maxAFirst && !maxAAdded && (numTime < modelAMaxTime)) ||
 					(!maxAFirst && !maxBAdded && (numTime < modelBNewMaxTime))) {
-					outString += "\"" + combinedTimes.get(numTime) + "\", ";
+					List<String> numTimeList = combinedTimes.get(numTime);
+					if(numTimeList.size() == 1) {
+						outString += "\"" + numTimeList.get(0) + "\", ";
+					} else {
+						for(int i = 0; i<numTimeList.size(); i++) {
+							outString += "\"" + numTimeList.get(i) + "\", ";
+						}
+					}
+					
 				} else if ((maxAFirst && !maxAAdded && numTime > modelAMaxTime) ||
 						 	(!maxAFirst && maxBAdded && !maxAAdded && numTime > modelAMaxTime))  {
 					outString += "\"A-MaxTime\", ";
