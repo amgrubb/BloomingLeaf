@@ -243,24 +243,25 @@
         var currentDigits = currentPage.toString().length; // number of digits in the selected page number
         var pagination = document.getElementById("pagination");
         var nextSteps_array_size = allSolutionArray.length;
-        if (nextSteps_array_size > 6) {
+        if (nextSteps_array_size > 7) {
             renderPreviousBtn(pagination, currentPage);
-            if (currentPage - 3 < 0) {
+            if (currentPage - 3 < 0) { // if current page number is low cannot be the middle number
                 for (var i = 0; i < 7; i++) {
                     render_pagination_values(currentPage, i);
                 }
+            // } else if () { // if current page number is high cannot be the middle number
             } else {
                 var numBefore = Math.ceil((7 - currentDigits)/2); // number of digits displayed to the left of the selected page number
                 var numAfter = Math.ceil((8 - currentDigits)/2); // number of digits displayed to the right of and including the selected page number
                 if (numAfter < 1) { // must show at least one digit
                     numAfter = 1;
                 }
-                if (currentPage + numBefore < nextSteps_array_size) {
+                if (currentPage + numBefore < nextSteps_array_size) { // show the numbers less than the current page number
                     for (i = currentPage - numBefore; i < currentPage + numAfter; i++) {
                         render_pagination_values(currentPage, i);
                     }
                 } else {
-                    for (i = currentPage - numAfter; i < nextSteps_array_size; i++) {
+                    for (i = currentPage - numAfter; i < nextSteps_array_size; i++) { // show the numbers equal to and greater than the current page number
                         render_pagination_values(currentPage, i);
                     }
                 }
