@@ -240,7 +240,7 @@
      * The number of the page that is selected in the next State window 
      */
     function updatePagination(currentPage) {
-        var currentDigits = currentPage.toString().length;
+        var currentDigits = currentPage.toString().length; // number of digits in the selected page number
         var pagination = document.getElementById("pagination");
         var nextSteps_array_size = allSolutionArray.length;
         if (nextSteps_array_size > 6) {
@@ -250,12 +250,11 @@
                     render_pagination_values(currentPage, i);
                 }
             } else {
-                var numBefore = Math.ceil((7 - currentDigits)/2);
-                var numAfter = Math.ceil((8 - currentDigits)/2);
-                if (numAfter < 1) {
+                var numBefore = Math.ceil((7 - currentDigits)/2); // number of digits displayed to the left of the selected page number
+                var numAfter = Math.ceil((8 - currentDigits)/2); // number of digits displayed to the right of and including the selected page number
+                if (numAfter < 1) { // must show at least one digit
                     numAfter = 1;
                 }
-                console.log(numBefore, numAfter);
                 if (currentPage + numBefore < nextSteps_array_size) {
                     for (i = currentPage - numBefore; i < currentPage + numAfter; i++) {
                         render_pagination_values(currentPage, i);
