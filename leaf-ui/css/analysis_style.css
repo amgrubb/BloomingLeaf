@@ -455,6 +455,7 @@ select::-ms-expand {
 
 .between.available {
     background-color: #1E85F7;
+    min-width:7px;
 }
 
 .dropbox.draggedover {

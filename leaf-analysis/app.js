@@ -5,7 +5,7 @@
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
 // var userPath = "/Users/judySmith/git/BloomingLeaf"
-var userPath = "/Users/emmaruckle/Desktop/SURF/BloomingLeaf"
+var userPath = "/Users/stardess/Desktop/BloomingLeaf"
 // var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
 
 
@@ -185,7 +185,7 @@ function passIntoLayoutJar(res) {
 function passIntoPreMergeJar(res, timingOffset) { 
     console.log("in the passIntoPreMergeJar");
     console.log("edited pass into premerge");
-    child = exec('java -jar '+userPath+'/leaf-analysis/src/premerge/PreMerge.jar '+'merge_model1.json merge_model2.json timing.json '+timingOffset, 
+    child = exec('java -jar '+userPath+'/leaf-analysis/bin/PreMerge.jar '+'merge_model1.json merge_model2.json timing.json '+timingOffset, 
     {maxBuffer: 20480 * 20480} ,
         function (error, stdout, stderr){
             if(error !== null){
