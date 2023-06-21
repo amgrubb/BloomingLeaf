@@ -573,7 +573,7 @@ var buttons = document.querySelectorAll('.popup_button');
 		var firstChars = draggedButton.innerHTML.slice(0,draggedButton.innerHTML.length-1);
 		var lastChar = draggedButton.innerHTML.slice(draggedButton.innerHTML.length-1);
 
-		// set min and max indexes for valid dropping based on first time point and maxtime
+		// set min and max indexes for valid dropping based on first absolute time point and maxtime
 		for (var i = document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length - 1; i >= 0; i--) {
 			var elements = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
 			for (var j = 0; j < elements.length; j++) {
@@ -586,11 +586,21 @@ var buttons = document.querySelectorAll('.popup_button');
 			}
 		}
 
-		// further restrict min and max indexes (if applicable) based on the other timepoints from the same model
+		// further restrict min and max indexes (if applicable) based on the other relative timepoints from the same model
 		for (var i = bMinIdx; i < bMaxIdx; i++) {
 			var compareStr = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
 			for (var j = 0; j < compareStr.length; j++) {
 				if (compareStr[j] != draggedButton.innerHTML) {
+					// for repeated time points
+					if (compareStr[j].split(":")[0] == draggedButton.innerHTML.split(":")[0]) {
+						var compareChars = compareStr[j].split(":")[1];
+						if (compareChars < draggedButton.innerHTML.split(":")[1] && i > bMinIdx) {
+							bMinIdx = i;
+						} else if (compareChars > draggedButton.innerHTML.split(":")[1] && i < bMaxIdx) {
+							bMaxIdx = i;
+						}
+					}
+					// for nonrepeated time points
 					if (compareStr[j].slice(0,draggedButton.innerHTML.length-1) == firstChars) {
 						var compareChar = compareStr[j].slice(draggedButton.innerHTML.length-1);
 						if (compareChar < lastChar && i > bMinIdx) {
