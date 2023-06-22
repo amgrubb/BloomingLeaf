@@ -194,7 +194,16 @@ function displayTimingInputWindow(timing) {
 					timing.timingList[i].newTimeOrder.push(array);
 				}
 			}
+			for (var j = 0; j < timing.timingList[i].newTimeOrder.length; j++) {
+				if (timing.timingList[i].newTimeOrder[j].length == 1) {
+					timing.timingList[i].newTimeOrder[j] = timing.timingList[i].newTimeOrder[j][0];
+				}
+				else {
+					timing.timingList[i].newTimeOrder[j] = timing.timingList[i].newTimeOrder[j].join("$");
+				}
+			}
 		}
+		
 
 		// var intentions_list = document.getElementById('timing-input-intention-list');
 		// console.log("Intentions_list: ", intention_list);
