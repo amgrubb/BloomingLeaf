@@ -66,40 +66,42 @@ public class MMain {
 				System.out.printf("Timing offset: %d%n", timings.getTimingOffset());
 			}
 			
-			//make hashmap to keep target and replacement time points
+			// Creates hashmap to keep target and replacement time points
 			HashMap<String, String> simTPs = new HashMap<>();
 			
-			//make a for loop that is going to go through all the new time orders in timings and look for $
-			//can we print the new time order for each intention in this file
+			// Loops through the intentions in TimingList
 			for (int i = 0; i < timings.getTimingList().size() - 1; i++) {
-				//System.out.println("NewTimeOrder: "+timings.getTimingList().get(i).getNewTimeOrder());
+				// Loops through the newTimeOrder of each intention and checks for "$"
 				for (int j = 0; j < timings.getTimingList().get(i).getNewTimeOrder().size(); j++) {
+					// If timepoint contains "$", split the timepoint at the "$" and add target/replacement to hashset
 					if (timings.getTimingList().get(i).getNewTimeOrder().get(j).contains("$")) {
-						//System.out.println(timings.getTimingList().get(i).getNewTimeOrder().get(j));
-						//System.out.println("about to split");
 						String[] temp = timings.getTimingList().get(i).getNewTimeOrder().get(j).split("\\$");
+						// Two relative timepoints
 						if (temp[0].contains("TP") && temp[1].contains("TP")) {
 							simTPs.put(temp[0], temp[1]);
 						}
+						// One relative and one absolute
 						else if (temp[0].contains("TP")) {
 							simTPs.put(temp[0], temp[1]);
 						}
-						else {
+						// One relative and one absolute
+						else if (temp[1].contains("TP")) {
 							simTPs.put(temp[1], temp[0]);
 						}
-						//no absolute tp pairs!!!
-						//System.out.println("adding " + temp[0] + " as the target and " + temp[1] + " as the replacement");
+						// No absolute timepoint pairs
+						else {
+							throw new Exception("No absolute timepoint pairs.");
+						}
 					}
 				}	
-			}			
+			}		
+			// Loops through intentions in TimingList
 			for (int i = 0; i < timings.getTimingList().size()-1; i++) {
-				//System.out.println("NewTimeOrder: "+timings.getTimingList().get(i).getNewTimeOrder());
+				// Loops through newTimeOrder of each intention and checks for all targets in the hashset. If a target is found, replace it with the corresponding replacement
 				for (int j = 0; j < timings.getTimingList().get(i).getNewTimeOrder().size(); j++) {
 					for (String target : simTPs.keySet()) {
 						if (timings.getTimingList().get(i).getNewTimeOrder().get(j).contains(target)) {
-							System.out.println("before replacement: " + timings.getTimingList().get(i).getNewTimeOrder().get(j));
 							timings.getTimingList().get(i).getNewTimeOrder().set(j, simTPs.get(target));
-							System.out.println("after replacement: " + timings.getTimingList().get(i).getNewTimeOrder().get(j));
 						}
 					}
 				}	
