@@ -61,7 +61,10 @@ public class MEPOperators {
 		if (a.equals("(no value)") || b.equals("(no value)")) {
 			return 0;
 		}
-	
+
+		if (a.equals("mid") || b.equals("mid")) {
+			return 0;
+		}
 		// find difference between evidence pairs
 		return compareEP.get(a) - compareEP.get(b);
 	}

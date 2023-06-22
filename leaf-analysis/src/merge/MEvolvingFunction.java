@@ -84,7 +84,7 @@ public class MEvolvingFunction {
 		if (MMain.DEBUG) System.out.println("Starting: buildTimeline");
 
 		// find evolving function's value at each point in the union of model timelines
-		System.out.println(timing.toString());
+//		System.out.println(timing.toString());
 		// add evidence pair for every time in given timeline
 		for (String time: timing) {
 			// model is stochastic (no value) outside its segments' domain
@@ -140,7 +140,7 @@ public class MEvolvingFunction {
 	
 	private String getTimelineEnd() {
 		// return last time in segments list
-		System.out.println(this.segments.get(this.segments.size()-1).getEndTime());
+//		System.out.println(this.segments.get(this.segments.size()-1).getEndTime());
 		return this.segments.get(this.segments.size()-1).getEndTime();
 	}
 	
