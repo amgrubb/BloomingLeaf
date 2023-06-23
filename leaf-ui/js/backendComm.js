@@ -170,7 +170,7 @@ function displayTimingInputWindow(timing) {
 	merge_button_timing.onclick = function () {
 
 		// checks that all time points have been placed
-		for (var i = 0; i < timing.timingList.length-1; i++) {
+		for (var i = 0; i < timing.timingList.indexes_to_modify.length-1; i++) {
 			if (document.getElementById('startBox_' + i).children.length != 0) {
 				console.log("You must place all time points.");
 				return;
