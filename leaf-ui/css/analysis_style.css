@@ -46,8 +46,9 @@
  .popup_button {
     background-color: #1E85F7;
     color: white; 
+    float: left;
     padding: 10px 20px;
-    font-size:16px
+    font-size:16px; 
  }
 
  .popup_button:hover,
@@ -61,10 +62,17 @@
  .popup_frame input[type="file"] {
     visibility: hidden;
 }
-
-.popup_file {
-
+#merge-button-without-layout {
+    margin:5px;
 }
+#merge-button{
+    margin: 5px;
+}
+.merge-buttons{
+    display: flex;
+    padding-bottom: 15px;
+}
+
 
 /* Adds sliding Animation for popup window */
 @-webkit-keyframes animatetop {
