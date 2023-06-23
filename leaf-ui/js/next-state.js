@@ -218,6 +218,9 @@
         updateNodesValues(currentPage);
 
         renderEVO();
+
+        document.getElementById("thisState").textContent = myInputJSObject.results.get('timePointPath').length;
+        document.getElementById("totalStates").textContent = myInputJSObject.results.totalNumTimePoints.length - 1;
     }
 
     /**
