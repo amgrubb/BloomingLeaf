@@ -337,7 +337,7 @@
         var requiredState = parseInt(document.getElementById("requiredState").value);
         var nextSteps_array_size = allSolutionArray.length;
 
-        if ((requiredState != "NaN") && (requiredState > 0)) {
+        if ((requiredState != "NaN") && (requiredState >= 0)) {
             if (requiredState > nextSteps_array_size - 1) {
                 renderNavigationSidebar(nextSteps_array_size - 1); //makes sure required states is always within the possible maximum value of pages
             } else {
