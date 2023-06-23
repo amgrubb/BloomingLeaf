@@ -222,7 +222,7 @@ public class PreMerge {
 						outString += "\"B-MaxTime\", ";
 						maxBAdded = true;
 					}
-					outString += "\"" + combinedTimes.get(numTime) + "\", ";
+					outString += "\"" + combinedTimes.get(numTime).get(0) + "\", ";
 				} else if ((!maxAFirst && !maxBAdded && (numTime > modelBNewMaxTime)) ||
 							(maxAFirst && maxAAdded && !maxBAdded && (numTime > modelBNewMaxTime))) {
 					outString += "\"B-MaxTime\", ";
@@ -231,9 +231,9 @@ public class PreMerge {
 						outString += "\"A-MaxTime\", ";
 						maxAAdded = true;
 					}
-					outString += "\"" + combinedTimes.get(numTime) + "\", ";
+					outString += "\"" + combinedTimes.get(numTime).get(0) + "\", ";
 				} else
-					outString += "\"" + combinedTimes.get(numTime) + "\", ";					
+					outString += "\"" + combinedTimes.get(numTime).get(0) + "\", ";					
 			}
 			if (equalMax && !maxAAdded && !maxBAdded) {
 				outString += "\"AB-MaxTime\", ";
