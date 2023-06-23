@@ -42,10 +42,7 @@ public class Intention extends AbstractLinkableElement {
 	public String getRealFuncSegTP(String initialTP) {
 		char letter = initialTP.charAt(0);
 		int segNum = letter - 'A' + 1;
-		if (evolvingFunctions.length > (segNum + 1))
-			return null;
-		else
-			return evolvingFunctions[segNum].getStartTP();
+		return evolvingFunctions[segNum].getStartTP();
 	}
 	public boolean updateRealFuncSegTP(String oldSegTP, String newSegTP) {
 		for (FunctionSegment seg : evolvingFunctions) 
