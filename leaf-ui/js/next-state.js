@@ -239,35 +239,33 @@
      * @param {Integer} currentPage
      * The number of the page that is selected in the next State window 
      */
-    function updatePagination(currentPage) {
+    function updatePagination(currentPage) { 
+        var currentDigits = currentPage.toString().length; // number of digits in the selected page number
         var pagination = document.getElementById("pagination");
         var nextSteps_array_size = allSolutionArray.length;
-        if (nextSteps_array_size > 6) {
+        var numBefore = Math.ceil((7 - currentDigits)/2); // number of digits displayed to the left of the selected page number
+        var numAfter = Math.ceil((8 - currentDigits)/2); // number of digits displayed to the right of and including the selected page number
+        if (nextSteps_array_size > 7) {
             renderPreviousBtn(pagination, currentPage);
-            if (currentPage - 3 < 0) {
-                for (var i = 0; i < 6; i++) {
+            if (currentPage - 3 < 0) { // if current page number is low cannot be the middle number
+                for (var i = 0; i < 7; i++) {
                     render_pagination_values(currentPage, i);
                 }
+            } else if (currentPage > nextSteps_array_size - numBefore) { // if current page number is high cannot be the middle number
+                for (i = (nextSteps_array_size) - (numBefore + numAfter); i < nextSteps_array_size; i++){
+                    render_pagination_values(currentPage, i); //if current page is beyond the possible amount of page it would set the page the user is on as the last possible page
+                }
             } else {
-                if (currentPage < 100) {
-                    if (currentPage + 3 < nextSteps_array_size) {
-                        for (i = currentPage - 3; i < currentPage + 3; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
-                    } else {
-                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
+                if (numAfter < 1) { // must show at least one digit
+                    numAfter = 1;
+                }
+                if (currentPage + numBefore < nextSteps_array_size) { // show the numbers less than the current page number
+                    for (i = currentPage - numBefore; i < currentPage + numAfter; i++) {
+                        render_pagination_values(currentPage, i);
                     }
                 } else {
-                    if (currentPage + 2 < nextSteps_array_size) {
-                        for (i = currentPage - 2; i < currentPage + 3; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
-                    } else {
-                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
+                    for (i = currentPage - numAfter; i < nextSteps_array_size; i++) { // show the numbers equal to and greater than the current page number
+                        render_pagination_values(currentPage, i);
                     }
                 }
             }
@@ -329,8 +327,8 @@
         var nextSteps_array_size = allSolutionArray.length;
 
         if ((requiredState != "NaN") && (requiredState > 0)) {
-            if (requiredState > nextSteps_array_size) {
-                renderNavigationSidebar(nextSteps_array_size);
+            if (requiredState > nextSteps_array_size - 1) {
+                renderNavigationSidebar(nextSteps_array_size - 1); //makes sure required states is always within the possible maximum value of pages
             } else {
                 renderNavigationSidebar(requiredState);
             }
