@@ -468,22 +468,22 @@ var buttons = document.querySelectorAll('.popup_button');
 	 * Tile is dragged out of its previous container
 	 */
     function dragStart(event) {
-      draggedButton = event.target;
-      event.dataTransfer.effectAllowed = 'move';
-      event.dataTransfer.setData('text/html', draggedButton.innerHTML);
+		draggedButton = event.target;
+		event.dataTransfer.effectAllowed = 'move';
+		event.dataTransfer.setData('text/html', draggedButton.innerHTML);
 
-	  var dropboxes = document.getElementsByClassName('dropbox');
-	  var betweens = document.getElementsByClassName('between');
-	  for (var i = 0; i < dropboxes.length; i++) {
-		if (checkDroppability(draggedButton.innerHTML[0], dropboxes[i])) {
-			dropboxes[i].classList.add('available');
+		var dropboxes = document.getElementsByClassName('dropbox');
+		var betweens = document.getElementsByClassName('between');
+		for (var i = 0; i < dropboxes.length; i++) {
+			if (checkDroppability(dropboxes[i])) {
+				dropboxes[i].classList.add('available');
+			}
 		}
-	  }
-	  for (var i = 0; i < betweens.length; i++) {
-		if (checkDroppability(draggedButton.innerHTML[0], betweens[i])) {
-			betweens[i].classList.add('available');
+		for (var i = 0; i < betweens.length; i++) {
+			if (checkDroppability(betweens[i])) {
+				betweens[i].classList.add('available');
+			}
 		}
-	  }
     }
 
 	/**
@@ -498,10 +498,13 @@ var buttons = document.querySelectorAll('.popup_button');
 			var elements = "";
 			for (var i = 0; i < parts.length; i++) {
 				if (parts[i][0] == "A" | parts[i][0] == "B") {
-					if (elements.length > 0) {
-						elements = elements + ",";
+					var toAdd = splitRelTimeName(parts[i]);
+					for (var j = 0; j < toAdd.length; j++) {
+						if (elements.length > 0) {
+							elements = elements + ",";
+						}
+						elements = elements + toAdd[j];
 					}
-					elements = elements + parts[i];
 				}
 			}
 			return elements;
@@ -511,10 +514,13 @@ var buttons = document.querySelectorAll('.popup_button');
 				var elements = "";
 				for (var i = 0; i < parts.length; i++) {
 					if (parts[i][0] == "A" | parts[i][0] == "B") {
-						if (elements.length > 0) {
-							elements = elements + ",";
+						var toAdd = splitRelTimeName(parts[i]);
+						for (var j = 0; j < toAdd.length; j++) {
+							if (elements.length > 0) {
+								elements = elements + ",";
+							}
+							elements = elements + toAdd[j];
 						}
-						elements = elements + parts[i];
 					}
 				}
 				return elements;
@@ -522,6 +528,15 @@ var buttons = document.querySelectorAll('.popup_button');
 				return td.innerHTML;
 			}
 		}
+	}
+
+	function splitRelTimeName(buttonText) {
+		var model = buttonText.split("-")[0];
+		var identifiers = buttonText.split("-").slice(1);
+		for (var i = 0; i < identifiers.length; i++) {
+			identifiers[i] = model + "-" + identifiers[i];
+		}
+		return identifiers;
 	}
 
 	/**
@@ -546,8 +561,7 @@ var buttons = document.querySelectorAll('.popup_button');
     function dragover(event) {
 		event.preventDefault();
 
-		var firstLetter = draggedButton.innerHTML[0];
-		if (checkDroppability(firstLetter, event.target)) {
+		if (checkDroppability(event.target)) {
 			event.target.classList.add('draggedover');
 		}
     }
@@ -566,58 +580,125 @@ var buttons = document.querySelectorAll('.popup_button');
 	 * @param String of first letter of the tile's text
 	 * @return boolean
 	 */
-	function checkDroppability(letter, container) {
+	function checkDroppability(container) {
 		var dragIdx = parseInt(draggedButton.id.split("_")[1])
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
-		var firstChars = draggedButton.innerHTML.slice(0,draggedButton.innerHTML.length-1);
-		var lastChar = draggedButton.innerHTML.slice(draggedButton.innerHTML.length-1);
 
 		// set min and max indexes for valid dropping based on first absolute time point and maxtime
 		for (var i = document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length - 1; i >= 0; i--) {
 			var elements = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
 			for (var j = 0; j < elements.length; j++) {
-				if (elements[j] == letter + "-MaxTime") {
-					var bMaxIdx = i;
+				if (elements[j] == draggedButton.innerHTML[0] + "-MaxTime") {
+					var maxIdx = i;
 				}
-				if (elements[j][0] == letter) {
-					var bMinIdx = i;
+				if (elements[j][0] == draggedButton.innerHTML[0]) {
+					var minIdx = i;
 				}
 			}
 		}
 
 		// further restrict min and max indexes (if applicable) based on the other relative timepoints from the same model
-		for (var i = bMinIdx; i < bMaxIdx; i++) {
-			var compareStr = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
-			for (var j = 0; j < compareStr.length; j++) {
-				if (compareStr[j] != draggedButton.innerHTML) {
-					// for repeated time points
-					if (compareStr[j].split(":")[0] == draggedButton.innerHTML.split(":")[0]) {
-						var compareChars = compareStr[j].split(":")[1];
-						if (compareChars < draggedButton.innerHTML.split(":")[1] && i > bMinIdx) {
-							bMinIdx = i;
-						} else if (compareChars > draggedButton.innerHTML.split(":")[1] && i < bMaxIdx) {
-							bMaxIdx = i;
-						}
-					}
-					// for nonrepeated time points
-					if (compareStr[j].slice(0,draggedButton.innerHTML.length-1) == firstChars) {
-						var compareChar = compareStr[j].slice(draggedButton.innerHTML.length-1);
-						if (compareChar < lastChar && i > bMinIdx) {
-							bMinIdx = i;
-						} else if (compareChar > lastChar && i < bMaxIdx) {
-							bMaxIdx = i;
+		var buttonTimes = splitRelTimeName(draggedButton.innerHTML);
+		for (var k = 0; k < buttonTimes.length; k++) {
+			var firstChars = buttonTimes[k].slice(0,6);
+			var lastChar = buttonTimes[k].slice(buttonTimes[k].length-1);
+			for (var i = minIdx; i < maxIdx; i++) {
+				var compareStr = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
+				for (var j = 0; j < compareStr.length; j++) {
+					if (compareStr[j] != buttonTimes[k]) {
+						// for repeated time points
+						if (buttonTimes[k].split(":").length > 1) {
+							// compare to another repeated
+							if (compareStr[j].split(":")[0] == buttonTimes[k].split(":")[0]) {
+								if (compareStr[j].slice(0,6) == firstChars) {
+									var compareChars = compareStr[j].split(":")[1];
+									if (compareChars < buttonTimes[k].split(":")[1] && i > minIdx) {
+										minIdx = i;
+									} else if (compareChars > buttonTimes[k].split(":")[1] && i < maxIdx) {
+										maxIdx = i;
+									}
+								}
+							} else {
+								// compare to a nonrepeated
+								if (compareStr[j].slice(0,6) == firstChars) {
+									var compareChar = compareStr[j].slice(compareStr[j].length-1);
+									if (compareChar < lastChar && i > minIdx) {
+										minIdx = i;
+									} else if (compareChar > lastChar && i < maxIdx) {
+										maxIdx = i;
+									}
+								}
+							}
+						} else {
+							// for nonrepeated time points
+							if (compareStr[j].slice(0,6) == firstChars) {
+								var compareChar = compareStr[j].slice(buttonTimes[k].length-1);
+								if (compareChar < lastChar && i > minIdx) {
+									minIdx = i;
+								} else if (compareChar > lastChar && i < maxIdx) {
+									maxIdx = i;
+								}
+							}
 						}
 					}
 				}
 			}
 		}
 
-		if (draggedButton.innerHTML[0] == letter && colIdx < bMinIdx || draggedButton.innerHTML[0] == letter && colIdx > bMaxIdx) { // being dragged outside of its model's range
+		// further restrict if the timepoint exists in another model
+		var dropboxes = document.getElementsByTagName('td');
+		for (var i = 0; i < dropboxes.length; i++) {
+			if (dropboxes[i].innerHTML.includes(draggedButton.innerHTML) && draggedButton.parentNode != dropboxes[i]) {
+				var equivalents = getInnerHTML(dropboxes[i]).split(",").filter(x => !splitRelTimeName(draggedButton.innerHTML).includes(x));
+				var equivRow = dropboxes[i].id.split("_")[1];
+				var equivCol = dropboxes[i].id.split("_")[2];
+				if (!equivalents[0] || equivalents[0].includes("E")) {
+					for (var j = equivCol; j > 0; j--) {
+						if (document.getElementById("dropbox_" + equivRow + "_" + j).innerHTML[0] != "<") {
+							var beforeStr = getInnerHTML(document.getElementById("dropbox_" + equivRow + "_" + j)).split(",")[0];
+							for (var k = 0; k < maxIdx; k++) {
+								if (getInnerHTML(document.getElementById("dropbox_" + rowIdx + "_" + k)).includes(beforeStr)) {
+									minIdx = k + 1;
+									break;
+								}
+								k++;
+							}
+							break;
+						}
+						j--;
+					}
+					for (var j = equivCol; j < document.getElementById("tablerow_" + equivRow).cells.length; j++) {
+						if (document.getElementById("dropbox_" + equivRow + "_" + j).innerHTML[0] != "<") {
+							var afterStr = getInnerHTML(document.getElementById("dropbox_" + equivRow + "_" + j)).split(",")[0];
+							for (var k = 0; k < maxIdx; k++) {
+								if (getInnerHTML(document.getElementById("dropbox_" + rowIdx + "_" + k)).includes(afterStr)) {
+									maxIdx = k - 1;
+									break;
+								}
+								k++;
+							}
+							break;
+						}
+						j++;
+					}
+				} else {
+					for (var j = 0; j < document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length; j++) {
+						var elements = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[j]).split(",");
+						if (elements.includes(equivalents[0])) {
+							minIdx = j;
+							maxIdx = j;
+						}
+					}
+				}
+			}
+		}
+
+		if (colIdx < minIdx || colIdx > maxIdx) { // being dragged outside of its model's range
 			return false;
 		} else if (dragIdx != rowIdx) { // being dragged into a different intention
 			return false;
-		} else if (letter == getInnerHTML(container)[0]) { // being dragged into another timepoint of the same model
+		} else if (draggedButton.innerHTML[0] == getInnerHTML(container)[0]) { // being dragged into another timepoint of the same model
 			return false;
 		} else if (getInnerHTML(container).includes(',')) { // container is full
 			return false;
@@ -638,8 +719,7 @@ var buttons = document.querySelectorAll('.popup_button');
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
 
-		var firstLetter = draggedButton.innerHTML[0];
-		if (checkDroppability(firstLetter, event.target)) { // if this is a valid place for the tile to be dropped
+		if (checkDroppability(event.target)) { // if this is a valid place for the tile to be dropped
 			if (container.id.split("_")[0] == "between") { // if dropped into a new place, add a new time and add places to drop future tiles on either side
 				container.appendChild(draggedButton);
 				var newLeftCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
