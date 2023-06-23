@@ -34,7 +34,8 @@ public class FunctionSegment {
 
 	/**
 	 * Increment abs timepoint by delta if abs timepoint is known
-	 * @param delta
+	 * Used by Merge Operation.
+	 * @param delta	
 	 */
 	public void incrementStartAT(Integer delta) {
 		if (startAT != null) {

@@ -445,7 +445,6 @@ select::-ms-expand {
 }
 
 .between {
-    width: 10px;
     min-height: 30px;
 }
 
@@ -455,6 +454,7 @@ select::-ms-expand {
 
 .between.available {
     background-color: #1E85F7;
+    min-width:10px;
 }
 
 .dropbox.draggedover {
@@ -462,6 +462,5 @@ select::-ms-expand {
 }
 
 .between.draggedover {
-    /* background-color: #1E85F7; */
-    width: 85px;
+    border: 4px solid #1E85F7;
 }

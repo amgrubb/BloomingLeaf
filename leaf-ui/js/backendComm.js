@@ -203,6 +203,7 @@ function displayTimingInputWindow(timing) {
 				}
 			}
 		}
+		
 
 		// var intentions_list = document.getElementById('timing-input-intention-list');
 		// console.log("Intentions_list: ", intention_list);
