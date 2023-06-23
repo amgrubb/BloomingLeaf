@@ -11,6 +11,7 @@
 loader = document.getElementById("loader");
 layout_loader = document.getElementById("layout-loader");
 merge_button = document.getElementById("merge-button");
+merge_without_layout = document.getElementById("merge-button-without-layout");
 // merge_button_timing = document.getElementById("merge-button-timing");
 timing_input = document.getElementById("timing-input-window");
 merge_file_picker = document.getElementById("merge-file-picker");
@@ -45,6 +46,7 @@ merge_button.onclick = function () {
 	var file1 = document.getElementById("merge-model1").files.item(0);
 	var file2 = document.getElementById("merge-model2").files.item(0);
 	var timingOffset = document.getElementById("merge-timingOffset").value;
+	var isLayout = true; // true if the user wants to display layout and false otherwise
 
 	var model1, model2;
 
@@ -65,7 +67,48 @@ merge_button.onclick = function () {
 
 			reader_merge_file2.onload = function() {
 				model2 = JSON.parse(reader_merge_file2.result);
-				backendPreMergeRequest(model1, model2, timingOffset);
+				backendPreMergeRequest(model1, model2, timingOffset, isLayout);
+				merge_file_picker.style.display = "none";
+			}
+
+			reader_merge_file2.onerror = function() {
+				console.log(reader_merge_file2.error);
+			}
+		}
+
+		reader_merge_file1.onerror = function() {
+			console.log(reader_merge_file1.error);
+		}
+	}
+};
+
+merge_without_layout.onclick = function () {	
+	// console.log("Additional input")
+	var file1 = document.getElementById("merge-model1").files.item(0);
+	var file2 = document.getElementById("merge-model2").files.item(0);
+	var timingOffset = document.getElementById("merge-timingOffset").value;
+	var isLayout = false;
+
+	var model1, model2;
+
+	var reader_merge_file1 = new FileReader();
+	var reader_merge_file2 = new FileReader();
+
+	// Timing offset must be a number
+	if (isNaN(timingOffset)){
+		timingOffset = 0;
+		swal("Error: Invalid Timing Offset. (Must be a number)", "", "error");
+	}
+	else if (file1 != null && file2 != null){ // two files must be uploaded
+		reader_merge_file1.readAsText(file1);
+
+		reader_merge_file1.onload = function() {
+			model1 = JSON.parse(reader_merge_file1.result);
+			reader_merge_file2.readAsText(file2);
+
+			reader_merge_file2.onload = function() {
+				model2 = JSON.parse(reader_merge_file2.result);
+				backendPreMergeRequest(model1, model2, timingOffset, isLayout);
 				merge_file_picker.style.display = "none";
 			}
 

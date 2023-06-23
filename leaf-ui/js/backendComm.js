@@ -60,12 +60,13 @@ function backendLayoutRequest(model) {
 
 
 // Call premerge and get the timing file back
-function backendPreMergeRequest(model1, model2, timing_offset) {
+function backendPreMergeRequest(model1, model2, timing_offset, isLayout) {
 	var jsObject = {};
 	jsObject.analysisRequest = "premerge";
 	jsObject.model1 = model1;
 	jsObject.model2 = model2;
 	jsObject.timingOffset = timing_offset;
+	jsObject.isLayout = isLayout;
 	var data = backendStringifyCirc(jsObject);
 
 	var xhr = new XMLHttpRequest();
@@ -76,18 +77,18 @@ function backendPreMergeRequest(model1, model2, timing_offset) {
 		// This function get called when the response is received.
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
-			//console.log("Response: ", response);
+			console.log("Response: ", response);
 			var new_response = response.replace(/\n/g, " ");
 			var result = JSON.parse(new_response);
 			console.log("result: ", result);
-			dealWithTimingObject(result);
+			dealWithTimingObject(result, isLayout);
 		}
 	}
 	xhr.send(data);
 }
 
 
-function dealWithTimingObject(timing) {
+function dealWithTimingObject(timing, isLayout) {
 	// Detmermine if further user input is required
 	var input_required = false;
 	var timing_list = timing.timingList;
@@ -102,16 +103,16 @@ function dealWithTimingObject(timing) {
 	}
 	if (!input_required) {
 		console.log("Noooooooooo changes");
-		backendMergeRequest(timing);
+		backendMergeRequest(timing, isLayout);
 	}
 	else {
 		console.log("timing modifications required");
 		timing_list.indexes_to_modify = indexes_to_modify;
-		displayTimingInputWindow(timing);
+		displayTimingInputWindow(timing, isLayout);
 	}
 }
 
-function displayTimingInputWindow(timing) {
+function displayTimingInputWindow(timing, isLayout) {
 	$('#timing-input-window').css('display', '');
 	var timing_list = timing.timingList;
 	let indexes = timing_list.indexes_to_modify;
@@ -217,14 +218,15 @@ function displayTimingInputWindow(timing) {
 		// 	timing_list[i].newTimeOrder = timeOrder;
 		// }
 		timing_input.style.display = "none";
-		backendMergeRequest(timing);
+		backendMergeRequest(timing, isLayout);
 	}
 }
-function backendMergeRequest(timing) {
+function backendMergeRequest(timing, isLayout) {
 	console.log("timing type: ", typeof timing);
 	var jsObject = {};
 	jsObject.analysisRequest = "merge";
 	jsObject.timing = timing;
+	// jsObject.isLayout = isLayout;
 	var data = backendStringifyCirc(jsObject);
 
 	var xhr = new XMLHttpRequest();
@@ -243,7 +245,9 @@ function backendMergeRequest(timing) {
 			var result = JSON.parse(response);
 			console.log("Result2 : ", result);
 			//console.log("you are going to load from object");
-			backendLayoutRequest(result);
+			if(isLayout){
+				backendLayoutRequest(result);
+			}
 		}
 	}
 	xhr.send(data);
