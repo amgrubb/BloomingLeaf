@@ -197,6 +197,14 @@
         var pagination = document.getElementById("pagination");
         var num_states_lbl = document.getElementById("num_states_lbl");
         var currentPageIn = document.getElementById("currentPage");
+
+        // disable Explore Next States button if last time point
+        var exploreNextStatesBtn = document.getElementById("exploreNextStates");
+        if (myInputJSObject.results.get('timePointPath').length == myInputJSObject.results.totalNumTimePoints.length - 1) {
+            exploreNextStatesBtn.disabled = true;
+            exploreNextStatesBtn.classList.add('disabled');
+        }
+
         // Clear any previous pages by reseting page values
         pagination.innerHTML = "";
         num_states_lbl.innerHTML = "";

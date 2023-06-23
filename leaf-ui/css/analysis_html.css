@@ -248,6 +248,12 @@ body {
   transform: translateY(2px);
 }
 
+.inspector-btn.disabled {
+  opacity: .75;
+  box-shadow: none;
+  pointer-events: none;
+}
+
 /* Add color overlay over the go buttons and click effect */
 .inspector-btn-small:active {
   background-color: #fffefe;
