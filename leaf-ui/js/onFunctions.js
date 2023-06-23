@@ -170,6 +170,12 @@ $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function () { clearAll() });
 $('#btn-clear-flabel').on('click', function () {
+    removeHighlight(); // deselects intention
+    if ($('.analysis-only').css("display") == "none") {
+        clearInspector();
+    } else {
+        setName();
+    }
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
@@ -920,6 +926,12 @@ paper.on("link:options", function (cell) {
 
 
     $('#btn-clear-elabel').on('click', function () {
+        removeHighlight(); // deselects intention
+        if ($('.analysis-only').css("display") == "none") {
+            clearInspector();
+        } else {
+            setName();
+        }
         for (let element of graph.getElements()) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
