@@ -135,12 +135,6 @@ function displayTimingInputWindow(timing, isLayout) {
 					'<td class="dropbox" id="dropbox_'+ i + '_' + j + '">' +
 					timing_list[i].newTimeOrder[j] + "</td>"
 				)
-			// } else if (j == timing_list[i].newTimeOrder.length - 1) {
-			// 	row.append(
-			// 		'<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between" id="between_' + i + '_' + (2*j-1)+ '"></td>' +
-			// 		'<td style="border:none" class="dropbox" id="dropbox_'+ i + '_' + (2*j) + '">' +
-			// 		timing_list[i].newTimeOrder[j] + "</td>"
-			// 	)
 			} else {
 				row.append(
 					'<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between" id="between_' + i + '_' + (2*j-1)+ '"></td>' +
@@ -152,7 +146,7 @@ function displayTimingInputWindow(timing, isLayout) {
 
 		intention_list.append(
 			"<br/><h4>Relative time points to add: </h4>" +
-			"<div class='startBox' id='startBox_" + i + "'ondrop='dropOrigin(event)' ondragover='dragoverOrigin(event)' ondragleave='dragleaveOrigin(event)'></div>"
+			"<div class='startBox' id='startBox_" + i + "'ondrop='dropOrigin(event)' ondragover='dragoverOrigin(event)' ondragleave='dragleave(event)'></div>"
 		)
 
 		// relative time point tiles to be dragged

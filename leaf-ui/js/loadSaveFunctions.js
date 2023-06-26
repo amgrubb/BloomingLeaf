@@ -505,7 +505,7 @@ if (document.cookie && document.cookie.indexOf('all=') !== -1) {
 }
 
 var buttons = document.querySelectorAll('.popup_button');
-    let draggedButton = null;
+    let draggedButton = null; // tile that the user has clicked and dragged
 
 	/**
 	 * Tile is dragged out of its previous container
@@ -515,8 +515,9 @@ var buttons = document.querySelectorAll('.popup_button');
 		event.dataTransfer.effectAllowed = 'move';
 		event.dataTransfer.setData('text/html', draggedButton.innerHTML);
 		setTimeout(function findAvailable() { // timeout was necessary to avoid a bug in Chrome in which dragend was sometimes called immediately
-			var dropboxes = document.getElementsByClassName('dropbox');
-			var betweens = document.getElementsByClassName('between');
+			// find and highlight locations where the tile can be dropped
+			var dropboxes = document.getElementsByClassName('dropbox'); // locations that already have a timepoint in them
+			var betweens = document.getElementsByClassName('between'); // locations in between existing timepoints
 			for (var i = 0; i < dropboxes.length; i++) {
 				if (checkDroppability(dropboxes[i])) {
 					dropboxes[i].classList.add('available');
@@ -527,7 +528,10 @@ var buttons = document.querySelectorAll('.popup_button');
 					betweens[i].classList.add('available');
 				}
 			}
-			document.getElementById("startBox_" + draggedButton.id.split("_")[1]).classList.add('available');
+			// highlight origin box if not already in it
+			if (event.target != draggedButton.parentNode) {
+				document.getElementById("startBox_" + draggedButton.id.split("_")[1]).classList.add('available');
+			}
 		}, 10);
     }
 
@@ -535,20 +539,18 @@ var buttons = document.querySelectorAll('.popup_button');
 	 * Tile is no longer being dragged
 	 */
     function dragEnd(event) {
-		draggedButton = null;
-
+		// unhighlight all potential drop locations
 		var dropboxes = document.getElementsByClassName('dropbox');
 		var betweens = document.getElementsByClassName('between');
-		var startboxes = document.getElementsByClassName('startBox');
 		for (var i = 0; i < dropboxes.length; i++) {
 			dropboxes[i].classList.remove('available');
 		}
 		for (var i = 0; i < betweens.length; i++) {
 			betweens[i].classList.remove('available');
 		}
-		for (var i = 0; i < startboxes.length; i++) {
-			startboxes[i].classList.remove('available');
-		}
+		document.getElementById("startBox_" + draggedButton.id.split("_")[1]).classList.remove('available');
+		// reset dragged tile
+		draggedButton = null;
     }
 
 	/**
@@ -556,7 +558,7 @@ var buttons = document.querySelectorAll('.popup_button');
 	 */
     function dragover(event) {
 		event.preventDefault();
-
+		// check that the tile is allowed to be dropped in the dropbox and, if so, highlight the dropbox
 		if (checkDroppability(event.target)) {
 			event.target.classList.add('draggedover');
 		}
@@ -567,21 +569,23 @@ var buttons = document.querySelectorAll('.popup_button');
 	 */
 	function dragleave(event) {
 		event.preventDefault();
+		// unhighlight the dropbox
     	event.target.classList.remove('draggedover');
 	}
 
 	/**
-	 * Attaches tile to a new container and shifts ids of the row based on where the tile was dropped
+	 * Attaches tile to a new dropbox
 	 */
     function drop(event) {
 		event.preventDefault();
-		event.target.classList.remove('draggedover');
+		event.target.classList.remove('draggedover'); // unhighlight the dropbox
 		var container = event.target;
 
 		// find position where the tile was dropped
 		var rowIdx = parseInt(container.id.split("_")[1]);
 		var colIdx = parseInt(container.id.split("_")[2]);
 
+		// append tile to its new container
 		if (checkDroppability(event.target)) { // if this is a valid place for the tile to be dropped
 			if (container.id.split("_")[0] == "between") { // if dropped into a new place, add a new time and add places to drop future tiles on either side
 				container.appendChild(draggedButton);
@@ -590,55 +594,58 @@ var buttons = document.querySelectorAll('.popup_button');
 				var newRightCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx+2);
 				newRightCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
 			} else if (container.id.split("_")[0] == "dropbox") { // if dropped into an existing time point, add tile to that time
-				container.append(draggedButton);
-			} else {
-				console.log("there is a problem");
+				container.appendChild(draggedButton);
 			}
 
-			var row = document.getElementById("tablerow_" + rowIdx);
-			var height = getLargestHeight(row);
-			// reset the ids of the tiles based on their new order
-			for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
-				if (i%2 == 0) {
-					row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
-					row.getElementsByTagName("td")[i].setAttribute('class', 'dropbox');
-					row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
-				} else {
-					row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
-					row.getElementsByTagName("td")[i].setAttribute('class', 'between');
-					row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
-				}
-
-				if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
-					row.deleteCell(i);
-					i--;
-				}
-
-				if (i == 0 || i == row.getElementsByTagName("td").length - 1) {
-					row.getElementsByTagName("td")[i].setAttribute('style', 'border:none');
-				}
-			}
+			shiftRowIds(rowIdx); // reassign IDs with the new order for consistency and future access
 		}
     }
 
 	/**
-	 * Validates that the tile can be dropped into the box it is over
+	 * Drop a tile back into its original box
+	 */
+	function dropOrigin(event) {
+		var container = event.target;
+		event.preventDefault();
+		container.classList.remove('draggedover');
+		if (container.classList[0] != ('popup_button_timing')) {
+			container.appendChild(draggedButton);
+		}
+		var rowIdx = container.id.split("_")[1];
+		shiftRowIds(rowIdx);
+	}
+
+	/**
+	 * Highlights the original box when the tile is dragged over
+	 */
+	function dragoverOrigin(event) {
+		if (event.target != draggedButton.parentNode) {
+			event.preventDefault();
+			event.target.classList.add('draggedover');
+		}
+	}
+
+	/**
+	 * Validates that the tile can be dropped into a given box
 	 * 
 	 * @param HTMLElement of the potential target to be dropped into
 	 * @return boolean
 	 */
 	function checkDroppability(container) {
-		var dragIdx = parseInt(draggedButton.id.split("_")[1])
-		var rowIdx = parseInt(container.id.split("_")[1]);
-		var colIdx = parseInt(container.id.split("_")[2]);
+		var dragIdx = parseInt(draggedButton.id.split("_")[1]); // row of the tile being dragged
+		var rowIdx = parseInt(container.id.split("_")[1]); // row of the container
+		var colIdx = parseInt(container.id.split("_")[2]); // column of the container, within its row
 
 		// set min and max indexes for valid dropping based on first absolute time point and maxtime
 		for (var i = document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length - 1; i >= 0; i--) {
+			// get all drop locations in the row
 			var elements = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
 			for (var j = 0; j < elements.length; j++) {
+				// set max index to location of the MaxTime corresponding with the tile's model
 				if (elements[j] == draggedButton.innerHTML[0] + "-MaxTime") {
 					var maxIdx = i;
 				}
+				// reassign each iteration within the tile's model since loop is counting down
 				if (elements[j][0] == draggedButton.innerHTML[0]) {
 					var minIdx = i;
 				}
@@ -646,30 +653,30 @@ var buttons = document.querySelectorAll('.popup_button');
 		}
 
 		// further restrict min and max indexes (if applicable) based on the other relative timepoints from the same model
-		var buttonTimes = splitRelTimeName(draggedButton.innerHTML);
+		var buttonTimes = splitRelTimeName(draggedButton.innerHTML); // array of time points represented by the dragged button (necessary in case multiple timepoints from the same model were set as equivalent)
 		for (var k = 0; k < buttonTimes.length; k++) {
-			var firstChars = buttonTimes[k].slice(0,6);
-			var lastChar = buttonTimes[k].slice(buttonTimes[k].length-1);
-			for (var i = minIdx; i < maxIdx; i++) {
-				var compareStr = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(",");
-				for (var j = 0; j < compareStr.length; j++) {
-					if (compareStr[j] != buttonTimes[k]) {
-						// for repeated time points
+			var firstChars = buttonTimes[k].slice(0,6); // identifier of the model and intention (ex. A-E000)
+			var lastChar = buttonTimes[k].slice(buttonTimes[k].length-1); // letter representing order
+			for (var i = minIdx; i < maxIdx; i++) { // loop through each dropbox within the previous range
+				var compareStr = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[i]).split(","); // string of time points already in the box, separated by commas
+				for (var j = 0; j < compareStr.length; j++) { // loop through each time point in the box
+					if (compareStr[j] != buttonTimes[k]) { // no need to check its own box
+						// tile is a repeated time point
 						if (buttonTimes[k].split(":").length > 1) {
-							// compare to another repeated
-							if (compareStr[j].split(":")[0] == buttonTimes[k].split(":")[0]) {
-								if (compareStr[j].slice(0,6) == firstChars) {
-									var compareChars = compareStr[j].split(":")[1];
-									if (compareChars < buttonTimes[k].split(":")[1] && i > minIdx) {
-										minIdx = i;
-									} else if (compareChars > buttonTimes[k].split(":")[1] && i < maxIdx) {
-										maxIdx = i;
-									}
+							// box is a repeated time point
+							if (compareStr[j].split(":")[0] == firstChars) { // if intention identifier is the same
+								// alphabetize the repeating part
+								var compareChars = compareStr[j].split(":")[1]; // characters in repeat identifier
+								if (compareChars < buttonTimes[k].split(":")[1] && i > minIdx) {
+									minIdx = i;
+								} else if (compareChars > buttonTimes[k].split(":")[1] && i < maxIdx) {
+									maxIdx = i;
 								}
+							// box is a not a repeated time point
 							} else {
-								// compare to a nonrepeated
 								if (compareStr[j].slice(0,6) == firstChars) {
-									var compareChar = compareStr[j].slice(compareStr[j].length-1);
+									// alphabetize only based on the last letter
+									var compareChar = compareStr[j].slice(compareStr[j].length-1); // last letter of dropbox time point
 									if (compareChar < lastChar && i > minIdx) {
 										minIdx = i;
 									} else if (compareChar > lastChar && i < maxIdx) {
@@ -677,10 +684,11 @@ var buttons = document.querySelectorAll('.popup_button');
 									}
 								}
 							}
+						// tile is not a repeated point
 						} else {
-							// for nonrepeated time points
 							if (compareStr[j].slice(0,6) == firstChars) {
-								var compareChar = compareStr[j].slice(compareStr[j].length-1);
+								// alphabetize based on the last letter
+								var compareChar = compareStr[j].slice(compareStr[j].length-1); // last letter of dropbox time point
 								if (compareChar < lastChar && i > minIdx) {
 									minIdx = i;
 								} else if (compareChar > lastChar && i < maxIdx) {
@@ -693,44 +701,47 @@ var buttons = document.querySelectorAll('.popup_button');
 			}
 		}
 
-		// further restrict if the timepoint exists in another model
-		var dropboxes = document.getElementsByTagName('td');
+		// further restrict min and max indexes if the dragged time point exists in multiple models
+		var dropboxes = document.getElementsByTagName('td'); // all droppable locations in all intentions' time sequences
 		for (var i = 0; i < dropboxes.length; i++) {
-			if (dropboxes[i].innerHTML.includes(draggedButton.innerHTML) && draggedButton.parentNode != dropboxes[i]) {
-				var equivalents = getInnerHTML(dropboxes[i]).split(",").filter(x => !splitRelTimeName(draggedButton.innerHTML).includes(x));
-				var equivRow = dropboxes[i].id.split("_")[1];
-				var equivCol = dropboxes[i].id.split("_")[2];
+			if (dropboxes[i].innerHTML.includes(draggedButton.innerHTML) && draggedButton.parentNode != dropboxes[i]) { // find dropboxes in another intention with the same time points
+				var equivalents = getInnerHTML(dropboxes[i]).split(",").filter(x => !splitRelTimeName(draggedButton.innerHTML).includes(x)); // time point from the other model that is also equivalent to these time points
+				var equivRow = dropboxes[i].id.split("_")[1]; // row of the occupied dropbox in the other intention
+				var equivCol = dropboxes[i].id.split("_")[2]; // column of the occupied dropbox in the other intention
+				// if the other identical button is not equivalent to an absolute time point
 				if (!equivalents[0] || equivalents[0].includes("E")) {
 					for (var j = equivCol; j > 0; j--) {
-						if (document.getElementById("dropbox_" + equivRow + "_" + j).innerHTML[0] != "<") {
-							var beforeStr = getInnerHTML(document.getElementById("dropbox_" + equivRow + "_" + j)).split(",")[0];
+						if (document.getElementById("dropbox_" + equivRow + "_" + j).innerHTML[0] != "<") { // find first absolute time point to the left in the other intention
+							var beforeStr = getInnerHTML(document.getElementById("dropbox_" + equivRow + "_" + j)).split(",")[0]; // text of first absolute time point to the left
 							for (var k = 0; k < maxIdx; k++) {
-								if (getInnerHTML(document.getElementById("dropbox_" + rowIdx + "_" + k)).includes(beforeStr)) {
+								if (getInnerHTML(document.getElementById("dropbox_" + rowIdx + "_" + k)).includes(beforeStr)) { // find index of the first absolute time point to the left in the dragged button's row
 									minIdx = k + 1;
 									break;
 								}
-								k++;
+								k++; // skip blanks in between established time points
 							}
 							break;
 						}
-						j--;
+						j--; // skip blanks in between established time points
 					}
 					for (var j = equivCol; j < document.getElementById("tablerow_" + equivRow).cells.length; j++) {
-						if (document.getElementById("dropbox_" + equivRow + "_" + j).innerHTML[0] != "<") {
-							var afterStr = getInnerHTML(document.getElementById("dropbox_" + equivRow + "_" + j)).split(",")[0];
+						if (document.getElementById("dropbox_" + equivRow + "_" + j).innerHTML[0] != "<") { // find first absolute time point to the right in the other intention
+							var afterStr = getInnerHTML(document.getElementById("dropbox_" + equivRow + "_" + j)).split(",")[0]; // text of first absolute time point to the right
 							for (var k = 0; k < maxIdx; k++) {
-								if (getInnerHTML(document.getElementById("dropbox_" + rowIdx + "_" + k)).includes(afterStr)) {
+								if (getInnerHTML(document.getElementById("dropbox_" + rowIdx + "_" + k)).includes(afterStr)) { // find index of the first absolute time point to the right in the dragged button's row
 									maxIdx = k - 1;
 									break;
 								}
-								k++;
+								k++; // skip blanks in between established time points
 							}
 							break;
 						}
-						j++;
+						j++; // skip blanks in between established time points
 					}
+				// if the other identical button is equivalent to an absolute time point in the other model
 				} else {
 					for (var j = 0; j < document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td").length; j++) {
+						// dragged button must be dropped into the same absolute time point
 						var elements = getInnerHTML(document.getElementById("tablerow_" + rowIdx).getElementsByTagName("td")[j]).split(",");
 						if (elements.includes(equivalents[0])) {
 							minIdx = j;
@@ -758,6 +769,7 @@ var buttons = document.querySelectorAll('.popup_button');
 	 * Returns only the text inside of the box, separated by commas if more than one element
 	 * Does not include button tags, if applicable
 	 * 
+	 * @param td cell of a table
 	 * @return String of the text inside the box
 	 */
 	function getInnerHTML(td) {
@@ -798,6 +810,13 @@ var buttons = document.querySelectorAll('.popup_button');
 		}
 	}
 
+	/**
+	 * Turns a string describing multiple equivalent time points into an array of time points
+	 * For example, "A-E000TPA-E001TPA" becomes [A-E000TPA, A-E001TPA]
+	 * 
+	 * @param String of equivalent time points
+	 * @return array of time points
+	 */
 	function splitRelTimeName(buttonText) {
 		var model = buttonText.split("-")[0];
 		var identifiers = buttonText.split("-").slice(1);
@@ -805,6 +824,36 @@ var buttons = document.querySelectorAll('.popup_button');
 			identifiers[i] = model + "-" + identifiers[i];
 		}
 		return identifiers;
+	}
+
+	/**
+	 * Reassigns ids of columns in the row of time points 
+	 * 
+	 * @param integer corresponding to the row to be shifted
+	 */
+	function shiftRowIds(rowIdx) {
+		var row = document.getElementById("tablerow_" + rowIdx);
+		var height = getLargestHeight(row);
+		// loop through the cells in the row in order
+		for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
+			// if even, it has a time point in it
+			if (i%2 == 0) {
+				row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
+				row.getElementsByTagName("td")[i].setAttribute('class', 'dropbox');
+				row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
+			// if odd, it does not have a time point in it
+			} else {
+				row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
+				row.getElementsByTagName("td")[i].setAttribute('class', 'between');
+				row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
+			}
+
+			// if multiple empty cells in a row are empty, delete until only one left
+			if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
+				row.deleteCell(i);
+				i--;
+			}
+		}
 	}
 
 	/**
@@ -820,49 +869,4 @@ var buttons = document.querySelectorAll('.popup_button');
 			}
 		}
 		return 25;
-	}
-
-	function dropOrigin(event) {
-		var container = event.target;
-		event.preventDefault();
-		container.classList.remove('draggedover');
-		console.log(container.classList[0]);
-		if (container.classList[0] != ('popup_button_timing')) {
-			container.appendChild(draggedButton);
-		}
-
-		var rowIdx = container.id.split("_")[1];
-		var row = document.getElementById("tablerow_" + rowIdx);
-		var height = getLargestHeight(row);
-		// reset the ids of the tiles based on their new order
-		for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
-			if (i%2 == 0) {
-				row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
-				row.getElementsByTagName("td")[i].setAttribute('class', 'dropbox');
-				row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
-			} else {
-				row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
-				row.getElementsByTagName("td")[i].setAttribute('class', 'between');
-				row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
-			}
-
-			if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
-				row.deleteCell(i);
-				i--;
-			}
-
-			if (i == 0 || i == row.getElementsByTagName("td").length - 1) {
-				row.getElementsByTagName("td")[i].setAttribute('style', 'border:none');
-			}
-		}
-	}
-
-	function dragoverOrigin(event) {
-		event.preventDefault();
-		event.target.classList.add('draggedover');
-	}
-
-	function dragleaveOrigin(event) {
-		event.preventDefault();
-    	event.target.classList.remove('draggedover');	
 	}
