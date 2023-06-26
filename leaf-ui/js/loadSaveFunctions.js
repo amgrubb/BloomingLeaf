@@ -514,73 +514,22 @@ var buttons = document.querySelectorAll('.popup_button');
 		draggedButton = event.target;
 		event.dataTransfer.effectAllowed = 'move';
 		event.dataTransfer.setData('text/html', draggedButton.innerHTML);
-
-		var dropboxes = document.getElementsByClassName('dropbox');
-		var betweens = document.getElementsByClassName('between');
-		for (var i = 0; i < dropboxes.length; i++) {
-			if (checkDroppability(dropboxes[i])) {
-				dropboxes[i].classList.add('available');
+		setTimeout(function findAvailable() { // timeout was necessary to avoid a bug in Chrome in which dragend was sometimes called immediately
+			var dropboxes = document.getElementsByClassName('dropbox');
+			var betweens = document.getElementsByClassName('between');
+			for (var i = 0; i < dropboxes.length; i++) {
+				if (checkDroppability(dropboxes[i])) {
+					dropboxes[i].classList.add('available');
+				}
 			}
-		}
-		for (var i = 0; i < betweens.length; i++) {
-			if (checkDroppability(betweens[i])) {
-				betweens[i].classList.add('available');
+			for (var i = 0; i < betweens.length; i++) {
+				if (checkDroppability(betweens[i])) {
+					betweens[i].classList.add('available');
+				}
 			}
-		}
+			document.getElementById("startBox_" + draggedButton.id.split("_")[1]).classList.add('available');
+		}, 10);
     }
-
-	/**
-	 * Returns only the text inside of the box, separated by commas if more than one element
-	 * Does not include button tags, if applicable
-	 * 
-	 * @return String of the text inside the box
-	 */
-	function getInnerHTML(td) {
-		if (td.innerHTML[0] == "<") {
-			var parts = td.innerHTML.split(/[><]/);
-			var elements = "";
-			for (var i = 0; i < parts.length; i++) {
-				if (parts[i][0] == "A" | parts[i][0] == "B") {
-					var toAdd = splitRelTimeName(parts[i]);
-					for (var j = 0; j < toAdd.length; j++) {
-						if (elements.length > 0) {
-							elements = elements + ",";
-						}
-						elements = elements + toAdd[j];
-					}
-				}
-			}
-			return elements;
-		} else {
-			if (td.innerHTML.includes("<")) {
-				var parts = td.innerHTML.split(/[><]/);
-				var elements = "";
-				for (var i = 0; i < parts.length; i++) {
-					if (parts[i][0] == "A" | parts[i][0] == "B") {
-						var toAdd = splitRelTimeName(parts[i]);
-						for (var j = 0; j < toAdd.length; j++) {
-							if (elements.length > 0) {
-								elements = elements + ",";
-							}
-							elements = elements + toAdd[j];
-						}
-					}
-				}
-				return elements;
-			} else {
-				return td.innerHTML;
-			}
-		}
-	}
-
-	function splitRelTimeName(buttonText) {
-		var model = buttonText.split("-")[0];
-		var identifiers = buttonText.split("-").slice(1);
-		for (var i = 0; i < identifiers.length; i++) {
-			identifiers[i] = model + "-" + identifiers[i];
-		}
-		return identifiers;
-	}
 
 	/**
 	 * Tile is no longer being dragged
@@ -590,11 +539,15 @@ var buttons = document.querySelectorAll('.popup_button');
 
 		var dropboxes = document.getElementsByClassName('dropbox');
 		var betweens = document.getElementsByClassName('between');
+		var startboxes = document.getElementsByClassName('startBox');
 		for (var i = 0; i < dropboxes.length; i++) {
 			dropboxes[i].classList.remove('available');
 		}
 		for (var i = 0; i < betweens.length; i++) {
 			betweens[i].classList.remove('available');
+		}
+		for (var i = 0; i < startboxes.length; i++) {
+			startboxes[i].classList.remove('available');
 		}
     }
 
@@ -618,9 +571,60 @@ var buttons = document.querySelectorAll('.popup_button');
 	}
 
 	/**
+	 * Attaches tile to a new container and shifts ids of the row based on where the tile was dropped
+	 */
+    function drop(event) {
+		event.preventDefault();
+		event.target.classList.remove('draggedover');
+		var container = event.target;
+
+		// find position where the tile was dropped
+		var rowIdx = parseInt(container.id.split("_")[1]);
+		var colIdx = parseInt(container.id.split("_")[2]);
+
+		if (checkDroppability(event.target)) { // if this is a valid place for the tile to be dropped
+			if (container.id.split("_")[0] == "between") { // if dropped into a new place, add a new time and add places to drop future tiles on either side
+				container.appendChild(draggedButton);
+				var newLeftCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
+				newLeftCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
+				var newRightCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx+2);
+				newRightCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
+			} else if (container.id.split("_")[0] == "dropbox") { // if dropped into an existing time point, add tile to that time
+				container.append(draggedButton);
+			} else {
+				console.log("there is a problem");
+			}
+
+			var row = document.getElementById("tablerow_" + rowIdx);
+			var height = getLargestHeight(row);
+			// reset the ids of the tiles based on their new order
+			for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
+				if (i%2 == 0) {
+					row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
+					row.getElementsByTagName("td")[i].setAttribute('class', 'dropbox');
+					row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
+				} else {
+					row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
+					row.getElementsByTagName("td")[i].setAttribute('class', 'between');
+					row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
+				}
+
+				if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
+					row.deleteCell(i);
+					i--;
+				}
+
+				if (i == 0 || i == row.getElementsByTagName("td").length - 1) {
+					row.getElementsByTagName("td")[i].setAttribute('style', 'border:none');
+				}
+			}
+		}
+    }
+
+	/**
 	 * Validates that the tile can be dropped into the box it is over
 	 * 
-	 * @param String of first letter of the tile's text
+	 * @param HTMLElement of the potential target to be dropped into
 	 * @return boolean
 	 */
 	function checkDroppability(container) {
@@ -676,7 +680,7 @@ var buttons = document.querySelectorAll('.popup_button');
 						} else {
 							// for nonrepeated time points
 							if (compareStr[j].slice(0,6) == firstChars) {
-								var compareChar = compareStr[j].slice(buttonTimes[k].length-1);
+								var compareChar = compareStr[j].slice(compareStr[j].length-1);
 								if (compareChar < lastChar && i > minIdx) {
 									minIdx = i;
 								} else if (compareChar > lastChar && i < maxIdx) {
@@ -751,55 +755,57 @@ var buttons = document.querySelectorAll('.popup_button');
 	}
 
 	/**
-	 * Attaches tile to a new container and shifts ids of the row based on where the tile was dropped
+	 * Returns only the text inside of the box, separated by commas if more than one element
+	 * Does not include button tags, if applicable
+	 * 
+	 * @return String of the text inside the box
 	 */
-    function drop(event) {
-		event.preventDefault();
-		event.target.classList.remove('draggedover');
-		var container = event.target;
-
-		// find position where the tile was dropped
-		var rowIdx = parseInt(container.id.split("_")[1]);
-		var colIdx = parseInt(container.id.split("_")[2]);
-
-		if (checkDroppability(event.target)) { // if this is a valid place for the tile to be dropped
-			if (container.id.split("_")[0] == "between") { // if dropped into a new place, add a new time and add places to drop future tiles on either side
-				container.appendChild(draggedButton);
-				var newLeftCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx);
-				newLeftCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
-				var newRightCell = document.getElementById("tablerow_" + rowIdx).insertCell(colIdx+2);
-				newRightCell.outerHTML = '<td ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)" class="between"></td>'
-			} else if (container.id.split("_")[0] == "dropbox") { // if dropped into an existing time point, add tile to that time
-				container.append(draggedButton);
-			} else {
-				console.log("there is a problem");
+	function getInnerHTML(td) {
+		if (td.innerHTML[0] == "<") {
+			var parts = td.innerHTML.split(/[><]/);
+			var elements = "";
+			for (var i = 0; i < parts.length; i++) {
+				if (parts[i][0] == "A" | parts[i][0] == "B") {
+					var toAdd = splitRelTimeName(parts[i]);
+					for (var j = 0; j < toAdd.length; j++) {
+						if (elements.length > 0) {
+							elements = elements + ",";
+						}
+						elements = elements + toAdd[j];
+					}
+				}
 			}
-
-			var row = document.getElementById("tablerow_" + rowIdx);
-			var height = getLargestHeight(row);
-			// reset the ids of the tiles based on their new order
-			for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
-				if (i%2 == 0) {
-					row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
-					row.getElementsByTagName("td")[i].setAttribute('class', 'dropbox');
-					row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
-				} else {
-					row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
-					row.getElementsByTagName("td")[i].setAttribute('class', 'between');
-					row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
+			return elements;
+		} else {
+			if (td.innerHTML.includes("<")) {
+				var parts = td.innerHTML.split(/[><]/);
+				var elements = "";
+				for (var i = 0; i < parts.length; i++) {
+					if (parts[i][0] == "A" | parts[i][0] == "B") {
+						var toAdd = splitRelTimeName(parts[i]);
+						for (var j = 0; j < toAdd.length; j++) {
+							if (elements.length > 0) {
+								elements = elements + ",";
+							}
+							elements = elements + toAdd[j];
+						}
+					}
 				}
-
-				if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
-					row.deleteCell(i);
-					i--;
-				}
-
-				if (i == 0 || i == row.getElementsByTagName("td").length - 1) {
-					row.getElementsByTagName("td")[i].setAttribute('style', 'border:none');
-				}
+				return elements;
+			} else {
+				return td.innerHTML;
 			}
 		}
-    }
+	}
+
+	function splitRelTimeName(buttonText) {
+		var model = buttonText.split("-")[0];
+		var identifiers = buttonText.split("-").slice(1);
+		for (var i = 0; i < identifiers.length; i++) {
+			identifiers[i] = model + "-" + identifiers[i];
+		}
+		return identifiers;
+	}
 
 	/**
 	 * Finds the height to be applied to the entire row, based on the maximum number of elements in any given column
@@ -814,4 +820,49 @@ var buttons = document.querySelectorAll('.popup_button');
 			}
 		}
 		return 25;
+	}
+
+	function dropOrigin(event) {
+		var container = event.target;
+		event.preventDefault();
+		container.classList.remove('draggedover');
+		console.log(container.classList[0]);
+		if (container.classList[0] != ('popup_button_timing')) {
+			container.appendChild(draggedButton);
+		}
+
+		var rowIdx = container.id.split("_")[1];
+		var row = document.getElementById("tablerow_" + rowIdx);
+		var height = getLargestHeight(row);
+		// reset the ids of the tiles based on their new order
+		for (var i = 0; i < row.getElementsByTagName("td").length; i++) {
+			if (i%2 == 0) {
+				row.getElementsByTagName("td")[i].setAttribute('id', 'dropbox_'+ rowIdx + '_' + i);
+				row.getElementsByTagName("td")[i].setAttribute('class', 'dropbox');
+				row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
+			} else {
+				row.getElementsByTagName("td")[i].setAttribute('id', 'between_'+ rowIdx + '_' + i);
+				row.getElementsByTagName("td")[i].setAttribute('class', 'between');
+				row.getElementsByTagName("td")[i].setAttribute('style', 'height: ' + height + "px");
+			}
+
+			if (getInnerHTML(row.getElementsByTagName("td")[i]).length == 0 && getInnerHTML(row.getElementsByTagName("td")[i+1]).length == 0) {
+				row.deleteCell(i);
+				i--;
+			}
+
+			if (i == 0 || i == row.getElementsByTagName("td").length - 1) {
+				row.getElementsByTagName("td")[i].setAttribute('style', 'border:none');
+			}
+		}
+	}
+
+	function dragoverOrigin(event) {
+		event.preventDefault();
+		event.target.classList.add('draggedover');
+	}
+
+	function dragleaveOrigin(event) {
+		event.preventDefault();
+    	event.target.classList.remove('draggedover');	
 	}
