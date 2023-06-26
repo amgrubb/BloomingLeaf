@@ -227,9 +227,7 @@ public class IMainBuilder {
 				String prev = "";
 				// In functionSegs, replace all instances of "Initial", "A-MaxTime" and "B-MaxTime" with correct startTPS (0, A, B, C...)
 				for (int i = 0; i < functionSegs.length; i ++) {
-					System.out.println("Functionseg:" + functionSegs[i].toString());
 					String tp = functionSegs[i].getStartTP();
-					System.out.println("StartTP: "+ tp);
 					if (tp.equals("Initial")) {
 						tp = "0";
 	        		}
@@ -238,10 +236,11 @@ public class IMainBuilder {
 	        				tp = "A";
 	        			}
 	        			else {
-	        				char[] tempArray = prev.toCharArray();
-	        				int ascii = (int)tempArray[0] + 1;
-	        				char c=(char)ascii;
-	        				tp = c + "";
+	        				if (prev.length() > 0) {
+		        				int ascii = (int)prev.charAt(0) + 1;
+		        				char c=(char)ascii;
+		        				tp = c + "";
+	        				}
 	        			}
 	        		}
 					functionSegs[i].setStartTP(tp);
