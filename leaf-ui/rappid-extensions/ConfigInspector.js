@@ -15,7 +15,6 @@ var ResultView = Backbone.View.extend({
     initialize: function (options) {
         this.config = options.config;
         this.model.on('change:selected', this.updateHighlight, this);
-        setSelectResult(this.model);
     },
 
     template: ['<script type="text/template" id="result-template">',
@@ -153,7 +152,7 @@ var Config = Backbone.View.extend({
      * Called for all events that require re-rendering of the template 
      * after the first render call
      * 
-     * Detatches dropdown inner view in order to preserve events
+     * Detaches dropdown inner view in order to preserve events
      * Resets template, and then reattatches dropdown inner view
      * 
      */
