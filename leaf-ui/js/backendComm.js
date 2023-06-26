@@ -247,6 +247,8 @@ function backendMergeRequest(timing, isLayout) {
 			//console.log("you are going to load from object");
 			if(isLayout){
 				backendLayoutRequest(result);
+			} else{
+				loadFromObject(result);
 			}
 		}
 	}
