@@ -117,6 +117,7 @@ function displayTimingInputWindow(timing, isLayout) {
 	var timing_list = timing.timingList;
 	let indexes = timing_list.indexes_to_modify;
 	let intention_list = $('#timing-input-intention-list');
+	intention_list.html("");
 	console.log("timing in display: ", timing);
 
 	for (i in indexes) {
