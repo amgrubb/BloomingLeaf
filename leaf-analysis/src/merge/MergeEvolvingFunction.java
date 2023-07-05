@@ -17,16 +17,20 @@ public class MergeEvolvingFunction {
 	
 	public MergeEvolvingFunction(List<MFunctionSegment> segsA, List<MFunctionSegment> segsB, List<String> timing) {
 		this.timing = timing;
-		
+		//sets model attribute in each seg to be used in doEvolvingFunction
+		for (MFunctionSegment seg : segsA) {
+			seg.setModel("A");
+		}
+		for (MFunctionSegment seg : segsB) {
+			seg.setModel("B");
+		}
 		this.funcA = new MEvolvingFunction(segsA, timing);
 		this.funcB = new MEvolvingFunction(segsB, timing);
-
 		
 		if (MMain.DEBUG) System.out.println("------------------------------------------------------------");
 		if (MMain.DEBUG) System.out.println("Merging Evolving Functions:");
 		if (MMain.DEBUG) System.out.println(funcA.toString());
 		if (MMain.DEBUG) System.out.println(funcB.toString());
-		
 		doEvolvingFunctionMerge();
 		
 		if (MMain.DEBUG) System.out.println("--------------------");
@@ -83,6 +87,7 @@ public class MergeEvolvingFunction {
 		// (middle of function for both models)
 		if (valueA.equals("mid") && valueB.equals("mid")) {
 			if (MMain.DEBUG) System.out.println("Warning: merging two mids");
+			throw new Error("Cannot merge two mids.");
 		}
 		
 		// if stochastic with mid, use other value at point
