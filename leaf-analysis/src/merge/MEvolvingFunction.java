@@ -42,7 +42,7 @@ public class MEvolvingFunction {
 			else
 				letter += 1;
 			char endTP = letter;
-			
+
 			String startTime = timing.get(i);
 			String endTime = timing.get(i+1);
 			Integer startAT = null;
@@ -57,7 +57,6 @@ public class MEvolvingFunction {
 			} catch (NumberFormatException nfe) {
 				
 			}
-			
 			segments.add(new MFunctionSegment(String.valueOf(startTP), startAT, startTimes.get(startTime),
 											  String.valueOf(endTP), endAT, endTimes.get(endTime)));
 		}
@@ -74,7 +73,7 @@ public class MEvolvingFunction {
 	public MEvolvingFunction(List<MFunctionSegment> segments, List<String> timing) {
 		if (MMain.DEBUG) System.out.println("Starting: MEvolvingFunction");
 
-		this.segments = segments;
+		this.segments = segments; 
 		this.timing = timing;
 		
 		// to hold timeline values
@@ -84,7 +83,6 @@ public class MEvolvingFunction {
 		if (MMain.DEBUG) System.out.println("Starting: buildTimeline");
 
 		// find evolving function's value at each point in the union of model timelines
-//		System.out.println(timing.toString());
 		// add evidence pair for every time in given timeline
 		for (String time: timing) {
 			// model is stochastic (no value) outside its segments' domain
@@ -104,9 +102,7 @@ public class MEvolvingFunction {
 				// within timeline, look up timelineA value at that time
 				startTimes.put(time, findTimelineStartValue(time));
 				endTimes.put(time, findTimelineEndValue(time));
-			}
-			
-			
+			}			
 		}
 	}
 	
@@ -140,7 +136,6 @@ public class MEvolvingFunction {
 	
 	private String getTimelineEnd() {
 		// return last time in segments list
-//		System.out.println(this.segments.get(this.segments.size()-1).getEndTime());
 		return this.segments.get(this.segments.size()-1).getEndTime();
 	}
 	
@@ -150,9 +145,15 @@ public class MEvolvingFunction {
 		if (time.equals(lastSegment.getEndTime())) {
 			return lastSegment.getRefEvidencePair();
 		}*/
-		
 		// find function segment that starts with time, and return start evpair
 		for (MFunctionSegment seg: segments) {
+			//if time is a tp like A-E00TPA compare it accordingly
+			if (time.contains("-")) {
+				String temp = seg.getModel() + "-" + seg.getStartTime();
+				if (temp.equals(time)) {
+					return seg.getStartEvidencePair();
+				}
+			}
 			if (seg.getStartTime().equals(time)) {
 				return seg.getStartEvidencePair();
 			}
@@ -164,7 +165,6 @@ public class MEvolvingFunction {
 	}
 	
 	private String findTimelineEndValue(String time) {
-		// if time is startTime, report initial evidence pair
 		MFunctionSegment firstSegment = segments.get(0);
 		if (time.equals(firstSegment.getStartTime())) {
 			return firstSegment.getStartEvidencePair();
@@ -172,6 +172,14 @@ public class MEvolvingFunction {
 		
 		// find function segment that ends with time, and return end evpair
 		for (MFunctionSegment seg: segments) {
+			//if time is a tp like A-E00TPA compare it accordingly
+			if (time.contains("-")) {
+				String temp = seg.getModel() + "-" + seg.getEndTime();
+				if (temp.equals(time)) {
+					return seg.getRefEvidencePair();
+				}
+			}
+			//if seg getStartTime() everything but first two chars is equal, return start ev pair
 			if (seg.getEndTime().equals(time)) {
 				return seg.getRefEvidencePair();
 			}
@@ -193,7 +201,7 @@ public class MEvolvingFunction {
 	 * 
 	 * @return - merged value at that time
 	 */
-	public String mid(String midtime, String otherVal) {		
+	public String mid(String midtime, String otherVal) {
 		// get interval bounds
 		String lowerBound = getIntervalLowerBound(midtime);
 		String upperBound = getIntervalUpperBound(midtime);
