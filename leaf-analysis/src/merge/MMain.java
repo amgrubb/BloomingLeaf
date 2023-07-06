@@ -77,15 +77,15 @@ public class MMain {
 					if (timings.getTimingList().get(i).getNewTimeOrder().get(j).contains("$")) {
 						String[] temp = timings.getTimingList().get(i).getNewTimeOrder().get(j).split("\\$");
 						// Two relative timepoints
-						if (temp[0].contains("TP") && temp[1].contains("TP")) {
+						if ((temp[0].contains("TP") || temp[0].contains(":")) && (temp[1].contains("TP") || temp[1].contains(":"))) {
 							simTPs.put(temp[0], temp[1]);
 						}
 						// One relative and one absolute
-						else if (temp[0].contains("TP")) {
+						else if ((temp[0].contains("TP") || temp[0].contains(":"))) {
 							simTPs.put(temp[0], temp[1]);
 						}
 						// One relative and one absolute
-						else if (temp[1].contains("TP")) {
+						else if ((temp[1].contains("TP") || temp[1].contains(":"))) {
 							simTPs.put(temp[1], temp[0]);
 						}
 						// No absolute timepoint pairs
