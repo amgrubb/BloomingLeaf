@@ -18,6 +18,8 @@
     // An array of all of the solutions and every element is another array 
     // with all of the refEvidencePairs for the intentions at that solution
     var allSolutionArray = [];
+    var lastAllSolutionArray =[]; //variable to save the last solution array with solutions
+    var lastFilter = ""; //variable to save the name of the last filter clicked
     // Hashmap to keep track of at which index each array from allSolutions starts and ends once they 
     // are combined into allSolutionArray
     var allSolutionIndex;
@@ -358,7 +360,6 @@
 
         // Iterates over all of the boxes that have been checked
         for (var i = 0; i < filterOrderQueue.length; i++) {
-            console.log("step one");
             switch (filterOrderQueue[i]) {
                 case "conflictFl":
                     console.log("conflictFl");
@@ -368,7 +369,6 @@
                         var index_to_rm = [];
                         // Iterates over all of the solutions in the key/value pair 
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            console.log("running?");
                             // Iterates over all of the elements in the solution
                             for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
                                 // Checks the value of each itention and if the value satisfyies the conditions then the
@@ -397,7 +397,6 @@
                     break;
                 case "ttFl":
                     console.log("ttFl");
-
                     for (var solutionArray in tempResults.get('allSolutions')) {
                         var index_to_rm = [];
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
@@ -855,11 +854,7 @@
                     }
                     break;
                 case "mostConstraintSatisfaction":
-
                     for (var solutionArray in tempResults.get('allSolutions')) {
-                        // console.log(solutionArray);
-                        console.log(allSolutionArray);
-                        console.log(filterOrderQueue);
                         var domains = {};
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
@@ -1077,7 +1072,6 @@
         myInputJSObject.results = originalResults;
         // Deep copy of results so it doesn't contain references to the original object
         tempResults2 = $.extend(true, {}, myInputJSObject.results);
-        
         // Figures out which model filters are checked
         var checkboxes = document.getElementsByClassName("filter_checkbox");
         for (var i = 0; i < checkboxes.length; i++) {
@@ -1086,6 +1080,7 @@
             if (checkbox.checked) {
                 if (filterOrderQueue.indexOf(checkbox.id) == -1) {
                     filterOrderQueue.push(checkbox.id);
+                    lastFilter = checkbox.id; //saves the last id clicked
                 }
             }
             // check if something is just unchecked
@@ -1100,7 +1095,7 @@
         if (intention) {
             // 4 digit sat value code selected from dropdown menu
             var desiredSatVal = $("#sat-value").val();
-
+            lastFilter = desiredSatVal; //saves the last id clicked
             // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
             // If empty, create new array and push filter
             if (filterIntentionList.length != 0) {
@@ -1127,27 +1122,38 @@
             }
             // Call function that finds correct solutions
             intentionFilter(tempResults2);
-        }
+        } 
         // If function is called from model filter see if there are any intention filters that should be applied 
         else if (filterIntentionList.length != 0) {
             intentionFilter(tempResults2);
-        }
+            if (allSolutionArray.length != 0){
+                lastAllSolutionArray = allSolutionArray; //saves the last allSolutionArray that is not empty
+            }
+        } 
         // If there are any model filters, run function that finds correct solutions
         if (filterOrderQueue.length != 0) {
             add_filter(tempResults2);
-        } 
-        if (allSolutionArray.length == 0){
-            swal("Error: Cannot have no state to navigate", "", "error");
-            var lastFilterName = filterOrderQueue[filterOrderQueue.length - 1];
-            var lastFilterID = "#" + lastFilterName;
-            $(lastFilterID).prop('checked', false);
-            filterOrderQueue.splice(filterOrderQueue.indexOf(lastFilterName), 1);
-            console.log(filterOrderQueue);
-            console.log(allSolutionArray);
-        }
-        if (filterOrderQueue.length != 0){
-            console.log(filterOrderQueue);
-            add_filter(tempResults2);
+            if (allSolutionArray.length != 0){
+                lastAllSolutionArray = allSolutionArray; //saves the last allSolutionArray that is not empty
+            }
+        }if (allSolutionArray.length == 0){
+            swal("Error: No more states to navigate", "", "error");
+            if (filterOrderQueue.includes(lastFilter)){
+                var lastFilterID = "#" + lastFilter; //if the last filter used is not an intention filter then get the id of it
+                $(lastFilterID).prop('checked', false); // unchecks the checkbox correlated to the id
+                filterOrderQueue.splice(filterOrderQueue.indexOf(lastFilter), 1); //delete filter name from filterOrderQueue
+            }
+            for (var i = 0; i < filterIntentionList.length; i++){
+                if (filterIntentionList[i][1].includes(lastFilter)){
+                    var intentionToDelete = $(".tableData")[$(".tableData").length - 4].id; //identify the id of the intention filter
+                    var intentionToDeleteID = $("#" + intentionToDelete); //finds the jQuery using the id
+                    intentionToDeleteID.remove();
+                    removeIntentionFilter(intentionToDeleteID);
+                }
+            }
+            allSolutionArray = lastAllSolutionArray; //changes the indentified solution back to being the none empty solution array 
+            num_states_lbl.innerHTML = allSolutionArray.length; //changes the the solution label to be the amount of solution 
+            renderNavigationSidebar();
         }
         // If there are no filters applied, reset to original results and render it
         if (filterOrderQueue.length == 0 && filterIntentionList.length == 0) {
