@@ -132,7 +132,6 @@
             // Adds the ending index and its key to hashmap - TODO: Do we need the end?
             //allSolutionIndex.set(key + "End", i);
         }
-        console.log(allSolutionArray);
     }
 
     /**
@@ -340,7 +339,7 @@
         var requiredState = parseInt(document.getElementById("requiredState").value);
         var nextSteps_array_size = allSolutionArray.length;
 
-        if ((requiredState != "NaN") && (requiredState >= 0)) {
+        if ((requiredState != "NaN") && (requiredState >= 0)) { //allows user to go page 0
             if (requiredState > nextSteps_array_size - 1) {
                 renderNavigationSidebar(nextSteps_array_size - 1); //makes sure required states is always within the possible maximum value of pages
             } else {
@@ -422,7 +421,7 @@
                             break;
                         }
                     }
-                    if (filterOrderQueue.indexOf("mostTasksSatisfied")!= -1 && filterOrderQueue.indexOf("mostTasksSatisfied") < filterOrderQueue.indexOf("leastTasksSatisfied")) {
+                    if (filterOrderQueue.indexOf("mostTasksSatisfied")!= -1 && filterOrderQueue.indexOf("mostTasksSatisfied") < filterOrderQueue.indexOf("leastTasksSatisfied")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Most Task Satisfied is applied", "", "error");
                         $('#leastTasksSatisfied').prop('checked', false);
                         filterOrderQueue.splice(filterOrderQueue.indexOf("leastTasksSatisfied"), 1);
@@ -440,7 +439,6 @@
                             var least_t_s = tempResults.get('allSolutions')[solutionArray].length;
                             for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                                 var num_t_s = 0;
-                                // console.log(tempResults.get('allSolutions')[solutionArray]);
                                 for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
                                     if (analysis.intentions[element_index].get('type') === 'basic.Task') {
                                         var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
@@ -531,7 +529,7 @@
                             break;
                         } 
                     } 
-                    if (filterOrderQueue.indexOf("mostResource") != -1 && filterOrderQueue.indexOf("mostResource") < filterOrderQueue.indexOf("leastResource")) {
+                    if (filterOrderQueue.indexOf("mostResource") != -1 && filterOrderQueue.indexOf("mostResource") < filterOrderQueue.indexOf("leastResource")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Most Resource is applied", "", "error");
                         $('#leastResource').prop('checked', false);
                         filterOrderQueue.splice(filterOrderQueue.indexOf("leastResource"), 1);
@@ -585,7 +583,7 @@
                             break;
                         }
                     } 
-                    if (filterOrderQueue.indexOf("leastResource") != -1 && filterOrderQueue.indexOf("leastResource") < filterOrderQueue.indexOf("mostResource")) {
+                    if (filterOrderQueue.indexOf("leastResource") != -1 && filterOrderQueue.indexOf("leastResource") < filterOrderQueue.indexOf("mostResource")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Least Resource is applied", "", "error");
                         $('#mostResource').prop('checked', false);
                         filterOrderQueue.splice(filterOrderQueue.indexOf("mostResource"), 1);
@@ -639,7 +637,7 @@
                             break;
                         } 
                     } 
-                    if (filterOrderQueue.indexOf("mostGoalSatisfied") != -1 && filterOrderQueue.indexOf("mostGoalSatisfied") < filterOrderQueue.indexOf("leastGoalSatisfied")) {
+                    if (filterOrderQueue.indexOf("mostGoalSatisfied") != -1 && filterOrderQueue.indexOf("mostGoalSatisfied") < filterOrderQueue.indexOf("leastGoalSatisfied")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Most Goal Satisfied is applied", "", "error");
                         $('#leastGoalSatisfied').prop('checked', false);
                         filterOrderQueue.splice(filterOrderQueue.indexOf("leastGoalSatisfied"), 1);
@@ -693,7 +691,7 @@
                             break;
                         }
                     } 
-                    if (filterOrderQueue.indexOf("leastGoalSatisfied") != -1 && filterOrderQueue.indexOf("leastGoalSatisfied") < filterOrderQueue.indexOf("mostGoalSatisfied")) {
+                    if (filterOrderQueue.indexOf("leastGoalSatisfied") != -1 && filterOrderQueue.indexOf("leastGoalSatisfied") < filterOrderQueue.indexOf("mostGoalSatisfied")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Least Goal Satisfied is applied", "", "error");
                         $('#mostGoalSatisfied').prop('checked', false);
                         filterOrderQueue.splice(filterOrderQueue.indexOf("mostGoalSatisfied"), 1);
@@ -858,7 +856,7 @@
                         var domains = {};
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                // console.log(analysis.intentions[element_index].get('intention').cid)
+                                console.log(analysis.intentions[element_index].get('intention').cid)
                                 if (!domains[analysis.intentions[element_index].get('intention').cid]) {
                                     domains[analysis.intentions[element_index].get('intention').cid] = [tempResults.get('allSolutions')[solutionArray][solution_index][element_index]];
                                 } else {
