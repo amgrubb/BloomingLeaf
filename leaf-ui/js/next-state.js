@@ -18,8 +18,6 @@
     // An array of all of the solutions and every element is another array 
     // with all of the refEvidencePairs for the intentions at that solution
     var allSolutionArray = [];
-    var lastAllSolutionArray =[]; //variable to save the last solution array with solutions
-    var lastFilter = ""; //variable to save the name of the last filter clicked
     // Hashmap to keep track of at which index each array from allSolutions starts and ends once they 
     // are combined into allSolutionArray
     var allSolutionIndex;
@@ -1066,6 +1064,8 @@
      * @param {Boolean} intention Whether the function is called from the intention filter button or not
      */
     function filter_helper(intention) {
+        var lastAllSolutionArray =[]; //variable to save the last solution array with solutions
+        var lastFilter = ""; //variable to save the name of the last filter clicked
         // Everytime a filter is applied the results are reset
         myInputJSObject.results = originalResults;
         // Deep copy of results so it doesn't contain references to the original object
@@ -1135,7 +1135,7 @@
                 lastAllSolutionArray = allSolutionArray; //saves the last allSolutionArray that is not empty
             }
         }if (allSolutionArray.length == 0){
-            swal("Error: No more states to navigate", "", "error");
+            swal("Error: Cannot apply filter; no possible states with that combination of filters", "", "error");
             if (filterOrderQueue.includes(lastFilter)){
                 var lastFilterID = "#" + lastFilter; //if the last filter used is not an intention filter then get the id of it
                 $(lastFilterID).prop('checked', false); // unchecks the checkbox correlated to the id
