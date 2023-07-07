@@ -204,53 +204,111 @@ $('#evo-color-key').on('click', function () { window.open('./userguides/evo.html
 /**
  * Guide me instructions
 */
-    /** About BloomingLeaf button */
-    $('#about-BloomingLeaf').on('click', function () { 
-    const dialog1 = showAlert('About',
-        '<p> BloomingLeaf is a browser-based tool that uses precise semantics (with Tropos) to model goals and ' +
-        'relationships that evolve over time. Simulation techniques are used to enable stakeholders to choose between ' +
-        'design alternatives, ask what-if questions, and plan for software evolution in an ever-changing world. '+
-        'BloomingLeaf implements the Evolving Intentions framework.</p>',
-        window.innerWidth * 0.5, 'alert', 'warning');      
-    });
-   
-    /** Model Creation button */
-   $('#help-model-creation').on('click', function () { 
-        const dialog2 = showAlert('Model Creation',
-        '<p> We recommend going through the documentation first to get yourself used to notions of actor, goal, soft goal, resource, and task. </p>' +
-        '<p> Once you have done that, click on next to go through the steps of model creation.</p>' +
-        '<div> <button type="button" class="help-buttons" style= "width:50%" id="next"> Next </button>' +
-        '<button type="button" style= "width:50%" class="help-buttons" > Cancel </button> </div>',
-        window.innerWidth * 0.5, 'alert', 'warning');
-        document.querySelectorAll('.help-buttons').forEach(function (button) {
-            button.addEventListener('click', function () { 
-                dialog2.close(); 
-                if (button.id=='next') {showDialog3();};
-            });
+class GuideBox {
+    constructor(idx, task, instructions, context) {
+        this.idx = idx;
+        this.task = task;
+        this.instructions = instructions;
+        this.context = context;
+    }
+
+    showGuideBox() {
+        var dialog = new joint.ui.Dialog({
+            type: "info",
+            width: 600,
+            title: this.idx+1 + ". " + this.task,
+            content: this.instructions,
+            buttons: [
+                {action: "next", content: "Next", position: "right"},
+                {action: "cancel", content: "Cancel", position: "center"},
+                {action: "back", content: "Back", position: "left"}
+            ],
+            draggable: true,
+            modal: false,
         });
-    });
+        dialog.on('action:cancel', dialog.close);
+        
+        
+        dialog.open();
+        if (this.idx < guideBoxes.length-1) {
+            dialog.on('action:next', this.openNext, dialog);
+        }
+        if (this.idx > 0) {
+            dialog.on('action:back', this.openLast, dialog);
+        }
+    }
+
+    openNext() {
+        guideBoxes[parseInt(this.options.title.slice(".")[0])].showGuideBox();
+        this.close();
+    }
+
+    openLast() {
+        guideBoxes[parseInt(this.options.title.slice(".")[0])-2].showGuideBox();
+        this.close();
+    }
+}
+
+// TODO: make not global
+var guideBoxes = [
+    new GuideBox(0, "Add actors to the model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace.", "Placeholder"),
+    new GuideBox(1, "Add actor information", "Placeholder", "Placeholder"),
+    new GuideBox(2, "Add intentions to the model", "For each actor, consider what goals motivate the interactions that the actor has with other actors. Also, consider how each of those goals might be achieved and if there are overarching goals that explain why those goals want to be achieved." + "<br/><br/>" + "Add these intentions to the actors they belong to by dragging the appropriate intention from the toolbar on the left into their actor, or for intentions that do not belong to an actor, add them to the workspace.", "Placeholder"),
+    new GuideBox(3, "Set evolving functions", "Placeholder", "Placeholder"),
+    new GuideBox(4, "Add relationships", "Placeholder", "Placeholder"),
+];
+
+$('#guide-step').on('change', function() {
+    guideBoxes[0].showGuideBox();
+});
+
+//     /** About BloomingLeaf button */
+//     $('#about-BloomingLeaf').on('click', function () { 
+//     const dialog1 = showAlert('About',
+//         '<p> BloomingLeaf is a browser-based tool that uses precise semantics (with Tropos) to model goals and ' +
+//         'relationships that evolve over time. Simulation techniques are used to enable stakeholders to choose between ' +
+//         'design alternatives, ask what-if questions, and plan for software evolution in an ever-changing world. '+
+//         'BloomingLeaf implements the Evolving Intentions framework.</p>',
+//         window.innerWidth * 0.5, 'alert', 'warning');      
+//     });
+   
+//     /** Model Creation button */
+//    $('#help-model-creation').on('click', function () { 
+//         const dialog2 = showAlert('Model Creation',
+//         '<p> We recommend going through the documentation first to get yourself used to notions of actor, goal, soft goal, resource, and task. </p>' +
+//         '<p> Once you have done that, click on next to go through the steps of model creation.</p>' +
+//         '<div> <button type="button" class="help-buttons" style= "width:50%" id="next"> Next </button>' +
+//         '<button type="button" style= "width:50%" class="help-buttons" > Cancel </button> </div>',
+//         window.innerWidth * 0.5, 'alert', 'warning');
+//         document.querySelectorAll('.help-buttons').forEach(function (button) {
+//             button.addEventListener('click', function () { 
+//                 dialog2.close(); 
+//                 if (button.id=='next') {showDialog3();};
+//             });
+//         });
+//     });
    
 
-    function showDialog3() {
-        const dialog3 = showAlert('Model Creation',
-        '<p> Now let us get you ....</p>' +
-        '<div> <button type="button" class="help-buttons" style= "width:50%" id="next"> Next </button>' +
-        '<button type="button" style= "width:50%" class="help-buttons"> Cancel </button> </div>',
-        window.innerWidth * 0.5, 'alert', 'warning');
-        document.querySelectorAll('.help-buttons').forEach(function (button) {
-            button.addEventListener('click', function () { 
-                dialog3.close(); 
-            });
-        });
-    } 
+//     function showDialog3() {
+//         const dialog3 = showAlert('Model Creation',
+//         '<p> Now let us get you ....</p>' +
+//         '<div> <button type="button" class="help-buttons" style= "width:50%" id="next"> Next </button>' +
+//         '<button type="button" style= "width:50%" class="help-buttons"> Cancel </button> </div>',
+//         window.innerWidth * 0.5, 'alert', 'warning');
+//         document.querySelectorAll('.help-buttons').forEach(function (button) {
+//             button.addEventListener('click', function () { 
+//                 dialog3.close(); 
+//             });
+//         });
+//     } 
    
 
 
 
-   $('#Other-help').on('click', function () { 
-    let question = prompt("Please enter your question here", "I need help with ...");
-    //register the question here 
-   });
+//    $('#Other-help').on('click', function () { 
+//     let question = prompt("Please enter your question here", "I need help with ...");
+//     //register the question here 
+//    });
 
 /**
  * Displays the absolute and relative assignments modal for the user.
