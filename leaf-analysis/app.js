@@ -4,7 +4,10 @@
 
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
-var userPath = "/Users/judySmith/git/BloomingLeaf"
+// var userPath = "/Users/judySmith/git/BloomingLeaf"
+var userPath = "/Users/stardess/Desktop/BloomingLeaf"
+// var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
+
 
 var http = require('http'),
     url = require('url'),
@@ -48,6 +51,7 @@ function processGet(path,queryObj,res) {
 }
 
 function processPost(queryObj,req,res) {
+    console.log("process post function");
     var body = '';
     req.on('data', data => {body += data;}); // get the request data
     req.on('end', () => {          // request fully received - process it
@@ -55,8 +59,52 @@ function processPost(queryObj,req,res) {
             queryObj.message = body; // specific to the chat application
             qs.processQuery(queryObj,res);
         }
-    fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
-    passIntoJar(res);
+    obj = JSON.parse(body);
+
+    if(obj.analysisRequest == "premerge") {
+
+        console.log("we are running premerge");
+
+        var model1_json = JSON.stringify(obj.model1);
+        var model2_json = JSON.stringify(obj.model2);
+
+        fs.writeFileSync(userPath+"/leaf-analysis/temp/merge_model1.json",model1_json);
+        fs.writeFileSync(userPath+"/leaf-analysis/temp/merge_model2.json",model2_json);
+
+        console.log("timing offset: ", obj.timingOffset);
+        passIntoPreMergeJar(res, obj.timingOffset);
+    }
+    else if(obj.analysisRequest == "merge") {
+        // Save timing file to temp
+        console.log("we are running merge");
+        var timing_json = JSON.stringify(obj.timing);
+        fs.writeFileSync(userPath+"/leaf-analysis/temp/timing.json",timing_json);
+
+        passIntoMergeJar(res);
+    }
+    else if(obj.analysisRequest == "layout") {
+        console.log("we are running layout");
+        var model_json = JSON.stringify(obj.model);
+        fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",model_json);
+
+        passIntoLayoutJar(res);
+    }
+    else {
+        console.log("we are running main");
+        fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
+        passIntoJar(res);
+    }
+    
+    // if(body.includes("{\"analysisRequest\":")) {
+    //     passIntoJar(res);
+    // }
+    // else {
+    //     passIntoLayoutJar(res);
+    // }
+
+    // console.log(queryObj.message.model1);
+
+
 
     // //TODO: Can this function be written in an asynchronous call?
     // wait(1000);         
@@ -69,7 +117,7 @@ function processPost(queryObj,req,res) {
     // // send data
     // res.write(analysisFileString);
     // res.end();
-    });
+    });
     
 }
 
@@ -107,6 +155,75 @@ function passIntoJar(res) {
                 res.end();
             
                 return stdout;
+            }
+        });
+    return child;
+}
+
+function passIntoLayoutJar(res) {
+    console.log("in pass into layout jar");
+    child = exec('java -jar '+userPath+'/leaf-analysis/src/layout/Layout.jar ', {maxBuffer: 20480 * 20480} ,
+        function (error, stdout, stderr){
+            if(error !== null){
+                console.log('exec error: ' + error);
+            }
+            else{
+                analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/default-output.json");
+                analysisFileString = String(analysisFile);
+                console.log(analysisFileString);
+
+                res.writeHead(200, { "Content-Type" : 'text/plain'});
+                res.write(analysisFileString);
+                res.end();
+            
+                return stdout;
+            }
+        });
+    return child;
+}
+
+function passIntoPreMergeJar(res, timingOffset) { 
+    console.log("in the passIntoPreMergeJar");
+    console.log("edited pass into premerge");
+    child = exec('java -jar '+userPath+'/leaf-analysis/bin/PreMerge.jar '+'merge_model1.json merge_model2.json timing.json '+timingOffset, 
+    {maxBuffer: 20480 * 20480} ,
+        function (error, stdout, stderr){
+            if(error !== null){
+                console.log('exec error: ' + error);
+            }
+            else {
+                analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/timing.json");
+                analysisFileString = String(analysisFile);
+                console.log("analysis file string: ", analysisFileString);
+
+                res.writeHead(200, { "Content-Type" : 'text/plain'});
+                res.write(analysisFileString);
+                res.end();
+            
+                return stdout;
+            }
+        });
+    return child;
+}
+
+function passIntoMergeJar(res) { // TODO
+    child = exec('java -jar '+userPath+'/leaf-analysis/src/merge/Merge.jar '+'merge_model1.json merge_model2.json timing.json default.json', 
+    {maxBuffer: 20480 * 20480} ,
+        function (error, stdout, stderr){
+            if(error !== null){
+                console.log('exec error: ' + error);
+            }
+            else{     
+                analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/default.json");
+                analysisFileString = String(analysisFile);
+                console.log("analysis file string: ", analysisFileString);
+
+                res.writeHead(200, { "Content-Type" : 'text/plain'});
+                res.write(analysisFileString);
+                res.end();
+            
+                return stdout;          
+                //passIntoLayoutJar(res)
             }
         });
     return child;

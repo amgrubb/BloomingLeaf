@@ -42,10 +42,7 @@ public class Intention extends AbstractLinkableElement {
 	public String getRealFuncSegTP(String initialTP) {
 		char letter = initialTP.charAt(0);
 		int segNum = letter - 'A' + 1;
-		if (evolvingFunctions.length > (segNum + 1))
-			return null;
-		else
-			return evolvingFunctions[segNum].getStartTP();
+		return evolvingFunctions[segNum].getStartTP();
 	}
 	public boolean updateRealFuncSegTP(String oldSegTP, String newSegTP) {
 		for (FunctionSegment seg : evolvingFunctions) 
@@ -67,6 +64,7 @@ public class Intention extends AbstractLinkableElement {
 			}
 			return list;
 		} else {	// Has repeat!
+			// Iterate through the original function segments and find the start and end of the repeat.
 			int repStartIndex = -1;
 			int repStopIndex = -1;
 			BIFunctionSegment[] biList = inFunc.getFunctionSegList();
@@ -80,13 +78,21 @@ public class Intention extends AbstractLinkableElement {
 				repStartIndex = 0;
 			if (repStopIndex == -1)
 				repStopIndex = biList.length;
+			// repLength is the number of function segments that are part of the repeating portion.
 			int repLength = repStopIndex - repStartIndex; 
+			// realStopIndex is the xth index where the repeat stops.
 			int realStopIndex = repStartIndex + (repLength * inFunc.getRepCount());
+			// totalNumSegment is the total number of function segments what the repeated portion is unrolled.
 			int totalNumSegment = biList.length + ((inFunc.getRepCount() - 1) * repLength);
 
 			// Check to make sure if there is a repeating segment that it has a start time.
+			// repATLength is the "Absolute Length" value from the front-end.
 			Integer repATLength = inFunc.getRepAbsTime();
+			if ((repATLength != null) && (repATLength < 1))
+				repATLength = null;
+			// repAT is the absolute time of the start of the repeating portion.
 			Integer repAT = biList[repStartIndex].getStartAT();
+			
 			if (repATLength != null && repAT == null)
 				throw new RuntimeException("Intention has repeating segment with absTime, but repStartAT is null.");
 
@@ -115,6 +121,8 @@ public class Intention extends AbstractLinkableElement {
 				}
 				if (repATLength != null && repAT != null)
 					repAT += repATLength;
+				else
+					repAT = null;
 			}
 			s = repStopIndex;
 			while(i < list.length) { 

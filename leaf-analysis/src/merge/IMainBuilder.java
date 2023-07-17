@@ -222,6 +222,29 @@ public class IMainBuilder {
 			functionSegs = getFunctionSegsMerged(specIntention.getMEvolvingFunctions());
 		} else {
 			functionSegs = getFunctionSegs(specIntention.getEvolvingFunctions());
+			if (functionSegs.length != 0) {
+				// initialize previous
+				String prev = "";
+				// In functionSegs, replace all instances of "Initial", "A-MaxTime" and "B-MaxTime" with correct startTPS (0, A, B, C...)
+				for (int i = 0; i < functionSegs.length; i ++) {
+					String tp = functionSegs[i].getStartTP();
+					if (tp.equals("Initial") || (prev.equals(""))) {
+						tp = "0";
+	        		}
+	        		else if (tp.length() > 1) {
+	        			if (prev.equals("0")) {
+	        				tp = "A";
+	        			}
+	        			else {
+		        			int ascii = (int)prev.charAt(0) + 1;
+		        			char c=(char)ascii;
+		        			tp = c + "";
+	        			}
+	        		}
+					functionSegs[i].setStartTP(tp);
+	        		prev = tp;
+				}
+			}
 		}
 		
 		BIEvolvingFunction evolvingFunction = getEvolvingFunction(functionSegs);

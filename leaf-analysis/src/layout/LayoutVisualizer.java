@@ -14,9 +14,9 @@ public class LayoutVisualizer {
 	
     public LayoutVisualizer(VisualInfo[] nodes, VisualInfo center, int numActors){
     	if(LMain.DEBUG) this.frame = new JFrame();
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setVisible(true);
-        this.frame.setSize(center.getWidth(), center.getHeight());
+        if(LMain.DEBUG) this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        if(LMain.DEBUG) this.frame.setVisible(true);
+        if(LMain.DEBUG) this.frame.setSize(center.getWidth(), center.getHeight());
         
         this.nodes = nodes;
 

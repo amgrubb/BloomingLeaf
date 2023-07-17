@@ -188,12 +188,20 @@ var AssignmentsTable = Backbone.View.extend({
      * Before closing modal box
      */
     closeView: function () {
+        var valid = true;
         this.model.get('constraints').slice().forEach(constraint => {
             if (!constraint.isComplete()) {
                 constraint.destroy()
             }
+            if (constraint.get("srcID") == constraint.get("destID")) {
+                valid = false;
+                swal("Error: Cannot add constraint within a single intention.", "", "error");
+                $("body").removeClass("spinning"); // Remove spinner from page
+            }
         });
-        this.remove();
+        if (valid) {
+            this.remove();
+        }
     },
 });
 

@@ -18,14 +18,19 @@ import simulation.BIModelSpecBuilder;
 import simulation.Intention;
 
 public class LMain {
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 
 	public static void main(String[] args) {
-		String inPath = "data/mergedModels/";
-		String outPath = "data/laidoutModels/";
+	    String inPath = "temp/";
+	    String outPath = "temp/";
+		//String inPath = "data/mergedModels/";
+		//String outPath = "data/laidoutModels/";
+	    // String inPath = "src/layout/temp/";
+	    // String outPath = "src/layout/temp/";
 	    String tracePath = "";
-	    String inputFile = "S6-out.json";
-	    String outputFile = "output.json";
+//	    String inputFile = "S7-out.json";
+	    String inputFile = "default.json";
+	    String outputFile = "default-output.json";
 	
 	    try {			
 	        if (DEBUG) System.out.println("AutoLayout for: " + inputFile);

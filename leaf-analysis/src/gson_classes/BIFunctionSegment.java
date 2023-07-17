@@ -39,6 +39,10 @@ public class BIFunctionSegment {
 		return attributes.type;
 	}
 	
+	public void setStartTP(String newTP) {
+		this.attributes.startTP = newTP;
+	}
+	
 	private class Attributes {
 		String startEvidencePair;
 		String endEvidencePair;

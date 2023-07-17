@@ -1069,9 +1069,9 @@ public class MergeAlgorithm {
 
 		// resolve timing order (create if not given by user)
 		List<String> timeOrder = new ArrayList<>();
-		if (timings.hasTiming(intention1.getName())){
+		if (timings.hasTiming(intention1.getName().replace("\n", " "))){
 			// get timing order from user input
-			TIntention intentionTiming = timings.getTiming(intention1.getName());
+			TIntention intentionTiming = timings.getTiming(intention1.getName().replace("\n", " "));
 			timeOrder = intentionTiming.getNewTimeOrder();
 		} else {								// TODO: If no timing file exists.
 			// doesn't have timing from user because simple merge

@@ -887,6 +887,18 @@ paper.on("link:options", function (cell) {
         EVO.refreshSlider();
     });
 
+    // Workaround for load, activates a hidden input element
+    $('#btn-load-layout').on('click', function () {
+        $('#layout-loader').click();
+    });
+
+    // Workaround for merge, activates a hidden input element
+    $('#btn-merge').on('click', function () {
+       
+        $('#merge-file-picker').css("display", "");
+        
+    });
+
     $(window).resize(function () {
         var config = configCollection.findWhere({ selected: true });
         if (config !== undefined) {

@@ -1,6 +1,7 @@
 package merge;
 
 import java.io.File;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,6 +14,8 @@ import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
 import simulation.Intention;
 import layout.LayoutAlgorithm;
+
+import java.util.HashMap;
 
 /**
  * MMain
@@ -36,14 +39,14 @@ public class MMain {
 	 */
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
-		String inPath = "data/models/";
-		String tPath = "data/timing/";
-		String outPath = "data/mergedModels/";
-		String tracePath = "data/traceability/";
+		String inPath = "temp/";
+		String tPath = "temp/";
+		String outPath = "temp/";
+		String tracePath = "temp/";
 		String inputFile1 = "";
 		String inputFile2 = "";
 		String timingFile = "";
-		String outputFile = "output.json";
+		String outputFile = "default.json";
 		
 		try {			
 			if (args.length == 4) {
@@ -56,6 +59,55 @@ public class MMain {
 			if (DEBUG) System.out.println("Merging: \t" + inputFile1 + " and " + inputFile2);
 
 			Gson gson = new Gson();
+			
+			// Loading in timing info
+			TMain timings = convertTimingFromFile(tPath + timingFile);
+			if (DEBUG) {
+				System.out.printf("Timing offset: %d%n", timings.getTimingOffset());
+			}
+			
+			// Creates hashmap to keep target and replacement time points
+			HashMap<String, String> simTPs = new HashMap<>();
+			
+			// Loops through the intentions in TimingList
+			for (int i = 0; i < timings.getTimingList().size() - 1; i++) {
+				// Loops through the newTimeOrder of each intention and checks for "$"
+				for (int j = 0; j < timings.getTimingList().get(i).getNewTimeOrder().size(); j++) {
+					// If timepoint contains "$", split the timepoint at the "$" and add target/replacement to hashset
+					if (timings.getTimingList().get(i).getNewTimeOrder().get(j).contains("$")) {
+						String[] temp = timings.getTimingList().get(i).getNewTimeOrder().get(j).split("\\$");
+						// Two relative timepoints
+						if ((temp[0].contains("TP") || temp[0].contains(":")) && (temp[1].contains("TP") || temp[1].contains(":"))) {
+							simTPs.put(temp[0], temp[1]);
+						}
+						// One relative and one absolute
+						else if ((temp[0].contains("TP") || temp[0].contains(":"))) {
+							simTPs.put(temp[0], temp[1]);
+						}
+						// One relative and one absolute
+						else if ((temp[1].contains("TP") || temp[1].contains(":"))) {
+							simTPs.put(temp[1], temp[0]);
+						}
+						// No absolute timepoint pairs
+						else {
+							throw new Exception("No absolute timepoint pairs.");
+						}
+					}
+				}	
+			}		
+			// Loops through intentions in TimingList
+			for (int i = 0; i < timings.getTimingList().size()-1; i++) {
+				// Loops through newTimeOrder of each intention and checks for all targets in the hashset. If a target is found, replace it with the corresponding replacement
+				for (int j = 0; j < timings.getTimingList().get(i).getNewTimeOrder().size(); j++) {
+					for (String target : simTPs.keySet()) {
+						if (timings.getTimingList().get(i).getNewTimeOrder().get(j).contains(target)) {
+							timings.getTimingList().get(i).getNewTimeOrder().set(j, simTPs.get(target));
+						}
+					}
+				}	
+			}
+			
+			
 			
 			// Creating the 1st back-end model to be merged
 			ModelSpec modelSpec1 = convertBackboneModelFromFile(inPath + inputFile1);
@@ -75,12 +127,6 @@ public class MMain {
 				System.out.println("M2:");
 				IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
 				System.out.println(gson.toJson(m2IMain));
-			}
-
-			// Loading in timing info
-			TMain timings = convertTimingFromFile(tPath + timingFile);
-			if (DEBUG) {
-				System.out.printf("Timing offset: %d%n", timings.getTimingOffset());
 			}
 
 			// run merge

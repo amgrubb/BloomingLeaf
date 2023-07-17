@@ -32,9 +32,9 @@ public class TMain {
 		return timingOffset;
 	}
 	//TODO: Remove if truely unused...
-//	public List<TIntention> getTimingList() {
-//		return timingList;
-//	}
+	public List<TIntention> getTimingList() {
+		return timingList;
+	}
 //	public HashMap<String, TIntention> getTimingsMap(){
 //		return timingsMap;
 //	}

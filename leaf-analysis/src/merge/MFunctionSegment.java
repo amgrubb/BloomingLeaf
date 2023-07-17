@@ -19,6 +19,7 @@ public class MFunctionSegment extends FunctionSegment{
 	private String endTP;
 	private Integer endAT;
 	private String startEvidencePair;
+	private String model;
 	
 	/**
 	 * For initial + middle segments: Build from the segment, following segment, and starting evidence pair
@@ -131,6 +132,14 @@ public class MFunctionSegment extends FunctionSegment{
 		return startEvidencePair;
 	}
 	
+	public String getModel() {
+		return model;
+	}
+	
+	public void setModel(String model) {
+		this.model = model;
+	}
+
 	public String toString() {
 		this.startEvidencePair = assignStartValue(startEvidencePair);
 		String out = "--MFunctionSegment:--\n";
