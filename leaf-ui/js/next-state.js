@@ -112,7 +112,6 @@
         var i = 0;
         // Iterates over the hashmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {
-
             // Finds the index of the first element that will be added to allSolution
             if (i != 0) {
                 i++;
@@ -140,49 +139,50 @@
      * The number of the page that is selected in the next State window
      */
     function updateNodesValues(currentPage) {
-        if (currentPage == "")
+        if (currentPage == ""){
             currentPage = 0;
+            //Set the currentState variable so it can be sent back to the original path
+        }if (allSolutionArray.length != 0){
+            for (var i = 0; i < analysis.intentions.length; i++) {
+                satValue = allSolutionArray[currentPage][i];
+                element = analysis.intentions[i];
+                element.attr(".satvalue").value = satValue;
+                // Update the current sat value in the intention filter whenever page changes
+                if (element.attributes.id == selectedIntention) {
+                    updateSatValueInfo(element, elementNum, originalResults);
+                }
 
-        //Set the currentState variable so it can be sent back to the original path
-        for (var i = 0; i < analysis.intentions.length; i++) {
-            satValue = allSolutionArray[currentPage][i];
-            element = analysis.intentions[i];
-            element.attr(".satvalue").value = satValue;
-            // Update the current sat value in the intention filter whenever page changes
-            if (element.attributes.id == selectedIntention) {
-                updateSatValueInfo(element, elementNum, originalResults);
-            }
-
-            // Sets attributes of element from the refEvidence pair from resultBBM
-            if ((satValue == "0001") || (satValue == "0011")) {
-                element.attr(".satvalue/text", "(F, ⊥)");
-                element.attr({ text: { fill: 'black' } });
-            } else if (satValue == "0010") {
-                element.attr(".satvalue/text", "(P, ⊥)");
-                element.attr({ text: { fill: 'black' } });
-            } else if ((satValue == "1000") || (satValue == "1100")) {
-                element.attr(".satvalue/text", "(⊥, F)");
-                element.attr({ text: { fill: 'black' } });
-            } else if (satValue == "0100") {
-                element.attr(".satvalue/text", "(⊥, P)");
-                element.attr({ text: { fill: 'black' } });
-            } else if (satValue == "0110") {
-                element.attr(".satvalue/text", "(P, P)");
-                element.attr({ text: { fill: 'red' } });
-            } else if ((satValue == "1110") || (satValue == "1010")) {
-                element.attr(".satvalue/text", "(P, F)");
-                element.attr({ text: { fill: 'red' } });
-            } else if ((satValue == "0111") || (satValue == "0101")) {
-                element.attr(".satvalue/text", "(F, P)");
-                element.attr({ text: { fill: 'red' } });
-            } else if ((satValue == "1111") || (satValue == "1001") || (satValue == "1101") || (satValue == "1011")) {
-                element.attr(".satvalue/text", "(F, F)");
-                element.attr({ text: { fill: 'red' } });
-            } else if (satValue == "0000") {
-                element.attr(".satvalue/text", "(⊥,⊥)");
-                element.attr({ text: { fill: 'black' } });
-            } else {
-                element.removeAttr(".satvalue/d");
+                // Sets attributes of element from the refEvidence pair from resultBBM
+                if ((satValue == "0001") || (satValue == "0011")) {
+                    element.attr(".satvalue/text", "(F, ⊥)");
+                    element.attr({ text: { fill: 'black' } });
+                } else if (satValue == "0010") {
+                    element.attr(".satvalue/text", "(P, ⊥)");
+                    element.attr({ text: { fill: 'black' } });
+                } else if ((satValue == "1000") || (satValue == "1100")) {
+                    element.attr(".satvalue/text", "(⊥, F)");
+                    element.attr({ text: { fill: 'black' } });
+                } else if (satValue == "0100") {
+                    element.attr(".satvalue/text", "(⊥, P)");
+                    element.attr({ text: { fill: 'black' } });
+                } else if (satValue == "0110") {
+                    element.attr(".satvalue/text", "(P, P)");
+                    element.attr({ text: { fill: 'red' } });
+                } else if ((satValue == "1110") || (satValue == "1010")) {
+                    element.attr(".satvalue/text", "(P, F)");
+                    element.attr({ text: { fill: 'red' } });
+                } else if ((satValue == "0111") || (satValue == "0101")) {
+                    element.attr(".satvalue/text", "(F, P)");
+                    element.attr({ text: { fill: 'red' } });
+                } else if ((satValue == "1111") || (satValue == "1001") || (satValue == "1101") || (satValue == "1011")) {
+                    element.attr(".satvalue/text", "(F, F)");
+                    element.attr({ text: { fill: 'red' } });
+                } else if (satValue == "0000") {
+                    element.attr(".satvalue/text", "(⊥,⊥)");
+                    element.attr({ text: { fill: 'black' } });
+                } else {
+                    element.removeAttr(".satvalue/d");
+                }
             }
         }
     }
@@ -337,7 +337,7 @@
         var requiredState = parseInt(document.getElementById("requiredState").value);
         var nextSteps_array_size = allSolutionArray.length;
 
-        if ((requiredState != "NaN") && (requiredState > 0)) {
+        if ((requiredState != "NaN") && (requiredState >= 0)) { //allows user to go page 0
             if (requiredState > nextSteps_array_size - 1) {
                 renderNavigationSidebar(nextSteps_array_size - 1); //makes sure required states is always within the possible maximum value of pages
             } else {
@@ -394,7 +394,6 @@
                     break;
                 case "ttFl":
                     console.log("ttFl");
-
                     for (var solutionArray in tempResults.get('allSolutions')) {
                         var index_to_rm = [];
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
@@ -420,14 +419,15 @@
                             break;
                         }
                     }
-                    if (filterOrderQueue.includes("mostTasksSatisfied")) {
+                    if (filterOrderQueue.indexOf("mostTasksSatisfied")!= -1 && filterOrderQueue.indexOf("mostTasksSatisfied") < filterOrderQueue.indexOf("leastTasksSatisfied")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Most Task Satisfied is applied", "", "error");
-                        $('#mostTasksSatisfied').prop('checked', false);
                         $('#leastTasksSatisfied').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("leastTasksSatisfied"), 1);
                     }
                     if (LSchecksexistence == 0) {
                         swal("Error: Cannot apply this filter with no tasks.", "", "error");
                         $('#leastTasksSatisfied').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("leastTasksSatisfied"), 1);
                     }
                     else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
@@ -473,14 +473,15 @@
                             break;
                         }  
                     } 
-                    if (filterOrderQueue.includes("leastTasksSatisfied")) {
+                    if (filterOrderQueue.indexOf("leastTasksSatisfied")!= -1 && filterOrderQueue.indexOf("leastTasksSatisfied") < filterOrderQueue.indexOf("mostTasksSatisfied")) {
                         swal("Error: Cannot apply this filter when Least Task Satisfied is applied", "", "error");
-                        $('#mostTasksSatisfied').prop('checked', false);
-                        $('#leastTasksSatisfied').prop('checked', false);
+                         $('#mostTasksSatisfied').prop('checked', false);
+                         filterOrderQueue.splice(filterOrderQueue.indexOf("mostTasksSatisfied"), 1);
                     } 
                     if (MSchecksexistence == 0) {
                         swal("Error: Cannot apply this filter with no tasks.", "", "error");
                         $('#mostTasksSatisfied').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("mostTasksSatisfied"), 1);
                     }
                     else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
@@ -526,10 +527,10 @@
                             break;
                         } 
                     } 
-                    if (filterOrderQueue.includes("mostResource")) {
+                    if (filterOrderQueue.indexOf("mostResource") != -1 && filterOrderQueue.indexOf("mostResource") < filterOrderQueue.indexOf("leastResource")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Most Resource is applied", "", "error");
-                        $('#mostResource').prop('checked', false);
                         $('#leastResource').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("leastResource"), 1);
                     } 
                     if (LRchecksexistence == 0) {
                         swal("Error: Cannot apply this filter with no resources.", "", "error");
@@ -580,14 +581,15 @@
                             break;
                         }
                     } 
-                    if (filterOrderQueue.includes("leastResource")) {
+                    if (filterOrderQueue.indexOf("leastResource") != -1 && filterOrderQueue.indexOf("leastResource") < filterOrderQueue.indexOf("mostResource")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Least Resource is applied", "", "error");
                         $('#mostResource').prop('checked', false);
-                        $('#leastResource').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("mostResource"), 1);
                     } 
                     if (MRchecksexistence == 0) {
                         swal("Error: Cannot apply this filter with no resources.", "", "error");
                         $('#mostResource').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("mostResource"), 1);
                     }
                     else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
@@ -633,14 +635,15 @@
                             break;
                         } 
                     } 
-                    if (filterOrderQueue.includes("mostGoalSatisfied")) {
+                    if (filterOrderQueue.indexOf("mostGoalSatisfied") != -1 && filterOrderQueue.indexOf("mostGoalSatisfied") < filterOrderQueue.indexOf("leastGoalSatisfied")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Most Goal Satisfied is applied", "", "error");
-                        $('#mostGoalSatisfied').prop('checked', false);
                         $('#leastGoalSatisfied').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("leastGoalSatisfied"), 1);
                     } 
                     if (LGSchecksexistence == 0) {
                         swal("Error: Cannot apply this filter with no goals.", "", "error");
                         $('#leastGoalSatisfied').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("leastGoalSatisfied"), 1);
                     }
                     else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
@@ -686,14 +689,15 @@
                             break;
                         }
                     } 
-                    if (filterOrderQueue.includes("leastGoalSatisfied")) {
+                    if (filterOrderQueue.indexOf("leastGoalSatisfied") != -1 && filterOrderQueue.indexOf("leastGoalSatisfied") < filterOrderQueue.indexOf("mostGoalSatisfied")) { //checks if filter exists and whether it conflicts with the other filter
                         swal("Error: Cannot apply this filter when Least Goal Satisfied is applied", "", "error");
                         $('#mostGoalSatisfied').prop('checked', false);
-                        $('#leastGoalSatisfied').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("mostGoalSatisfied"), 1);
                     } 
                     if (MGSchecksexistence == 0) {
                         swal("Error: Cannot apply this filter with no goals.", "", "error");
                         $('#mostGoalSatisfied').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("mostGoalSatisfied"), 1);
                     }
                     else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
@@ -735,10 +739,11 @@
                     if (analysis.intentions.length === analysis.graph.getElements().length) {
                         swal("Error: Cannot apply this filter with no actors.", "", "error");
                         $('#LeastActor').prop('checked', false);
-                    } else if (filterOrderQueue.includes("mostActor")) {
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("LeastActor"), 1);
+                    } else if (filterOrderQueue.indexOf("mostActor") != -1 && filterOrderQueue.indexOf("mostActor") < filterOrderQueue.indexOf("LeastActor")) {
                         swal("Error: Cannot apply this filter when Most Actor is applied", "", "error");
                         $('#LeastActor').prop('checked', false);
-                        $('#mostActor').prop('checked', false);
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("LeastActor"), 1);
                     } else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var index_to_keep = [];
@@ -792,10 +797,12 @@
                     if (analysis.intentions.length === analysis.graph.getElements().length) {
                         swal("Error: Cannot apply this filter with no actors.", "", "error");
                         $('#mostActor').prop('checked', false);
-                    } else if (filterOrderQueue.includes("LeastActor")) {
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("mostActor"), 1);
+                    } else if (filterOrderQueue.indexOf("LeastActor") != -1 && filterOrderQueue.indexOf("LeastActor") < filterOrderQueue.indexOf("mostActor")) {
                         swal("Error: Cannot apply this filter when Least Actor is applied", "", "error");
-                        $('#LeastActor').prop('checked', false);
                         $('#mostActor').prop('checked', false); 
+                        filterOrderQueue.splice(filterOrderQueue.indexOf("mostActor"), 1);
+
                     } else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var most_actor = 0;
@@ -843,9 +850,7 @@
                     }
                     break;
                 case "mostConstraintSatisfaction":
-
                     for (var solutionArray in tempResults.get('allSolutions')) {
-                        console.log(solutionArray);
                         var domains = {};
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
@@ -900,7 +905,7 @@
         myInputJSObject.results = tempResults;
         // Creates array with all Solutions from new hashmap
         combineAllSolutions();
-        renderNavigationSidebar();
+        renderNavigationSidebar();   
     }
 
     /**
@@ -1059,11 +1064,12 @@
      * @param {Boolean} intention Whether the function is called from the intention filter button or not
      */
     function filter_helper(intention) {
+        var lastAllSolutionArray =[]; //variable to save the last solution array with solutions
+        var lastFilter = ""; //variable to save the name of the last filter clicked
         // Everytime a filter is applied the results are reset
         myInputJSObject.results = originalResults;
         // Deep copy of results so it doesn't contain references to the original object
         tempResults2 = $.extend(true, {}, myInputJSObject.results);
-        
         // Figures out which model filters are checked
         var checkboxes = document.getElementsByClassName("filter_checkbox");
         for (var i = 0; i < checkboxes.length; i++) {
@@ -1072,6 +1078,7 @@
             if (checkbox.checked) {
                 if (filterOrderQueue.indexOf(checkbox.id) == -1) {
                     filterOrderQueue.push(checkbox.id);
+                    lastFilter = checkbox.id; //saves the last id clicked
                 }
             }
             // check if something is just unchecked
@@ -1086,7 +1093,7 @@
         if (intention) {
             // 4 digit sat value code selected from dropdown menu
             var desiredSatVal = $("#sat-value").val();
-
+            lastFilter = desiredSatVal; //saves the last id clicked
             // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
             // If empty, create new array and push filter
             if (filterIntentionList.length != 0) {
@@ -1113,15 +1120,39 @@
             }
             // Call function that finds correct solutions
             intentionFilter(tempResults2);
-        }
+        } 
         // If function is called from model filter see if there are any intention filters that should be applied 
         else if (filterIntentionList.length != 0) {
             intentionFilter(tempResults2);
-        }
+            if (allSolutionArray.length != 0){
+                lastAllSolutionArray = allSolutionArray; //saves the last allSolutionArray that is not empty
+            }
+        } 
         // If there are any model filters, run function that finds correct solutions
         if (filterOrderQueue.length != 0) {
             add_filter(tempResults2);
-        } 
+            if (allSolutionArray.length != 0){
+                lastAllSolutionArray = allSolutionArray; //saves the last allSolutionArray that is not empty
+            }
+        }if (allSolutionArray.length == 0){
+            swal("Error: Cannot apply filter; no possible states with that combination of filters", "", "error");
+            if (filterOrderQueue.includes(lastFilter)){
+                var lastFilterID = "#" + lastFilter; //if the last filter used is not an intention filter then get the id of it
+                $(lastFilterID).prop('checked', false); // unchecks the checkbox correlated to the id
+                filterOrderQueue.splice(filterOrderQueue.indexOf(lastFilter), 1); //delete filter name from filterOrderQueue
+            }
+            for (var i = 0; i < filterIntentionList.length; i++){
+                if (filterIntentionList[i][1].includes(lastFilter)){
+                    var intentionToDelete = $(".tableData")[$(".tableData").length - 4].id; //identify the id of the intention filter
+                    var intentionToDeleteID = $("#" + intentionToDelete); //finds the jQuery using the id
+                    intentionToDeleteID.remove();
+                    removeIntentionFilter(intentionToDeleteID);
+                }
+            }
+            allSolutionArray = lastAllSolutionArray; //changes the indentified solution back to being the none empty solution array 
+            num_states_lbl.innerHTML = allSolutionArray.length; //changes the the solution label to be the amount of solution 
+            renderNavigationSidebar();
+        }
         // If there are no filters applied, reset to original results and render it
         if (filterOrderQueue.length == 0 && filterIntentionList.length == 0) {
             $("body").removeClass("spinning"); // Remove spinner from cursor
