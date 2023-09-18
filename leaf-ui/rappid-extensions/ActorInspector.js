@@ -64,11 +64,22 @@ var ActorInspector = Backbone.View.extend({
         }
         // Hide/Display the actor selected
         for (var i = 0; i < elements.length; i++) {
+            console.log(elements[i]);
             if (cellsView[i].model.attributes.type == "basic.Actor" && cellsView[i].model.attributes.actor.cid == this.actor.cid) {
                 if (cellsView[i].model.attributes.actor.attributes.isHidden) {
                     $("#"+cellsView[i].id).css("display", "none");
+                    for (var j = 0; j < elements.length; j++) {
+                        if (cellsView[j].model.attributes.type != "basic.Actor" && cellsView[j].model.attributes.parent == cellsView[i].model.attributes.id) {
+                            $("#"+cellsView[j].id).css("display", "none");
+                        }
+                    }
                 } else {
                     $("#"+cellsView[i].id).css("display", "");
+                    for (var j = 0; j < elements.length; j++) {
+                        if (cellsView[j].model.attributes.type != "basic.Actor" && cellsView[j].model.attributes.parent == cellsView[i].model.attributes.id) {
+                            $("#"+cellsView[j].id).css("display", "");
+                        }
+                    }
                 }
             }
         } 
