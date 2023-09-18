@@ -109,6 +109,7 @@ var AssignmentsTable = Backbone.View.extend({
      * Sets Max Absolute Time
      */
     updateMaxAbsTime: function () {
+        var oldMaxTime = graph.attributes.maxAbsTime;
         var maxTimeElement = this.$('#max-abs-time');
         if (maxTimeElement.val() !== "") {
             this.model.set('maxAbsTime', maxTimeElement.val());
@@ -118,6 +119,20 @@ var AssignmentsTable = Backbone.View.extend({
 
         this.presConditionTableView.render();
         document.getElementById('add-prescondition').style.display = "";
+
+        // updates exclusion intervals if exclusion interval included the old max time
+        var elements = graph.getElements();
+        for (i = 0; i < elements.length; i++) {
+            if (elements[i].attributes.type == "basic.Actor") {
+                if (elements[i].attributes.actor.attributes.intervals.length > 0 && elements[i].attributes.actor.attributes.intervals[elements[i].attributes.actor.attributes.intervals.length - 1][1] == oldMaxTime) {
+                    elements[i].attributes.actor.attributes.intervals[elements[i].attributes.actor.attributes.intervals.length - 1][1] = this.$('#max-abs-time');
+                }
+            } else if (elements[i].attributes.type == "basic.Goal" || elements[i].attributes.type == "basic.Task" || elements[i].attributes.type == "basic.Softgoal" || elements[i].attributes.type == "basic.Resource") {
+                if (elements[i].attributes.intention.attributes.intervals.length > 0 && elements[i].attributes.intention.attributes.intervals[elements[i].attributes.intention.attributes.intervals.length - 1][1] == oldMaxTime) {
+                    elements[i].attributes.intention.attributes.intervals[elements[i].attributes.intention.attributes.intervals.length - 1][1] = this.$('#max-abs-time');
+                }
+            }
+        }
     },
 
     /** 
