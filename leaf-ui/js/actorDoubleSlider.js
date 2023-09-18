@@ -58,6 +58,27 @@ function slideOne() {
     } else {
         fillColorReverse();
     }
+
+    if (sliderOne.value == sliderMinValue && flipIntervalsCheckbox.value == "false") {
+        document.getElementById('int1').style.display = "none";
+    } else {
+        document.getElementById('int1').style.display = "";
+    }
+    if (sliderOne.value == sliderMinValue || sliderTwo.value == sliderMaxValue) {
+        if (document.getElementById('actor_comma')) {
+            document.getElementById('actor_comma').style.display = "none";
+        }
+        if (document.getElementById('element_comma')) {
+            document.getElementById('element_comma').style.display = "none";
+        }
+    } else {
+        if (document.getElementById('actor_comma')) {
+            document.getElementById('actor_comma').style.display = "";
+        }
+        if (document.getElementById('element_comma')) {
+            document.getElementById('element_comma').style.display = "";
+        }
+    }
 }
 
 /**
@@ -86,6 +107,27 @@ function slideTwo(limit = null) {
         fillColor();
     } else {
         fillColorReverse();
+    }
+
+    if (sliderTwo.value == sliderMaxValue && flipIntervalsCheckbox.value == "false") {
+        document.getElementById('int2').style.display = "none";
+    } else {
+        document.getElementById('int2').style.display = "";
+    }
+    if (sliderOne.value == sliderMinValue || sliderTwo.value == sliderMaxValue) {
+        if (document.getElementById('actor_comma')) {
+            document.getElementById('actor_comma').style.display = "none";
+        }
+        if (document.getElementById('element_comma')) {
+            document.getElementById('element_comma').style.display = "none";
+        }
+    } else {
+        if (document.getElementById('actor_comma')) {
+            document.getElementById('actor_comma').style.display = "";
+        }
+        if (document.getElementById('element_comma')) {
+            document.getElementById('element_comma').style.display = "";
+        }
     }
 }
 
@@ -129,5 +171,31 @@ function flipIntervals() {
     } else {
         fillColor();
         this.$('#intervals-flip-btn').val(true);
+    }
+
+    if (sliderOne.value == sliderMinValue && flipIntervalsCheckbox.value == "false") {
+        document.getElementById('int1').style.display = "none";
+    } else {
+        document.getElementById('int1').style.display = "";
+    }
+    if (sliderTwo.value == sliderMaxValue && flipIntervalsCheckbox.value == "false") {
+        document.getElementById('int2').style.display = "none";
+    } else {
+        document.getElementById('int2').style.display = "";
+    }
+    if (sliderOne.value == sliderMinValue || sliderTwo.value == sliderMaxValue) {
+        if (document.getElementById('actor_comma')) {
+            document.getElementById('actor_comma').style.display = "none";
+        }
+        if (document.getElementById('element_comma')) {
+            document.getElementById('element_comma').style.display = "none";
+        }
+    } else {
+        if (document.getElementById('actor_comma')) {
+            document.getElementById('actor_comma').style.display = "";
+        }
+        if (document.getElementById('element_comma')) {
+            document.getElementById('element_comma').style.display = "";
+        }
     }
 }
