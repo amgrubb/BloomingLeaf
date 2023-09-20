@@ -64,13 +64,19 @@ var ActorInspector = Backbone.View.extend({
         }
         // Hide/Display the actor selected
         for (var i = 0; i < elements.length; i++) {
-            console.log(elements[i]);
             if (cellsView[i].model.attributes.type == "basic.Actor" && cellsView[i].model.attributes.actor.cid == this.actor.cid) {
                 if (cellsView[i].model.attributes.actor.attributes.isHidden) {
                     $("#"+cellsView[i].id).css("display", "none");
                     for (var j = 0; j < elements.length; j++) {
                         if (cellsView[j].model.attributes.type != "basic.Actor" && cellsView[j].model.attributes.parent == cellsView[i].model.attributes.id) {
                             $("#"+cellsView[j].id).css("display", "none");
+                            var links = SliderObj.getLinksView()
+                            for (var k = 0; k < links.length; k++) {
+                                if (cellsView[j].model.id == links[k].model.attributes.source.id || cellsView[j].model.id == links[k].model.attributes.target.id)  {
+                                    $("#" + links[k].id).css("display", "none");
+                                }
+                            }
+
                         }
                     }
                 } else {
@@ -78,6 +84,12 @@ var ActorInspector = Backbone.View.extend({
                     for (var j = 0; j < elements.length; j++) {
                         if (cellsView[j].model.attributes.type != "basic.Actor" && cellsView[j].model.attributes.parent == cellsView[i].model.attributes.id) {
                             $("#"+cellsView[j].id).css("display", "");
+                            var links = SliderObj.getLinksView();
+                            for (var k = 0; k < links.length; k++) {
+                                if (cellsView[j].model.id == links[k].model.attributes.source.id || cellsView[j].model.id == links[k].model.attributes.target.id)  {
+                                    $("#" + links[k].id).css("display", "");
+                                }
+                            }
                         }
                     }
                 }
