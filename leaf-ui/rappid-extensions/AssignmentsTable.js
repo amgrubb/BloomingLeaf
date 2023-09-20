@@ -117,22 +117,22 @@ var AssignmentsTable = Backbone.View.extend({
             maxTimeElement.val(this.model.prop('maxAbsTime'));
         }
 
-        this.presConditionTableView.render();
-        document.getElementById('add-prescondition').style.display = "";
-
         // updates exclusion intervals if exclusion interval included the old max time
         var elements = graph.getElements();
         for (i = 0; i < elements.length; i++) {
             if (elements[i].attributes.type == "basic.Actor") {
                 if (elements[i].attributes.actor.attributes.intervals.length > 0 && elements[i].attributes.actor.attributes.intervals[elements[i].attributes.actor.attributes.intervals.length - 1][1] == oldMaxTime) {
-                    elements[i].attributes.actor.attributes.intervals[elements[i].attributes.actor.attributes.intervals.length - 1][1] = this.$('#max-abs-time');
+                    elements[i].attributes.actor.attributes.intervals[elements[i].attributes.actor.attributes.intervals.length - 1][1] = parseInt(this.$('#max-abs-time')[0].value);
                 }
             } else if (elements[i].attributes.type == "basic.Goal" || elements[i].attributes.type == "basic.Task" || elements[i].attributes.type == "basic.Softgoal" || elements[i].attributes.type == "basic.Resource") {
                 if (elements[i].attributes.intention.attributes.intervals.length > 0 && elements[i].attributes.intention.attributes.intervals[elements[i].attributes.intention.attributes.intervals.length - 1][1] == oldMaxTime) {
-                    elements[i].attributes.intention.attributes.intervals[elements[i].attributes.intention.attributes.intervals.length - 1][1] = this.$('#max-abs-time');
+                    elements[i].attributes.intention.attributes.intervals[elements[i].attributes.intention.attributes.intervals.length - 1][1] = parseInt(this.$('#max-abs-time')[0].value);
                 }
             }
         }
+
+        this.presConditionTableView.render();
+        document.getElementById('add-prescondition').style.display = "";
     },
 
     /** 
@@ -548,6 +548,7 @@ var PresConditionTableView = Backbone.View.extend({
             }
 
             // displays actors with changed intervals
+            console.log("here");
             if (actors[i].model.attributes.actor.attributes.intervals.length > 0 || element.length > 0) { // if actor's interval is changed, display actor
                 var presConditionActorView = new PresConditionActorView({model: actors[i].model, table: this});
                 $('#prescond-list').append(presConditionActorView.el);
