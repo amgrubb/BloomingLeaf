@@ -201,6 +201,14 @@ var ElementInspector = Backbone.View.extend({
         this.updateCell();
 
         this.displayIntervals(this.findActor());
+
+        percent1 = ((document.getElementById("slider-1").value - document.getElementById("slider-1").min) / (document.getElementById("slider-1").max - document.getElementById("slider-1").min)) * 100;
+        percent2 = ((document.getElementById("slider-2").value - document.getElementById("slider-1").min) / (document.getElementById("slider-1").max - document.getElementById("slider-1").min)) * 100;
+        if (document.getElementById("intervals-flip-btn").value == "true") {
+            document.querySelector(".slider-track").style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #3264fe ${percent1}% , #3264fe ${percent2}%, #dadae5 ${percent2}%)`;
+        } else {
+            document.querySelector(".slider-track").style.background = `linear-gradient(to right, #3264fe ${percent1}% , #dadae5 ${percent1}% , #dadae5 ${percent2}%, #3264fe ${percent2}%)`;
+        }
     },
 
     /**

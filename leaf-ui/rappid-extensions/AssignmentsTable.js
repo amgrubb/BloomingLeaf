@@ -548,7 +548,6 @@ var PresConditionTableView = Backbone.View.extend({
             }
 
             // displays actors with changed intervals
-            console.log("here");
             if (actors[i].model.attributes.actor.attributes.intervals.length > 0 || element.length > 0) { // if actor's interval is changed, display actor
                 var presConditionActorView = new PresConditionActorView({model: actors[i].model, table: this});
                 $('#prescond-list').append(presConditionActorView.el);
