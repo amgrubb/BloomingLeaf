@@ -131,7 +131,7 @@ public class LayoutAlgorithm {
         }
         if (LMain.DEBUG) System.out.println(constant);
         double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
-   
+
         ArrayList<ArrayList<VisualInfo>> nodePositionsRecord = new ArrayList<ArrayList<VisualInfo>>();
 
         ArrayList<Double[]> adjustments = new ArrayList<Double[]>();
@@ -213,7 +213,7 @@ public class LayoutAlgorithm {
                 ArrayList<VisualInfo> intervalNodePositions = nodePositionsRecord.get(i);
                 ArrayList<VisualInfo> nextIntervalNodePositions = nodePositionsRecord.get(i + 1);
                 nodeDiffX.add(nextIntervalNodePositions.get(k).getX() - intervalNodePositions.get(k).getX());
-                nodeDiffY.add(nextIntervalNodePositions.get(k).getX() - intervalNodePositions.get(k).getX());
+                nodeDiffY.add(nextIntervalNodePositions.get(k).getY() - intervalNodePositions.get(k).getY());
             }
             diffXByNodes.add(nodeDiffX);
             diffYByNodes.add(nodeDiffY);
