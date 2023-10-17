@@ -120,15 +120,18 @@
         <button id="btn-view-intermediate" class="btn model-only">Intermediate
             Values</button>
 
-        <div id="guide" class="btn" style="display:inline">
-            <select id="guide-step">
-                <option>1. Build</option>
-                <option>2. Add</option>
-                <option>3. Use</option>
-            </select>
+        <div class="dropdown">
+            <button class="btn" style="display:inline">HELP</button>
+            <div class="dropdown-toolbar">
+                <div>What is BloomingLeaf?</div>
+                <div id="guide-btn">Build</div>
+                <div>Analyze</div>
+            </div>
         </div>
 
-    
+        <div class="guide-nav" style="display:inline-block">
+            <select id="guide-name" style="display:none"></select>
+        </div>   
         
         <!-- This is simulate path button-->
         <button id="simulate-path-btn" class="btn analysis-only" style="border-radius: none; display: none" ;>Simulate

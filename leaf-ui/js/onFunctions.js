@@ -205,6 +205,9 @@ $('#evo-color-key').on('click', function () { window.open('./userguides/evo.html
  * Guide me instructions
 */
 class GuideBox {
+
+    static step = 0;
+
     constructor(idx, task, instructions, context) {
         this.idx = idx;
         this.task = task;
@@ -212,7 +215,16 @@ class GuideBox {
         this.context = context;
     }
 
+    static guideBoxes = [
+        new GuideBox(0, "Add actors to the model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace.", "Placeholder"),
+        new GuideBox(1, "Add actor information", "Placeholder", "Placeholder"),
+        new GuideBox(2, "Add intentions to the model", "For each actor, consider what goals motivate the interactions that the actor has with other actors. Also, consider how each of those goals might be achieved and if there are overarching goals that explain why those goals want to be achieved." + "<br/><br/>" + "Add these intentions to the actors they belong to by dragging the appropriate intention from the toolbar on the left into their actor, or for intentions that do not belong to an actor, add them to the workspace.", "Placeholder"),
+        new GuideBox(3, "Set evolving functions", "Placeholder", "Placeholder"),
+        new GuideBox(4, "Add relationships", "Placeholder", "Placeholder"),
+    ];
+
     showGuideBox() {
+        $('#guide-name').children('option').remove();
         var dialog = new joint.ui.Dialog({
             type: "info",
             width: 600,
@@ -226,40 +238,56 @@ class GuideBox {
             draggable: true,
             modal: false,
         });
+
+        document.getElementById("guide-name").style.display = "";
+        for (var i = 0; i < 5; i ++) {
+            if (i == GuideBox.step) {
+                $('#guide-name').append(`<option value="${GuideBox.guideBoxes[i].idx}" selected>${GuideBox.guideBoxes[i].idx + 1 + ". " + GuideBox.guideBoxes[i].task}</option>`)
+            } else {
+                $('#guide-name').append(`<option value="${GuideBox.guideBoxes[i].idx}">${GuideBox.guideBoxes[i].idx + 1 + ". " + GuideBox.guideBoxes[i].task}</option>`)
+            }
+        }
+
         dialog.on('action:cancel', dialog.close);
         
-        
         dialog.open();
-        if (this.idx < guideBoxes.length-1) {
+        if (this.idx < GuideBox.guideBoxes.length-1) {
             dialog.on('action:next', this.openNext, dialog);
         }
         if (this.idx > 0) {
             dialog.on('action:back', this.openLast, dialog);
         }
+
+        $('#guide-name').on('change', function () {
+            dialog.close();
+            console.log("never goes away");
+        });
     }
 
     openNext() {
-        guideBoxes[parseInt(this.options.title.slice(".")[0])].showGuideBox();
+        GuideBox.step++;
         this.close();
+        GuideBox.guideBoxes[GuideBox.step].showGuideBox();
     }
 
     openLast() {
-        guideBoxes[parseInt(this.options.title.slice(".")[0])-2].showGuideBox();
+        GuideBox.step--;
         this.close();
+        GuideBox.guideBoxes[GuideBox.step].showGuideBox();
+    }
+
+    static skip() {
+        GuideBox.step = document.getElementById('guide-name').value;
+        GuideBox.guideBoxes[GuideBox.step].showGuideBox();
     }
 }
 
-// TODO: make not global
-var guideBoxes = [
-    new GuideBox(0, "Add actors to the model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace.", "Placeholder"),
-    new GuideBox(1, "Add actor information", "Placeholder", "Placeholder"),
-    new GuideBox(2, "Add intentions to the model", "For each actor, consider what goals motivate the interactions that the actor has with other actors. Also, consider how each of those goals might be achieved and if there are overarching goals that explain why those goals want to be achieved." + "<br/><br/>" + "Add these intentions to the actors they belong to by dragging the appropriate intention from the toolbar on the left into their actor, or for intentions that do not belong to an actor, add them to the workspace.", "Placeholder"),
-    new GuideBox(3, "Set evolving functions", "Placeholder", "Placeholder"),
-    new GuideBox(4, "Add relationships", "Placeholder", "Placeholder"),
-];
+$('#guide-btn').on('click', function() {
+    GuideBox.guideBoxes[0].showGuideBox();
+});
 
-$('#guide-step').on('change', function() {
-    guideBoxes[0].showGuideBox();
+$('#guide-name').on('change', function () {
+    GuideBox.skip();
 });
 
 //     /** About BloomingLeaf button */

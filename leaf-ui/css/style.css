@@ -733,3 +733,12 @@ padding: 0px 20px 0px 0px;
   opacity: 1;
   cursor: help;
 }
+
+.help-content {
+  display: none;
+}
+
+#guide:hover .help-content {
+  display: block;
+  position: absolute;
+}
