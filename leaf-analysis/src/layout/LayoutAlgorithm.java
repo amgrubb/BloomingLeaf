@@ -380,9 +380,13 @@ public class LayoutAlgorithm {
         VisualInfo mostRight = nodePositions[0];
         VisualInfo mostUpper = nodePositions[0];
         VisualInfo mostBottom = nodePositions[0];
-
+        
         //find the most {left, right, upper, bottom} nodes
         for(VisualInfo nodePosition: nodePositions) {
+        	//AbstractLinkableElement nodePos = AbstractLinkableElement(nodePosition);
+        	
+            System.out.println("NODEPOS" + nodePosition.toString());
+            
             if(nodePosition.getX() < mostLeft.getX()){
             	mostLeft = nodePosition;
             }
@@ -395,8 +399,12 @@ public class LayoutAlgorithm {
             if(nodePosition.getY() + nodePosition.getHeight() > mostBottom.getY() + nodePosition.getHeight()){
             	mostBottom = nodePosition;
             }
-
+            
         }
+        System.out.println("most right:" + mostRight.getX() + "," + mostRight.getY());
+        System.out.println("most left:" + mostLeft.getX() + "," + mostLeft.getY());
+        System.out.println("most upper:" + mostUpper.getX() + "," + mostUpper.getY());
+        System.out.println("most bottom:" + mostBottom.getX() + "," + mostBottom.getY());
 
         double x_left = mostLeft.getX();
         double x_right = mostRight.getX() + mostRight.getSize().getWidth();
