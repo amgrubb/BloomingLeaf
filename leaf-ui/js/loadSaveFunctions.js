@@ -275,7 +275,7 @@ function getFuncSegList(functionseg, oldConstraints) {
  */
 function createBBActor(cell) {
 	var actor = cell.get('actor');
-	var actorBBM = new ActorBBM({ type: actor.attributes.type, actorName: actor.attributes.actorName });
+	var actorBBM = new ActorBBM({ type: actor.attributes.type, actorName: actor.attributes.actorName, intervals: actor.attributes.intervals });
 	cell.set('actor', actorBBM)
 	cell.attr({'.label': {'cx': 20, 'cy' : 20}})
 }
@@ -297,7 +297,7 @@ function createBBLink(cell) {
 function createBBElement(cell, funcsegs) {
 	var intention = cell.get('intention');
 	var evol = intention.attributes.evolvingFunction.attributes;
-	var intentionBBM = new IntentionBBM({ nodeName: intention.attributes.nodeName });
+	var intentionBBM = new IntentionBBM({ nodeName: intention.attributes.nodeName, intervals: intention.attributes.intervals });
 
 	var evolving = new EvolvingFunctionBBM({ type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime });
 	for (let funcseg of funcsegs) {
