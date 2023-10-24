@@ -396,3 +396,37 @@ select::-ms-expand {
     background-color: #dddddd;
     transform: rotate(15deg);
 }
+
+/* Sets the textboxes for Presence Condition Assignments*/
+.new-interval{
+    max-width: 60px;
+    max-height: 40px;
+}
+
+#edit-name {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: block;
+    max-width: 180px;
+    height: 30px;
+    padding: 0px 10px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #333;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+}
+
+#save {
+    background-color: #1E85F7; 
+    color: white;
+    padding: 5px;
+    font-size:12px;
+    border: 1px;
+    border-radius: 2px;
+}
+
+#add-prescondition {
+    display: inline;
+}

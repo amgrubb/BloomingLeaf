@@ -543,6 +543,7 @@ paper.on({
                     var actorInspector = new ActorInspector({ model: cell });
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
+                    
                     // If user was dragging actor 
                     if (evt.data.move) {
                         // AND actor doesn't overlap with other actors
@@ -567,7 +568,6 @@ paper.on({
                 } else {
                     var elementInspector = new ElementInspector({ model: cell });
                     $('.inspector').append(elementInspector.el);
-                    elementInspector.render();
                     // If user was dragging element
                     if (evt.data.move) {
                         // Unembed intention from old actor
@@ -586,6 +586,7 @@ paper.on({
                             actorCell.embed(cell);
                         }
                     }
+                    elementInspector.render();
                 }
             }
         }
@@ -751,6 +752,15 @@ paper.on("link:options", function (cell) {
             setInteraction(true);
             if (selectResult !== undefined) {
                 selectResult.set('selected', false);
+            }
+
+            var elements = SliderObj.getIntentionsAndActorsView();
+            var links = SliderObj.getLinksView();
+            for (var i = 0; i < elements.length; i ++) {
+                $("#" + elements[i].id).css("display", "");
+            }
+            for (var i = 0; i < links.length; i ++) {
+                $("#" + links[i].id).css("display", "");
             }
 
             // Reset to initial graph prior to analysis
