@@ -39,6 +39,9 @@ class SliderObj {
      */
     static displayAnalysis(analysisResult, isSwitch) {
         // Check if slider has already been initialized
+        if (analysisResult.get('slider') == null) {
+            analysisResult.set('slider', new SliderObj());
+        }
         if (analysisResult.get('slider').sliderElement.hasOwnProperty('noUiSlider')) {
             analysisResult.get('slider').sliderElement.noUiSlider.destroy();
         }

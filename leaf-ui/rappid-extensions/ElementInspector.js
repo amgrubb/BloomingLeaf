@@ -749,14 +749,16 @@ var ElementInspector = Backbone.View.extend({
     } else if (this.intention.get('evolvingFunction') != null && this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') !== null && this.intention.get('evolvingFunction').get('type') === 'NT') {
         // Clear previous chart values
         this.chart.reset();
-        // Gets the chart canvas
-        var context = $("#chart").get(0).getContext("2d");
         // Adds the initial satisfaction as a single point to the chart
         this.chart.addDataSet(0, [satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal], false);
         // Renders the chart
-        this.chart.display(context);
+        if ($("#chart").get(0)) { // if the chart is displayed on the page
+            // Gets the chart canvas
+            var context = $("#chart").get(0).getContext("2d");
+            this.chart.display(context);
         }
-    },
+    }
+},
 
     /**
      * Called whenever the html is updated. Renders the views for the FunctionSegmentBBMs and adds an absTime label
@@ -1217,8 +1219,6 @@ var FuncSegView = Backbone.View.extend({
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
             this.chart.reset();
-            // Get the chart canvas
-            var context = $("#chart").get(0).getContext("2d");
 
             // Render preview for user defined function types
             if (funcType == "UD") {
@@ -1262,7 +1262,11 @@ var FuncSegView = Backbone.View.extend({
                     this.chart.addDataSet(0, [initVal], false);
                 }
             }
-            this.chart.display(context);
+            if ($("#chart").get(0)) { // if the chart is displayed on the page
+                // Get the chart canvas
+                var context = $("#chart").get(0).getContext("2d");
+                this.chart.display(context);
+            }
         }
     },
 
@@ -1271,7 +1275,6 @@ var FuncSegView = Backbone.View.extend({
      * defined function and satisfaction value(s)
      */
     updateChartUserDefined: function () {
-        var context = $("#chart").get(0).getContext("2d");
         // This will never be undefined because at least one 
         // FunctionSegmentBBM will be in functionSegList at this point
         var numFuncSegments = this.intention.getFuncSegments().length;
@@ -1319,7 +1322,11 @@ var FuncSegView = Backbone.View.extend({
             }
             this.chart.addDataSet(i, [data1, data2], currFunc === 'R' || currVal === '(no value)', coloured);
         }
-        this.chart.display(context);
+        if ($("#chart").get(0)) { // if the chart is displayed on the page
+            // Gets the chart canvas
+            var context = $("#chart").get(0).getContext("2d");
+            this.chart.display(context);
+        }
     },
 
     /**

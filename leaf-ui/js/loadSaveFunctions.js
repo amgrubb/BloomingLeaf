@@ -64,6 +64,8 @@ function loadFromObject(obj) {
 	// If the object contains configCollection, create configCollection fields from JSON
 	if (obj.configCollection != undefined) {
 		loadConfig(obj.configCollection)
+	} else {
+		resetConfig();
 	}
 }
 
