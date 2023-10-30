@@ -616,7 +616,7 @@ class EVO {
             $('#modelingSlider').css("display", "");
             $('#analysisSlider').css("display", "none");
             if (EVO.sliderOption > 0) {
-                EVO.sliderOption = '1';
+                EVO.sliderOption = '3';
             }
             document.getElementById("colorReset").value = EVO.sliderOption;
         }
