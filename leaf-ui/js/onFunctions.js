@@ -216,11 +216,11 @@ class GuideBox {
     }
 
     static guideBoxes = [
-        new GuideBox(0, "Add actors to the model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace.", "Placeholder"),
-        new GuideBox(1, "Add actor information", "Placeholder", "Placeholder"),
-        new GuideBox(2, "Add intentions to the model", "For each actor, consider what goals motivate the interactions that the actor has with other actors. Also, consider how each of those goals might be achieved and if there are overarching goals that explain why those goals want to be achieved." + "<br/><br/>" + "Add these intentions to the actors they belong to by dragging the appropriate intention from the toolbar on the left into their actor, or for intentions that do not belong to an actor, add them to the workspace.", "Placeholder"),
-        new GuideBox(3, "Set evolving functions", "Placeholder", "Placeholder"),
-        new GuideBox(4, "Add relationships", "Placeholder", "Placeholder"),
+        new GuideBox(0, "Add actor to model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace. Once an actor is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it.", "Placeholder"),
+        new GuideBox(1, "Use actor inspector", "To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page. Here, you can change the actor’s name or type. To learn more about actor types, see the documentation document in the documentation dropdown. ", "Placeholder"),
+        new GuideBox(2, "Add intentions to the model", "Intentions are the pieces that make up a goal model. Drag an intention to the page and let go to place it. Once an intention is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it. To learn more about each specific intention, see the documentation document in the documentation dropdown.", "Placeholder"),
+        new GuideBox(3, "Use intention inspector", "When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention. In this inspector, you can change the name of your intention, set its initial satisfaction value, choose its function type, and determine satisfaction values over set time points. To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.", "Placeholder"),
+        new GuideBox(4, "Link intentions", "Links connect intentions to one another and specify their relationship. To create a link, click on an intention and then drag the right arrow to another intention to connect them. Once a link has been created, click on the link and select the gear icon to choose the link type, click on the red X icon to delete the link, or drag anywhere on the arrow to create joints in the arrow. To learn more about the different link types, see the documentation document in the documentation dropdown.", "Placeholder"),
     ];
 
     showGuideBox() {
@@ -229,7 +229,7 @@ class GuideBox {
             type: "info",
             width: 600,
             title: this.idx+1 + ". " + this.task,
-            content: this.instructions,
+            content: this.instructions + `\n<button class="learn-more">Learn More</button> <div class="more" style='display:none'>` + this.context + `</div>`,
             buttons: [
                 {action: "next", content: "Next", position: "right"},
                 {action: "cancel", content: "Cancel", position: "center"},
@@ -248,7 +248,10 @@ class GuideBox {
             }
         }
 
-        dialog.on('action:cancel', dialog.close);
+        dialog.on('action:cancel', function () {
+            dialog.close();
+            document.getElementById('guide-name').style.display = "none";
+        });
         
         dialog.open();
         if (this.idx < GuideBox.guideBoxes.length-1) {
@@ -261,6 +264,15 @@ class GuideBox {
         $('#guide-name').on('change', function () {
             dialog.close();
             console.log("never goes away");
+        });
+        $('.learn-more').on('click', function () {
+            if (document.getElementsByClassName("more")[0].style.display == "none") {
+                document.getElementsByClassName("more")[0].style.display = "";
+                document.getElementsByClassName("learn-more")[0].textContent = "Show Less";
+            } else {
+                document.getElementsByClassName("more")[0].style.display = "none";
+                document.getElementsByClassName("learn-more")[0].textContent = "Learn More";
+            }
         });
     }
 
