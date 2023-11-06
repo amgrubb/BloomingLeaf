@@ -276,6 +276,11 @@ class GuideBox {
             dialog.close();
             document.getElementById('guide-name').style.display = "none";
         });
+
+        dialog.on('action:close', function () {
+            dialog.close();
+            document.getElementById('guide-name').style.display = "none";
+        });
         
         dialog.open();
         if (this.idx < tutorial.length-1) {
