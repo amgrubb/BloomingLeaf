@@ -383,6 +383,7 @@ function download(filename, text) {
  * If a cookie exists, process it as a previously created graph and load it.
  */
 if (document.cookie && document.cookie.indexOf('all=') !== -1) {
+	console.log("here");
 
 	var obj = JSON.parse(document.cookie.substr(4));
 

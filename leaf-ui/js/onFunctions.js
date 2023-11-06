@@ -215,7 +215,15 @@ class GuideBox {
         this.context = context;
     }
 
-    static guideBoxes = [
+    static tutorial = 0;
+
+    static why = [
+        new GuideBox(0, "Placeholder", "Placeholder", "Placeholder"),
+        new GuideBox(1, "Placeholder", "Placeholder", "Placeholder"),
+        new GuideBox(2, "Placeholder", "Placeholder", "Placeholder"),
+    ];
+
+    static build = [
         new GuideBox(0, "Add actor to model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace. Once an actor is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it.", "Placeholder"),
         new GuideBox(1, "Use actor inspector", "To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page. Here, you can change the actor’s name or type. To learn more about actor types, see the documentation document in the documentation dropdown. ", "Placeholder"),
         new GuideBox(2, "Add intentions to the model", "Intentions are the pieces that make up a goal model. Drag an intention to the page and let go to place it. Once an intention is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it. To learn more about each specific intention, see the documentation document in the documentation dropdown.", "Placeholder"),
@@ -223,7 +231,23 @@ class GuideBox {
         new GuideBox(4, "Link intentions", "Links connect intentions to one another and specify their relationship. To create a link, click on an intention and then drag the right arrow to another intention to connect them. Once a link has been created, click on the link and select the gear icon to choose the link type, click on the red X icon to delete the link, or drag anywhere on the arrow to create joints in the arrow. To learn more about the different link types, see the documentation document in the documentation dropdown.", "Placeholder"),
     ];
 
+    static analyze = [
+        new GuideBox(0, "Analyze model", "Once you have created your model, click the analysis button to analyze potential outcomes over time. Analysis mode allows you to visualize potential outcomes of the model over time. Based on the number of timepoints and constraints you choose, analysis mode will assign satisfaction values to each intention for each timepoint.", "Placeholder"),
+        new GuideBox(1, "Choose conflict prevention level", "Choose a level from the dropdown to determine how many conflicting satisfaction values can be present in the model. “Strong” indicates that the model will try to avoid any conflicting satisfaction values and “None” indicates that the model will not do anything to avoid conflicting satisfaction values. To see more information about conflicting satisfaction values, see the documentation document in the documentation dropdown.", "Placeholder"),
+        new GuideBox(2, "Specify number of timepoints", "To specify the number of timepoints you would like to see in analysis, click the text box with “1” in it and then either type in your desired number of states or click the up and down arrows to increment the number of states by one. The number of states you select will determine the number of possible outcomes of your model you are presented with.", "Placeholder"),
+        new GuideBox(3, "Simulate path", "Once you have chosen your conflict prevention level and number of time points, click the “Simulate Path” button to display the outcome of analysis. Once the path is simulated, you will be presented with your model at the final time point with randomly assigned satisfaction values. To see other potential outcomes, move the slider on the bottom of the page left to see previous outcomes and right to see the next potential outcomes.", "Placeholder"),
+    ]
+
     showGuideBox() {
+        var tutorial;
+        if (GuideBox.tutorial == 0) {
+            tutorial = GuideBox.build;
+        } else if (GuideBox.tutorial == 1) {
+            tutorial = GuideBox.why;
+        } else if (GuideBox.tutorial == 2) {
+            tutorial = GuideBox.analyze;
+        }
+        console.log(tutorial)
         $('#guide-name').children('option').remove();
         var dialog = new joint.ui.Dialog({
             type: "info",
@@ -240,11 +264,11 @@ class GuideBox {
         });
 
         document.getElementById("guide-name").style.display = "";
-        for (var i = 0; i < 5; i ++) {
+        for (var i = 0; i < tutorial.length; i ++) {
             if (i == GuideBox.step) {
-                $('#guide-name').append(`<option value="${GuideBox.guideBoxes[i].idx}" selected>${GuideBox.guideBoxes[i].idx + 1 + ". " + GuideBox.guideBoxes[i].task}</option>`)
+                $('#guide-name').append(`<option value="${tutorial[i].idx}" selected>${tutorial[i].idx + 1 + ". " + tutorial[i].task}</option>`)
             } else {
-                $('#guide-name').append(`<option value="${GuideBox.guideBoxes[i].idx}">${GuideBox.guideBoxes[i].idx + 1 + ". " + GuideBox.guideBoxes[i].task}</option>`)
+                $('#guide-name').append(`<option value="${tutorial[i].idx}">${tutorial[i].idx + 1 + ". " + tutorial[i].task}</option>`)
             }
         }
 
@@ -254,7 +278,7 @@ class GuideBox {
         });
         
         dialog.open();
-        if (this.idx < GuideBox.guideBoxes.length-1) {
+        if (this.idx < tutorial.length-1) {
             dialog.on('action:next', this.openNext, dialog);
         }
         if (this.idx > 0) {
@@ -277,25 +301,55 @@ class GuideBox {
     }
 
     openNext() {
+        var tutorial;
+        if (GuideBox.tutorial == 0) {
+            tutorial = GuideBox.build;
+        } else if (GuideBox.tutorial == 1) {
+            tutorial = GuideBox.why;
+        } else if (GuideBox.tutorial == 2) {
+            tutorial = GuideBox.analyze;
+        }
         GuideBox.step++;
         this.close();
-        GuideBox.guideBoxes[GuideBox.step].showGuideBox();
+        tutorial[GuideBox.step].showGuideBox();
     }
 
     openLast() {
+        var tutorial;
+        if (GuideBox.tutorial == 0) {
+            tutorial = GuideBox.build;
+        } else if (GuideBox.tutorial == 1) {
+            tutorial = GuideBox.why;
+        } else if (GuideBox.tutorial == 2) {
+            tutorial = GuideBox.analyze;
+        }
         GuideBox.step--;
         this.close();
-        GuideBox.guideBoxes[GuideBox.step].showGuideBox();
+        tutorial[GuideBox.step].showGuideBox();
     }
 
     static skip() {
         GuideBox.step = document.getElementById('guide-name').value;
-        GuideBox.guideBoxes[GuideBox.step].showGuideBox();
+        tutorial[GuideBox.step].showGuideBox();
     }
 }
 
-$('#guide-btn').on('click', function() {
-    GuideBox.guideBoxes[0].showGuideBox();
+$('#build-btn').on('click', function() {
+    GuideBox.build[0].showGuideBox();
+    GuideBox.tutorial = 0;
+    GuideBox.step = 0;
+});
+
+$('#why-btn').on('click', function() {
+    GuideBox.why[0].showGuideBox();
+    GuideBox.tutorial = 1;
+    GuideBox.step = 0;
+});
+
+$('#analyze-btn').on('click', function() {
+    GuideBox.analyze[0].showGuideBox();
+    GuideBox.tutorial = 2;
+    GuideBox.step = 0;
 });
 
 $('#guide-name').on('change', function () {
