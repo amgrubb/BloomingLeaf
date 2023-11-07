@@ -227,7 +227,7 @@ class GuideBox {
         new GuideBox(0, "Add actor to model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace. Once an actor is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it.", "Placeholder"),
         new GuideBox(1, "Use actor inspector", "To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page. Here, you can change the actor’s name or type. To learn more about actor types, see the documentation document in the documentation dropdown. ", "Placeholder"),
         new GuideBox(2, "Add intentions to the model", "Intentions are the pieces that make up a goal model. Drag an intention to the page and let go to place it. Once an intention is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it. To learn more about each specific intention, see the documentation document in the documentation dropdown.", "Placeholder"),
-        new GuideBox(3, "Use intention inspector", "When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention. In this inspector, you can change the name of your intention, set its initial satisfaction value, choose its function type, and determine satisfaction values over set time points. To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.", "Placeholder"),
+        new GuideBox(3, "Use intention inspector", "When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention. In this inspector, you can change the name of your intention, set its initial satisfaction value, choose its function type, and determine satisfaction values over set time points. To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.", `<img src="http://localhost:8080/userguides/color-lattice.png">`),
         new GuideBox(4, "Link intentions", "Links connect intentions to one another and specify their relationship. To create a link, click on an intention and then drag the right arrow to another intention to connect them. Once a link has been created, click on the link and select the gear icon to choose the link type, click on the red X icon to delete the link, or drag anywhere on the arrow to create joints in the arrow. To learn more about the different link types, see the documentation document in the documentation dropdown.", "Placeholder"),
     ];
 
@@ -336,6 +336,14 @@ class GuideBox {
     }
 
     static skip() {
+        var tutorial;
+        if (GuideBox.tutorial == 0) {
+            tutorial = GuideBox.build;
+        } else if (GuideBox.tutorial == 1) {
+            tutorial = GuideBox.why;
+        } else if (GuideBox.tutorial == 2) {
+            tutorial = GuideBox.analyze;
+        }
         GuideBox.step = document.getElementById('guide-name').value;
         tutorial[GuideBox.step].showGuideBox();
     }
@@ -343,7 +351,6 @@ class GuideBox {
 
 $('#build-btn').on('click', function() {
     if (GuideBox.step == -1){
-        console.log(GuideBox.step)
         GuideBox.build[0].showGuideBox();
         GuideBox.tutorial = 0;
         GuideBox.step = 0;
