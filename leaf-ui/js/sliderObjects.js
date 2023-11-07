@@ -130,6 +130,7 @@ class SliderObj {
     hideSlider() {
         if (document.getElementById('colorResetAnalysis').value == 1 || document.getElementById('colorResetAnalysis').value == 2) {
             document.getElementById('slider').style.display = "none";
+            document.getElementById('sliderValue').style.display = "none";
 
             var elements = SliderObj.getIntentionsAndActorsView();
             var links = SliderObj.getLinksView();
@@ -141,6 +142,7 @@ class SliderObj {
             }
         } else {
             document.getElementById('slider').style.display = "";
+            document.getElementById('sliderValue').style.display = "";
 
             SliderObj.hideElements();
         }
