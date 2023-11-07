@@ -206,7 +206,7 @@ $('#evo-color-key').on('click', function () { window.open('./userguides/evo.html
 */
 class GuideBox {
 
-    static step = 0;
+    static step = -1;
 
     constructor(idx, task, instructions, context) {
         this.idx = idx;
@@ -275,11 +275,13 @@ class GuideBox {
         dialog.on('action:cancel', function () {
             dialog.close();
             document.getElementById('guide-name').style.display = "none";
+            GuideBox.step = -1;
         });
 
         dialog.on('action:close', function () {
             dialog.close();
             document.getElementById('guide-name').style.display = "none";
+            GuideBox.step = -1;
         });
         
         dialog.open();
@@ -340,21 +342,28 @@ class GuideBox {
 }
 
 $('#build-btn').on('click', function() {
-    GuideBox.build[0].showGuideBox();
-    GuideBox.tutorial = 0;
-    GuideBox.step = 0;
+    if (GuideBox.step == -1){
+        console.log(GuideBox.step)
+        GuideBox.build[0].showGuideBox();
+        GuideBox.tutorial = 0;
+        GuideBox.step = 0;
+    }
 });
 
 $('#why-btn').on('click', function() {
-    GuideBox.why[0].showGuideBox();
-    GuideBox.tutorial = 1;
-    GuideBox.step = 0;
+    if (GuideBox.step == -1){
+        GuideBox.why[0].showGuideBox();
+        GuideBox.tutorial = 1;
+        GuideBox.step = 0;
+    }
 });
 
 $('#analyze-btn').on('click', function() {
-    GuideBox.analyze[0].showGuideBox();
-    GuideBox.tutorial = 2;
-    GuideBox.step = 0;
+    if (GuideBox.step == -1){
+        GuideBox.analyze[0].showGuideBox();
+        GuideBox.tutorial = 2;
+        GuideBox.step = 0;
+    }
 });
 
 $('#guide-name').on('change', function () {
