@@ -208,8 +208,9 @@ class GuideBox {
 
     static step = -1;
 
-    constructor(idx, task, instructions, context) {
+    constructor(idx, label, task, instructions, context) {
         this.idx = idx;
+        this.label = label;
         this.task = task;
         this.instructions = instructions;
         this.context = context;
@@ -218,17 +219,17 @@ class GuideBox {
     static tutorial = 0;
 
     static why = [
-        new GuideBox(0, "Placeholder", "Placeholder", "Placeholder"),
-        new GuideBox(1, "Placeholder", "Placeholder", "Placeholder"),
-        new GuideBox(2, "Placeholder", "Placeholder", "Placeholder"),
+        new GuideBox(0, '1', "Placeholder", "Placeholder", "Placeholder"),
+        new GuideBox(1, '2', "Placeholder", "Placeholder", "Placeholder"),
+        new GuideBox(2, '3', "Placeholder", "Placeholder", "Placeholder"),
     ];
 
     static build = [
-        new GuideBox(0, "Add actor to model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace. Once an actor is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it.", "Placeholder"),
-        new GuideBox(1, "Use actor inspector", "To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page. Here, you can change the actor’s name or type. To learn more about actor types, see the documentation document in the documentation dropdown. ", "Placeholder"),
-        new GuideBox(2, "Add intentions to the model", "Intentions are the pieces that make up a goal model. Drag an intention to the page and let go to place it. Once an intention is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it. To learn more about each specific intention, see the documentation document in the documentation dropdown.", "Placeholder"),
-        new GuideBox(3, "Use intention inspector", "When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention. In this inspector, you can change the name of your intention, set its initial satisfaction value, choose its function type, and determine satisfaction values over set time points. To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.", `<img src="http://localhost:8080/userguides/color-lattice.png">`),
-        new GuideBox(4, "Link intentions", "Links connect intentions to one another and specify their relationship. To create a link, click on an intention and then drag the right arrow to another intention to connect them. Once a link has been created, click on the link and select the gear icon to choose the link type, click on the red X icon to delete the link, or drag anywhere on the arrow to create joints in the arrow. To learn more about the different link types, see the documentation document in the documentation dropdown.", "Placeholder"),
+        new GuideBox(0, '1a', "Add actor to model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace. Once an actor is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it.", "Placeholder"),
+        new GuideBox(1, '1b', "Use actor inspector", "To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page. Here, you can change the actor’s name or type. To learn more about actor types, see the documentation document in the documentation dropdown. ", "Placeholder"),
+        new GuideBox(2, '1c', "Add intentions to the model", "Intentions are the pieces that make up a goal model. Drag an intention to the page and let go to place it. Once an intention is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it. To learn more about each specific intention, see the documentation document in the documentation dropdown.", "Placeholder"),
+        new GuideBox(3, '1d', "Use intention inspector", "When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention. In this inspector, you can change the name of your intention, set its initial satisfaction value, choose its function type, and determine satisfaction values over set time points. To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.", `<img src="http://localhost:8080/userguides/color-lattice.png">`),
+        new GuideBox(4, '1e', "Link intentions", "Links connect intentions to one another and specify their relationship. To create a link, click on an intention and then drag the right arrow to another intention to connect them. Once a link has been created, click on the link and select the gear icon to choose the link type, click on the red X icon to delete the link, or drag anywhere on the arrow to create joints in the arrow. To learn more about the different link types, see the documentation document in the documentation dropdown.", "Placeholder"),
     ];
 
     static analyze = [
@@ -252,7 +253,7 @@ class GuideBox {
         var dialog = new joint.ui.Dialog({
             type: "info",
             width: 600,
-            title: this.idx+1 + ". " + this.task,
+            title: this.label + ". " + this.task,
             content: this.instructions + `\n<button class="learn-more">Learn More</button> <div class="more" style='display:none'>` + this.context + `</div>`,
             buttons: [
                 {action: "next", content: "Next", position: "right"},
@@ -266,9 +267,9 @@ class GuideBox {
         document.getElementById("guide-name").style.display = "";
         for (var i = 0; i < tutorial.length; i ++) {
             if (i == GuideBox.step) {
-                $('#guide-name').append(`<option value="${tutorial[i].idx}" selected>${tutorial[i].idx + 1 + ". " + tutorial[i].task}</option>`)
+                $('#guide-name').append(`<option value="${tutorial[i].idx}" selected>${tutorial[i].label + ". " + tutorial[i].task}</option>`)
             } else {
-                $('#guide-name').append(`<option value="${tutorial[i].idx}">${tutorial[i].idx + 1 + ". " + tutorial[i].task}</option>`)
+                $('#guide-name').append(`<option value="${tutorial[i].idx}">${tutorial[i].label + ". " + tutorial[i].task}</option>`)
             }
         }
 
