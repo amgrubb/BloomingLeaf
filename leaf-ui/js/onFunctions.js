@@ -264,6 +264,16 @@ class GuideBox {
             modal: false,
         });
 
+        //if we're on the last step of the tutorial, remove the next button
+        if (GuideBox.step == tutorial.length-1){
+            dialog.buttons.shift();
+        }
+
+        //if we're on the first step of the tutorial, remove the back button
+        if (GuideBox.step == -1 || GuideBox.step == 0) {
+            dialog.buttons.pop();
+        }
+        
         document.getElementById("guide-name").style.display = "";
         for (var i = 0; i < tutorial.length; i ++) {
             if (i == GuideBox.step) {
