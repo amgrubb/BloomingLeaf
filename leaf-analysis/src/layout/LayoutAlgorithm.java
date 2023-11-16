@@ -45,6 +45,8 @@ public class LayoutAlgorithm {
 		temp_actor.setVisualInfo(new VisualInfo(5,5,5.0,5.0));
 		model.getActors().add(temp_actor);
 
+        updateCentersInModel(model);
+
 		if (LMain.DEBUG) System.out.println(temp_actor.getEmbedIntentions(model).length);
 
 		//nested levels (intention level)
@@ -71,10 +73,12 @@ public class LayoutAlgorithm {
 			if (LMain.DEBUG) System.out.println(Arrays.toString(intention_nodePos));
 
 			//layout intentions
-			layoutModel(intention_nodePos, false);
+			// layoutModel(intention_nodePos, false);
+            layoutModel(intention_nodePos, a,false);
 
 			//resize actor
-			resizeActor(a, intention_nodePos);
+			// resizeActor(a, intention_nodePos);
+            resizeActor(a, intention_nodePos, false);
 			if (a.getName().equals("temp-actor")) {
 				if (LMain.DEBUG) System.out.println(a.getVisualInfo());
 			}
@@ -91,10 +95,16 @@ public class LayoutAlgorithm {
 		}
 		VisualInfo[] lvl0_nodePos = initNodePositions(temp_arrayList);
 
-		//	run layout on level_zero (if a node is an actor, propagate changes to its children)
-		if(model.getActors().size() == 0) layoutModel(lvl0_nodePos, false);
-		else layoutModel(lvl0_nodePos, true);
+        Actor temp_actor1 = new Actor("temp-actor", "temp-actor", "basic.Actor", new String[0], "temp-actor");
+        temp_actor1.setVisualInfo(new VisualInfo(0,0,5.0,5.0));
 
+		//	run layout on level_zero (if a node is an actor, propagate changes to its children)
+		if(model.getActors().size() == 0) layoutModel(lvl0_nodePos, temp_actor1, false);
+		else layoutModel(lvl0_nodePos, temp_actor1, true);
+        // if(model.getActors().size() == 0) layoutModel(lvl0_nodePos, false);
+		// else layoutModel(lvl0_nodePos, true);
+
+        undoUpdatesInModel(model);
 		//delete the temp actor
 		model.getActors().remove(temp_actor);
 		//TODO: delete temp actor from intentions
@@ -109,11 +119,18 @@ public class LayoutAlgorithm {
      * @param hasActors - will change constants and conditions
      * @return
      */
-	public ModelSpec layoutModel(VisualInfo[] nodePositions, boolean hasActors){
+    public ModelSpec layoutModel(VisualInfo[] nodePositions, Actor actor, boolean hasActors){
+	// public ModelSpec layoutModel(VisualInfo[] nodePositions, boolean hasActors){
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
         //center is where gravity force comes from 
 
-        VisualInfo center = findCenter(nodePositions);
+        // for (VisualInfo node: nodePositions){
+        //     updateCenterValues(node);
+        // }
+
+        VisualInfo center = findCenter(nodePositions, actor, hasActors);
+        // VisualInfo center = findCenter(nodePositions);
+        
 
         int numActors = model.getActors().size();
         if(!hasActors) numActors = 0;
@@ -279,8 +296,10 @@ public class LayoutAlgorithm {
 	 * @param intentions
 	 * @return
 	 */
-    public Actor resizeActor (Actor actor, VisualInfo[] intentions) {
-        VisualInfo center = findCenter(intentions);
+    public Actor resizeActor (Actor actor, VisualInfo[] intentions, boolean hasActors) {
+        VisualInfo center = findCenter(intentions, actor, hasActors);
+    // public Actor resizeActor (Actor actor, VisualInfo[] intentions) {
+    //     VisualInfo center = findCenter(intentions);
         Integer margin = 100; //space between the edge of intentions and the actor
         actor.setX(center.getX() - center.getWidth()/2 - margin);
         actor.setY(center.getY() - center.getHeight()/2 - margin);
@@ -375,31 +394,134 @@ public class LayoutAlgorithm {
      * @param nodePositions
      * @return VisualInfo object at the center who's height and width is the height and width of all the nodes
      */
-    public VisualInfo findCenter(VisualInfo[] nodePositions) {
+//     public VisualInfo findCenter(VisualInfo[] nodePositions) {
+//         VisualInfo mostLeft = nodePositions[0];
+//         VisualInfo mostRight = nodePositions[0];
+//         VisualInfo mostUpper = nodePositions[0];
+//         VisualInfo mostBottom = nodePositions[0];
+        
+//         //find the most {left, right, upper, bottom} nodes
+//         for(VisualInfo nodePosition: nodePositions) {
+//         	//AbstractLinkableElement nodePos = AbstractLinkableElement(nodePosition);
+        	
+//             //System.out.println("NODEPOS" + nodePosition.toString());
+            
+//             if(nodePosition.getX() < mostLeft.getX()){
+//             	mostLeft = nodePosition;
+//             }
+//             if(nodePosition.getX() + nodePosition.getWidth() > mostRight.getX() + mostRight.getWidth()){
+//             	mostRight = nodePosition;
+//             }
+//             if(nodePosition.getY() < mostUpper.getY()){
+//             	mostUpper = nodePosition;
+//             }
+//             if(nodePosition.getY() + nodePosition.getHeight() > mostBottom.getY() + nodePosition.getHeight()){
+//             	mostBottom = nodePosition;
+//             }
+            
+//         }
+// //        System.out.println("most right: " + mostRight.getX() + "," + mostRight.getY());
+// //        System.out.println("most left: " + mostLeft.getX() + "," + mostLeft.getY());
+// //        System.out.println("most upper: " + mostUpper.getX() + "," + mostUpper.getY());
+// //        System.out.println("most bottom: " + mostBottom.getX() + "," + mostBottom.getY());
+//         System.out.println("MR_Pos: " + mostRight.toString());
+//         System.out.println("ML_Pos: " + mostLeft.toString());
+//         System.out.println("MB_Pos: " + mostBottom.toString());
+//         System.out.println("MU_Pos: " + mostUpper.toString());
+
+//         double x_left = mostLeft.getX();
+//         double x_right = mostRight.getX() + mostRight.getSize().getWidth();
+//         double y_upper = mostUpper.getY();
+//         double y_bottom = mostBottom.getY() + mostBottom.getSize().getHeight();
+
+//         double x = (x_left + x_right) / 2;
+//         double y = (y_upper + y_bottom) / 2;
+        
+//         //create a visualInfo object that encompasses all the nodes and has its center in the center of the nodes
+//         //width, height, x, y
+//         VisualInfo center = new VisualInfo((int)(Math.abs(x_left - x_right)), (int)(Math.abs(y_upper - y_bottom)), x, y);
+//         System.out.println("CenterPos: " + center.toString());
+
+//         return center;
+//     }
+
+    public void updateCenterOnNode(VisualInfo node){
+        //double x_value = node.getX() + (node.getWidth()/2);
+    	System.out.println("x coordinates before updates: " + node.getX());
+        node.setX(node.getX() + (node.getWidth()/2));
+        System.out.println("x coordinates after undoUpdates: " + node.getX());
+        System.out.println("\n");
+        System.out.println("y coordinates before undoUpdates: " + node.getY());
+        //double y_value = node.getY() + (node.getHeight()/2);
+        node.setY(node.getY() + (node.getHeight()/2));
+        System.out.println("y coordinates after undoUpdates: " + node.getY());
+    }
+
+    public void updateCentersInModel(ModelSpec model){
+        for(Actor a: model.getActors()) {
+            Intention[] a_intentions = a.getEmbedIntentions(model);
+            // Updating the intentions of each actor
+            for (Intention node: a_intentions){
+                updateCenterOnNode(node.getVisualInfo());
+            }
+            updateCenterOnNode(a.getVisualInfo());
+        }
+
+    }
+    public void undoUpdateOnNode(VisualInfo node){
+    	System.out.println("Starting undoUpdateOnNode");
+    	System.out.println("x coordinates before undoUpdates: " + node.getX());
+        //double x_value = node.getX() + (node.getWidth()/2);
+        node.setX(node.getX() - (node.getWidth()/2));
+        System.out.println("x coordinates after undoUpdates: " + node.getX());
+        System.out.println("\n");
+        System.out.println("y coordinates before undoUpdates: " + node.getY());
+        //double y_value = node.getY() + (node.getHeight()/2);
+        node.setY(node.getY() - (node.getHeight()/2));
+        System.out.println("y coordinates after undoUpdates: " + node.getY());
+    }
+
+    public void undoUpdatesInModel(ModelSpec model){
+        for(Actor a: model.getActors()) {
+            Intention[] a_intentions = a.getEmbedIntentions(model);
+            // Updating the intentions of each actor
+            for (Intention node: a_intentions){
+                undoUpdateOnNode(node.getVisualInfo());
+            }
+            undoUpdateOnNode(a.getVisualInfo());
+        }
+    }
+    
+    public VisualInfo findCenter(VisualInfo[] nodePositions, Actor Actor, boolean hasActors) {
+
+        if(!hasActors){
+            System.out.println("Actor coordinates: x= " +Actor.getX() +"y= " + Actor.getY() + "width= " + Actor.getWidth()+ "height= " + Actor.getHeight());
+        }
+
         VisualInfo mostLeft = nodePositions[0];
         VisualInfo mostRight = nodePositions[0];
         VisualInfo mostUpper = nodePositions[0];
         VisualInfo mostBottom = nodePositions[0];
-        
+       
         //find the most {left, right, upper, bottom} nodes
         for(VisualInfo nodePosition: nodePositions) {
-        	//AbstractLinkableElement nodePos = AbstractLinkableElement(nodePosition);
-        	
-            System.out.println("NODEPOS" + nodePosition.toString());
-            
+            //AbstractLinkableElement nodePos = AbstractLinkableElement(nodePosition);
+           
+            //System.out.println("NODEPOS" + nodePosition.toString());
+           
             if(nodePosition.getX() < mostLeft.getX()){
-            	mostLeft = nodePosition;
+                mostLeft = nodePosition;
             }
-            if(nodePosition.getX() + nodePosition.getWidth() > mostRight.getX() + mostRight.getWidth()){
-            	mostRight = nodePosition;
+            if(nodePosition.getX() > mostRight.getX()){
+                mostRight = nodePosition;
             }
             if(nodePosition.getY() < mostUpper.getY()){
-            	mostUpper = nodePosition;
+                mostUpper = nodePosition;
             }
-            if(nodePosition.getY() + nodePosition.getHeight() > mostBottom.getY() + nodePosition.getHeight()){
-            	mostBottom = nodePosition;
+            if(nodePosition.getY() > mostBottom.getY()){
+                mostBottom = nodePosition;
             }
-            
+           
         }
         System.out.println("most right:" + mostRight.getX() + "," + mostRight.getY());
         System.out.println("most left:" + mostLeft.getX() + "," + mostLeft.getY());
@@ -407,17 +529,17 @@ public class LayoutAlgorithm {
         System.out.println("most bottom:" + mostBottom.getX() + "," + mostBottom.getY());
 
         double x_left = mostLeft.getX();
-        double x_right = mostRight.getX() + mostRight.getSize().getWidth();
+        double x_right = mostRight.getX();
         double y_upper = mostUpper.getY();
-        double y_bottom = mostBottom.getY() + mostBottom.getSize().getHeight();
+        double y_bottom = mostBottom.getY();
 
         double x = (x_left + x_right) / 2;
         double y = (y_upper + y_bottom) / 2;
-        
+       
         //create a visualInfo object that encompasses all the nodes and has its center in the center of the nodes
         //width, height, x, y
         VisualInfo center = new VisualInfo((int)(Math.abs(x_left - x_right)), (int)(Math.abs(y_upper - y_bottom)), x, y);
-
+        System.out.println("CENTERPOS: " + center.toString());
         return center;
     }
 
