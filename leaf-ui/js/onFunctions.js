@@ -185,6 +185,7 @@ $('#btn-clear-flabel').on('click', function () {
             intention.setEvolvingFunction('NT');
             $(".function-type").val('NT');
             cell.attr(".funcvalue/text", "");
+            intention.attributes.evolvingFunction.attributes.functionSegList = []
 
             // Rerender elementInspector for clearing Dynamic Labels
             resetInspectorView(cell);

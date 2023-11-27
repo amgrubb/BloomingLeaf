@@ -313,6 +313,9 @@ var ElementInspector = Backbone.View.extend({
         };
 
         this.intention.setEvolvingFunction(this.$('.function-type').val());
+        if (this.intention.attributes.evolvingFunction.attributes.type == "NT") {
+            this.intention.attributes.evolvingFunction.attributes.functionSegList = []
+        }
         this.updateCell();
         // Disabling invalid function types are needed here b/c selecting a function type can change the init sat value
         this.$('option[value=I]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
