@@ -136,6 +136,8 @@ class SliderObj {
             var links = SliderObj.getLinksView();
             for (var i = 0; i < elements.length; i ++) {
                 $("#" + elements[i].id).css("display", "");
+                var cell = graph.getCell(elements[i].model.id);
+                cell.attr({ text: { fill: 'white' } }); 
             }
             for (var i = 0; i < links.length; i ++) {
                 $("#" + links[i].id).css("display", "");
