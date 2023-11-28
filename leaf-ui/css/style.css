@@ -741,6 +741,7 @@ padding: 0px 20px 0px 0px;
 #guide:hover .help-content {
   display: block;
   position: absolute;
+}
 
   /** sets the font color for the text inside the color legend */
 .s_value_box {
