@@ -28,7 +28,22 @@ class IntentionColorVis {
  * This order is created intentionally for the frontend. Please DO NOT change the order
  */
 class EVO {
-
+    
+    // Gives the numerical representation of a given satisfaction value
+    static charSatValueToNum = {
+        "FS" : "0011",
+        "FP" : "0111",
+        "PS" : "0010",
+        "FF" : "1111",
+        "PP" : "0110",
+        "nn" : "0000",
+        "PF" : "1110",
+        "PD" : "0100",
+        "FD" : "1100"
+    
+    }
+    
+    //default palette
     static colorVisDict = {
         "0000": "#D3D3D3", // None (⊥, ⊥)
         "0011": "#003fff", // Satisfied (F, ⊥)
@@ -41,18 +56,7 @@ class EVO {
         "1111": "#0D0221"  // Conflict (F, F)
     };
 
-    // Replaces all conflicting evals with dark grey
-    static colorVisDictColorBlind = {
-        "0000": "#D3D3D3",
-        "0011": "#003fff",
-        "0010": "#8FB8DE",
-        "0100": "#fbaca8",
-        "0110": "#333333",
-        "0111": "#333333",
-        "1100": "#FF2600",
-        "1110": "#333333",
-        "1111": "#333333"
-    };
+    // The Red-Green Palette
     static colorVisDict2 = {
         "0000": "#bdaead",
         "0011": "#d11a2d",
@@ -64,6 +68,8 @@ class EVO {
         "1110": "#887322",
         "1111": "#000000"
     };
+
+    // The Green-Black Palette
     static colorVisDict3 = {
         "0000": "#d3d3d3",
         "0011": "#39ff14",
@@ -76,6 +82,7 @@ class EVO {
         "1111": "#790604"
     };
 
+    // The Yellow-Purple Palette
     static colorVisDict4 = {
         "0000": "#D3D3D3",
         "0011": "#FFFF00",
@@ -87,16 +94,34 @@ class EVO {
         "1110": "#5946b2",
         "1111": "#0D0221"
     };
-    static selfColorVisDict = {//Initialize user-created-palette
-        "0000": "undefined",
-        "0011": "undefined",
-        "0010": "undefined",
-        "0100": "undefined",
-        "0110": "undefined",
-        "0111": "undefined",
-        "1100": "undefined",
-        "1110": "undefined",
-        "1111": "undefined"
+
+    // Color Blind palette
+    static colorVisDictColorBlind = {
+     
+        "0000": "#CCCCCC", // None (⊥, ⊥)
+        "0011": "#0000FF", // Satisfied (F, ⊥)
+        "0010": "#0000FF", // Partially satisfied (P, ⊥)
+        "0100": "#FF0000", // Partially denied (⊥, P)
+        "0110": "#FFFF00", // Conflict (P, P)
+        "0111": "#FFFF00", // Conflict (F, P)
+        "1100": "#FF0000", // Fully denied (⊥, F)
+        "1110": "#FFFF00", // Conflict (P, F)
+        "1111": "#FFFF00"  // Conflict (F, F)
+
+        
+    };
+
+    //Initialize user-created-palette as Red-Blue
+    static selfColorVisDict = {
+        "0000": "#D3D3D3", // None (⊥, ⊥)
+        "0011": "#003fff", // Satisfied (F, ⊥)
+        "0010": "#8FB8DE", // Partially satisfied (P, ⊥)
+        "0100": "#fbaca8", // Partially denied (⊥, P)
+        "0110": "#9400D3", // Conflict (P, P)
+        "0111": "#5946b2", // Conflict (F, P)
+        "1100": "#FF2600", // Fully denied (⊥, F)
+        "1110": "#ca2c92", // Conflict (P, F)
+        "1111": "#0D0221"  // Conflict (F, F)
     };
 
     
@@ -109,7 +134,6 @@ class EVO {
         EVO.colorVisDict3,
         EVO.colorVisDict4,
         EVO.colorVisDictColorBlind,
-        EVO.selfColorVisDict
     ];
 
     /**
@@ -178,7 +202,6 @@ class EVO {
             } else {
                 EVO.colorIntentionsModeling();
             }
-            EVO.changeIntentionsText(analysisResult);
         }
         // If EVO is off
         else {
@@ -372,6 +395,16 @@ class EVO {
                         var intentionEval = element.timePoints[timepoint];
                         var color = EVO.getColor(intentionEval);
                         cellView.model.attr({ '.outer': { 'fill': color } });
+
+                        //update text font to white if the chosen color is dark 
+                        if (color != undefined){
+                            if (isDark(color)) {
+                                cellView.model.attr({ 'text': { 'fill': "white" } });
+                            }else {
+                                cellView.model.attr({ 'text': { 'fill': "black" } });
+                            }
+                        }
+                        
                     }
                 }
             }
@@ -513,8 +546,20 @@ class EVO {
                     cellView.model.changeToOriginalColour();
                 }
                 var colorChange = EVO.getColor(initSatVal);
+
                 // Change intention color to match sat value
                 cellView.model.attr({ '.outer': { 'fill': colorChange } });
+
+                //update text font to white if the chosen color is dark 
+                if (colorChange != undefined){
+                    if (isDark(colorChange)) {
+                        cellView.model.attr({ 'text': { 'fill': "white" } });
+                    }else {
+                        cellView.model.attr({ 'text': { 'fill': "black" } });
+                    }
+                }
+                
+                
             } else {
                 cellView.model.changeToOriginalColour();
             }
@@ -527,22 +572,11 @@ class EVO {
      */
     static getColor(intentionEval) {
 
-        //Assign intentions with chosen palette and set default values in Create My Palette the same as the chosen palette
         if (EVO.paletteOption <= 5) {
-            $("#my-None").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0000"]);
-            $("#my-Satisfied").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0011"]);
-            $("#my-PS").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0010"]);
-            $("#my-PD").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0100"]);
-            $("#my-PP").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0110"]);
-            $("#my-FP").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0111"]);
-            $("#my-Denied").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1100"]);
-            $("#my-PF").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1110"]);
-            $("#my-FF").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"]);
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
 
-        if (EVO.paletteOption == 6) {
-            EVO.fillInDictionary();
+        if (EVO.paletteOption >= 6) {
             return EVO.selfColorVisDict[intentionEval];
         }
     }
@@ -609,7 +643,7 @@ class EVO {
      * Fill in self-dictionary
      */
     static fillInDictionary() {
-        if (EVO.paletteOption == 6) {
+        if (EVO.paletteOption == 7 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-None").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-FF").value & document.getElementById("my-Denied").value!= document.getElementById("my-None").value & document.getElementById("my-FF").value!= document.getElementById("my-Denied").value & document.getElementById("my-None").value!= document.getElementById("my-FF").value ){
             EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
                 "0011": document.getElementById("my-Satisfied").value,
@@ -620,8 +654,12 @@ class EVO {
                 "1100": document.getElementById("my-Denied").value,
                 "1110": document.getElementById("my-PF").value,
                 "1111": document.getElementById("my-FF").value
-            }
-        }    
+            };
+            return true
+        } else{
+            return false  
+        }
+        
     }
 }
 
@@ -747,15 +785,6 @@ class EVONextState {
             return selfVis[intentionEval];
         }
 
-    }
-
-
-    /**
-     * Validates if the input colors are hexcolor
-     */
-    static validateColor(color) {
-        const COLOR_PATTERN = new RegExp("^(#[a-fA-F0-9]{6})$");
-        return COLOR_PATTERN.test(color);
     }
 
 

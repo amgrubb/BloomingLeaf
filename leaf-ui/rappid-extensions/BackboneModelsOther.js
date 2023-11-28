@@ -19,10 +19,13 @@ var ActorBBM = Backbone.Model.extend({
     defaults: function () {
         return {
             type: 'A',
-            actorName: 'Actor'
+            actorName: 'Actor',
+            isHidden: false,
+            intervals:[],
         }
     },
 });
+
 
 
 /** 

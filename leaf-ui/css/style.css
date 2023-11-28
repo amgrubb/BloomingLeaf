@@ -144,6 +144,7 @@ body {
   background-color: #333;
   color: #bcbcbc;
   text-align: center;
+  overflow: scroll;
 }
 
 /* Sets Margin distance for the right panel */
@@ -155,7 +156,7 @@ body {
 .inspector input, .inspector textarea {
   color: black;
   text-shadow: none;
-  border: 1px solid black;
+  border: 1px solid transparent;
   background: white;
   height: 20px;
   line-height: 20px;
@@ -244,7 +245,6 @@ body {
   background-color: rgba(36, 150, 255, 1);
   border-color: rgba(31, 121, 101, 1);
   color: white;
-  font-size: 10;
   font-weight: 200;
   width: 200px;
   display: block;
@@ -741,4 +741,202 @@ padding: 0px 20px 0px 0px;
 #guide:hover .help-content {
   display: block;
   position: absolute;
+
+  /** sets the font color for the text inside the color legend */
+.s_value_box {
+  padding: 5px;
+  text-align: center;
+}
+
+.wrapper{
+  position: relative;
+  background-color: transparent;
+  border-radius: 10px;
+}
+.container{
+  position: relative;
+  width: 100%;
+  height: 40px;
+  margin-top: 10px;
+}
+input[id="slider-1"]{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  outline: none;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  background-color: transparent;
+  pointer-events: none;
+}
+input[id="slider-2"]{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  outline: none;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  background-color: transparent;
+  pointer-events: none;
+}
+.slider-track{
+  width: 100%;
+  height: 5px;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  border-radius: 5px;
+  background: rgb(99, 97, 97)
+}
+input[id="slider-1"]::-webkit-slider-runnable-track{
+  -webkit-appearance: none;
+  height: 5px;
+}
+input[id="slider-2"]::-webkit-slider-runnable-track{
+  -webkit-appearance: none;
+  height: 5px;
+}
+input[id="slider-1"]::-moz-range-track{
+  -moz-appearance: none;
+  height: 5px;
+}
+input[id="slider-2"]::-moz-range-track{
+  -moz-appearance: none;
+  height: 5px;
+}
+input[id="slider-1"]::-ms-track{
+  appearance: none;
+  height: 5px;
+}
+input[id="slider-2"]::-ms-track{
+  appearance: none;
+  height: 5px;
+}
+input[id="slider-1"]::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  height: 1.7em;
+  width: 1.7em;
+  background-color: #3264fe;
+  cursor: pointer;
+  margin-top: -9px;
+  pointer-events: auto;
+  border-radius: 50%;
+}
+input[id="slider-2"]::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  height: 1.7em;
+  width: 1.7em;
+  background-color: #3264fe;
+  cursor: pointer;
+  margin-top: -9px;
+  pointer-events: auto;
+  border-radius: 50%;
+}
+input[id="slider-1"]::-moz-range-thumb{
+  -webkit-appearance: none;
+  height: 1.7em;
+  width: 1.7em;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #3264fe;
+  pointer-events: auto;
+}
+input[id="slider-2"]::-moz-range-thumb{
+  -webkit-appearance: none;
+  height: 1.7em;
+  width: 1.7em;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #3264fe;
+  pointer-events: auto;
+}
+input[id="slider-1"]::-ms-thumb{
+  appearance: none;
+  height: 1.7em;
+  width: 1.7em;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #3264fe;
+  pointer-events: auto;
+}
+input[id="slider-2"]::-ms-thumb{
+  appearance: none;
+  height: 1.7em;
+  width: 1.7em;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #3264fe;
+  pointer-events: auto;
+}
+input[id="slider-1"]:active::-webkit-slider-thumb{
+  background-color: #ffffff;
+  border: 3px solid #3264fe;
+}
+input[id="slider-2"]:active::-webkit-slider-thumb{
+  background-color: #ffffff;
+  border: 3px solid #3264fe;
+}
+.values{
+  background-color: #3264fe;
+  width: 32%;
+  position: relative;
+  margin: auto;
+  padding: 10px 0;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 25px;
+  color: #ffffff;
+}
+.values:before{
+  content: "";
+  position: absolute;
+  height: 0;
+  width: 0;
+  border-top: 15px solid #3264fe;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  margin: auto;
+  bottom: -14px;
+  left: 0;
+  right: 0;
+}
+
+.legend-box {
+  height: 20px;
+  width: 150px;
+  margin-left: 50px;
+  /* margin-bottom: 15px; */
+  /* border: 1px solid black; */
+}
+
+.legend-box-blue {
+  background-color: #3264fe;
+  color: #ffffff;  
+}
+
+.legend-box-white {
+  background-color: #ffffff;
+  color: #3264fe;
+}
+
+/** buttons for the palette customization */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.top-left-button {
+  align-self: flex-start;
+}
+
+.top-right-button {
+  align-self: flex-start;
 }

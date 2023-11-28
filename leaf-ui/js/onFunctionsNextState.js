@@ -120,8 +120,8 @@ function updateSatValueInfo(model, elementNum, originalResults2) {
 // Navigation bar functions:
 var max_font = 20;
 var min_font = 6;
-var current_font = 10;
-var default_font = 10;
+var current_font = 12;
+var default_font = 12;
 var graph = new joint.dia.BloomingGraph();
 
 /**

@@ -68,6 +68,7 @@ var ElementInspector = Backbone.View.extend({
         this.listenTo(this, 'change:intention', this.initSatValueChanged);
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
+        this.isNewSegment = false;
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -126,6 +127,12 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<br>',
         '<canvas id="chart" width="240" height="240"></canvas>',
+
+        '<label for="interval"> Intervals </label>',
+        '<div id = max-time>',
+        '</div>',
+        '<button type="button" id="intervals-flip-btn" onclick="flipIntervals()" name="hidden" value="true">Flip interval</button><br><br>',
+        '<script src="js/actorDoubleSlider.js"></script>', // should be generalized?
         '</script>'].join(''),
 
     events: {
@@ -143,6 +150,9 @@ var ElementInspector = Backbone.View.extend({
         'click #constraint-restart': 'removeUserConstraints',
         'keyup .cell-attrs-text': 'nameAction',
         'clearInspector .inspector-views': 'removeView',
+
+        'change #max-time': 'updateTimePointsSet',
+        'click #intervals-flip-btn': 'updateTimePointsSet',
     },
 
     /**
@@ -190,6 +200,16 @@ var ElementInspector = Backbone.View.extend({
 
         }
         this.updateCell();
+
+        this.displayIntervals(this.findActor());
+
+        percent1 = ((document.getElementById("slider-1").value - document.getElementById("slider-1").min) / (document.getElementById("slider-1").max - document.getElementById("slider-1").min)) * 100;
+        percent2 = ((document.getElementById("slider-2").value - document.getElementById("slider-1").min) / (document.getElementById("slider-1").max - document.getElementById("slider-1").min)) * 100;
+        if (document.getElementById("intervals-flip-btn").value == "true") {
+            document.querySelector(".slider-track").style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #3264fe ${percent1}% , #3264fe ${percent2}%, #dadae5 ${percent2}%)`;
+        } else {
+            document.querySelector(".slider-track").style.background = `linear-gradient(to right, #3264fe ${percent1}% , #dadae5 ${percent1}% , #dadae5 ${percent2}%, #3264fe ${percent2}%)`;
+        }
     },
 
     /**
@@ -413,6 +433,7 @@ var ElementInspector = Backbone.View.extend({
      * constraints from previously stored.
      */
     addSegment: function () {
+        this.isNewSegment = true;
         // Adds a new FunctionSegmentBBM to the functionSegList
         this.intention.addUserDefinedSeg("C", "0000");
         var funcSegList = this.intention.getFuncSegments();
@@ -720,7 +741,7 @@ var ElementInspector = Backbone.View.extend({
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
                 funcSeg => {
-                    var functionSegView = new FuncSegView({ model: funcSeg, intention: this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart });
+                    var functionSegView = new FuncSegView({ model: funcSeg, intention: this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart, isNewSegment: this.isNewSegment });
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render();
                     i++;
@@ -729,19 +750,22 @@ var ElementInspector = Backbone.View.extend({
     } else if (this.intention.get('evolvingFunction') != null && this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') !== null && this.intention.get('evolvingFunction').get('type') === 'NT') {
         // Clear previous chart values
         this.chart.reset();
-        // Gets the chart canvas
-        var context = $("#chart").get(0).getContext("2d");
         // Adds the initial satisfaction as a single point to the chart
         this.chart.addDataSet(0, [satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal], false);
         // Renders the chart
-        this.chart.display(context);
+        if ($("#chart").get(0)) { // if the chart is displayed on the page
+            // Gets the chart canvas
+            var context = $("#chart").get(0).getContext("2d");
+            this.chart.display(context);
         }
-    },
+    }
+},
 
     /**
      * Called whenever the html is updated. Renders the views for the FunctionSegmentBBMs and adds an absTime label
      */
     rerender: function () {
+        this.isNewSegment = false;
         // Adds absTime label
         if (this.intention.getFuncSegments().length != 0) {
             $(".text-label").css("visibility", "visible");
@@ -749,6 +773,73 @@ var ElementInspector = Backbone.View.extend({
         // Renders all of the FuncSegViews
         this.renderFunctionSegments();
         return this;
+    },
+
+    /**
+     * Returns the actor that the intention belongs to
+     */
+    findActor: function() {
+        var elements = graph.getElements();
+        var actors = []
+        for (var i = 0; i < elements.length; i++) {
+            var cell = elements[i].findView(paper);
+            if (cell.model.attributes.type == "basic.Actor") {
+                actors.push(cell);
+            }
+        }
+        for (var i = 0; i < actors.length; i++) {
+            if (actors[i].model.attributes.embeds) {
+                for (var j = 0; j < actors[i].model.attributes.embeds.length; j++) {
+                    if (actors[i].model.attributes.embeds[j] == this.model.id) {
+                        return actors[i];
+                    }
+                }
+            }
+        }
+    },
+
+    /**
+     * Creates and renders an instance of the IntervalsView subview 
+     */
+    displayIntervals: function (actor) {
+        var intervalsView = new IntervalsView({actor: actor, intention: this.intention});
+        $('#max-time').append(intervalsView.el);
+        intervalsView.render();
+    },
+
+    /**
+     * Updates the intervals saved into the instance of the intention
+     */
+    updateTimePointsSet: function () {  
+        var minRange = parseInt(document.getElementById('slider-1').min);
+        var maxRange = parseInt(document.getElementById('slider-1').max);  
+        var timePoints = parseInt(document.getElementById('slider-1').value);
+        var timePoints2 = parseInt(document.getElementById('slider-2').value);
+        var flipBool = document.getElementById('intervals-flip-btn').value;
+
+        var timePointsArray = [];
+        if (flipBool == "true") { // not flipped
+            if (timePoints != minRange) { // first slider is moved
+                timePointsArray.push([minRange, timePoints - 1]);
+            }
+            if (timePoints2 != maxRange) { // second slider is moved
+                timePointsArray.push([timePoints2 + 1, maxRange]);
+            }
+        } else { // flipped
+            if (timePoints != minRange) { // first slider is moved
+                timePoints += 1;
+            }
+            if (timePoints2 != maxRange) { // second slider is moved
+                timePoints2 -= 1;
+            }
+            timePointsArray.push([timePoints, timePoints2]);
+        }
+
+        this.intention.set('intervals', timePointsArray);
+
+        // updates display when flipped
+        document.getElementById('flipped-min').textContent = minRange;
+        document.getElementById('flipped-max').textContent = maxRange;
     },
 });
 
@@ -777,6 +868,7 @@ var FuncSegView = Backbone.View.extend({
         }
         this.index = options.index;
         this.initSatValue = options.initSatValue;
+        this.isNewSegment = options.isNewSegment;
 
         // Listens to if the current parameter in the FunctionSegmentBBMs changes
         this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
@@ -942,7 +1034,7 @@ var FuncSegView = Backbone.View.extend({
                     // If the initial satisfaction value is denied you can't select decreasing
                     this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
                 }
-                this.checkUDFunctionValues()
+                this.checkUDFunctionValues(this.isNewSegment);
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
@@ -989,41 +1081,51 @@ var FuncSegView = Backbone.View.extend({
     * Adds appropriate satisfaction values option tags
     * for .user-sat-value, which is the select tag used to
     * indicate satisfaction values when creating a user defined function.
+    * 
+    * If the UD Segment is newly added, set the evidence pair to the function type's default:
+    * Increasing -> Fully Satisfied, Decreasing -> Fully Denied, Stocastic -> (no value), Constant -> initial sat val if first segment, none otherwise
     */
-    checkUDFunctionValues: function () {
+    checkUDFunctionValues: function (isNewSegment) {
         var func = this.$("#seg-function-type").val();
 
         if (func == 'I' || func == 'D') {
             var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
             if (func == 'I') {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
-                this.$("#seg-sat-value").val("0011");
-                this.model.set('refEvidencePair', "0011");
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', "0011");
+                }
             } else {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
-                this.$("#seg-sat-value").val("1100");
-                this.model.set('refEvidencePair', "1100");
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', "1100");
+                }
             }
         } else if (func == 'R') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
-            this.$("#seg-sat-value").val("(no value)");
             this.$("#seg-sat-value").prop('disabled', true);
-            this.model.set('refEvidencePair', '(no value)');
+            if(isNewSegment) {
+                this.model.set('refEvidencePair', '(no value)');
+            }
         } else if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsNoRandom());
             // Restrict input to initial satisfaction value if it is the first constraint
             if (this.index == 0) {
-                this.$("#seg-sat-value").val(this.initSatValue);
-                this.model.set('refEvidencePair', this.initSatValue);
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', this.initSatValue);
+                }
             } else if (this.index != 0 && this.model.get('current')) {
                 this.$("#seg-sat-value").prop('disabled', '');
-                this.model.set('refEvidencePair', "0000")
-                this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', "0000");
+                }
+
             } else {
                 this.$("#seg-sat-value").prop('disabled', true);
-                this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
             }
         }
+        // Update the dropdown to display the UD segment's satisfaction value
+        this.$("#seg-sat-value").val(this.model.get('refEvidencePair')); 
         return;
     },
 
@@ -1118,8 +1220,6 @@ var FuncSegView = Backbone.View.extend({
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
             this.chart.reset();
-            // Get the chart canvas
-            var context = $("#chart").get(0).getContext("2d");
 
             // Render preview for user defined function types
             if (funcType == "UD") {
@@ -1163,7 +1263,11 @@ var FuncSegView = Backbone.View.extend({
                     this.chart.addDataSet(0, [initVal], false);
                 }
             }
-            this.chart.display(context);
+            if ($("#chart").get(0)) { // if the chart is displayed on the page
+                // Get the chart canvas
+                var context = $("#chart").get(0).getContext("2d");
+                this.chart.display(context);
+            }
         }
     },
 
@@ -1172,7 +1276,6 @@ var FuncSegView = Backbone.View.extend({
      * defined function and satisfaction value(s)
      */
     updateChartUserDefined: function () {
-        var context = $("#chart").get(0).getContext("2d");
         // This will never be undefined because at least one 
         // FunctionSegmentBBM will be in functionSegList at this point
         var numFuncSegments = this.intention.getFuncSegments().length;
@@ -1220,7 +1323,11 @@ var FuncSegView = Backbone.View.extend({
             }
             this.chart.addDataSet(i, [data1, data2], currFunc === 'R' || currVal === '(no value)', coloured);
         }
-        this.chart.display(context);
+        if ($("#chart").get(0)) { // if the chart is displayed on the page
+            // Gets the chart canvas
+            var context = $("#chart").get(0).getContext("2d");
+            this.chart.display(context);
+        }
     },
 
     /**
@@ -1235,4 +1342,161 @@ var FuncSegView = Backbone.View.extend({
         }
         return res;
     },
+});
+
+var IntervalsView = Backbone.View.extend({
+    model: joint.dia.BloomingGraph,
+
+    initialize: function (options) {
+        this.actor = options.actor;
+        this.intention = options.intention;
+    },
+
+    template: ['<script type="text/template" id="item-template">',
+    '<div class="container">',
+        '<div class="slider-track">',
+        '</div>',
+        '<input style="display:none" id="limit1" value=<%= graph.get("maxAbsTime") %>>',
+        '<input style="display:none" id="limit2" value="0">',
+        '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value="0" id="slider-1" oninput="slideOne()">',
+        '<input type="range" min="0" max=<%= graph.get("maxAbsTime") %> value=<%= graph.get("maxAbsTime") %> id="slider-2" oninput="slideTwo()">',
+    '</div>',
+    '<label for="range1">Available: </label>',
+    '<div id="not-flipped">',
+        '<span id="range1">',
+        '0',
+        '</span>',
+        '<span> &dash; </span>',
+        '<span id="range2">',
+        '<%= graph.get("maxAbsTime") %>',
+        '</span><br>',
+    '</div>',
+    '<div id="flipped" style="display:none">',
+        '<span id="int1">',
+            '<span id="flipped-min">',
+            '0',
+            '</span>',
+            '<span> &dash; </span>',
+            '<span id="range1-flipped">',
+            '0',
+            '</span>',
+        '</span>',
+        '<span id="element_comma">',
+            ', ',
+        '</span>',
+        '<span id="int2">',
+            '<span id="range2-flipped">',
+            '<%= graph.get("maxAbsTime") %>',
+            '</span>',
+            '<span> &dash; </span>',
+            '<span id="flipped-max">',
+                '<%= graph.get("maxAbsTime") %>',
+            '</span>',
+        '</span>',
+    '</div>',
+    '</script>'
+    ].join(''),
+
+    render: function () {
+        this.$el.html(_.template($(this.template).html())(graph.toJSON()));
+
+        var intervals = this.intention.attributes.intervals;
+        var slider1 = document.getElementById('slider-1'); // left slider
+        var slider2 = document.getElementById('slider-2'); // right slider
+
+        var rangeMin = 0;
+        var rangeMax = graph.get('maxAbsTime');
+
+        if (this.actor) { // if intention is within an actor
+            var actorIntervals = this.actor.model.attributes.actor.attributes.intervals;
+            if (actorIntervals.length > 0) { // if actor is not always available
+                if (actorIntervals[1]){ // actor has two exclusion intervals
+                    rangeMin = actorIntervals[0][1] + 1;
+                    rangeMax = actorIntervals[1][0] - 1;
+                    slider1.value = rangeMin;
+                    slider2.value = rangeMax;
+                } else { // actor has one exclusion interval
+                    if (actorIntervals[0][0] == 0) { // [0-#] excluded
+                        if (actorIntervals[0][1] == graph.get('maxAbsTime')) { // special case: [0-100] excluded
+                            document.getElementById('intervals-flip-btn').style.display = "none"; // cannot flip intention if it can never be available
+                        }
+                        rangeMin = actorIntervals[0][1] + 1;
+                        slider1.value = rangeMin;
+                    } else if (actorIntervals[0][1] >= graph.get('maxAbsTime')) { // [#-max] excluded
+                        rangeMax = actorIntervals[0][0] - 1;
+                        slider2.value = rangeMax;
+                    } else { // [#-#] excluded
+                        document.getElementById('intervals-flip-btn').value = "false";
+                        document.getElementById('intervals-flip-btn').style.display = "none";
+                        slider1.value = actorIntervals[0][0] - 1;
+                        slider2.value = actorIntervals[0][1] + 1;
+                        document.getElementById('limit1').value = actorIntervals[0][0] - 1;
+                        document.getElementById('limit2').value = actorIntervals[0][1] + 1;
+                        document.getElementById('flipped').style.display = "";
+                        document.getElementById('not-flipped').style.display = "none";
+                    }
+                }
+            }
+        }
+
+        // gets rid of exclusion intervals that are not within the range (as defined either by absolute time or by the actor)
+        for (var i = 0; i < intervals.length; i++) {
+            if (intervals[i][0] > rangeMax) {
+                intervals.pop();
+            } else if (intervals[i][1] > rangeMax) {
+                intervals[i][1] = rangeMax;
+            }
+        }
+
+        if (intervals.length > 0) { // if intention is not always available
+            if (intervals[1]){ // two exclusion intervals
+                slider1.value = intervals[0][1] + 1;
+                slider2.value = intervals[1][0] - 1;
+            } else { // one exclusion interval
+                if (intervals[0][0] == rangeMin) { // [min-#] excluded
+                    if (intervals [0][1] == graph.get('maxAbsTime')) { // special case [0-100]
+                        document.getElementById('intervals-flip-btn').value = "false";
+                        document.getElementById('intervals-flip-btn').style.display = "none";
+                        slider1.value = intervals[0][0] - 1;
+                        slider2.value = intervals[0][1] + 1;
+                        document.getElementById('flipped').style.display = "";
+                        document.getElementById('not-flipped').style.display = "none";
+                    } else {
+                        slider1.value = intervals[0][1] + 1;
+                        slider2.value = rangeMax;
+                    }
+                } else if (intervals[0][1] == rangeMax) { // [#-max] excluded
+                    slider1.value = rangeMin;
+                    slider2.value = intervals[0][0] - 1;
+                } else { // [#-#] excluded
+                    document.getElementById('intervals-flip-btn').value = "false";
+                    slider1.value = intervals[0][0] - 1;
+                    slider2.value = intervals[0][1] + 1;
+                    document.getElementById('flipped').style.display = "";
+                    document.getElementById('not-flipped').style.display = "none";
+                }
+            }
+        }
+
+        // update displayed numbers to match slider values
+        document.getElementById('range1').textContent = slider1.value;
+        document.getElementById('range2').textContent = slider2.value;
+        document.getElementById('range1-flipped').textContent = slider1.value;
+        document.getElementById('range2-flipped').textContent = slider2.value;
+        if (intervals.length == 1 && intervals[0][0] != rangeMin && intervals[0][1] != rangeMax)  { // [#-#] excluded
+            document.getElementById('flipped-min').textContent = rangeMin;
+            document.getElementById('flipped-max').textContent = rangeMax;
+            document.getElementById('flipped').style.display = "";
+            document.getElementById('not-flipped').style.display = "none";
+        }
+
+        // set bounds for how far sliders can slide
+        slider1.min = rangeMin;
+        slider2.min = rangeMin;
+        slider1.max = rangeMax;
+        slider2.max = rangeMax;
+
+        return this;
+    },
+
 });

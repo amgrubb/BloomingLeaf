@@ -96,7 +96,7 @@ public class BICSPPath {
 		CSPNode.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
     	if (problemType == SearchType.UPDATE_PATH) { 
     		// Assign past values with initialization?
-    		CSPNode.initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.uniqueIDToValueIndex);
+    		CSPNode.initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.uniqueIDToValueIndex, this.timePointMap);
     	}
     	
     	CSPLinks.initializeLinkConstraints(this.constraints, this.spec, this.values, 
@@ -106,7 +106,7 @@ public class BICSPPath {
     	CSPIntentions.initializeUserEvaluationsForIntentions(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints); //, this.timePointMap, this.infinity);
     	CSPIntentions.addNBFunctions(this.constraints, this.spec, this.values, 
-    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity, this.store);
     	CSPPath.createLTConstraintsBetweenTimePoint(this.constraints, this.spec, 
     			this.timePoints, this.timePointMap);
     	    	
