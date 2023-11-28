@@ -225,11 +225,11 @@ class GuideBox {
     ];
 
     static build = [
-        new GuideBox(0, '1a', "Add actor to model", "Actors are people, roles, or organizations who hold stake in the scenario being modeled. Consider what actors exist in your situation, and click and drag the actor icons from the toolbar on the left into the workspace. Once an actor is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it.", "Placeholder"),
-        new GuideBox(1, '1b', "Use actor inspector", "To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page. Here, you can change the actor’s name or type. To learn more about actor types, see the documentation document in the documentation dropdown. ", "Placeholder"),
-        new GuideBox(2, '1c', "Add intentions to the model", "Intentions are the pieces that make up a goal model. Drag an intention to the page and let go to place it. Once an intention is placed, you can drag it around again to relocate it, click the X icon to delete it, or drag the icon with four outward facing arrows to resize it. To learn more about each specific intention, see the documentation document in the documentation dropdown.", "Placeholder"),
-        new GuideBox(3, '1d', "Use intention inspector", "When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention. In this inspector, you can change the name of your intention, set its initial satisfaction value, choose its function type, and determine satisfaction values over set time points. To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.", `<img src="http://localhost:8080/userguides/color-lattice.png">`),
-        new GuideBox(4, '1e', "Link intentions", "Links connect intentions to one another and specify their relationship. To create a link, click on an intention and then drag the right arrow to another intention to connect them. Once a link has been created, click on the link and select the gear icon to choose the link type, click on the red X icon to delete the link, or drag anywhere on the arrow to create joints in the arrow. To learn more about the different link types, see the documentation document in the documentation dropdown.", "Placeholder"),
+        new GuideBox(0, '1a', "Add actor to model", `Actors are people, roles, or organizations who hold stake in the scenario being modeled.<ul><li>Click and drag the actor icons from the toolbar on the left into the workspace</li><li>Drag the actor around the workspace to relocate the actor</li><li>Click the X icon to delete the actor</li><li>Drag the icon with outward facing arrows to resize the actor</li></ul>`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1a.mov"></video>`),
+        new GuideBox(1, '1b', "Use actor inspector", `To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page.<ul><li>Change the actor's name by typing in the box</li><li>Change the actor's type using the dropdown</li></ul> To learn more about actor types, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1b.mov"></video>`),
+        new GuideBox(2, '1c', "Add intentions to the model", `Intentions are the pieces that make up a goal model. <ul><li>Click and drag the goal, task, soft goal, or resource icons from the toolbar on the left into the workspace</li><li>Drag the intention around the workspace to relocate the intention</li><li>Click the X icon to delete the intention</li><li>Drag the icon with outward facing arrows to resize the intention</li></ul> To learn more about each specific intention, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1c.mov"></video>`),
+        new GuideBox(3, '1d', "Use intention inspector", `When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention.<ul><li>Change the intention's name by typing in the box</li><li>Set the intention's initial satisfaction value</li><li>Choose the intention's function type</li><li>Determine satisfaction values over set time points</li></ul>To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1d.mov"></video>`),
+        new GuideBox(4, '1e', "Link intentions", `Links connect intentions to one another and specify their relationship.<ul><li>Click on an intention and then drag the right arrow to another intention to connect them</li><li>Click on the link and select the gear icon to choose the link type</li><li>Click on the red X icon to delete the link</li><li>Drag anywhere on the arrow to create joints</li></ul>To learn more about the different link types, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1e.mov"></video>`),
     ];
 
     static analyze = [
@@ -248,13 +248,13 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
-        console.log(tutorial)
         $('#guide-name').children('option').remove();
+
         var dialog = new joint.ui.Dialog({
             type: "info",
             width: 600,
             title: this.label + ". " + this.task,
-            content: this.instructions + `\n<button class="learn-more">Learn More</button> <div class="more" style='display:none'>` + this.context + `</div>`,
+            content: this.instructions + `<br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context + `</div>`,
             buttons: [
                 {action: "next", content: "Next", position: "right"},
                 {action: "cancel", content: "Cancel", position: "center"},
@@ -267,6 +267,7 @@ class GuideBox {
         //if we're on the last step of the tutorial, remove the next button
         if (GuideBox.step == tutorial.length-1){
             dialog.buttons.shift();
+            dialog.buttons.push({action: "cancel", content: "Done", position: "right"});
         }
 
         //if we're on the first step of the tutorial, remove the back button
@@ -274,7 +275,6 @@ class GuideBox {
             dialog.buttons.pop();
         }
         
-        document.getElementById("guide-name").style.display = "";
         for (var i = 0; i < tutorial.length; i ++) {
             if (i == GuideBox.step) {
                 $('#guide-name').append(`<option value="${tutorial[i].idx}" selected>${tutorial[i].label + ". " + tutorial[i].task}</option>`)
@@ -282,6 +282,7 @@ class GuideBox {
                 $('#guide-name').append(`<option value="${tutorial[i].idx}">${tutorial[i].label + ". " + tutorial[i].task}</option>`)
             }
         }
+        document.getElementById("guide-name").style.display = "";
 
         dialog.on('action:cancel', function () {
             dialog.close();
@@ -362,25 +363,25 @@ class GuideBox {
 
 $('#build-btn').on('click', function() {
     if (GuideBox.step == -1){
-        GuideBox.build[0].showGuideBox();
         GuideBox.tutorial = 0;
         GuideBox.step = 0;
+        GuideBox.build[0].showGuideBox();
     }
 });
 
 $('#why-btn').on('click', function() {
     if (GuideBox.step == -1){
-        GuideBox.why[0].showGuideBox();
         GuideBox.tutorial = 1;
         GuideBox.step = 0;
+        GuideBox.why[0].showGuideBox();
     }
 });
 
 $('#analyze-btn').on('click', function() {
     if (GuideBox.step == -1){
-        GuideBox.analyze[0].showGuideBox();
         GuideBox.tutorial = 2;
         GuideBox.step = 0;
+        GuideBox.analyze[0].showGuideBox();
     }
 });
 
