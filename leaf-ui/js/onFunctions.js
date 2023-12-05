@@ -209,7 +209,7 @@ $('#legend').on('click', function () { window.open('./userguides/legend.html', '
  * @param {*} color 
  * @returns 
  */
-function isDark(color){
+function isDark(color) {
     const hex = color.replace('#', '');
     const c_r = parseInt(hex.substr(0, 2), 16);
     const c_g = parseInt(hex.substr(2, 2), 16);
@@ -222,69 +222,69 @@ function isDark(color){
  * displays the color palette
  * @param {*} palette_number 
  */
-function displayPalette(palette_number ) {
+function displayPalette(palette_number) {
 
     //creates the table that contains all satisfaction values 
     showAlert('Evaluation Visualisation Overlay Color Key',
-            '<table class="abs-table">'+
-            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>'+
-            '<tbody>'+
-                '<tr>'+
-                '    <th style= "text-align:center"> None</th>'+
-                '    <th style= "text-align:center"> Satisfied</th>'+
-                '    <th style= "text-align:center"> Partially Satisfied </th>'+
-                '    <th style= "text-align:center"> Partially Denied</th>'+
-                '    <th style= "text-align:center"> Denied</th>'+
-                '</tr>'+
-                '<tr style= "background-color: #FFFFFF;">'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "FS"> (F ,⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "PS"> (P ,⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "PD"> (⊥ ,P) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "FD"> (⊥ ,F) </span> </td>'+
-                '</tr>'+
-            '</tbody>'+
-        '</table>'+
-        ' <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Values </h3>'+
-        '<table id="conflict-satisfied-list" class="abs-table">'+
-        '<tbody>'+
-        '<tr>'+
-        '<th style= "text-align:center"> Partially Satisfied/ Partially Denied </th>'+
-        '<th style= "text-align:center"> Fully Satisfied/ Partially Denied</th>'+
-        '<th style= "text-align:center"> Partially Satisfied/ Fully Denied</th>'+
-        '<th style= "text-align:center"> Fully Satisfied/ Fully Denied</th>'+
-        '</tr>'+
-        '<tr style= "background-color: #FFFFFF;">'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "FP"> (F, P) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "PF"> (P, F) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "FF"> (F, F) </span> </td>'+
-        '</tr>'+
-        '</tbody>'+
+        '<table class="abs-table">' +
+        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>' +
+        '<tbody>' +
+        '<tr>' +
+        '    <th style= "text-align:center"> None</th>' +
+        '    <th style= "text-align:center"> Satisfied</th>' +
+        '    <th style= "text-align:center"> Partially Satisfied </th>' +
+        '    <th style= "text-align:center"> Partially Denied</th>' +
+        '    <th style= "text-align:center"> Denied</th>' +
+        '</tr>' +
+        '<tr style= "background-color: #FFFFFF;">' +
+        '    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>' +
+        '    <td style="text-align:center"> <span class = "s_value_box" id = "FS"> (F ,⊥) </span> </td>' +
+        '    <td style="text-align:center"> <span class = "s_value_box" id = "PS"> (P ,⊥) </span> </td>' +
+        '    <td style="text-align:center"> <span class = "s_value_box" id = "PD"> (⊥ ,P) </span> </td>' +
+        '    <td style="text-align:center"> <span class = "s_value_box" id = "FD"> (⊥ ,F) </span> </td>' +
+        '</tr>' +
+        '</tbody>' +
+        '</table>' +
+        ' <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Values </h3>' +
+        '<table id="conflict-satisfied-list" class="abs-table">' +
+        '<tbody>' +
+        '<tr>' +
+        '<th style= "text-align:center"> Partially Satisfied/ Partially Denied </th>' +
+        '<th style= "text-align:center"> Fully Satisfied/ Partially Denied</th>' +
+        '<th style= "text-align:center"> Partially Satisfied/ Fully Denied</th>' +
+        '<th style= "text-align:center"> Fully Satisfied/ Fully Denied</th>' +
+        '</tr>' +
+        '<tr style= "background-color: #FFFFFF;">' +
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>' +
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "FP"> (F, P) </span> </td>' +
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "PF"> (P, F) </span> </td>' +
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "FF"> (F, F) </span> </td>' +
+        '</tr>' +
+        '</tbody>' +
         '</table>',
-    550, 'alert', 'warning');
+        550, 'alert', 'warning');
 
     //updates the color key based on the chosen palette 
-    if(palette_number<6){
+    if (palette_number < 6) {
         //pre-made palettes
-        for (let charVal in EVO.charSatValueToNum){
-            let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
-            document.getElementById(charVal).style.backgroundColor= color;
+        for (let charVal in EVO.charSatValueToNum) {
+            let color = EVO.colorVisDictCollection[palette_number - 1][EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor = color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
             }
         }
-    
-    } else{
+
+    } else {
         //personalized palette
-        for (let charVal in EVO.charSatValueToNum){
+        for (let charVal in EVO.charSatValueToNum) {
             let color = EVO.selfColorVisDict[EVO.charSatValueToNum[charVal]];
-            document.getElementById(charVal).style.backgroundColor= color;
+            document.getElementById(charVal).style.backgroundColor = color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
             }
         }
-    }       
+    }
 }
 
 
@@ -343,6 +343,15 @@ class GuideBox {
         new GuideBox(2, '1c', "Add intentions to the model", `Intentions are the pieces that make up a goal model. <ul><li>Click and drag the goal, task, soft goal, or resource icons from the toolbar on the left into the workspace</li><li>Drag the intention around the workspace to relocate the intention</li><li>Click the X icon to delete the intention</li><li>Drag the icon with outward facing arrows to resize the intention</li></ul> To learn more about each specific intention, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1c.mov"></video>`),
         new GuideBox(3, '1d', "Use intention inspector", `When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention.<ul><li>Change the intention's name by typing in the box, then clicking out to save</li><li>Set the intention's initial satisfaction value</li><li>Choose the intention's function type</li><li>Determine satisfaction values over set time points</li></ul>To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1d.mov"></video>`),
         new GuideBox(4, '1e', "Link intentions", `Links connect intentions to one another and specify their relationship.<ul><li>Click on an intention and then drag the right arrow to another intention to connect them</li><li>Click on the link and select the gear icon to choose the link type</li><li>Click on the red X icon to delete the link</li><li>Drag anywhere on the arrow to create joints</li></ul>To learn more about the different link types, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1e.mov"></video>`),
+        new GuideBox(5, '2a', "Set initial satisfaction value", `Satisfaction values describe how much evidence there is for an intention being met at a given time point. To assign an element a satisfaction value: <ul><li>Click on the element to view its intention inspector</li><li>Under Initial Satisfaction Value, select the desired value</li></ul>`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2a.mov"></video>`),
+        new GuideBox(6, '2b', "Set evolving functions", `After giving an element an initial satisfaction value, you can set its evolving function. This function describes how the element’s satisfaction value changes over time. <ul><li>Click on different options from the dropdown to view how the function’s satisfaction value changes with that option.</li><li>If your element’s satisfaction changes in a way not specified by any of the options, click User Defined Function. Then you can set how a function changes between time points. Add more time points with the Add button. </li><li> If the satisfaction value repeats, you can define one cycle and then Set Repeats.</li>`, 'Placeholder'),
+        new GuideBox(7, '2c', "Limit presence intervals", `By default, intentions are present in the model for the entire time range. If an actor or intention is present for only part of the time range, use the slider in its Inspector to limit the time range. The blue shading shows the time during which that intention or actor is present.`),
+        new GuideBox(8, '2d', "Change max absolute time", `The Max Absolute Time refers to the amount of time during which the model is representing the situation, and is measured in arbitrary units. The Max Absolute Time is the maximum possible number of divisions of the timeline that you could make.<ul><li>Click on the View Assignments List tab in the navigation bar</li><li>Click and type in the Max Absolute Time text box or use the arrows to modify the Max Absolute Time</li><li>Close the Absolute and Relative Assignments popup to save</li></ul>`),
+        new GuideBox(9, '2e', "Set absolute time points", `Absolute Time Points enables you to specify events, such as changing the satisfaction level of an intention, that occur at specific time points during the overall range between Time 0 and the Max Absolute Time.<ul><li>Click on the View Assignments List tab in the navigation bar</li><li>Type in the Absolute Time Points with spaces in between</li><li>Close the Absolute and Relative Assignments popup to save</li></ul>`),
+        new GuideBox(10, '2f', "Set intention assignments", `With two or more intentions that have Relative Time Points assigned by Evolving Functions, you can specify the relative order in which the Relative Time Points occur.<ul><li>Choose the first relative time point from the dropdown Epoch Boundary Name 1</li><li>Choose the second relative time point from the dropdown Epoch Boundary Name 2</li><li>Set whether the first relative time point is before, after, or at the same time as the second relative time point using the Relationship dropdown</li></ul>`),
+        new GuideBox(11, '2g', "Set absolute relationship assignments", `If a link in your model evolves over time, you can set the time point at which the relationship changes.<ul><li>Click and type in the Assigned Time text box or use the arrows to modify the Assigned Time</li><li>Click the Unassign button if you change your mind about making an absolute assignment</li></ul>`),
+        new GuideBox(12, '2h', "Change presence intervals", `By default, intentions and actors are present in the model throughout the time period. If you have modified the presence intervals of any actors or intentions, these modified intervals will show up in the Presence Condition Assignments table.<ul><li>Click the blue plus sign</li><li>Select the intention or actor from the dropdown</li><li>Click and type in the Available Time text boxes to set the max and min times the actor or intention is present or use the arrows</li><li>Click Add to save your changes</li><li>Click the trash can icon to remove the presence condition and make the actor or intention available throughout the time period</li></ul>`),
+        new GuideBox(13, '2i', "Use intermediate values table", `Placeholder`)
     ];
 
     static analyze = [
@@ -370,26 +379,26 @@ class GuideBox {
             title: this.label + ". " + this.task,
             content: this.instructions + `<br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context + `</div>`,
             buttons: [
-                {action: "next", content: "Next", position: "right"},
-                {action: "cancel", content: "Cancel", position: "center"},
-                {action: "back", content: "Back", position: "left"}
+                { action: "next", content: "Next", position: "right" },
+                { action: "cancel", content: "Cancel", position: "center" },
+                { action: "back", content: "Back", position: "left" }
             ],
             draggable: true,
             modal: false,
         });
 
         //if we're on the last step of the tutorial, remove the next button
-        if (GuideBox.step == tutorial.length-1){
+        if (GuideBox.step == tutorial.length - 1) {
             dialog.buttons.shift();
-            dialog.buttons.push({action: "cancel", content: "Done", position: "right"});
+            dialog.buttons.push({ action: "cancel", content: "Done", position: "right" });
         }
 
         //if we're on the first step of the tutorial, remove the back button
         if (GuideBox.step == -1 || GuideBox.step == 0) {
             dialog.buttons.pop();
         }
-        
-        for (var i = 0; i < tutorial.length; i ++) {
+
+        for (var i = 0; i < tutorial.length; i++) {
             if (i == GuideBox.step) {
                 $('#guide-name').append(`<option value="${tutorial[i].idx}" selected>${tutorial[i].label + ". " + tutorial[i].task}</option>`)
             } else {
@@ -409,9 +418,9 @@ class GuideBox {
             document.getElementById('guide-name').style.display = "none";
             GuideBox.step = -1;
         });
-        
+
         dialog.open();
-        if (this.idx < tutorial.length-1) {
+        if (this.idx < tutorial.length - 1) {
             dialog.on('action:next', this.openNext, dialog);
         }
         if (this.idx > 0) {
@@ -475,24 +484,24 @@ class GuideBox {
     }
 }
 
-$('#build-btn').on('click', function() {
-    if (GuideBox.step == -1){
+$('#build-btn').on('click', function () {
+    if (GuideBox.step == -1) {
         GuideBox.tutorial = 0;
         GuideBox.step = 0;
         GuideBox.build[0].showGuideBox();
     }
 });
 
-$('#why-btn').on('click', function() {
-    if (GuideBox.step == -1){
+$('#why-btn').on('click', function () {
+    if (GuideBox.step == -1) {
         GuideBox.tutorial = 1;
         GuideBox.step = 0;
         GuideBox.why[0].showGuideBox();
     }
 });
 
-$('#analyze-btn').on('click', function() {
-    if (GuideBox.step == -1){
+$('#analyze-btn').on('click', function () {
+    if (GuideBox.step == -1) {
         GuideBox.tutorial = 2;
         GuideBox.step = 0;
         GuideBox.analyze[0].showGuideBox();
@@ -512,7 +521,7 @@ $('#guide-name').on('change', function () {
 //         'BloomingLeaf implements the Evolving Intentions framework.</p>',
 //         window.innerWidth * 0.5, 'alert', 'warning');      
 //     });
-   
+
 //     /** Model Creation button */
 //    $('#help-model-creation').on('click', function () { 
 //         const dialog2 = showAlert('Model Creation',
@@ -528,7 +537,7 @@ $('#guide-name').on('change', function () {
 //             });
 //         });
 //     });
-   
+
 
 //     function showDialog3() {
 //         const dialog3 = showAlert('Model Creation',
@@ -542,7 +551,7 @@ $('#guide-name').on('change', function () {
 //             });
 //         });
 //     } 
-   
+
 
 
 
@@ -670,13 +679,13 @@ graph.on("add", function (cell) {
                 }
             }
             // If all actor names have been changed
-            if (numList.length == 0){
+            if (numList.length == 0) {
                 name = cell.attr('.name/text') + "_0";
             } else {
                 // Gets highest number from array
                 name = cell.attr('.name/text') + "_" + (Math.max.apply(null, numList) + 1);
             }
-        // Creates first actor name
+            // Creates first actor name
         } else {
             name = cell.attr('.name/text') + "_0";
         }
@@ -690,7 +699,7 @@ graph.on("add", function (cell) {
 
     resetConfig()
     // Trigger click on cell to highlight, activate inspector, etc. 
-   paper.trigger("cell:pointerup", cell.findView(paper));
+    paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
 // Auto-save the cookie whenever the graph is changed.
@@ -803,18 +812,18 @@ paper.on({
                     var actorInspector = new ActorInspector({ model: cell });
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
-                    
+
                     // If user was dragging actor 
                     if (evt.data.move) {
                         // AND actor doesn't overlap with other actors
                         var overlapCells = paper.findViewsInArea(cell.getBBox());
                         var overlapActors = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
-                        if (overlapActors.length == 1){
+                        if (overlapActors.length == 1) {
                             // Embed each overlapping intention in actor
                             var actorCell = overlapActors[0].model;
                             var overlapIntentions = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Intention);
 
-                            for (var i=0; i < overlapIntentions.length; i++) {
+                            for (var i = 0; i < overlapIntentions.length; i++) {
                                 var intention = overlapIntentions[i].model;
                                 // Unembed intention from old actor
                                 if (intention.get('parent')) {
@@ -834,7 +843,7 @@ paper.on({
                         if (cell.get('parent')) {
                             graph.getCell(cell.get('parent')).unembed(cell);
                         }
-                        
+
                         // Find overlapping cells
                         var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
 
@@ -891,13 +900,14 @@ paper.on("link:options", function (cell) {
      * Selects the current configuration and passes to backendSimulationRequest()  */
     $('#simulate-path-btn').on('click', function () {
         var curRequest = configCollection.findWhere({ selected: true });
-        var numRel = $('#num-rel-time'); 
+        var numRel = $('#num-rel-time');
         //Can't simulate path when num-rel-time equals 0
         if (numRel.val() == 0) {
             swal("Num Relative Time Points cannot be 0", "", "error");
         } else {
             curRequest.set('action', 'singlePath');
-            backendSimulationRequest(curRequest); }
+            backendSimulationRequest(curRequest);
+        }
     });
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
@@ -918,7 +928,7 @@ paper.on("link:options", function (cell) {
             curRequest.set('previousAnalysis', curResult);
 
             // If the last time point is selected, error message shows that you can't open Next State
-            if (EVO.sliderOption==1 || EVO.sliderOption==2){ 
+            if (EVO.sliderOption == 1 || EVO.sliderOption == 2) {
                 swal("Error: Cannot explore next states with EVO in % or Time.", "", "error");
                 $("body").removeClass("spinning"); // Remove spinner from page
             } else if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
@@ -1016,10 +1026,10 @@ paper.on("link:options", function (cell) {
 
             var elements = SliderObj.getIntentionsAndActorsView();
             var links = SliderObj.getLinksView();
-            for (var i = 0; i < elements.length; i ++) {
+            for (var i = 0; i < elements.length; i++) {
                 $("#" + elements[i].id).css("display", "");
             }
-            for (var i = 0; i < links.length; i ++) {
+            for (var i = 0; i < links.length; i++) {
                 $("#" + links[i].id).css("display", "");
             }
 
@@ -1115,7 +1125,7 @@ paper.on("link:options", function (cell) {
     }
 
     function loadOldConfig(oldAnalysisRequest) {
-        var configBBM = new ConfigBBM({conflictLevel: oldAnalysisRequest.conflictLevel, numRelTime: oldAnalysisRequest.numRelTime, currentState: oldAnalysisRequest.currentState})
+        var configBBM = new ConfigBBM({ conflictLevel: oldAnalysisRequest.conflictLevel, numRelTime: oldAnalysisRequest.numRelTime, currentState: oldAnalysisRequest.currentState })
         configCollection.add(configBBM);
     }
 
@@ -1179,7 +1189,7 @@ paper.on("link:options", function (cell) {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
         if (name) {
             clearCycleHighlighting(selectResult);
-            EVO.deactivate();  
+            EVO.deactivate();
             var fileName = name + ".json";
             var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
             obj.version = "BloomingLeaf_2.0";
@@ -1287,30 +1297,29 @@ paper.on("link:options", function (cell) {
 
     //Show warning messages if use input invalid color
     $('#submit-color').on('click', function () {
-       
+
         //check that the entered colors for the satisfied and  denied values are different
-        if (!EVO.fillInDictionary()) 
-        {
+        if (!EVO.fillInDictionary()) {
             //changes the color for fully satisfied and fully denied to what they were 
-            document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
-            document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
-            document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
-            document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
+            document.getElementById('my-Satisfied').value = EVO.selfColorVisDict["0011"];
+            document.getElementById('my-Denied').value = EVO.selfColorVisDict["1100"];
+            document.getElementById('my-None').value = EVO.selfColorVisDict["0000"];
+            document.getElementById('my-FF').value = EVO.selfColorVisDict["1111"];
             //error messsage 
-            swal("Please make sure your satisfied, denied, none, and FF values are different from one another",   "", "error")
-            
+            swal("Please make sure your satisfied, denied, none, and FF values are different from one another", "", "error")
+
         }
-        else{
+        else {
             // Display a message to tell the user their selection is saved
             $("#saved-options-message").css("display", "");
-            setTimeout(function(){
+            setTimeout(function () {
                 $("#saved-options-message").css("display", "none");
                 //close the color input
                 $('#color-input').css("display", "none");
             }, 500);
-        
+
             // refresh the visual overlay on the model and the palette dropdown
-            EVO.paletteOption =6;
+            EVO.paletteOption = 6;
             highlightPalette(EVO.paletteOption);
             if ($('#analysisSlider').css("display") == "none") {
                 EVO.refresh(undefined);
@@ -1318,24 +1327,24 @@ paper.on("link:options", function (cell) {
                 EVO.refresh(selectResult);
             }
         };
-        
+
     });
 
     //cancel edits to palette customization
-    $('#cancel-customization').on('click', function () { 
-        document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
-        document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
-        document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
-        document.getElementById('my-PS').value=  EVO.selfColorVisDict["0010"];
-        document.getElementById('my-PD').value=  EVO.selfColorVisDict["0100"];
-        document.getElementById('my-PP').value=  EVO.selfColorVisDict["0110"];
-        document.getElementById('my-FP').value=  EVO.selfColorVisDict["0111"];
-        document.getElementById('my-PF').value=  EVO.selfColorVisDict["1110"];
-        document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
+    $('#cancel-customization').on('click', function () {
+        document.getElementById('my-Satisfied').value = EVO.selfColorVisDict["0011"];
+        document.getElementById('my-Denied').value = EVO.selfColorVisDict["1100"];
+        document.getElementById('my-None').value = EVO.selfColorVisDict["0000"];
+        document.getElementById('my-PS').value = EVO.selfColorVisDict["0010"];
+        document.getElementById('my-PD').value = EVO.selfColorVisDict["0100"];
+        document.getElementById('my-PP').value = EVO.selfColorVisDict["0110"];
+        document.getElementById('my-FP').value = EVO.selfColorVisDict["0111"];
+        document.getElementById('my-PF').value = EVO.selfColorVisDict["1110"];
+        document.getElementById('my-FF').value = EVO.selfColorVisDict["1111"];
         $('#color-input').css("display", "none");
 
     });
-   
+
 
     /**
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
@@ -1344,11 +1353,11 @@ paper.on("link:options", function (cell) {
     document.getElementById("colorReset").oninput = function () { // Turns slider on/off and refreshes
         EVO.setSliderOption(this.value, selectResult);
         //highlight the first palette by default  if EVO is on 
-        if(EVO.sliderOption ==1){
+        if (EVO.sliderOption == 1) {
             highlightPalette(EVO.paletteOption);
-        } else{
-        //unhighlights all palettes if EVO is off
-          unhighlightPalettes();
+        } else {
+            //unhighlights all palettes if EVO is off
+            unhighlightPalettes();
         }
     }
     /**
@@ -1432,7 +1441,7 @@ function resetInspectorView(cell) {
 /**
  * Trigger setConfigName outside ConfigInspector 
  */
- function setName() {
+function setName() {
     $('.config-input').trigger('outsideSetName');
 }
 
@@ -1519,7 +1528,7 @@ function revertNodeValuesToInitial(analysisResult) {
         } else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
-        
+
     }
     // Remove slider
     if (analysisResult !== undefined) {
@@ -1571,4 +1580,3 @@ function unhighlightPalettes() {
 }
 
 
-    
