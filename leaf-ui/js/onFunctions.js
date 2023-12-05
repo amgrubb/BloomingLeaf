@@ -321,7 +321,7 @@ class GuideBox {
 
     static step = -1;
 
-    constructor(idx, label, task, instructions, context) {
+    constructor(idx, label, task, instructions, context, documentation) {
         this.idx = idx;
         this.label = label;
         this.task = task;
@@ -339,7 +339,7 @@ class GuideBox {
 
     static build = [
         new GuideBox(0, '1a', "Add actor to model", `Actors are people, roles, or organizations who hold stake in the scenario being modeled.<ul><li>Click and drag the actor icons from the toolbar on the left into the workspace</li><li>Drag the actor around the workspace to relocate the actor</li><li>Click the X icon to delete the actor</li><li>Drag the icon with outward facing arrows to resize the actor</li></ul>`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1a.mov"></video>`),
-        new GuideBox(1, '1b', "Use actor inspector", `To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page.<ul><li>Change the actor's name by typing in the box</li><li>Change the actor's type using the dropdown</li></ul> To learn more about actor types, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1b.mov"></video>`),
+        new GuideBox(1, '1b', "Use actor inspector", `To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page.<ul><li>Change the actor's name by typing in the box</li><li>Change the actor's type using the dropdown</li></ul> To learn more about actor types, see the documentation document in the documentation dropdown.`, `<div><h2>Tutorial</h2><video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1b.mov"></video></div>`),
         new GuideBox(2, '1c', "Add intentions to the model", `Intentions are the pieces that make up a goal model. <ul><li>Click and drag the goal, task, soft goal, or resource icons from the toolbar on the left into the workspace</li><li>Drag the intention around the workspace to relocate the intention</li><li>Click the X icon to delete the intention</li><li>Drag the icon with outward facing arrows to resize the intention</li></ul> To learn more about each specific intention, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1c.mov"></video>`),
         new GuideBox(3, '1d', "Use intention inspector", `When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention.<ul><li>Change the intention's name by typing in the box, then clicking out to save</li><li>Set the intention's initial satisfaction value</li><li>Choose the intention's function type</li><li>Determine satisfaction values over set time points</li></ul>To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1d.mov"></video>`),
         new GuideBox(4, '1e', "Link intentions", `Links connect intentions to one another and specify their relationship.<ul><li>Click on an intention and then drag the right arrow to another intention to connect them</li><li>Click on the link and select the gear icon to choose the link type</li><li>Click on the red X icon to delete the link</li><li>Drag anywhere on the arrow to create joints</li></ul>To learn more about the different link types, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1e.mov"></video>`),
@@ -364,8 +364,9 @@ class GuideBox {
         $('#guide-name').children('option').remove();
 
         var dialog = new joint.ui.Dialog({
-            type: "info",
+            type: "neutral",
             width: 600,
+            theme: "dark",
             title: this.label + ". " + this.task,
             content: this.instructions + `<br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context + `</div>`,
             buttons: [
