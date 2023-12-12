@@ -314,6 +314,23 @@ $('#evo-color-key').on('click', function () {
 
 
 
+// function makeBoxes () {
+//     fetch("http://localhost:8080/userguides/build.csv").then((res) => res.text()).then((text) => {
+//         var arr = text.split("\n");
+//         for(var i = 0; i < arr.length; i++) {
+//             var line = arr[i].split(",,");
+//             for(var j = 0; j < line.length; j++) {
+//                 line[j] = line[j].trim();
+//             }
+//             GuideBox.build.push(new GuideBox(i, line[0], line[1], line[2]));
+            
+//         }
+//         console.log(GuideBox.build)
+//     })
+//     console.log("here")
+    
+// }
+
 /**
  * Guide me instructions
 */
@@ -321,7 +338,7 @@ class GuideBox {
 
     static step = -1;
 
-    constructor(idx, label, task, instructions, context, documentation) {
+    constructor(idx, label, task, instructions, context) {
         this.idx = idx;
         this.label = label;
         this.task = task;
@@ -331,35 +348,24 @@ class GuideBox {
 
     static tutorial = 0;
 
-    static why = [
-        new GuideBox(0, '1', "Placeholder", "Placeholder", "Placeholder"),
-        new GuideBox(1, '2', "Placeholder", "Placeholder", "Placeholder"),
-        new GuideBox(2, '3', "Placeholder", "Placeholder", "Placeholder"),
-    ];
+    static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
+    static build = GuideBox.makeBoxes("http://localhost:8080/userguides/build.csv");
+    static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.csv");
 
-    static build = [
-        new GuideBox(0, '1a', "Add actor to model", `Actors are people, roles, or organizations who hold stake in the scenario being modeled.<ul><li>Click and drag the actor icons from the toolbar on the left into the workspace</li><li>Drag the actor around the workspace to relocate the actor</li><li>Click the X icon to delete the actor</li><li>Drag the icon with outward facing arrows to resize the actor</li></ul>`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1a.mov"></video>`),
-        new GuideBox(1, '1b', "Use actor inspector", `To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page.<ul><li>Change the actor's name by typing in the box</li><li>Change the actor's type using the dropdown</li></ul> To learn more about actor types, see the documentation document in the documentation dropdown.`, `<div><h2>Tutorial</h2><video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1b.mov"></video></div>`),
-        new GuideBox(2, '1c', "Add intentions to the model", `Intentions are the pieces that make up a goal model. <ul><li>Click and drag the goal, task, soft goal, or resource icons from the toolbar on the left into the workspace</li><li>Drag the intention around the workspace to relocate the intention</li><li>Click the X icon to delete the intention</li><li>Drag the icon with outward facing arrows to resize the intention</li></ul> To learn more about each specific intention, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1c.mov"></video>`),
-        new GuideBox(3, '1d', "Use intention inspector", `When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention.<ul><li>Change the intention's name by typing in the box, then clicking out to save</li><li>Set the intention's initial satisfaction value</li><li>Choose the intention's function type</li><li>Determine satisfaction values over set time points</li></ul>To learn more about satisfaction values and models that change over time, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1d.mov"></video>`),
-        new GuideBox(4, '1e', "Link intentions", `Links connect intentions to one another and specify their relationship.<ul><li>Click on an intention and then drag the right arrow to another intention to connect them</li><li>Click on the link and select the gear icon to choose the link type</li><li>Click on the red X icon to delete the link</li><li>Drag anywhere on the arrow to create joints</li></ul>To learn more about the different link types, see the documentation document in the documentation dropdown.`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1e.mov"></video>`),
-        new GuideBox(5, '2a', "Set initial satisfaction value", `Satisfaction values describe how much evidence there is for an intention being met at a given time point. To assign an element a satisfaction value: <ul><li>Click on the element to view its intention inspector</li><li>Under Initial Satisfaction Value, select the desired value</li></ul>`, `<video height="240" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2a.mov"></video>`),
-        new GuideBox(6, '2b', "Set evolving functions", `After giving an element an initial satisfaction value, you can set its evolving function. This function describes how the element’s satisfaction value changes over time. <ul><li>Click on different options from the dropdown to view how the function’s satisfaction value changes with that option.</li><li>If your element’s satisfaction changes in a way not specified by any of the options, click User Defined Function. Then you can set how a function changes between time points. Add more time points with the Add button. </li><li> If the satisfaction value repeats, you can define one cycle and then Set Repeats.</li>`, 'Placeholder'),
-        new GuideBox(7, '2c', "Limit presence intervals", `By default, intentions are present in the model for the entire time range. If an actor or intention is present for only part of the time range, use the slider in its Inspector to limit the time range. The blue shading shows the time during which that intention or actor is present.`),
-        new GuideBox(8, '2d', "Change max absolute time", `The Max Absolute Time refers to the amount of time during which the model is representing the situation, and is measured in arbitrary units. The Max Absolute Time is the maximum possible number of divisions of the timeline that you could make.<ul><li>Click on the View Assignments List tab in the navigation bar</li><li>Click and type in the Max Absolute Time text box or use the arrows to modify the Max Absolute Time</li><li>Close the Absolute and Relative Assignments popup to save</li></ul>`),
-        new GuideBox(9, '2e', "Set absolute time points", `Absolute Time Points enables you to specify events, such as changing the satisfaction level of an intention, that occur at specific time points during the overall range between Time 0 and the Max Absolute Time.<ul><li>Click on the View Assignments List tab in the navigation bar</li><li>Type in the Absolute Time Points with spaces in between</li><li>Close the Absolute and Relative Assignments popup to save</li></ul>`),
-        new GuideBox(10, '2f', "Set intention assignments", `With two or more intentions that have Relative Time Points assigned by Evolving Functions, you can specify the relative order in which the Relative Time Points occur.<ul><li>Choose the first relative time point from the dropdown Epoch Boundary Name 1</li><li>Choose the second relative time point from the dropdown Epoch Boundary Name 2</li><li>Set whether the first relative time point is before, after, or at the same time as the second relative time point using the Relationship dropdown</li></ul>`),
-        new GuideBox(11, '2g', "Set absolute relationship assignments", `If a link in your model evolves over time, you can set the time point at which the relationship changes.<ul><li>Click and type in the Assigned Time text box or use the arrows to modify the Assigned Time</li><li>Click the Unassign button if you change your mind about making an absolute assignment</li></ul>`),
-        new GuideBox(12, '2h', "Change presence intervals", `By default, intentions and actors are present in the model throughout the time period. If you have modified the presence intervals of any actors or intentions, these modified intervals will show up in the Presence Condition Assignments table.<ul><li>Click the blue plus sign</li><li>Select the intention or actor from the dropdown</li><li>Click and type in the Available Time text boxes to set the max and min times the actor or intention is present or use the arrows</li><li>Click Add to save your changes</li><li>Click the trash can icon to remove the presence condition and make the actor or intention available throughout the time period</li></ul>`),
-        new GuideBox(13, '2i', "Use intermediate values table", `Placeholder`)
-    ];
-
-    static analyze = [
-        new GuideBox(0, '2a', "Analyze model", "Once you have created your model, click the analysis button to analyze potential outcomes over time. Analysis mode allows you to visualize potential outcomes of the model over time. Based on the number of timepoints and constraints you choose, analysis mode will assign satisfaction values to each intention for each timepoint.", "Placeholder"),
-        new GuideBox(1, '2b', "Choose conflict prevention level", "Choose a level from the dropdown to determine how many conflicting satisfaction values can be present in the model. “Strong” indicates that the model will try to avoid any conflicting satisfaction values and “None” indicates that the model will not do anything to avoid conflicting satisfaction values. To see more information about conflicting satisfaction values, see the documentation document in the documentation dropdown.", "Placeholder"),
-        new GuideBox(2, '2c', "Specify number of timepoints", "To specify the number of timepoints you would like to see in analysis, click the text box with “1” in it and then either type in your desired number of states or click the up and down arrows to increment the number of states by one. The number of states you select will determine the number of possible outcomes of your model you are presented with.", "Placeholder"),
-        new GuideBox(3, '2d', "Simulate path", "Once you have chosen your conflict prevention level and number of time points, click the “Simulate Path” button to display the outcome of analysis. Once the path is simulated, you will be presented with your model at the final time point with randomly assigned satisfaction values. To see other potential outcomes, move the slider on the bottom of the page left to see previous outcomes and right to see the next potential outcomes.", "Placeholder"),
-    ]
+    static makeBoxes (file) {
+        var array = [];
+        fetch(file).then((res) => res.text()).then((text) => {
+            var arr = text.split("\n");
+            for(var i = 0; i < arr.length; i++) {
+                var line = arr[i].split(",,");
+                for(var j = 0; j < line.length; j++) {
+                    line[j] = line[j].trim();
+                }
+                array.push(new GuideBox(i, line[0], line[1], line[2], line[3]));
+            }
+        })
+        return array;
+    }
 
     showGuideBox() {
         var tutorial;
@@ -377,7 +383,7 @@ class GuideBox {
             width: 600,
             theme: "dark",
             title: this.label + ". " + this.task,
-            content: this.instructions + `<br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context + `</div>`,
+            content: this.instructions.substring(1, this.instructions.length-1) + `<br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`,
             buttons: [
                 { action: "next", content: "Next", position: "right" },
                 { action: "cancel", content: "Cancel", position: "center" },
