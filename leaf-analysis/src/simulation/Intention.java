@@ -14,7 +14,6 @@ import merge.MFunctionSegment;
 public class Intention extends AbstractLinkableElement {
 	private static int idcounter = 0;
 	
-	@SuppressWarnings("unused")
 	private Actor actor = null;
 	
 	private HashMap<Integer, String> userEvals;
