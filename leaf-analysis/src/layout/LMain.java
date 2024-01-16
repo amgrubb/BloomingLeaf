@@ -23,12 +23,11 @@ public class LMain {
 	public static void main(String[] args) {
 	    String inPath = "temp/";
 	    String outPath = "temp/";
+	    // TODO: Cleanup these paths and filenames.
 		//String inPath = "data/mergedModels/";
 		//String outPath = "data/laidoutModels/";
 	    // String inPath = "src/layout/temp/";
 	    // String outPath = "src/layout/temp/";
-	    String tracePath = "";
-//	    String inputFile = "S7-out.json";
 	    String inputFile = "default.json";
 	    String outputFile = "default-output.json";
 	
@@ -53,7 +52,7 @@ public class LMain {
 	        }
 	
 	        // run auto-layout
-	        LayoutAlgorithm layerOuter = new LayoutAlgorithm(modelSpec, "trace.txt", 5001);
+	        LayoutAlgorithm layerOuter = new LayoutAlgorithm(modelSpec, 5001);
 	        ModelSpec layedOutModel = layerOuter.layout();
 	
 	        // Create output file that will be used by frontend

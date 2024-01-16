@@ -7,18 +7,15 @@ import merge.*;
 import java.util.*;
 
 public class LayoutAlgorithm {
-	// models
-	ModelSpec model;
-    int maxIter;
+	private ModelSpec model;
+    private int maxIter;
 
     /**
      * Initialize LayoutAlgorithm
      * @param model - model to be layed out
-     * @param filename - file for tracking changes
      * @param maxIter - limit for iterating over changes
      */
-    // TODO: This filename appears to not do anything...
-	public LayoutAlgorithm(ModelSpec model, String filename, int maxIter) {
+	public LayoutAlgorithm(ModelSpec model, int maxIter) {
 
 		if (LMain.DEBUG) System.out.println("Creating Layout Object");
 		// set up models
@@ -286,19 +283,6 @@ public class LayoutAlgorithm {
 
 		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
-
-//		if(hasActors)
-//	        for(int k = 0; k < nodePositions.length; k++){
-//	            adjustments.get(k)[0] -= nodePositions[k].getX();
-//	            adjustments.get(k)[1] -= nodePositions[k].getY();
-//	//TODO Fix Me!!
-////	            if(k < numActors) {
-////	                propagateAdjustments(model.getActors().get(k), -adjustments.get(k)[0], -adjustments.get(k)[1]);
-////	            }
-//	        }
-
-        //maximum iterations completed
-		//return model;
 	}
 
 	/*************** start of helper methods *******************/
@@ -309,7 +293,7 @@ public class LayoutAlgorithm {
 	 * @param x_shift
 	 * @param y_shift
 	 */
-	public void propagateAdjustments(Actor actor, double x_shift, double y_shift) {
+	private void propagateAdjustments(Actor actor, double x_shift, double y_shift) {
         for(Intention intent : actor.getEmbedIntentions(model)) {
             intent.setX(intent.getX() + x_shift);
             intent.setY(intent.getY() + y_shift);
@@ -322,9 +306,9 @@ public class LayoutAlgorithm {
 	 * @param intentions
 	 * @return
 	 */
-    public Actor resizeActor (Actor actor, VisualInfo[] intentions) { //, boolean hasActors) {
+    private Actor resizeActor (Actor actor, VisualInfo[] intentions) { //, boolean hasActors) {
         VisualInfo center = findCenter(intentions); //, actor, hasActors);
-    // public Actor resizeActor (Actor actor, VisualInfo[] intentions) {
+    // private Actor resizeActor (Actor actor, VisualInfo[] intentions) {
     //     VisualInfo center = findCenter(intentions);
         Integer margin = 100; //space between the edge of intentions and the actor
         //actor.setX(center.getX() - center.getWidth()/2 - margin);
@@ -398,7 +382,7 @@ public class LayoutAlgorithm {
      * @param n2 - from the perspective of n2
      * @return
      */
-    public double angleBetween(VisualInfo n1, VisualInfo n2) {
+    private double angleBetween(VisualInfo n1, VisualInfo n2) {
     	if (LMain.DEBUG) System.out.println("Starting: angleBetween");
         if(n1 != n2){
             double distX = n1.getX() - n2.getX();
@@ -417,63 +401,7 @@ public class LayoutAlgorithm {
     }
 
 
-    /**
-     * Find the center of the VisualInfo objects
-     * @param nodePositions
-     * @return VisualInfo object at the center who's height and width is the height and width of all the nodes
-     */
-//     public VisualInfo findCenter(VisualInfo[] nodePositions) {
-//         VisualInfo mostLeft = nodePositions[0];
-//         VisualInfo mostRight = nodePositions[0];
-//         VisualInfo mostUpper = nodePositions[0];
-//         VisualInfo mostBottom = nodePositions[0];
-        
-//         //find the most {left, right, upper, bottom} nodes
-//         for(VisualInfo nodePosition: nodePositions) {
-//         	//AbstractLinkableElement nodePos = AbstractLinkableElement(nodePosition);
-        	
-//             //System.out.println("NODEPOS" + nodePosition.toString());
-            
-//             if(nodePosition.getX() < mostLeft.getX()){
-//             	mostLeft = nodePosition;
-//             }
-//             if(nodePosition.getX() + nodePosition.getWidth() > mostRight.getX() + mostRight.getWidth()){
-//             	mostRight = nodePosition;
-//             }
-//             if(nodePosition.getY() < mostUpper.getY()){
-//             	mostUpper = nodePosition;
-//             }
-//             if(nodePosition.getY() + nodePosition.getHeight() > mostBottom.getY() + nodePosition.getHeight()){
-//             	mostBottom = nodePosition;
-//             }
-            
-//         }
-// //        System.out.println("most right: " + mostRight.getX() + "," + mostRight.getY());
-// //        System.out.println("most left: " + mostLeft.getX() + "," + mostLeft.getY());
-// //        System.out.println("most upper: " + mostUpper.getX() + "," + mostUpper.getY());
-// //        System.out.println("most bottom: " + mostBottom.getX() + "," + mostBottom.getY());
-//         System.out.println("MR_Pos: " + mostRight.toString());
-//         System.out.println("ML_Pos: " + mostLeft.toString());
-//         System.out.println("MB_Pos: " + mostBottom.toString());
-//         System.out.println("MU_Pos: " + mostUpper.toString());
-
-//         double x_left = mostLeft.getX();
-//         double x_right = mostRight.getX() + mostRight.getSize().getWidth();
-//         double y_upper = mostUpper.getY();
-//         double y_bottom = mostBottom.getY() + mostBottom.getSize().getHeight();
-
-//         double x = (x_left + x_right) / 2;
-//         double y = (y_upper + y_bottom) / 2;
-        
-//         //create a visualInfo object that encompasses all the nodes and has its center in the center of the nodes
-//         //width, height, x, y
-//         VisualInfo center = new VisualInfo((int)(Math.abs(x_left - x_right)), (int)(Math.abs(y_upper - y_bottom)), x, y);
-//         System.out.println("CenterPos: " + center.toString());
-
-//         return center;
-//     }
-
-    public void updateCenterOnNode(VisualInfo node){
+    private void updateCenterOnNode(VisualInfo node){
         //double x_value = node.getX() + (node.getWidth()/2);
     	System.out.println("x coordinates before updates: " + node.getX());
         node.setX(node.getX() + (node.getWidth()/2));
@@ -487,7 +415,7 @@ public class LayoutAlgorithm {
         System.out.println("\n");
     }
 
-    public void updateCentersInModel(ModelSpec model){
+    private void updateCentersInModel(ModelSpec model){
         for(Actor a: model.getActors()) {
             Intention[] a_intentions = a.getEmbedIntentions(model);
             // Updating the intentions of each actor
@@ -498,7 +426,7 @@ public class LayoutAlgorithm {
         }
 
     }
-    public void undoUpdateOnNode(VisualInfo node){
+    private void undoUpdateOnNode(VisualInfo node){
     	System.out.println("Starting undoUpdateOnNode");
     	System.out.println("x coordinates before undoUpdates: " + node.getX());
         //double x_value = node.getX() + (node.getWidth()/2);
@@ -512,8 +440,7 @@ public class LayoutAlgorithm {
 
         System.out.println("\n");
     }
-
-    public void undoUpdatesInModel(ModelSpec model){
+    private void undoUpdatesInModel(ModelSpec model){
         for(Actor a: model.getActors()) {
             Intention[] a_intentions = a.getEmbedIntentions(model);
             // Updating the intentions of each actor
@@ -524,11 +451,12 @@ public class LayoutAlgorithm {
         }
     }
     
-    public VisualInfo findCenter(VisualInfo[] nodePositions) { //, Actor Actor, boolean hasActors) {
-//
-//        if(!hasActors){
-//            System.out.println("Actor coordinates: x= " +Actor.getX() +"y= " + Actor.getY() + "width= " + Actor.getWidth()+ "height= " + Actor.getHeight());
-//        }
+    /**
+     * Find the center of the VisualInfo objects
+     * @param nodePositions
+     * @return VisualInfo object at the center who's height and width is the height and width of all the nodes
+     */
+    private VisualInfo findCenter(VisualInfo[] nodePositions) { 
 
         VisualInfo mostLeft = nodePositions[0];
         VisualInfo mostRight = nodePositions[0];
@@ -584,7 +512,7 @@ public class LayoutAlgorithm {
       * @param n2
       * @return
       */
-     public boolean isOverlapped(VisualInfo n1, VisualInfo n2) {
+     private boolean isOverlapped(VisualInfo n1, VisualInfo n2) {
     	 double n1_xmin = n1.getX();
     	 double n1_xmax = n1.getX() + n1.getSize().getWidth();
     	 double n1_ymin = n1.getY();
@@ -606,7 +534,7 @@ public class LayoutAlgorithm {
       * @param numActors - to know which nodes are actors
       * @return
       */
-     public boolean isCloseEnough(VisualInfo[] nodePositions, int numActors) {
+     private boolean isCloseEnough(VisualInfo[] nodePositions, int numActors) {
     	 //TODO: limits for heuristic for distance between nodes
     	 double edgeLength_max = 200/(1 + 1000*Math.pow(Math.E, nodePositions.length * -1)) + 100;
 
@@ -653,7 +581,7 @@ public class LayoutAlgorithm {
       * @param currentVertex
       * @return visitedSet
       */
-     public HashSet<Integer> DFS(HashSet<Integer[]> edgeSet, HashSet<Integer> visitedSet, Integer currentVertex) {
+     private HashSet<Integer> DFS(HashSet<Integer[]> edgeSet, HashSet<Integer> visitedSet, Integer currentVertex) {
     	 //label the current node as visited
     	 visitedSet.add(currentVertex);
     	 if (LMain.DEBUG) System.out.println("visitedSet: " + visitedSet);
@@ -679,7 +607,7 @@ public class LayoutAlgorithm {
       * @param border
       * @return
       */
-     public boolean checkConds(VisualInfo[] nodePositions, VisualInfo border, int numActors) {	//TODO border variable not used.
+     private boolean checkConds(VisualInfo[] nodePositions, VisualInfo border, int numActors) {	//TODO border variable not used.
     	 if (LMain.DEBUG) System.out.println("Checking Conditions");
          //check that no nodes are overlapped
     	 for(VisualInfo n1: nodePositions) {
@@ -700,7 +628,7 @@ public class LayoutAlgorithm {
       * @param distance?
       * @return
       */
-     public double makeSmall(Double num) {
+     private double makeSmall(Double num) {
     	 while(num > 10000) {
     		 num = num / 10;
     	 }
@@ -713,7 +641,7 @@ public class LayoutAlgorithm {
       * @param height
       * @return
       */
-     public double getHypotenuse(double base, double height) {
+     private double getHypotenuse(double base, double height) {
     	 return Math.sqrt(base*base + height*height);
      }
 
@@ -723,7 +651,7 @@ public class LayoutAlgorithm {
       * @param arr
       * @return
       */
-      public double sum(Double[] arr){
+      private double sum(Double[] arr){
           int sum = 0;
           for(Double i: arr){
               sum += i;
@@ -736,7 +664,7 @@ public class LayoutAlgorithm {
   	 * @param nodes - elements that will be arranged, like actors and intentions
   	 * @return
   	 */
-      public VisualInfo[] initNodePositions(ArrayList<AbstractLinkableElement> nodes){
+      private VisualInfo[] initNodePositions(ArrayList<AbstractLinkableElement> nodes){
     	  if (LMain.DEBUG) System.out.println(nodes);
     	  VisualInfo[] nodePositions = new VisualInfo[nodes.size()];
 
@@ -755,7 +683,7 @@ public class LayoutAlgorithm {
       * @param n2 the border
       * @return
       */
-     public boolean isOutside(VisualInfo n1, VisualInfo n2) {
+     private boolean isOutside(VisualInfo n1, VisualInfo n2) {
         double n1_xmin = n1.getX();
         double n1_xmax = n1.getX() + n1.getSize().getWidth();
         double n1_ymin = n1.getY();
@@ -781,7 +709,7 @@ public class LayoutAlgorithm {
        * @param nodePos
        * @param actor
        */
-      public void organizeIntentionTypes(VisualInfo[] nodePos, Actor actor) {
+      private void organizeIntentionTypes(VisualInfo[] nodePos, Actor actor) {
 
     	  //sort nodePos
     	  quicksort(nodePos, 0, nodePos.length - 1);
@@ -827,7 +755,7 @@ public class LayoutAlgorithm {
        * @param lo
        * @param hi
        */
-      public void quicksort(VisualInfo[] nodePos, int lo, int hi) {
+      private void quicksort(VisualInfo[] nodePos, int lo, int hi) {
     	  if (lo >= hi || lo < 0) return;
 
     	  int p = partition(nodePos, lo, hi);
@@ -843,7 +771,7 @@ public class LayoutAlgorithm {
        * @param hi
        * @return
        */
-      public int partition(VisualInfo[] nodePos, int lo, int hi) {
+      private int partition(VisualInfo[] nodePos, int lo, int hi) {
     	  VisualInfo pivot = nodePos[hi];
 
     	  int i = lo - 1;
