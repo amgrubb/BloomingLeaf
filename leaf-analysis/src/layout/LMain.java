@@ -1,11 +1,8 @@
 package layout;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import gson_classes.IMain;
@@ -14,7 +11,6 @@ import merge.IMainBuilder;
 import merge.MMain;
 
 import simulation.ModelSpec;
-import simulation.BIModelSpecBuilder;
 import simulation.Intention;
 
 public class LMain {
