@@ -15,6 +15,7 @@ import simulation.Intention;
 
 public class LMain {
 	public final static boolean DEBUG = false;
+	public final static boolean VISUALIZE = true;
 
 	public static void main(String[] args) {
 	    String inPath = "temp/";

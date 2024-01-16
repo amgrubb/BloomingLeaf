@@ -3,7 +3,6 @@ package layout;
 import merge.VisualInfo;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet.ColorAttribute;
 
 import java.awt.*;
 
@@ -13,10 +12,10 @@ public class LayoutVisualizer {
 	JPanel panel;
 	
     public LayoutVisualizer(VisualInfo[] nodes, VisualInfo center, int numActors){
-    	if(LMain.DEBUG) this.frame = new JFrame();
-        if(LMain.DEBUG) this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        if(LMain.DEBUG) this.frame.setVisible(true);
-        if(LMain.DEBUG) this.frame.setSize(center.getWidth(), center.getHeight());
+    	this.frame = new JFrame();
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.setVisible(true);
+        this.frame.setSize(center.getWidth(), center.getHeight());
         
         this.nodes = nodes;
 
@@ -49,14 +48,14 @@ public class LayoutVisualizer {
             }
         };
         
-        if(LMain.DEBUG) frame.add(panel);
-        if(LMain.DEBUG) frame.validate();
-        if(LMain.DEBUG) frame.repaint(); 
+        frame.add(panel);
+        frame.validate();
+        frame.repaint(); 
         
     }
     
     public void update() {
-    	if(LMain.DEBUG) frame.repaint(); 
+    	frame.repaint(); 
     }
 }
 

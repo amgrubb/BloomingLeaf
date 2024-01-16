@@ -34,6 +34,7 @@ public class LayoutAlgorithm {
 
 		if (LMain.DEBUG) System.out.println("Starting Full Layout");
 
+		// TODO: Make individual actor for each intention. Also make helper function.
 		//create an invisible actor around actorless intention
 		Actor temp_actor = new Actor("temp-actor", "temp-actor", "basic.Actor", new String[0], "temp-actor");
 		//add intentions w/o actor into temporary actor
@@ -42,21 +43,18 @@ public class LayoutAlgorithm {
 		}
 		temp_actor.setVisualInfo(new VisualInfo(5,5,5.0,5.0));
 		model.getActors().add(temp_actor);
-
-		moveXYCoordsToCenter(model);
-
 		if (LMain.DEBUG) System.out.println(temp_actor.getEmbedIntentions(model).length);
+		
+		moveXYCoordsToCenter(model);
 
 		//nested levels (intention level)
 		if (LMain.DEBUG) System.out.println("Starting Nested Level");
-
 
 		for(Actor a: model.getActors()) {
 
 			if (LMain.DEBUG) System.out.println(a.getName());
 
 			// get nodes in this actor
-
 			Intention[] a_intentions = a.getEmbedIntentions(model);
 			if(a_intentions.length == 0) continue;
 
@@ -71,15 +69,15 @@ public class LayoutAlgorithm {
 			if (LMain.DEBUG) System.out.println(Arrays.toString(intention_nodePos));
 
 			//layout intentions
-			// layoutModel(intention_nodePos, false);
 			layoutModel(intention_nodePos, false);
 
 			//resize actor
-			// resizeActor(a, intention_nodePos);
-			resizeActor(a, intention_nodePos); //, false);
+			resizeActor(a, intention_nodePos); 
+			
 			if (a.getName().equals("temp-actor")) {
 				if (LMain.DEBUG) System.out.println(a.getVisualInfo());
 			}
+			
 		}
 
 		//  level 0
@@ -125,23 +123,18 @@ public class LayoutAlgorithm {
 	 * @return
 	 */
 	private void layoutModel(VisualInfo[] nodePositions, boolean hasActors){
-		// public ModelSpec layoutModel(VisualInfo[] nodePositions, boolean hasActors){
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
+		
 		//center is where gravity force comes from 
-
-		// for (VisualInfo node: nodePositions){
-		//     updateCenterValues(node);
-		// }
-
-		VisualInfo center = findCenter(nodePositions); //, actor, hasActors);	//Used by angleBetween and checkConds.
-		// VisualInfo center = findCenter(nodePositions);
-
-
-		//        int numActors = model.getActors().size();
-		//        if(!hasActors) numActors = 0;
-		//visualizer tool to see how nodes are moving
-		//        LayoutVisualizer lV = new LayoutVisualizer(nodePositions, center, numActors);
-
+		VisualInfo center = findCenter(nodePositions); //Used by angleBetween and checkConds.
+		
+		LayoutVisualizer lV = null;
+		if(LMain.VISUALIZE) {
+			int numActors = model.getActors().size();
+			if(!hasActors) numActors = 0;
+			lV = new LayoutVisualizer(nodePositions, center, numActors);
+		}
+     
 		//constants
 		double c = .0002; //adjustment -- the speed at which actors move
 		//TODO: solid piece wise function for c (scalable for big model)
@@ -226,7 +219,8 @@ public class LayoutAlgorithm {
 			}
 
 			//update the visualizer
-			//            lV.update();
+			if(LMain.VISUALIZE) lV.update();
+			
 			if (LMain.DEBUG) System.out.println(constant);
 		}
 
