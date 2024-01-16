@@ -107,20 +107,9 @@ public class LayoutAlgorithm {
 			VisualInfo org = actorMap.get(a);
 			propagateAdjustments(a, cur.getX() - org.getX(), cur.getY() - org.getY());
 		}
-		//        Actor temp_actor1 = new Actor("temp-actor", "temp-actor", "basic.Actor", new String[0], "temp-actor");
-		//        temp_actor1.setVisualInfo(new VisualInfo(0,0,5.0,5.0));
-
-		//	run layout on level_zero (if a node is an actor, propagate changes to its children)
-		//		if(model.getActors().size() == 0) 
-		//			layoutModel(lvl0_nodePos, temp_actor1, false);
-		//		else 
-		//			layoutModel(lvl0_nodePos, temp_actor1, true);
-		//        if(model.getActors().size() == 0) 
-		//        	layoutModel(lvl0_nodePos, false);
-		//		else 
-		//			layoutModel(lvl0_nodePos, true);
 
 		moveXYCoordsToTopLeft(model);
+		
 		//delete the temp actor
 		model.getActors().remove(temp_actor);
 		//TODO: delete temp actor from intentions
@@ -271,22 +260,66 @@ public class LayoutAlgorithm {
 		}
 
 		// print out diffDistanceByNodes
-		System.out.println("Diff Distance by Nodes:");
-		for (ArrayList<Double> nodeDiffDistance : diffDistanceByNodes) {
-			for (Double diffDistance : nodeDiffDistance) {
-				String formattedDiffDistance = String.format("%.3f", diffDistance);
-				System.out.print(formattedDiffDistance + " ");
-			}
-			System.out.println();
+		if (LMain.DEBUG) {
+			System.out.println("Diff Distance by Nodes:");
+			for (ArrayList<Double> nodeDiffDistance : diffDistanceByNodes) {
+				for (Double diffDistance : nodeDiffDistance) {
+					String formattedDiffDistance = String.format("%.3f", diffDistance);
+					System.out.print(formattedDiffDistance + " ");
+				}
+				System.out.println();
+			}	
+			System.out.println(Arrays.toString(nodePositions));
+			System.out.println("Finished: layoutModel");
 		}
-
-
-		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
-		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
 	}
 
 	/*************** start of helper methods *******************/
+	
+	/**
+	 * Find the center of the VisualInfo objects
+	 * @param nodePositions
+	 * @return VisualInfo object at the center who's height and width is the height and width of all the nodes
+	 */
+	private VisualInfo findCenter(VisualInfo[] nodePositions) { 
 
+		VisualInfo mostLeft = nodePositions[0];
+		VisualInfo mostRight = nodePositions[0];
+		VisualInfo mostUpper = nodePositions[0];
+		VisualInfo mostBottom = nodePositions[0];
+
+		//find the most {left, right, upper, bottom} nodes
+		for(VisualInfo nodePosition: nodePositions) {
+			if((nodePosition.getX() - nodePosition.getWidth()/2) < (mostLeft.getX() - mostLeft.getWidth()/2)){
+				mostLeft = nodePosition;
+			}
+			if((nodePosition.getX() + nodePosition.getWidth()/2) > (mostRight.getX() + mostRight.getWidth()/2)){
+				mostRight = nodePosition;
+			}
+			if((nodePosition.getY() - nodePosition.getHeight()/2) < (mostUpper.getY() - mostUpper.getHeight()/2)){
+				mostUpper = nodePosition;
+			}
+			if((nodePosition.getY() + nodePosition.getHeight()/2) > (mostBottom.getY() + mostBottom.getHeight()/2)){
+				mostBottom = nodePosition;
+			}
+		}
+		
+		double x_left = mostLeft.getX() - mostLeft.getWidth()/2;
+		double x_right = mostRight.getX() + mostRight.getWidth()/2;
+		double y_upper = mostUpper.getY() - mostUpper.getHeight()/2;
+		double y_bottom = mostBottom.getY() + mostBottom.getHeight()/2;
+
+		double newX = (x_left + x_right) / 2;
+		double newY = (y_upper + y_bottom) / 2;
+		int newWidth = (int)(Math.abs(x_left - x_right));
+		int newHeight = (int)(Math.abs(y_upper - y_bottom));
+
+		//Create a new visualInfo object that encompasses all the nodes and has its center in the center of the nodes.
+		VisualInfo center = new VisualInfo(newWidth, newHeight, newX, newY);
+		
+		return center;
+	}
+	
 	/**
 	 * Propagate changes from actor to its children nodes
 	 * @param actor
@@ -306,14 +339,10 @@ public class LayoutAlgorithm {
 	 * @param intentions
 	 * @return
 	 */
-	private Actor resizeActor (Actor actor, VisualInfo[] intentions) { //, boolean hasActors) {
-		VisualInfo center = findCenter(intentions); //, actor, hasActors);
-		// private Actor resizeActor (Actor actor, VisualInfo[] intentions) {
-		//     VisualInfo center = findCenter(intentions);
-		Integer margin = 100; //space between the edge of intentions and the actor
-		//actor.setX(center.getX() - center.getWidth()/2 - margin);
+	private Actor resizeActor (Actor actor, VisualInfo[] intentions) { 
+		VisualInfo center = findCenter(intentions); 
+		Integer margin = 50; //space between the edge of intentions and the actor
 		actor.setX(center.getX());
-		//actor.setY(center.getY() - center.getHeight()/2 - margin);
 		actor.setY(center.getY());
 		actor.setWidth(center.getWidth() + 2*margin);
 		actor.setHeight(center.getHeight() + 2*margin);
@@ -361,7 +390,6 @@ public class LayoutAlgorithm {
 	 * the expression (Cn*Cn/d)
 	 * @return the force repulsion between two elements
 	 */
-
 	private double getRepulsion(VisualInfo n1, VisualInfo n2, double constant) {
 		if (LMain.DEBUG) System.out.println("Starting: getRepulsion");
 		if (n1 != n2) {
@@ -398,60 +426,6 @@ public class LayoutAlgorithm {
 			return theta;
 		}
 		return 0;
-	}
-
-
-
-	/**
-	 * Find the center of the VisualInfo objects
-	 * @param nodePositions
-	 * @return VisualInfo object at the center who's height and width is the height and width of all the nodes
-	 */
-	private VisualInfo findCenter(VisualInfo[] nodePositions) { 
-
-		VisualInfo mostLeft = nodePositions[0];
-		VisualInfo mostRight = nodePositions[0];
-		VisualInfo mostUpper = nodePositions[0];
-		VisualInfo mostBottom = nodePositions[0];
-
-		//find the most {left, right, upper, bottom} nodes
-		for(VisualInfo nodePosition: nodePositions) {
-			//AbstractLinkableElement nodePos = AbstractLinkableElement(nodePosition);
-
-			//System.out.println("NODEPOS" + nodePosition.toString());
-
-			if((nodePosition.getX() - nodePosition.getWidth()/2) < (mostLeft.getX() - mostLeft.getWidth()/2)){
-				mostLeft = nodePosition;
-			}
-			if((nodePosition.getX() + nodePosition.getWidth()/2) > (mostRight.getX() + mostRight.getWidth()/2)){
-				mostRight = nodePosition;
-			}
-			if((nodePosition.getY() - nodePosition.getHeight()/2) < (mostUpper.getY() - mostUpper.getHeight()/2)){
-				mostUpper = nodePosition;
-			}
-			if((nodePosition.getY() + nodePosition.getHeight()/2) > (mostBottom.getY() + mostBottom.getHeight()/2)){
-				mostBottom = nodePosition;
-			}
-
-		}
-		System.out.println("most right:" + mostRight.getX() + "," + mostRight.getY());
-		System.out.println("most left:" + mostLeft.getX() + "," + mostLeft.getY());
-		System.out.println("most upper:" + mostUpper.getX() + "," + mostUpper.getY());
-		System.out.println("most bottom:" + mostBottom.getX() + "," + mostBottom.getY());
-
-		double x_left = mostLeft.getX() - mostLeft.getWidth()/2;
-		double x_right = mostRight.getX() + mostRight.getWidth()/2;
-		double y_upper = mostUpper.getY() - mostUpper.getHeight()/2;
-		double y_bottom = mostBottom.getY() + mostBottom.getHeight()/2;
-
-		double x = (x_left + x_right) / 2;
-		double y = (y_upper + y_bottom) / 2;
-
-		//create a visualInfo object that encompasses all the nodes and has its center in the center of the nodes
-		//width, height, x, y
-		VisualInfo center = new VisualInfo((int)(Math.abs(x_left - x_right)), (int)(Math.abs(y_upper - y_bottom)), x, y);
-		System.out.println("CENTERPOS: " + center.toString());
-		return center;
 	}
 
 	/******************** Methods for moving the XY coordinates to center and then back *****************/
