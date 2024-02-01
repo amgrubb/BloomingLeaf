@@ -6,7 +6,10 @@ import merge.*;
 
 import java.util.*;
 
+import org.jacop.constraints.Constraint;
+
 public class LayoutAlgorithm {
+	public final static int ACTOR_BOUNDARY_MARGIN = 50; //The space between the edge of intentions and the actor on one side.
 	private ModelSpec model;
 	private int maxIter;
 
@@ -31,19 +34,10 @@ public class LayoutAlgorithm {
 	 * @return model
 	 */
 	public ModelSpec layout(){
-
+		
 		if (LMain.DEBUG) System.out.println("Starting Full Layout");
-
-		// TODO: Make individual actor for each intention. Also make helper function.
-		//create an invisible actor around actorless intention
-		Actor temp_actor = new Actor("temp-actor", "temp-actor", "basic.Actor", new String[0], "temp-actor");
-		//add intentions w/o actor into temporary actor
-		for(Intention i: model.getActorlessIntentions()) {
-			temp_actor.addEmbed((AbstractElement)i);
-		}
-		temp_actor.setVisualInfo(new VisualInfo(5,5,5.0,5.0));
-		model.getActors().add(temp_actor);
-		if (LMain.DEBUG) System.out.println(temp_actor.getEmbedIntentions(model).length);
+		
+		List<Actor> invisibleActorsList = createInvisibleActors();
 		
 		moveXYCoordsToCenter(model);
 
@@ -107,11 +101,8 @@ public class LayoutAlgorithm {
 		}
 
 		moveXYCoordsToTopLeft(model);
+		removeInvisibleActors(invisibleActorsList);
 		
-		//delete the temp actor
-		model.getActors().remove(temp_actor);
-		//TODO: delete temp actor from intentions
-
 		return model;
 	}
 
@@ -335,11 +326,10 @@ public class LayoutAlgorithm {
 	 */
 	private Actor resizeActor (Actor actor, VisualInfo[] intentions) { 
 		VisualInfo center = findCenter(intentions); 
-		Integer margin = 50; //space between the edge of intentions and the actor
 		actor.setX(center.getX());
 		actor.setY(center.getY());
-		actor.setWidth(center.getWidth() + 2*margin);
-		actor.setHeight(center.getHeight() + 2*margin);
+		actor.setWidth(center.getWidth() + (2 * ACTOR_BOUNDARY_MARGIN));
+		actor.setHeight(center.getHeight() + (2 * ACTOR_BOUNDARY_MARGIN));
 		return actor;
 	}
 
@@ -422,6 +412,44 @@ public class LayoutAlgorithm {
 		return 0;
 	}
 
+	/******************** Methods to create and remove temporary actors. *****************/
+	/** Create an invisible temporary actor for each intention without an actor.
+	 * @return The list of temporary actors.
+	 */
+	private List<Actor> createInvisibleActors(){
+		if (LMain.DEBUG) System.out.println("Creating Invisible Actors");
+		List<Actor> invisibleActorsList = new ArrayList<Actor>();	
+		
+		//Add each intention without an actor to a temporary actor.
+		for(Intention i: model.getActorlessIntentions()) {
+			String nodeID = "IA-" + i.getId();
+			String nodeName = "IA-" + i.getName();
+			String uniqueID = "IA-" + i.getUniqueID();
+			Actor tempActor = new Actor(nodeID, nodeName, "basic.Actor", new String[0], uniqueID);
+			tempActor.addEmbed((AbstractElement)i);
+			Integer tempWidth = i.getVisualInfo().getWidth() + (2 * ACTOR_BOUNDARY_MARGIN);
+			Integer tempHeight = i.getVisualInfo().getHeight() + (2 * ACTOR_BOUNDARY_MARGIN);
+			tempActor.setVisualInfo(new VisualInfo(tempWidth, tempHeight, i.getVisualInfo().getX(), i.getVisualInfo().getY()));
+			if (LMain.DEBUG) System.out.println(tempActor.getEmbedIntentions(model).length);
+			
+			model.getActors().add(tempActor);
+			invisibleActorsList.add(tempActor);
+		}
+		return invisibleActorsList;
+	}
+	/** Removes all invisible temporary actor from the model and the intention embedding.
+	 * @param invisibleActorsList - The list to remove elements from.
+	 */
+	private void removeInvisibleActors(List<Actor> invisibleActorsList){
+		for(Actor tempActor: invisibleActorsList) {
+			Intention[] intentionList = tempActor.getEmbedIntentions(model);
+			for (Intention i : intentionList) {
+				i.removeActor();
+			}
+			model.getActors().remove(tempActor);
+		}
+	}
+	
 	/******************** Methods for moving the XY coordinates to center and then back *****************/
 	private void moveXYCoordsToCenter(ModelSpec model){
 		for(Actor a: model.getActors()) {
