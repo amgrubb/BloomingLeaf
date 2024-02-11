@@ -265,7 +265,7 @@ function displayPalette(palette_number ) {
     550, 'alert', 'warning');
 
     //updates the color key based on the chosen palette 
-    if(palette_number<6){
+    if(palette_number<7){
         //pre-made palettes
         for (let charVal in EVO.charSatValueToNum){
             let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
@@ -307,7 +307,9 @@ $('#evo-color-key').on('click', function () {
         '</button><button type="button" class="model-editing" ' +
         'onclick="displayPalette(5)" style="width:100%">Color-Blind Palette' +
         '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(6)" style="width:100%"> My Palette' +
+        'onclick="displayPalette(6)" style="width:100%">Traffic Light Palette' +
+        '</button><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(7)" style="width:100%"> My Palette' +
         '</button></p>',
         window.innerWidth * 0.3, 'alert', 'warning');
 });
@@ -1015,7 +1017,7 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-6').on('click', function () { // Apply Chosen Colors
+    $('#color-palette-6').on('click', function () { // Choose color palettes
         EVO.paletteOption = 6;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1025,8 +1027,18 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-7').on('click', function () { // Choose color palettes
+    $('#color-palette-7').on('click', function () { // Apply Chosen Colors
         EVO.paletteOption = 7;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    $('#color-palette-8').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 8;
         //render a table
         $('#color-input').css("display", "");
     });
@@ -1043,6 +1055,7 @@ paper.on("link:options", function (cell) {
             document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
             document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
             //error messsage 
+            console.log(EVO.paletteOption);
             swal("Please make sure your satisfied, denied, none, and FF values are different from one another",   "", "error")
             
         }
@@ -1056,7 +1069,7 @@ paper.on("link:options", function (cell) {
             }, 500);
         
             // refresh the visual overlay on the model and the palette dropdown
-            EVO.paletteOption =6;
+            EVO.paletteOption =7;
             highlightPalette(EVO.paletteOption);
             if ($('#analysisSlider').css("display") == "none") {
                 EVO.refresh(undefined);
@@ -1293,7 +1306,7 @@ function stringifyCirc(obj) {
  * Highlights the chosen palette on the dropdown
  */
 function highlightPalette(paletteOption) {
-    for (var i = 1; i <= 6; i++) {
+    for (var i = 1; i <= 7; i++) {
         var id = '#color-palette-'
         id = id + i;
         if (i == paletteOption) {
@@ -1309,7 +1322,7 @@ function highlightPalette(paletteOption) {
  * UnHighlights the chosen palette on the dropdown
  */
 function unhighlightPalettes() {
-    for (var i = 1; i <= 6; i++) {
+    for (var i = 1; i <= 7; i++) {
         var id = '#color-palette-'
         id = id + i;
         $(id).css("background-color", "#f9f9f9"); //unhighlight the choice
