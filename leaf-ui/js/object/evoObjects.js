@@ -43,9 +43,9 @@ class EVO {
     
     }
     
-    //default palette
-    static colorVisDict= {
-        "0000": "#D3D3D3", // None (⊥, ⊥)
+    //Red-blue palette
+    static colorVisDict1= {
+        "0000": "#b5b5b5", // None (⊥, ⊥)
         "0011": "#003fff", // Satisfied (F, ⊥)
         "0010": "#8FB8DE", // Partially satisfied (P, ⊥)
         "0100": "#fbaca8", // Partially denied (⊥, P)
@@ -58,15 +58,15 @@ class EVO {
 
     // The Red-Green Palette
     static colorVisDict2 = {
-        "0000": "#bdaead",
-        "0011": "#d11a2d",
-        "0010": "#e16c96",
-        "0100": "#6e8b74",
-        "0110": "#ffd111",
-        "0111": "#862617",
-        "1100": "#1a6840",
-        "1110": "#887322",
-        "1111": "#000000"
+        "0000": "#a77f7f",
+        "0011": "#c12a38",
+        "0010": "#e05c8a",
+        "0100": "#54705a",
+        "0110": "#d4c400",
+        "0111": "#704e43",
+        "1100": "#13644e",
+        "1110": "#775f1e",
+        "1111": "#2a2a2a"
     };
 
     // The Green-Black Palette
@@ -95,8 +95,21 @@ class EVO {
         "1111": "#0D0221"
     };
 
+     // The Traffic-Light Palette
+     static colorVisDict5 = {
+        "0000": "#FFFF00",
+        "0011": "#00FF00",
+        "0010": "#77DD77",
+        "0100": "#FFA500",
+        "0110": "#FFFF00",
+        "0111": "#FFFF00",
+        "1100": "#FFFF00",
+        "1110": "#FF0000",
+        "1111": "#FFFF00"
+    };
+
     // Color Blind palette
-    static colorVisDictColorBlind = {
+    static colorVisDict6 = {
      
         "0000": "#CCCCCC", // None (⊥, ⊥)
         "0011": "#0000FF", // Satisfied (F, ⊥)
@@ -108,7 +121,6 @@ class EVO {
         "1110": "#FFFF00", // Conflict (P, F)
         "1111": "#FFFF00"  // Conflict (F, F)
 
-        
     };
 
     //Initialize user-created-palette as Red-Blue
@@ -124,30 +136,18 @@ class EVO {
         "1111": "#0D0221"  // Conflict (F, F)
     };
 
-    // The Traffic-Light Palette
-    static colorVisDict6 = {
-        "0000": "#FFFF00",
-        "0011": "#00FF00",
-        "0010": "#77DD77",
-        "0100": "#FFA500",
-        "0110": "#FFFF00",
-        "0111": "#FFFF00",
-        "1100": "#FFFF00",
-        "1110": "#FF0000",
-        "1111": "#FFFF00"
-    };
 
     
     /**
      * List of color visualization dictionaries
      */
     static colorVisDictCollection = [
-        EVO.colorVisDict,
-        EVO.colorVisDict2,
-        EVO.colorVisDict3,
-        EVO.colorVisDict4,
-        EVO.colorVisDictColorBlind,
-        EVO.colorVisDict6
+        EVO.colorVisDict1,  // red-blue palette
+        EVO.colorVisDict2, // red-green palette 
+        EVO.colorVisDict3, // green-black palette
+        EVO.colorVisDict4, // yellow-purple palette
+        EVO.colorVisDict5, // traffic-light palette
+        EVO.colorVisDict6  // color-blind palette
     ];
 
     /**
@@ -168,7 +168,7 @@ class EVO {
     
 
     // Number of evaluation types
-    static numEvals = Object.keys(EVO.colorVisDict).length + 1;
+    static numEvals = Object.keys(EVO.colorVisDict1).length + 1;
     // Current time point, defined by selection in lower time point slider after simulating a single path
     static curTimePoint = 0;
     // User selected slider option

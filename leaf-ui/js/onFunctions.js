@@ -305,9 +305,9 @@ $('#evo-color-key').on('click', function () {
         '</button><button type="button" class="model-editing" ' +
         'onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
         '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(5)" style="width:100%">Color-Blind Palette' +
+        'onclick="displayPalette(5)" style="width:100%">Traffic-Light Palette' +
         '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(6)" style="width:100%">Traffic Light Palette' +
+        'onclick="displayPalette(6)" style="width:100%">Color-Blind Palett' +
         '</button><button type="button" class="model-editing" ' +
         'onclick="displayPalette(7)" style="width:100%"> My Palette' +
         '</button></p>',
@@ -968,7 +968,9 @@ paper.on("link:options", function (cell) {
         EVO.refresh(selectResult);
     });
 
-    $('#color-palette-1').on('click', function () { // Choose color palettes
+    // All the pre-made palettes 
+    // 1: Default 
+    $('#palette-red-blue').on('click', function () { 
         EVO.paletteOption = 1;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -978,7 +980,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-2').on('click', function () { // Choose color palettes
+    //2: Red-green 
+    $('#palette-red-green').on('click', function () { 
         EVO.paletteOption = 2;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -987,7 +990,9 @@ paper.on("link:options", function (cell) {
             EVO.refresh(selectResult);
         }
     });
-    $('#color-palette-3').on('click', function () { // Choose color palettes
+
+    //3: Green-black
+    $('#palette-green-black').on('click', function () { 
         EVO.paletteOption = 3;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -997,7 +1002,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-4').on('click', function () { // Choose color palettes
+    //4: Yellow-purple
+    $('#palette-yellow-purple').on('click', function () { // Choose color palettes
         EVO.paletteOption = 4;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1007,7 +1013,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-5').on('click', function () { // Choose color palettes
+    //5: traffic-light
+    $('#palette-traffic-light').on('click', function () { // Choose color palettes
         EVO.paletteOption = 5;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1017,7 +1024,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-6').on('click', function () { // Choose color palettes
+    // 6: color-blind
+    $('#palette-cb').on('click', function () { // Choose color palettes
         EVO.paletteOption = 6;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1027,7 +1035,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-7').on('click', function () { // Apply Chosen Colors
+    // 7: customizable
+    $('#palette-mine').on('click', function () { // Apply Chosen Colors
         EVO.paletteOption = 7;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1037,7 +1046,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-8').on('click', function () { // Choose color palettes
+    // 8: edit my palette
+    $('#palette-edit').on('click', function () { // Choose color palettes
         EVO.paletteOption = 8;
         //render a table
         $('#color-input').css("display", "");
