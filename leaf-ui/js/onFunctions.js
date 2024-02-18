@@ -265,7 +265,7 @@ function displayPalette(palette_number ) {
     550, 'alert', 'warning');
 
     //updates the color key based on the chosen palette 
-    if(palette_number<7){
+    if(palette_number<8){
         //pre-made palettes
         for (let charVal in EVO.charSatValueToNum){
             let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
@@ -307,9 +307,11 @@ $('#evo-color-key').on('click', function () {
         '</button><button type="button" class="model-editing" ' +
         'onclick="displayPalette(5)" style="width:100%">Traffic-Light Palette' +
         '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(6)" style="width:100%">Color-Blind Palett' +
+        'onclick="displayPalette(6)" style="width:100%">Pastel Palette' +
         '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(7)" style="width:100%"> My Palette' +
+        'onclick="displayPalette(7)" style="width:100%">Color-Blind Palette' +
+        '</button><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(8)" style="width:100%"> My Palette' +
         '</button></p>',
         window.innerWidth * 0.3, 'alert', 'warning');
 });
@@ -1024,8 +1026,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    // 6: color-blind
-    $('#palette-cb').on('click', function () { // Choose color palettes
+    //6: pastel
+    $('#palette-pastel').on('click', function () { // Choose color palettes
         EVO.paletteOption = 6;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1035,8 +1037,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    // 7: customizable
-    $('#palette-mine').on('click', function () { // Apply Chosen Colors
+    // 7: color-blind
+    $('#palette-cb').on('click', function () { // Choose color palettes
         EVO.paletteOption = 7;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1046,9 +1048,20 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    // 8: edit my palette
-    $('#palette-edit').on('click', function () { // Choose color palettes
+    // 8: customizable
+    $('#palette-mine').on('click', function () { // Apply Chosen Colors
         EVO.paletteOption = 8;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    // 9: edit my palette
+    $('#palette-edit').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 9;
         //render a table
         $('#color-input').css("display", "");
     });
@@ -1316,7 +1329,7 @@ function stringifyCirc(obj) {
  * Highlights the chosen palette on the dropdown
  */
 function highlightPalette(paletteOption) {
-    for (var i = 1; i <= 7; i++) {
+    for (var i = 1; i <= 8; i++) {
         var id = '#color-palette-'
         id = id + i;
         if (i == paletteOption) {
@@ -1332,7 +1345,7 @@ function highlightPalette(paletteOption) {
  * UnHighlights the chosen palette on the dropdown
  */
 function unhighlightPalettes() {
-    for (var i = 1; i <= 7; i++) {
+    for (var i = 1; i <= 8; i++) {
         var id = '#color-palette-'
         id = id + i;
         $(id).css("background-color", "#f9f9f9"); //unhighlight the choice

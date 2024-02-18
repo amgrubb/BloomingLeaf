@@ -108,8 +108,21 @@ class EVO {
         "1111": "#FFFF00"
     };
 
+     // The Pastel Palette
+     static colorVisDict6 = {
+        "0000": "#C6D0C3",
+        "0011": "#7DA7C9",
+        "0010": "#B8D2E2",
+        "0100": "#F1BDC1",
+        "0110": "#B294BD",
+        "0111": "#8F89A4",
+        "1100": "#EE9798",
+        "1110": "#D3A7C4",
+        "1111": "#5A5471"
+    };
+
     // Color Blind palette
-    static colorVisDict6 = {
+    static colorVisDict7 = {
      
         "0000": "#CCCCCC", // None (⊥, ⊥)
         "0011": "#0000FF", // Satisfied (F, ⊥)
@@ -147,7 +160,8 @@ class EVO {
         EVO.colorVisDict3, // green-black palette
         EVO.colorVisDict4, // yellow-purple palette
         EVO.colorVisDict5, // traffic-light palette
-        EVO.colorVisDict6  // color-blind palette
+        EVO.colorVisDict6, // pastel palette
+        EVO.colorVisDict7  // color-blind palette
     ];
 
     /**
@@ -586,11 +600,11 @@ class EVO {
      */
     static getColor(intentionEval) {
 
-        if (EVO.paletteOption <= 6) {
+        if (EVO.paletteOption <= 7) {
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
 
-        if (EVO.paletteOption >= 7) {
+        if (EVO.paletteOption >= 8) {
             return EVO.selfColorVisDict[intentionEval];
         }
     }
@@ -657,7 +671,7 @@ class EVO {
      * Fill in self-dictionary
      */
     static fillInDictionary() {
-        if (EVO.paletteOption == 8 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-None").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-FF").value & document.getElementById("my-Denied").value!= document.getElementById("my-None").value & document.getElementById("my-FF").value!= document.getElementById("my-Denied").value & document.getElementById("my-None").value!= document.getElementById("my-FF").value ){
+        if (EVO.paletteOption == 9 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-None").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-FF").value & document.getElementById("my-Denied").value!= document.getElementById("my-None").value & document.getElementById("my-FF").value!= document.getElementById("my-Denied").value & document.getElementById("my-None").value!= document.getElementById("my-FF").value ){
             EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
                 "0011": document.getElementById("my-Satisfied").value,
@@ -789,11 +803,11 @@ class EVONextState {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
 
-        if (EVONextState.paletteOption < 7) {
+        if (EVONextState.paletteOption < 8) {
 
             return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
         }
-        if (EVONextState.paletteOption == 7) {
+        if (EVONextState.paletteOption == 8) {
             var selfVis = myInputJSObject.results.get('colorVis').selfColorVisDict;
 
             return selfVis[intentionEval];
