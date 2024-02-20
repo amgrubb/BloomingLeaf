@@ -10,6 +10,13 @@ import org.jacop.constraints.Constraint;
 
 public class LayoutAlgorithm {
 	public final static int ACTOR_BOUNDARY_MARGIN = 50; //The space between the edge of intentions and the actor on one side.
+	public static double speedConstant;
+	public static double gravitation;
+	public static double constant;
+	public static double theta;
+	public static double attraction;
+	public static double repulsion;
+	public static double phi;
 	private ModelSpec model;
 	private int maxIter;
 
@@ -127,16 +134,16 @@ public class LayoutAlgorithm {
 		}
      
 		//constants
-		double c = .0002; //adjustment -- the speed at which actors move
+		speedConstant = .0002; //adjustment -- the speed at which actors move
 		//TODO: solid piece wise function for c (scalable for big model)
-		if(nodePositions.length < 7 && nodePositions.length > 3) c = .0006;
-		else if(nodePositions.length < 4) c = .0015;
-		double constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
+		if(nodePositions.length < 7 && nodePositions.length > 3) speedConstant = .0006;
+		else if(nodePositions.length < 4) speedConstant = .0015;
+		constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
 		if(hasActors) {
-			c = .01;
+			speedConstant = .01;
 		}
 		if (LMain.DEBUG) System.out.println(constant);
-		double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
+		gravitation = 9.8/Math.sqrt(constant); //gravitation forces
 
 		ArrayList<ArrayList<VisualInfo>> nodePositionsRecord = new ArrayList<ArrayList<VisualInfo>>();
 
@@ -158,15 +165,15 @@ public class LayoutAlgorithm {
 					//TODO: Force constants, sizes? How to know...
 					if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
 
-					double theta = angleBetween(nodePositions[k], nodePositions[j]);
+					theta = angleBetween(nodePositions[k], nodePositions[j]);
 
 					//calculate attraction and repulsion force
-					double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
-					double repulsion = getRepulsion(nodePositions[j], nodePositions[k], constant);
+					attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
+					repulsion = getRepulsion(nodePositions[j], nodePositions[k], constant);
 
 					//decompose attraction and repulsion, scale forces
-					double x_shift = c * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
-					double y_shift = c * (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
+					double x_shift = speedConstant * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
+					double y_shift = speedConstant * (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
 
 					if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
 					if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
@@ -183,7 +190,7 @@ public class LayoutAlgorithm {
 
 
 				//adjust positions based on gravity from the center
-				double phi = angleBetween(center, nodePositions[j]);
+				phi = angleBetween(center, nodePositions[j]);
 				if (LMain.DEBUG) System.out.println("phi: " + phi);
 				nodePositions[j].setX(nodePositions[j].getX() + gravitation*Math.cos(phi));
 				nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
@@ -244,20 +251,20 @@ public class LayoutAlgorithm {
 			diffDistanceByNodes.add(nodeDiffDistance);
 		}
 
-		// print out diffDistanceByNodes
-		if (LMain.DEBUG) {
-			System.out.println("Diff Distance by Nodes:");
-			for (ArrayList<Double> nodeDiffDistance : diffDistanceByNodes) {
-				for (Double diffDistance : nodeDiffDistance) {
-					String formattedDiffDistance = String.format("%.3f", diffDistance);
-					System.out.print(formattedDiffDistance + " ");
-				}
-				System.out.println();
-			}	
-			System.out.println(Arrays.toString(nodePositions));
-			System.out.println("Finished: layoutModel");
+    // print out diffDistanceByNodes
+	if (LMain.DEBUG) {
+		System.out.println("Diff Distance by Nodes:");
+		for (ArrayList<Double> nodeDiffDistance : diffDistanceByNodes) {
+			for (Double diffDistance : nodeDiffDistance) {
+				String formattedDiffDistance = String.format("%.3f", diffDistance);
+				System.out.print(formattedDiffDistance + " ");
+			}
+			System.out.println();
 		}
+		System.out.println(Arrays.toString(nodePositions));
+		System.out.println("Finished: layoutModel");
 	}
+}
 
 	/*************** start of helper methods *******************/
 	
