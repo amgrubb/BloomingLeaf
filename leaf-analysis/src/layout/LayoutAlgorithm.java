@@ -12,11 +12,11 @@ public class LayoutAlgorithm {
 	public final static int ACTOR_BOUNDARY_MARGIN = 50; //The space between the edge of intentions and the actor on one side.
 	public static double speedConstant;
 	public static double gravitation;
-	public static double constant;
-	public static double theta;
+	public static double antiConstant;
+//	public static double theta;
 	public static double attraction;
 	public static double repulsion;
-	public static double phi;
+//	public static double phi;
 	private ModelSpec model;
 	private int maxIter;
 
@@ -135,15 +135,15 @@ public class LayoutAlgorithm {
      
 		//constants
 		speedConstant = .0002; //adjustment -- the speed at which actors move
-		//TODO: solid piece wise function for c (scalable for big model)
+		//TODO: solid piece wise function for speedConstant (scalable for big model)
 		if(nodePositions.length < 7 && nodePositions.length > 3) speedConstant = .0006;
 		else if(nodePositions.length < 4) speedConstant = .0015;
-		constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
+		antiConstant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
 		if(hasActors) {
 			speedConstant = .01;
 		}
-		if (LMain.DEBUG) System.out.println(constant);
-		gravitation = 9.8/Math.sqrt(constant); //gravitation forces
+		if (LMain.DEBUG) System.out.println(antiConstant);
+		gravitation = 9.8/Math.sqrt(antiConstant); //gravitation forces
 
 		ArrayList<ArrayList<VisualInfo>> nodePositionsRecord = new ArrayList<ArrayList<VisualInfo>>();
 
@@ -165,11 +165,11 @@ public class LayoutAlgorithm {
 					//TODO: Force constants, sizes? How to know...
 					if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
 
-					theta = angleBetween(nodePositions[k], nodePositions[j]);
+					double theta = angleBetween(nodePositions[k], nodePositions[j]);
 
 					//calculate attraction and repulsion force
-					attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
-					repulsion = getRepulsion(nodePositions[j], nodePositions[k], constant);
+					attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], antiConstant));
+					repulsion = getRepulsion(nodePositions[j], nodePositions[k], antiConstant);
 
 					//decompose attraction and repulsion, scale forces
 					double x_shift = speedConstant * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
@@ -190,7 +190,7 @@ public class LayoutAlgorithm {
 
 
 				//adjust positions based on gravity from the center
-				phi = angleBetween(center, nodePositions[j]);
+				double phi = angleBetween(center, nodePositions[j]);
 				if (LMain.DEBUG) System.out.println("phi: " + phi);
 				nodePositions[j].setX(nodePositions[j].getX() + gravitation*Math.cos(phi));
 				nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
@@ -219,7 +219,7 @@ public class LayoutAlgorithm {
 			//update the visualizer
 			if(LMain.VISUALIZE) lV.update();
 			
-			if (LMain.DEBUG) System.out.println(constant);
+			if (LMain.DEBUG) System.out.println(antiConstant);
 		}
 
 		ArrayList<ArrayList<Double>> diffXByNodes = new ArrayList<ArrayList<Double>>();
