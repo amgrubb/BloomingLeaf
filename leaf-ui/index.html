@@ -78,6 +78,79 @@
             </div>
         </div>
 
+        <!-- EVO palette options-->
+        <div id="palette-options" class="popup_frame" style="display: none;width: 500px; left: 30%;">
+            <div id="page-mask"></div>
+            <div class="popup_content">
+                <div class="popup_header"> 
+                    <span class="close" onclick="closePopup('#palette-options')">&times;</span>
+                    <h2> EVO Color Palettes </h2>
+                </div>                           
+                <div class="popup_body">
+                    <p> What color key do you want to see? </p>
+                    <p>
+                        <button type="button" class="model-editing" onclick="displayPalette(1)" style="width:100%">Red-Blue Palette </button>
+                        <button type="button" class="model-editing" onclick="displayPalette(2)" style="width:100%">Red-Green Palette </button>
+                        <button type="button" class="model-editing" onclick="displayPalette(3)" style="width:100%">Green-Black Palette </button>
+                        <button type="button" class="model-editing" onclick="displayPalette(4)" style="width:100%">Yellow-Purple Palette </button>
+                        <button type="button" class="model-editing" onclick="displayPalette(5)" style="width:100%">Traffic-Light Palette </button>
+                        <button type="button" class="model-editing" onclick="displayPalette(6)" style="width:100%">Color-Blind Palette </button>
+                        <button type="button" class="model-editing" onclick="displayPalette(7)" style="width:100%">My Palette </button>
+                    </p>       
+                </div>
+            </div>
+        </div>
+
+
+        <!-- EVO color key-->
+        <div id="palette-color-key" class="popup_frame" style="display: none;width: 1000px; left: 10%;">
+            <div id="page-mask"></div>
+                <div class="popup_content">
+                    <div class="popup_header"> 
+                        <span class="close" onclick="closePopup('#palette-color-key')">&times;</span>
+                        <h2> EVO Color Key </h2>
+                    </div>                           
+                    <div class="popup_body">
+                        <table class="abs-table">
+                            <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>
+                            <tbody>
+                                    <tr>
+                                    <th style= "text-align:center"> None</th>
+                                    <th style= "text-align:center"> Satisfied</th>
+                                    <th style= "text-align:center"> Partially Satisfied </th>
+                                    <th style= "text-align:center"> Partially Denied</th>
+                                    <th style= "text-align:center"> Denied</th>
+                                </tr>
+                                <tr style= "background-color: #FFFFFF;">
+                                    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>
+                                    <td style="text-align:center"> <span class = "s_value_box" id = "FS"> (F ,⊥) </span> </td>
+                                    <td style="text-align:center"> <span class = "s_value_box" id = "PS"> (P ,⊥) </span> </td>
+                                    <td style="text-align:center"> <span class = "s_value_box" id = "PD"> (⊥ ,P) </span> </td>
+                                    <td style="text-align:center"> <span class = "s_value_box" id = "FD"> (⊥ ,F) </span> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Values </h3>
+                        <table id="conflict-satisfied-list" class="abs-table">
+                            <tbody>
+                            <tr>
+                                <th style= "text-align:center"> Partially Satisfied/ Partially Denied </th>
+                                <th style= "text-align:center"> Fully Satisfied/ Partially Denied</th>
+                                <th style= "text-align:center"> Partially Satisfied/ Fully Denied</th>
+                                <th style= "text-align:center"> Fully Satisfied/ Fully Denied</th>
+                            </tr>
+                                <tr style= "background-color: #FFFFFF;">
+                                <td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>
+                                <td style= "text-align:center"> <span class = "s_value_box" id = "FP"> (F, P) </span> </td>
+                                <td style= "text-align:center"> <span class = "s_value_box" id = "PF"> (P, F) </span> </td>
+                                <td style= "text-align:center"> <span class = "s_value_box" id = "FF"> (F, F) </span> </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         <button id="analysis-btn" class="green-btn btn model-only" style="border-radius:none;">Analysis</button>
         <button id="modeling-btn" class="red-btn btn analysis-only" style="display: none;">Modeling</button>
 
@@ -93,8 +166,14 @@
                 <a id="palette-cb"> Color-Blind Palette</a>
                 <a id="palette-mine"> My Palette</a> 
                 <a id="palette-edit"> Edit My Palette</a> 
-                </div>
-                </div>
+            </div>
+       </div>
+
+       
+
+
+
+        
         <!-- modeling mode slider: simple off/on option-->
         <div class="EVO-whole-button" id="modelingSlider">
             <!-- slider div -->
@@ -128,8 +207,9 @@
         <!-- This is explore states button-->
         <button id="next-state-btn" class="btn analysis-only" style="border-radius: none; display: none">Explore
             States</button>
-        <!-- EVO Create My Palette Table-->
+    
 
+        <!-- EVO Create My Palette Table-->
         <div id="color-input" class="popup_frame" style="display: none;width: 1000px;">
 
             <div id="page-mask"></div>
@@ -184,6 +264,7 @@
                         </div>
                     </div>
         </div>
+
       
         <!-- <div id="dropdown-model" class="dropdown analysis-only" style="display: none">
             <button id="modeling-btn" class="red-btn btn">Model</button>

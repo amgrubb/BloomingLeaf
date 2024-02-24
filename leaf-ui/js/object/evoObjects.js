@@ -97,7 +97,7 @@ class EVO {
 
      // The Traffic-Light Palette
      static colorVisDict5 = {
-        "0000": "#ff8c00",
+        "0000": "#b5b5b5",
         "0011": "#77DD77",
         "0010": "#77DD77",
         "0100": "#FF0000",

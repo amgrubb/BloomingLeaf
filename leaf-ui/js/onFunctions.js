@@ -218,51 +218,25 @@ function isDark(color){
     return brightness < 155;
 }
 
+
+/**
+ * closes a popup
+ * @param ID the popup to be closed 
+*/
+function closePopup(ID){
+    $(ID).css("display", "none");
+}
+
 /**
  * displays the color palette
  * @param {*} palette_number 
  */
 function displayPalette(palette_number ) {
+    //hides palette options
+    $('#palette-options').css("display", "none");
 
     //creates the table that contains all satisfaction values 
-    showAlert('Evaluation Visualisation Overlay Color Key',
-            '<table class="abs-table">'+
-            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>'+
-            '<tbody>'+
-                '<tr>'+
-                '    <th style= "text-align:center"> None</th>'+
-                '    <th style= "text-align:center"> Satisfied</th>'+
-                '    <th style= "text-align:center"> Partially Satisfied </th>'+
-                '    <th style= "text-align:center"> Partially Denied</th>'+
-                '    <th style= "text-align:center"> Denied</th>'+
-                '</tr>'+
-                '<tr style= "background-color: #FFFFFF;">'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "FS"> (F ,⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "PS"> (P ,⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "PD"> (⊥ ,P) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "FD"> (⊥ ,F) </span> </td>'+
-                '</tr>'+
-            '</tbody>'+
-        '</table>'+
-        ' <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Values </h3>'+
-        '<table id="conflict-satisfied-list" class="abs-table">'+
-        '<tbody>'+
-        '<tr>'+
-        '<th style= "text-align:center"> Partially Satisfied/ Partially Denied </th>'+
-        '<th style= "text-align:center"> Fully Satisfied/ Partially Denied</th>'+
-        '<th style= "text-align:center"> Partially Satisfied/ Fully Denied</th>'+
-        '<th style= "text-align:center"> Fully Satisfied/ Fully Denied</th>'+
-        '</tr>'+
-        '<tr style= "background-color: #FFFFFF;">'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "FP"> (F, P) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "PF"> (P, F) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "FF"> (F, F) </span> </td>'+
-        '</tr>'+
-        '</tbody>'+
-        '</table>',
-    550, 'alert', 'warning');
+    $('#palette-color-key').css("display", "");
 
     //updates the color key based on the chosen palette 
     if(palette_number<7){
@@ -287,33 +261,11 @@ function displayPalette(palette_number ) {
     }       
 }
 
-
-
-
 /** displays the color palette options*/
 $('#evo-color-key').on('click', function () {
     removeHighlight();
-    showAlert('EVO Color Key',
-        '<p>What color key do you ' +
-        'want to see?</p> ' +
-        '<p><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(1)" style="width:100%">Red-Blue Palette' +
-        '</button><button type="button" ' +
-        'class="model-editing" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
-        '</button> <button type="button" class="model-editing" ' +
-        'onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
-        '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
-        '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(5)" style="width:100%">Traffic-Light Palette' +
-        '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(6)" style="width:100%">Color-Blind Palett' +
-        '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(7)" style="width:100%"> My Palette' +
-        '</button></p>',
-        window.innerWidth * 0.3, 'alert', 'warning');
+    $('#palette-options').css("display", "");
 });
-
 
 
 /**
