@@ -214,8 +214,9 @@ function isDark(color){
     const c_r = parseInt(hex.substr(0, 2), 16);
     const c_g = parseInt(hex.substr(2, 2), 16);
     const c_b = parseInt(hex.substr(4, 2), 16);
-    const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
-    return brightness < 155;
+    const brightness = 0.2126 * Math.pow(c_r / 255, 2.2) + 0.7152 * Math.pow(c_g / 255, 2.2) + 0.0722 * Math.pow(c_b / 255, 2.2);
+    return ((1 + brightness) / brightness)> 4.5;
+
 }
 
 
@@ -246,6 +247,8 @@ function displayPalette(palette_number ) {
             document.getElementById(charVal).style.backgroundColor= color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
+            } else {
+                document.getElementById(charVal).style.color = "black";
             }
         }
     
@@ -256,6 +259,8 @@ function displayPalette(palette_number ) {
             document.getElementById(charVal).style.backgroundColor= color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
+            } else {
+                document.getElementById(charVal).style.color = "black";
             }
         }
     }       
