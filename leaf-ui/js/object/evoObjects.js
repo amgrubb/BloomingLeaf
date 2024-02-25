@@ -97,15 +97,16 @@ class EVO {
 
      // The Traffic-Light Palette
      static colorVisDict5 = {
-        "0000": "#b5b5b5",
-        "0011": "#77DD77",
-        "0010": "#77DD77",
-        "0100": "#FF0000",
-        "0110": "#FFFF00",
-        "0111": "#FFFF00",
-        "1100": "#FF0000",
-        "1110": "#FFFF00",
-        "1111": "#FFFF00"
+        "0000": "#b5b5b5", // None (⊥, ⊥)
+        "0011": "#549C30",// Satisfied (F, ⊥)
+        "0010": "#F7DF00",// Partially satisfied
+        "0100": "#FF8C11",// Partially denied 
+        "0110": "#9DE3E3",// Conflict (P, P)
+        "0111": "#083D77",// Conflict (F, P)
+        "1100": "#DD1806",// Fully denied (⊥, 
+        "1110": "#465974",// Conflict (P, F)
+        "1111": "#3A3F3F"// Conflict (F, F)
+ 
     };
 
      // The Pastel Palette
@@ -427,9 +428,9 @@ class EVO {
                         //update text font to white if the chosen color is dark 
                         if (color != undefined){
                             if (isDark(color)) {
-                                cellView.model.attr({ 'text': { 'fill': "white" } });
+                                cellView.model.attr({ 'text': { 'fill': "white", stroke:"none" } });
                             }else {
-                                cellView.model.attr({ 'text': { 'fill': "black" } });
+                                cellView.model.attr({ 'text': { 'fill': "black", stroke:"none" } });
                             }
                         }
                         
@@ -581,9 +582,9 @@ class EVO {
                 //update text font to white if the chosen color is dark 
                 if (colorChange != undefined){
                     if (isDark(colorChange)) {
-                        cellView.model.attr({ 'text': { 'fill': "white" } });
+                        cellView.model.attr({ text: { fill: 'white', stroke: 'none' }})
                     }else {
-                        cellView.model.attr({ 'text': { 'fill': "black" } });
+                        cellView.model.attr({ text: { fill: 'black', stroke: 'none' }});
                     }
                 }
                 

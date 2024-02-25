@@ -216,7 +216,6 @@ function isDark(color){
     const c_b = parseInt(hex.substr(4, 2), 16);
     const brightness = 0.2126 * Math.pow(c_r / 255, 2.2) + 0.7152 * Math.pow(c_g / 255, 2.2) + 0.0722 * Math.pow(c_b / 255, 2.2);
     return ((1 + brightness) / brightness)> 4.5;
-
 }
 
 
