@@ -507,7 +507,7 @@ public class LayoutAlgorithm {
 		double n2_ymax = n2.getY() + (n2.getSize().getHeight()/2);
 
 		//asking: is it NOT completely outside?
-		return !(n1_xmin >= n2_xmax || n1_xmax <= n2_xmin || n1_ymin >= n2_ymax || n1_ymax <= n2_ymin);
+		return !(n1_xmin > n2_xmax || n1_xmax < n2_xmin || n1_ymin > n2_ymax || n1_ymax < n2_ymin);
 	}
 
 	/**
