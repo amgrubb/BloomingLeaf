@@ -519,7 +519,7 @@ public class LayoutAlgorithm {
 	 */
 	private boolean isCloseEnough(VisualInfo[] nodePositions, int numActors) {
 		//TODO: limits for heuristic for distance between nodes
-		double edgeLength_max = 200/(1 + 1000*Math.pow(Math.E, nodePositions.length * -1)) + 100;
+		double edgeLength_max = 20000/(1 + 1000*Math.pow(Math.E, nodePositions.length * -1)) + 100;
 
 		//Make a graph
 		HashSet<Integer[]> edgeSet = new HashSet<Integer[]>();
