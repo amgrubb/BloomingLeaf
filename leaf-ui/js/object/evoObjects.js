@@ -99,13 +99,13 @@ class EVO {
      static colorVisDict5 = {
         "0000": "#b5b5b5", // None (⊥, ⊥)
         "0011": "#549C30",// Satisfied (F, ⊥)
-        "0010": "#F7DF00",// Partially satisfied
-        "0100": "#FF8C11",// Partially denied 
-        "0110": "#9DE3E3",// Conflict (P, P)
-        "0111": "#083D77",// Conflict (F, P)
+        "0010": "#e1ff00",// Partially satisfied
+        "0100": "#Ff5349",// Partially denied 
+        "0110": "#00FFFF",// Conflict (P, P)
+        "0111": "#00FFFF",// Conflict (F, P)
         "1100": "#DD1806",// Fully denied (⊥, 
-        "1110": "#465974",// Conflict (P, F)
-        "1111": "#3A3F3F"// Conflict (F, F)
+        "1110": "#00FFFF",// Conflict (P, F)
+        "1111": "#00FFFF"// Conflict (F, F)
  
     };
 
