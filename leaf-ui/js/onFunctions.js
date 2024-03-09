@@ -219,6 +219,18 @@ function isDark(color) {
 }
 
 /**
+ * closes a popup
+ * @param ID the popup to be closed 
+*/
+function closePopup(ID){
+    $(ID).css("display", "none");
+    if (ID == "#help-popup") {
+        GuideBox.step = -1;
+        document.getElementById('guide-name').style.display = "none";
+    }
+}
+
+/**
  * displays the color palette
  * @param {*} palette_number 
  */
@@ -378,31 +390,39 @@ class GuideBox {
         }
         $('#guide-name').children('option').remove();
 
-        var dialog = new joint.ui.Dialog({
-            type: "neutral",
-            width: 600,
-            theme: "dark",
-            title: this.label + ". " + this.task,
-            content: this.instructions.substring(1, this.instructions.length-1) + `<br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`,
-            buttons: [
-                { action: "next", content: "Next", position: "right" },
-                { action: "cancel", content: "Cancel", position: "center" },
-                { action: "back", content: "Back", position: "left" }
-            ],
-            draggable: true,
-            modal: false,
-        });
+        var helpPopup = document.getElementById('help-popup');
 
-        //if we're on the last step of the tutorial, remove the next button
-        if (GuideBox.step == tutorial.length - 1) {
-            dialog.buttons.shift();
-            dialog.buttons.push({ action: "cancel", content: "Done", position: "right" });
-        }
+        var helpTitle = document.getElementById('help-title');
+        helpTitle.innerHTML = this.label + ". " + this.task;
 
-        //if we're on the first step of the tutorial, remove the back button
-        if (GuideBox.step == -1 || GuideBox.step == 0) {
-            dialog.buttons.pop();
-        }
+        var helpContent = document.getElementById('help-content');
+        helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="link-button">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;    
+
+        // var dialog = new joint.ui.Dialog({
+        //     type: "neutral",
+        //     width: 600,
+        //     theme: "dark",
+        //     title: this.label + ". " + this.task,
+        //     content: this.instructions.substring(1, this.instructions.length-1) + `<br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`,
+        //     buttons: [
+        //         { action: "next", content: "Next", position: "right" },
+        //         { action: "cancel", content: "Cancel", position: "center" },
+        //         { action: "back", content: "Back", position: "left" }
+        //     ],
+        //     draggable: true,
+        //     modal: false,
+        // });
+
+    //     //if we're on the last step of the tutorial, remove the next button
+    //     if (GuideBox.step == tutorial.length - 1) {
+    //         dialog.buttons.shift();
+    //         dialog.buttons.push({ action: "cancel", content: "Done", position: "right" });
+    //     }
+
+    //     //if we're on the first step of the tutorial, remove the back button
+    //     if (GuideBox.step == -1 || GuideBox.step == 0) {
+    //         dialog.buttons.pop();
+    //     }
 
         for (var i = 0; i < tutorial.length; i++) {
             if (i == GuideBox.step) {
@@ -413,30 +433,40 @@ class GuideBox {
         }
         document.getElementById("guide-name").style.display = "";
 
-        dialog.on('action:cancel', function () {
-            dialog.close();
-            document.getElementById('guide-name').style.display = "none";
-            GuideBox.step = -1;
-        });
+    //     dialog.on('action:cancel', function () {
+    //         dialog.close();
+    //         document.getElementById('guide-name').style.display = "none";
+    //         GuideBox.step = -1;
+    //     });
 
-        dialog.on('action:close', function () {
-            dialog.close();
-            document.getElementById('guide-name').style.display = "none";
-            GuideBox.step = -1;
-        });
+    //     dialog.on('action:close', function () {
+    //         dialog.close();
+    //         document.getElementById('guide-name').style.display = "none";
+    //         GuideBox.step = -1;
+    //     });
 
-        dialog.open();
-        if (this.idx < tutorial.length - 1) {
-            dialog.on('action:next', this.openNext, dialog);
-        }
+        $('#help-popup').css("display", "");
+
         if (this.idx > 0) {
-            dialog.on('action:back', this.openLast, dialog);
+            $('#help-prev').on('click', this.openLast);
         }
 
-        $('#guide-name').on('change', function () {
-            dialog.close();
-            console.log("never goes away");
-        });
+        if (this.idx < tutorial.length - 1) {
+            $('#help-next').on('click', this.openNext);
+        }
+
+        // dialog.open();
+        // if (this.idx < tutorial.length - 1) {
+        //     dialog.on('action:next', this.openNext, dialog);
+        // }
+    //     if (this.idx > 0) {
+    //         dialog.on('action:back', this.openLast, dialog);
+    //     }
+
+    //     $('#guide-name').on('change', function () {
+    //         dialog.close();
+    //         console.log("never goes away");
+    //     });
         $('.learn-more').on('click', function () {
             if (document.getElementsByClassName("more")[0].style.display == "none") {
                 document.getElementsByClassName("more")[0].style.display = "";
@@ -457,8 +487,8 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
+        closePopup('#help-popup');
         GuideBox.step++;
-        this.close();
         tutorial[GuideBox.step].showGuideBox();
     }
 
@@ -471,8 +501,8 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
+        closePopup('#help-popup');
         GuideBox.step--;
-        this.close();
         tutorial[GuideBox.step].showGuideBox();
     }
 
@@ -485,6 +515,7 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
+        closePopup('#help-popup');
         GuideBox.step = document.getElementById('guide-name').value;
         tutorial[GuideBox.step].showGuideBox();
     }
