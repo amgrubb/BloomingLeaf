@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
     <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selection.css" />
     <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
-    <link rel="stylesheet" type="text/css" href=".rappid/dist/joint.ui.dialog.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href=".rappid/dist/joint.ui.dialog.css"/> -->
 
     <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
     <link rel="stylesheet" type="text/css" href="./plugins/slider/nouislider.min.css" />
@@ -136,29 +136,22 @@
             <div id="page-mask"></div>
             <div class="popup_content">
                 <div class="popup_header"> 
-                    <span class="close" onclick="closePopup('#help-popup')">&times;</span>
+                    <span class="close" id="help-close">&times;</span>
                     <h2 id="help-title"></h2>
                 </div>                           
                 <div class="popup_body">
                     <p id = "help-content"></p> 
                     <div class="one-line">
-                        <button class="help-button-l" role="button" id = 'help-prev'>Previous</button>
+                        <button class="help-button-l" role="button" id = "help-prev">Previous</button>
                         <!-- Dropdown menu -->
                         <select id="guide-name" class="guide-nav" style="display:none"></select>
-                        <button class="help-button-r" role="button" id = 'help-next'>Next</button>
+                        <button class="help-button-r" role="button" id = "help-next">Next</button>
                     </div>
                 <div style="height: 5px;"></div>
                 <br>
                 </div>
             </div>
         </div>        
-
-
-
-
-        <!-- <div class="guide-nav" style="display:inline-block">
-            <select id="guide-name" style="display:none"></select>
-        </div>    -->
         
         <!-- This is simulate path button-->
         <button id="simulate-path-btn" class="btn analysis-only" style="border-radius: none; display: none" ;>Simulate
