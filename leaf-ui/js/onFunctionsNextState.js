@@ -92,11 +92,39 @@ function cellHighlight(pPaper) {
     });
 }
 
-// Update satisfaction value in the text box
-function updateSatValueInfo(model, elementNum, originalResults2) {
+
+//gives the text for a given satisfaction value 
+function getSVText(SatValBinary){
+    switch (SatValBinary) {
+        case "0000":
+            return "None (⊥, ⊥)";
+        case "0011":
+            return "Satisfied (F, ⊥)";
+        case "0010":
+            return "Partially Satisfied (P, ⊥)";
+        case "0100":
+            return "Partially Denied (⊥, P)";
+        case "1100":
+            return "Denied (⊥, F)";
+        default:
+            return;   
+    }
+}
+
+// Update node name, satisfaction value, and filter options
+function updateSatValueInfo(model, elementNum) {
     // Fills in nodeName text box with intention name
     $(".cell-attrs-text").val(model.attributes.intention.attributes.nodeName);
-  
+
+    //give the possible options for a filter 
+    const InitSV = ["0000", "0011", "0010","0100", "1100"];
+    const allowedSV = [...new Set(allSolutionArray.map(sol => sol[elementNum]).filter(s => InitSV.includes(s)))];
+    const sv = document.getElementById('sat-value');
+    sv.options.length = 0; // Clear all satisfaction value options s
+    allowedSV.forEach(s => sv.add(new Option(getSVText(s),s)) )
+    
+   
+
     // Fills in the current sat value text box
     switch (allSolutionArray[parseInt($("#currentPage").val())][elementNum]) {
         case "0000":
