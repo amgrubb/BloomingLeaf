@@ -1,3 +1,2 @@
-1,, Placeholder,, "Placeholder",, "Placeholder"
-2,, Placeholder,, "Placeholder",, "Placeholder"
-3,, Placeholder,, "Placeholder",, "Placeholder"
+1a,, What is BloomingLeaf,, `BloomingLeaf is a tool that allows stakeholders to visualize their goals and tradeoffs in the situation using Tropos goal models.`,, "Placeholder"
+1b,, Discover the purpose of your analysis,, `BloomingLeaf allows a user to ask and answer questions about a given situation. Here are some examples: <ul><li>Does it matter if Goal A or Goal B is satisfied first?</li><li>Is Goal A or Goal B satisfied more often?</li><li>Given that Task A is not currently satisfied, is it possible for Goal B to become satisfied?</li><li>Can Goal A remain satisfied if Goal B becomes not satisfed?</li></ul>`,, "Placeholder"

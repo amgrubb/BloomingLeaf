@@ -336,24 +336,25 @@ $('#evo-color-key').on('click', function () {
 */
 class GuideBox {
 
-    static step = -1;
+    // static step = -1;
 
-    constructor(idx, label, task, instructions, context) {
-        this.idx = idx;
+    constructor(label, task, instructions, context, button_names, button_paths) {
         this.label = label;
         this.task = task;
         this.instructions = instructions;
         this.context = context;
+        this.button_names = [button_names];
+        this.button_paths = [button_paths];
     }
 
     static tutorial = 0;
 
-    static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
+    // static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
     static build = GuideBox.makeBoxes("http://localhost:8080/userguides/build.csv");
-    static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.csv");
+    // static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.csv");
 
     static makeBoxes (file) {
-        var array = [];
+        var boxes = new Map();
         fetch(file).then((res) => res.text()).then((text) => {
             var arr = text.split("\n");
             for(var i = 0; i < arr.length; i++) {
@@ -361,10 +362,11 @@ class GuideBox {
                 for(var j = 0; j < line.length; j++) {
                     line[j] = line[j].trim();
                 }
-                array.push(new GuideBox(i, line[0], line[1], line[2], line[3]));
+                boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], line[3], line[4], line[5])));
             }
         })
-        return array;
+        console.log(boxes)
+        return boxes;
     }
 
     showGuideBox() {
@@ -378,60 +380,59 @@ class GuideBox {
         }
         $('#guide-name').children('option').remove();
 
+        var buttons = []
+        for (var i = 0; i < this.button_names.length; i++) {
+            buttons.push({ action: "next", content: this.button_names[i], position: "right" })
+        }
+
+        console.log(buttons)
+
+        console.log(this.instructions)
         var dialog = new joint.ui.Dialog({
             type: "neutral",
             width: 600,
             theme: "dark",
             title: this.label + ". " + this.task,
             content: this.instructions.substring(1, this.instructions.length-1) + `<br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`,
-            buttons: [
-                { action: "next", content: "Next", position: "right" },
-                { action: "cancel", content: "Cancel", position: "center" },
-                { action: "back", content: "Back", position: "left" }
-            ],
+            buttons: buttons,
             draggable: true,
             modal: false,
         });
 
         //if we're on the last step of the tutorial, remove the next button
-        if (GuideBox.step == tutorial.length - 1) {
-            dialog.buttons.shift();
-            dialog.buttons.push({ action: "cancel", content: "Done", position: "right" });
-        }
+        // if (GuideBox.step == tutorial.length - 1) {
+        //     dialog.buttons.shift();
+        //     dialog.buttons.push({ action: "cancel", content: "Done", position: "right" });
+        // }
 
         //if we're on the first step of the tutorial, remove the back button
-        if (GuideBox.step == -1 || GuideBox.step == 0) {
-            dialog.buttons.pop();
-        }
+        // if (GuideBox.step == -1 || GuideBox.step == 0) {
+        //     dialog.buttons.pop();
+        // }
 
-        for (var i = 0; i < tutorial.length; i++) {
-            if (i == GuideBox.step) {
-                $('#guide-name').append(`<option value="${tutorial[i].idx}" selected>${tutorial[i].label + ". " + tutorial[i].task}</option>`)
-            } else {
-                $('#guide-name').append(`<option value="${tutorial[i].idx}">${tutorial[i].label + ". " + tutorial[i].task}</option>`)
-            }
-        }
+        // for (var i = 0; i < tutorial.length; i++) {
+        //     if (i == GuideBox.step) {
+        //         $('#guide-name').append(`<option value="${tutorial[i].idx}" selected>${tutorial[i].label + ". " + tutorial[i].task}</option>`)
+        //     } else {
+        //         $('#guide-name').append(`<option value="${tutorial[i].idx}">${tutorial[i].label + ". " + tutorial[i].task}</option>`)
+        //     }
+        // }
         document.getElementById("guide-name").style.display = "";
 
         dialog.on('action:cancel', function () {
             dialog.close();
             document.getElementById('guide-name').style.display = "none";
-            GuideBox.step = -1;
+            // GuideBox.step = -1;
         });
 
         dialog.on('action:close', function () {
             dialog.close();
             document.getElementById('guide-name').style.display = "none";
-            GuideBox.step = -1;
+            // GuideBox.step = -1;
         });
 
         dialog.open();
-        if (this.idx < tutorial.length - 1) {
-            dialog.on('action:next', this.openNext, dialog);
-        }
-        if (this.idx > 0) {
-            dialog.on('action:back', this.openLast, dialog);
-        }
+        dialog.on('action:next', this.openNext, dialog);
 
         $('#guide-name').on('change', function () {
             dialog.close();
@@ -457,9 +458,12 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
-        GuideBox.step++;
+        // GuideBox.step++;
+        tutorial.get("1b").showGuideBox();
+        console.log(tutorial.get(this.options.title.split(".")[0]).button_paths[0]);
+        tutorial.get(tutorial.get(this.options.title.split(".")[0]).button_paths[0]).showGuideBox();
         this.close();
-        tutorial[GuideBox.step].showGuideBox();
+        // tutorial[GuideBox.step].showGuideBox();
     }
 
     openLast() {
@@ -491,11 +495,12 @@ class GuideBox {
 }
 
 $('#build-btn').on('click', function () {
-    if (GuideBox.step == -1) {
-        GuideBox.tutorial = 0;
-        GuideBox.step = 0;
-        GuideBox.build[0].showGuideBox();
-    }
+    // if (GuideBox.step == -1) {
+        GuideBox.tutorial  = 0;
+        // GuideBox.step = 0;
+        // console.log
+        GuideBox.build.get('1a').showGuideBox();
+    // }
 });
 
 $('#why-btn').on('click', function () {
