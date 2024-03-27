@@ -351,7 +351,6 @@
      * based on this. The first switch case has been documented with comments.
      */
     function add_filter(tempResults2) {
-        console.log("clicked");
         console.log(filterOrderQueue);
         tempResults = tempResults2;
 
@@ -974,11 +973,8 @@
                     case "1100":
                         var tableSatVal = "Denied (⊥, F)";
                         break;
-                    case "unknown":
-                        var tableSatVal = "(no value)";
-                        break;
                     default:
-                        var tableSatVal =  "error";   
+                        var tableSatVal = "(no value)";
                         break;
                 }
                 // Appends filter information to the intention filter table
@@ -1031,11 +1027,8 @@
             case "Denied (⊥, F)":
                 desiredSatVal = "1100";
                 break;
-            case "(no value)":
-                desiredSatVal = "unknown";
-                break;
             default:
-                desiredSatVal =  "error";   
+                desiredSatVal = "unknown";
                 break;
         }
 
@@ -1086,6 +1079,7 @@
         if (intention) {
             // 4 digit sat value code selected from dropdown menu
             var desiredSatVal = $("#sat-value").val();
+            console.log(desiredSatVal);
 
             // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
             // If empty, create new array and push filter
@@ -1094,6 +1088,11 @@
                 for (var i = 0; i < filterIntentionList.length; i++) {
                     if (filterIntentionList[i][0].includes(selectedIntention)) {
                         if (filterIntentionList[i][1].includes(desiredSatVal)) { // If same filter being applied to one intention
+                            swal({
+                                title: "Filter already applied!",
+                                text: "You have previously selected the same filter on the same intention. Please check the Applied Intention Filters table.",
+                                icon: "warning",
+                              })
                             break;
                         }
                         // Push new filter sat value to already existing array of filter sat vals

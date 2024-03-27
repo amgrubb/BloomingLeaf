@@ -145,6 +145,12 @@ var AssignmentsTable = Backbone.View.extend({
         var absTimeElement = $('#abs-time-pts');
         if (regex.test(absTimeElement.val())) {
             this.model.set('absTimePtsArr', absTimeElement.val().split(" ").map(i => Number(i)));
+            // check that time points are smaller than Max Absolute Time
+            if (!this.model.get('absTimePtsArr').every(e => e < $('#max-abs-time').val())) {
+                alert("Please make sure the Absolute Time Points are smaller than Max Absolute Time."); 
+                this.model.set('absTimePtsArr', [0]);
+                absTimeElement.val(this.model.get('absTimePtsArr'));
+            };
         } else {
             absTimeElement.val(this.model.get('absTimePtsArr').join(" "));
         }
@@ -405,7 +411,7 @@ var IntentionRelationshipView = Backbone.View.extend({
         '<script type="text/template" id="item-template">',
         '<td class= "namestartTP"></td>',
         '<td class= "func-type"></td>',
-        '<td><input class="absFuncSegValue" type="number" name="sth" value="<%- startAT %>"></td>',
+        '<td><input class="absFuncSegValue" type="number" name="sth" value="<%- startAT %>" min="0"></td>',
         '<td><button class="unassign-abs-intent-btn"> Unassign </button></td>',
         '</script>'
     ].join(''),
@@ -431,7 +437,7 @@ var IntentionRelationshipView = Backbone.View.extend({
         if (isNaN(newTime)) {
             return;
         }
-        this.model.set('startAT', newTime);
+        newTime> -1 ? this.model.set('startAT', newTime) : this.$('.absFuncSegValue').val("");
     },
 
     /**

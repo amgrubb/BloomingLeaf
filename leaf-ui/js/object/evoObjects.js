@@ -43,9 +43,9 @@ class EVO {
     
     }
     
-    //default palette
-    static colorVisDict = {
-        "0000": "#D3D3D3", // None (⊥, ⊥)
+    //Red-blue palette
+    static colorVisDict1= {
+        "0000": "#b5b5b5", // None (⊥, ⊥)
         "0011": "#003fff", // Satisfied (F, ⊥)
         "0010": "#8FB8DE", // Partially satisfied (P, ⊥)
         "0100": "#fbaca8", // Partially denied (⊥, P)
@@ -58,15 +58,15 @@ class EVO {
 
     // The Red-Green Palette
     static colorVisDict2 = {
-        "0000": "#bdaead",
-        "0011": "#d11a2d",
-        "0010": "#e16c96",
-        "0100": "#6e8b74",
-        "0110": "#ffd111",
-        "0111": "#862617",
-        "1100": "#1a6840",
-        "1110": "#887322",
-        "1111": "#000000"
+        "0000": "#a77f7f",
+        "0011": "#c12a38",
+        "0010": "#e05c8a",
+        "0100": "#54705a",
+        "0110": "#d4c400",
+        "0111": "#704e43",
+        "1100": "#13644e",
+        "1110": "#775f1e",
+        "1111": "#2a2a2a"
     };
 
     // The Green-Black Palette
@@ -79,7 +79,7 @@ class EVO {
         "0111": "#ba0098",
         "1100": "#616161",
         "1110": "#900091",
-        "1111": "#790604"
+        "1111": "#a35604"
     };
 
     // The Yellow-Purple Palette
@@ -88,15 +88,42 @@ class EVO {
         "0011": "#FFFF00",
         "0010": "#fcf5bb",
         "0100": "#e0bfff",
-        "0110": "#d37f00",
-        "0111": "#d69d00",
-        "1100": "#A020F0",
+        "0110": "#c56700",
+        "0111": "#d9a000",
+        "1100": "#9c1fdf",
         "1110": "#5946b2",
         "1111": "#0D0221"
     };
 
+     // The Traffic-Light Palette
+     static colorVisDict5 = {
+        "0000": "#b5b5b5", // None (⊥, ⊥)
+        "0011": "#549C30",// Satisfied (F, ⊥)
+        "0010": "#e1ff00",// Partially satisfied
+        "0100": "#Ff5349",// Partially denied 
+        "0110": "#00FFFF",// Conflict (P, P)
+        "0111": "#00FFFF",// Conflict (F, P)
+        "1100": "#DD1806",// Fully denied (⊥, 
+        "1110": "#00FFFF",// Conflict (P, F)
+        "1111": "#00FFFF"// Conflict (F, F)
+ 
+    };
+
+     // The Pastel Palette
+     static colorVisDict6 = {
+        "0000": "#7E9679",
+        "0011": "#5F798C",
+        "0010": "#6D94B0",
+        "0100": "#D1757E",
+        "0110": "#A784B3",
+        "0111": "#8F89A4",
+        "1100": "#C0595A",
+        "1110": "#BC7BA6",
+        "1111": "#5A5471"
+    };
+
     // Color Blind palette
-    static colorVisDictColorBlind = {
+    static colorVisDict7 = {
      
         "0000": "#CCCCCC", // None (⊥, ⊥)
         "0011": "#0000FF", // Satisfied (F, ⊥)
@@ -108,7 +135,6 @@ class EVO {
         "1110": "#FFFF00", // Conflict (P, F)
         "1111": "#FFFF00"  // Conflict (F, F)
 
-        
     };
 
     //Initialize user-created-palette as Red-Blue
@@ -124,16 +150,19 @@ class EVO {
         "1111": "#0D0221"  // Conflict (F, F)
     };
 
+
     
     /**
      * List of color visualization dictionaries
      */
     static colorVisDictCollection = [
-        EVO.colorVisDict,
-        EVO.colorVisDict2,
-        EVO.colorVisDict3,
-        EVO.colorVisDict4,
-        EVO.colorVisDictColorBlind,
+        EVO.colorVisDict1,  // red-blue palette
+        EVO.colorVisDict2, // red-green palette 
+        EVO.colorVisDict3, // green-black palette
+        EVO.colorVisDict4, // yellow-purple palette
+        EVO.colorVisDict5, // traffic-light palette
+        EVO.colorVisDict6, // pastel palette
+        EVO.colorVisDict7  // color-blind palette
     ];
 
     /**
@@ -154,7 +183,7 @@ class EVO {
     
 
     // Number of evaluation types
-    static numEvals = Object.keys(EVO.colorVisDict).length + 1;
+    static numEvals = Object.keys(EVO.colorVisDict1).length + 1;
     // Current time point, defined by selection in lower time point slider after simulating a single path
     static curTimePoint = 0;
     // User selected slider option
@@ -399,9 +428,9 @@ class EVO {
                         //update text font to white if the chosen color is dark 
                         if (color != undefined){
                             if (isDark(color)) {
-                                cellView.model.attr({ 'text': { 'fill': "white" } });
+                                cellView.model.attr({ 'text': { 'fill': "white", stroke:"none" } });
                             }else {
-                                cellView.model.attr({ 'text': { 'fill': "black" } });
+                                cellView.model.attr({ 'text': { 'fill': "black", stroke:"none" } });
                             }
                         }
                         
@@ -553,9 +582,9 @@ class EVO {
                 //update text font to white if the chosen color is dark 
                 if (colorChange != undefined){
                     if (isDark(colorChange)) {
-                        cellView.model.attr({ 'text': { 'fill': "white" } });
+                        cellView.model.attr({ text: { fill: 'white', stroke: 'none' }})
                     }else {
-                        cellView.model.attr({ 'text': { 'fill': "black" } });
+                        cellView.model.attr({ text: { fill: 'black', stroke: 'none' }});
                     }
                 }
                 
@@ -572,11 +601,11 @@ class EVO {
      */
     static getColor(intentionEval) {
 
-        if (EVO.paletteOption <= 5) {
+        if (EVO.paletteOption <= 7) {
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
 
-        if (EVO.paletteOption >= 6) {
+        if (EVO.paletteOption >= 8) {
             return EVO.selfColorVisDict[intentionEval];
         }
     }
@@ -643,7 +672,7 @@ class EVO {
      * Fill in self-dictionary
      */
     static fillInDictionary() {
-        if (EVO.paletteOption == 7 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-None").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-FF").value & document.getElementById("my-Denied").value!= document.getElementById("my-None").value & document.getElementById("my-FF").value!= document.getElementById("my-Denied").value & document.getElementById("my-None").value!= document.getElementById("my-FF").value ){
+        if (EVO.paletteOption == 9 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-None").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-FF").value & document.getElementById("my-Denied").value!= document.getElementById("my-None").value & document.getElementById("my-FF").value!= document.getElementById("my-Denied").value & document.getElementById("my-None").value!= document.getElementById("my-FF").value ){
             EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
                 "0011": document.getElementById("my-Satisfied").value,
@@ -775,11 +804,11 @@ class EVONextState {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
 
-        if (EVONextState.paletteOption < 6) {
+        if (EVONextState.paletteOption < 8) {
 
             return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
         }
-        if (EVONextState.paletteOption == 6) {
+        if (EVONextState.paletteOption == 8) {
             var selfVis = myInputJSObject.results.get('colorVis').selfColorVisDict;
 
             return selfVis[intentionEval];
