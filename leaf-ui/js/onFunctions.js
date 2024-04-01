@@ -214,8 +214,17 @@ function isDark(color){
     const c_r = parseInt(hex.substr(0, 2), 16);
     const c_g = parseInt(hex.substr(2, 2), 16);
     const c_b = parseInt(hex.substr(4, 2), 16);
-    const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
-    return brightness < 155;
+    const brightness = 0.2126 * Math.pow(c_r / 255, 2.2) + 0.7152 * Math.pow(c_g / 255, 2.2) + 0.0722 * Math.pow(c_b / 255, 2.2);
+    return ((1 + brightness) / brightness)> 4.5;
+}
+
+
+/**
+ * closes a popup
+ * @param ID the popup to be closed 
+*/
+function closePopup(ID){
+    $(ID).css("display", "none");
 }
 
 /**
@@ -223,55 +232,22 @@ function isDark(color){
  * @param {*} palette_number 
  */
 function displayPalette(palette_number ) {
+    //hides palette options
+    $('#palette-options').css("display", "none");
 
     //creates the table that contains all satisfaction values 
-    showAlert('Evaluation Visualisation Overlay Color Key',
-            '<table class="abs-table">'+
-            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>'+
-            '<tbody>'+
-                '<tr>'+
-                '    <th style= "text-align:center"> None</th>'+
-                '    <th style= "text-align:center"> Satisfied</th>'+
-                '    <th style= "text-align:center"> Partially Satisfied </th>'+
-                '    <th style= "text-align:center"> Partially Denied</th>'+
-                '    <th style= "text-align:center"> Denied</th>'+
-                '</tr>'+
-                '<tr style= "background-color: #FFFFFF;">'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "FS"> (F ,⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "PS"> (P ,⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "PD"> (⊥ ,P) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "FD"> (⊥ ,F) </span> </td>'+
-                '</tr>'+
-            '</tbody>'+
-        '</table>'+
-        ' <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Values </h3>'+
-        '<table id="conflict-satisfied-list" class="abs-table">'+
-        '<tbody>'+
-        '<tr>'+
-        '<th style= "text-align:center"> Partially Satisfied/ Partially Denied </th>'+
-        '<th style= "text-align:center"> Fully Satisfied/ Partially Denied</th>'+
-        '<th style= "text-align:center"> Partially Satisfied/ Fully Denied</th>'+
-        '<th style= "text-align:center"> Fully Satisfied/ Fully Denied</th>'+
-        '</tr>'+
-        '<tr style= "background-color: #FFFFFF;">'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "FP"> (F, P) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "PF"> (P, F) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "FF"> (F, F) </span> </td>'+
-        '</tr>'+
-        '</tbody>'+
-        '</table>',
-    550, 'alert', 'warning');
+    $('#palette-color-key').css("display", "");
 
     //updates the color key based on the chosen palette 
-    if(palette_number<6){
+    if(palette_number<8){
         //pre-made palettes
         for (let charVal in EVO.charSatValueToNum){
             let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
             document.getElementById(charVal).style.backgroundColor= color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
+            } else {
+                document.getElementById(charVal).style.color = "black";
             }
         }
     
@@ -282,36 +258,18 @@ function displayPalette(palette_number ) {
             document.getElementById(charVal).style.backgroundColor= color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
+            } else {
+                document.getElementById(charVal).style.color = "black";
             }
         }
     }       
 }
 
-
-
-
 /** displays the color palette options*/
 $('#evo-color-key').on('click', function () {
     removeHighlight();
-    showAlert('EVO Color Key',
-        '<p>What color key do you ' +
-        'want to see?</p> ' +
-        '<p><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(1)" style="width:100%">Red-Blue Palette' +
-        '</button><button type="button" ' +
-        'class="model-editing" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
-        '</button> <button type="button" class="model-editing" ' +
-        'onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
-        '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
-        '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(5)" style="width:100%">Color-Blind Palette' +
-        '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(6)" style="width:100%"> My Palette' +
-        '</button></p>',
-        window.innerWidth * 0.3, 'alert', 'warning');
+    $('#palette-options').css("display", "");
 });
-
 
 
 /**
@@ -966,7 +924,9 @@ paper.on("link:options", function (cell) {
         EVO.refresh(selectResult);
     });
 
-    $('#color-palette-1').on('click', function () { // Choose color palettes
+    // All the pre-made palettes 
+    // 1: Default 
+    $('#palette-red-blue').on('click', function () { 
         EVO.paletteOption = 1;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -976,7 +936,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-2').on('click', function () { // Choose color palettes
+    //2: Red-green 
+    $('#palette-red-green').on('click', function () { 
         EVO.paletteOption = 2;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -985,7 +946,9 @@ paper.on("link:options", function (cell) {
             EVO.refresh(selectResult);
         }
     });
-    $('#color-palette-3').on('click', function () { // Choose color palettes
+
+    //3: Green-black
+    $('#palette-green-black').on('click', function () { 
         EVO.paletteOption = 3;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -995,7 +958,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-4').on('click', function () { // Choose color palettes
+    //4: Yellow-purple
+    $('#palette-yellow-purple').on('click', function () { // Choose color palettes
         EVO.paletteOption = 4;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1005,7 +969,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-5').on('click', function () { // Choose color palettes
+    //5: traffic-light
+    $('#palette-traffic-light').on('click', function () { // Choose color palettes
         EVO.paletteOption = 5;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1015,7 +980,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-6').on('click', function () { // Apply Chosen Colors
+    //6: pastel
+    $('#palette-pastel').on('click', function () { // Choose color palettes
         EVO.paletteOption = 6;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1025,8 +991,31 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-7').on('click', function () { // Choose color palettes
+    // 7: color-blind
+    $('#palette-cb').on('click', function () { // Choose color palettes
         EVO.paletteOption = 7;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    // 8: customizable
+    $('#palette-mine').on('click', function () { // Apply Chosen Colors
+        EVO.paletteOption = 8;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    // 9: edit my palette
+    $('#palette-edit').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 9;
         //render a table
         $('#color-input').css("display", "");
     });
@@ -1043,6 +1032,7 @@ paper.on("link:options", function (cell) {
             document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
             document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
             //error messsage 
+            console.log(EVO.paletteOption);
             swal("Please make sure your satisfied, denied, none, and FF values are different from one another",   "", "error")
             
         }
@@ -1056,7 +1046,7 @@ paper.on("link:options", function (cell) {
             }, 500);
         
             // refresh the visual overlay on the model and the palette dropdown
-            EVO.paletteOption =6;
+            EVO.paletteOption =7;
             highlightPalette(EVO.paletteOption);
             if ($('#analysisSlider').css("display") == "none") {
                 EVO.refresh(undefined);
@@ -1293,7 +1283,7 @@ function stringifyCirc(obj) {
  * Highlights the chosen palette on the dropdown
  */
 function highlightPalette(paletteOption) {
-    for (var i = 1; i <= 6; i++) {
+    for (var i = 1; i <= 8; i++) {
         var id = '#color-palette-'
         id = id + i;
         if (i == paletteOption) {
@@ -1309,7 +1299,7 @@ function highlightPalette(paletteOption) {
  * UnHighlights the chosen palette on the dropdown
  */
 function unhighlightPalettes() {
-    for (var i = 1; i <= 6; i++) {
+    for (var i = 1; i <= 8; i++) {
         var id = '#color-palette-'
         id = id + i;
         $(id).css("background-color", "#f9f9f9"); //unhighlight the choice
