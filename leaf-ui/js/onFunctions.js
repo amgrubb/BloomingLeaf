@@ -393,41 +393,12 @@ class GuideBox {
         helpTitle.innerHTML = this.label + ". " + this.task;
 
         var helpContent = document.getElementById('help-content');
-        helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="link-button">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;
+        helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;
         var buttons = []
         for (var i = 0; i < this.button_names.length; i++) {
             buttons.push({ action: "next", content: this.button_names[i], position: "right" })
         }
 
-
-        // var dialog = new joint.ui.Dialog({
-        //     type: "neutral",
-        //     width: 600,
-        //     theme: "dark",
-        //     title: this.label + ". " + this.task,
-        //     content: this.instructions.substring(1, this.instructions.length-1) + `<br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`,
-        //     buttons: buttons,
-        //     draggable: true,
-        //     modal: false,
-        // });
-
-        // //if we're on the last step of the tutorial, remove the next button
-        // if (GuideBox.step == tutorial.length - 1) {
-        //     document.getElementById('help-next').style.display = "none";         
-        // } else { document.getElementById('help-next').style.display = ""; }
-
-        // //if we're on the first step of the tutorial, remove the prev button
-        // if (GuideBox.step == -1 || GuideBox.step == 0) {
-        //         document.getElementById('help-prev').style.display = "none";         
-        // } else { document.getElementById('help-prev').style.display = ""; }
-
-        // for (var i = 0; i < tutorial.length; i++) {
-        //     if (i == GuideBox.step) {
-        //         $('#guide-name').append(`<option value="${tutorial[i].idx}" selected>${tutorial[i].label + ". " + tutorial[i].task}</option>`)
-        //     } else {
-        //         $('#guide-name').append(`<option value="${tutorial[i].idx}">${tutorial[i].label + ". " + tutorial[i].task}</option>`)
-        //     }
-        // }
         document.getElementById("guide-name").style.display = "";
 
         $('.help-button-r')[0].textContent = buttons[0].content;
@@ -439,25 +410,15 @@ class GuideBox {
         }
         $('#help-popup').css("display", "");
         
+        
 
         $('#help-close').on('click',  function () {
             $("#help-popup").css("display", "none");
             GuideBox.step = -1;
         });
 
-        // if (this.idx > 0) {
-        //     $('#help-prev').on('click', this.openPrev);
-        // }
-
-        // if (this.idx < tutorial.length - 1) {
-            $('#help-next').on('click', this.openNext);
-        // }
-
-    //     $('#guide-name').on('change', function () {
-    //         dialog.close();
-    //         console.log("never goes away");
-    //     });
-
+        
+        
         $('.learn-more').on('click', function () {
             if (document.getElementsByClassName("more")[0].style.display == "none") {
                 document.getElementsByClassName("more")[0].style.display = "";
@@ -466,6 +427,13 @@ class GuideBox {
                 document.getElementsByClassName("more")[0].style.display = "none";
                 document.getElementsByClassName("learn-more")[0].textContent = "Learn More";
             }
+        });
+
+        var popup = this;
+        $('#help-next').on('click', function(event) {
+            $('#help-next').off('click')
+            event.stopPropagation;
+            popup.openNext();
         });
     }
 
