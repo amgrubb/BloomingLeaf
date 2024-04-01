@@ -252,6 +252,7 @@ var IntentionBBM = Backbone.Model.extend({
                 this.get('evolvingFunction').set('functionSegList', []);
             }
         }
+        EVO.revertIntentionsText(graph.getElements(), paper, false)
     },
 
     /**
