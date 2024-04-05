@@ -320,31 +320,10 @@ $('#evo-color-key').on('click', function () {
         window.innerWidth * 0.3, 'alert', 'warning');
 });
 
-
-
-// function makeBoxes () {
-//     fetch("http://localhost:8080/userguides/build.csv").then((res) => res.text()).then((text) => {
-//         var arr = text.split("\n");
-//         for(var i = 0; i < arr.length; i++) {
-//             var line = arr[i].split(",,");
-//             for(var j = 0; j < line.length; j++) {
-//                 line[j] = line[j].trim();
-//             }
-//             GuideBox.build.push(new GuideBox(i, line[0], line[1], line[2]));
-            
-//         }
-//         console.log(GuideBox.build)
-//     })
-//     console.log("here")
-    
-// }
-
 /**
  * Guide me instructions
 */
 class GuideBox {
-
-    // static step = -1;
 
     constructor(label, task, instructions, context, button_names, button_paths) {
         this.label = label;
@@ -357,9 +336,9 @@ class GuideBox {
 
     static tutorial = 0;
 
-    // static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
+    static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
     static build = GuideBox.makeBoxes("http://localhost:8080/userguides/build.csv");
-    // static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.csv");
+    static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.csv");
 
     static makeBoxes (file) {
         var boxes = new Map();
@@ -385,8 +364,19 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
-        $('#guide-name').children('option').remove();
 
+        document.getElementById("guide-name").innerHTML = "";
+        console.log(this)
+        for (let [key, value] of tutorial) {
+            if (key.length > 0) {
+                if (key == this.label) {
+                    $('#guide-name').append(`<option value="${key}" selected>${key + ". " + value.task}</option>`)
+                } else {
+                    $('#guide-name').append(`<option value="${key}">${key + ". " + value.task}</option>`)
+                }
+            }
+        }
+        
         var helpPopup = document.getElementById('help-popup');
 
         var helpTitle = document.getElementById('help-title');
@@ -409,15 +399,10 @@ class GuideBox {
             $('.help-button-l').css("display", "none");
         }
         $('#help-popup').css("display", "");
-        
-        
 
         $('#help-close').on('click',  function () {
             $("#help-popup").css("display", "none");
-            GuideBox.step = -1;
         });
-
-        
         
         $('.learn-more').on('click', function () {
             if (document.getElementsByClassName("more")[0].style.display == "none") {
@@ -432,12 +417,15 @@ class GuideBox {
         var popup = this;
         $('#help-next').on('click', function(event) {
             $('#help-next').off('click')
-            event.stopPropagation;
-            popup.openNext();
+            popup.openRight();
+        });
+        $('#help-prev').on('click', function(event) {
+            $('#help-prev').off('click')
+            popup.openLeft();
         });
     }
 
-    openNext() {
+    openRight() {
         var tutorial;
         if (GuideBox.tutorial == 0) {
             tutorial = GuideBox.build;
@@ -446,20 +434,14 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
-        // GuideBox.step++;
         var id = tutorial.get($('#help-title')[0].innerHTML.split(".")[0]).button_paths[0]
-        console.log($('#help-title')[0].innerHTML.split(".")[0])
         closePopup('#help-popup');
-        tutorial.get(id).showGuideBox();
-        // this.close();
-        // tutorial[GuideBox.step].showGuideBox();
-        
-        // GuideBox.step++;
-        // console.log("step", GuideBox.step);
-        // tutorial[GuideBox.step].showGuideBox();
+        if (id != "close") {
+            tutorial.get(id).showGuideBox();
+        }
     }
 
-    openPrev() {
+    openLeft() {
         var tutorial;
         if (GuideBox.tutorial == 0) {
             tutorial = GuideBox.build;
@@ -468,10 +450,11 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
+        var id = tutorial.get($('#help-title')[0].innerHTML.split(".")[0]).button_paths[1]
         closePopup('#help-popup');
-        
-        GuideBox.step--;
-        tutorial[GuideBox.step].showGuideBox();
+        if (id != "close") {
+            tutorial.get(id).showGuideBox();
+        }
     }
 
     static skip() {
@@ -483,35 +466,26 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
+        
+        var id = document.getElementById('guide-name').value;
         closePopup('#help-popup');
-        GuideBox.step = document.getElementById('guide-name').value;
-        tutorial[GuideBox.step].showGuideBox();
+        tutorial.get(id).showGuideBox();
     }
 }
 
 $('#build-btn').on('click', function () {
-    // if (GuideBox.step == -1) {
-        GuideBox.tutorial  = 0;
-        // GuideBox.step = 0;
-        // console.log
-        GuideBox.build.get('1a').showGuideBox();
-    // }
+    GuideBox.tutorial  = 0;
+    GuideBox.build.get('1a').showGuideBox();
 });
 
 $('#why-btn').on('click', function () {
-    if (GuideBox.step == -1) {
-        GuideBox.tutorial = 1;
-        GuideBox.step = 0;
-    }
-    GuideBox.why[GuideBox.step].showGuideBox();
+    GuideBox.tutorial  = 1;
+    GuideBox.why.get('1a').showGuideBox();
 });
 
 $('#analyze-btn').on('click', function () {
-    if (GuideBox.step == -1) {
-        GuideBox.tutorial = 2;
-        GuideBox.step = 0;
-    }
-    GuideBox.analyze[GuideBox.step].showGuideBox();
+    GuideBox.tutorial  = 2;
+    GuideBox.analyze.get('2a').showGuideBox();
 });
 
 $('#guide-name').on('change', function () {
