@@ -330,8 +330,8 @@ class GuideBox {
         this.task = task;
         this.instructions = instructions;
         this.context = context;
-        this.button_names = [button_names];
-        this.button_paths = [button_paths];
+        this.button_names = button_names;
+        this.button_paths = button_paths;
     }
 
     static tutorial = 0;
@@ -349,13 +349,20 @@ class GuideBox {
                 for(var j = 0; j < line.length; j++) {
                     line[j] = line[j].trim();
                 }
-                boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], line[3], line[4], line[5])));
+                if (line[6]) {
+                boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], line[3], [line[4], line[6]], [line[5], line[7]])));
+                } else {
+                    boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], line[3], [line[4]], [line[5]])));
+                }
             }
         })
         return boxes;
     }
 
     showGuideBox() {
+        $('#help-next').off('click')
+        $('#help-prev').off('click')
+
         var tutorial;
         if (GuideBox.tutorial == 0) {
             tutorial = GuideBox.build;
@@ -366,7 +373,6 @@ class GuideBox {
         }
 
         document.getElementById("guide-name").innerHTML = "";
-        console.log(this)
         for (let [key, value] of tutorial) {
             if (key.length > 0) {
                 if (key == this.label) {
@@ -399,10 +405,6 @@ class GuideBox {
             $('.help-button-l').css("display", "none");
         }
         $('#help-popup').css("display", "");
-
-        $('#help-close').on('click',  function () {
-            $("#help-popup").css("display", "none");
-        });
         
         $('.learn-more').on('click', function () {
             if (document.getElementsByClassName("more")[0].style.display == "none") {
@@ -423,6 +425,7 @@ class GuideBox {
             $('#help-prev').off('click')
             popup.openLeft();
         });
+        console.log(this)
     }
 
     openRight() {
@@ -435,9 +438,10 @@ class GuideBox {
             tutorial = GuideBox.analyze;
         }
         var id = tutorial.get($('#help-title')[0].innerHTML.split(".")[0]).button_paths[0]
-        closePopup('#help-popup');
         if (id != "close") {
             tutorial.get(id).showGuideBox();
+        } else {
+            $('#help-popup').css("display", "none");
         }
     }
 
@@ -451,7 +455,6 @@ class GuideBox {
             tutorial = GuideBox.analyze;
         }
         var id = tutorial.get($('#help-title')[0].innerHTML.split(".")[0]).button_paths[1]
-        closePopup('#help-popup');
         if (id != "close") {
             tutorial.get(id).showGuideBox();
         }
@@ -468,7 +471,6 @@ class GuideBox {
         }
         
         var id = document.getElementById('guide-name').value;
-        closePopup('#help-popup');
         tutorial.get(id).showGuideBox();
     }
 }
@@ -490,6 +492,10 @@ $('#analyze-btn').on('click', function () {
 
 $('#guide-name').on('change', function () {
     GuideBox.skip();
+});
+
+$('#help-close').on('click',  function () {
+    closePopup('#help-popup');
 });
 
 //     /** About BloomingLeaf button */
