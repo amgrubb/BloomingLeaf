@@ -425,7 +425,6 @@ class GuideBox {
             $('#help-prev').off('click')
             popup.openLeft();
         });
-        console.log(this)
     }
 
     openRight() {
