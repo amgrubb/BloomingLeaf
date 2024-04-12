@@ -438,8 +438,8 @@ class GuideBox {
             tutorial = GuideBox.analyze;
         }
         var id = tutorial.get($('#help-title')[0].innerHTML.split(".")[0]).button_paths[0]
-        GuideBox.step[GuideBox.tutorial] = id;
         if (id != "close") {
+            GuideBox.step[GuideBox.tutorial] = id;
             tutorial.get(id).showGuideBox();
         } else {
             $('#help-popup').css("display", "none");
@@ -456,8 +456,8 @@ class GuideBox {
             tutorial = GuideBox.analyze;
         }
         var id = tutorial.get($('#help-title')[0].innerHTML.split(".")[0]).button_paths[1]
-        GuideBox.step[GuideBox.tutorial] = id;
         if (id != "close") {
+            GuideBox.step[GuideBox.tutorial] = id;
             tutorial.get(id).showGuideBox();
         }
     }
