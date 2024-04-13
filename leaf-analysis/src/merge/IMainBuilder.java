@@ -39,7 +39,7 @@ public class IMainBuilder {
 				BIPosition position = specActor.getPosition();
 				String[] embeds = specActor.getEmbeds();
 
-				BIActor newActor = new BIActor(specActor.getName(), specActor.getActorType());
+				BIActor newActor = new BIActor(specActor.getName(), specActor.getActorType(), specActor.getIsHidden(), specActor.getIntervals());
 				String name = newActor.getActorName();
 
 				// add actor as ICell

@@ -82,11 +82,6 @@
         <label style="font-size: 15px;">Satisfaction Value:</label>
         <select id="sat-value">
         <option value="(no value)"> (no value) </option>
-        <option value="0000"> None (⊥, ⊥)</option>
-        <option value="0011"> Satisfied (F, ⊥)</option>
-        <option value="0010"> Partially Satisfied (P, ⊥) </option>
-        <option value="0100"> Partially Denied (⊥, P)</option>
-        <option value="1100"> Denied (⊥, F)</option>
         </select>
         <!-- Filter Apply Button -->
         <button style="margin-top:15px;" id="filter-apply" class="inspector-btn blue-btn">Apply</button>
@@ -110,6 +105,7 @@
 
     <div id="navigation" class="left-panel" style="background-color: #333;">
         <br>
+        <label style="font-size: 15px;"><i>Time Point #<div id="thisState" style="display:inline"></div> of </i><div id="totalStates" style="display:inline"></div></label>
         <label style="font-size: 13px;"><i>Number of States</i></label>
         <label style="font-size: 20px;"id=num_states_lbl></label>
         <label style="font-size: 13px; margin-bottom: 5px; margin-top: 8px;"><i>Navigate</i></label>

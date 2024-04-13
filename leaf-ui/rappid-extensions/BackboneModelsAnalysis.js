@@ -117,6 +117,7 @@ var ConfigBBM = Backbone.Model.extend({
         this.get("results").add(result);
         $('#conflict-level').prop('disabled', true);
         $('#num-rel-time').prop('disabled', true);
+        setSelectResult(result);
     },
 
     /** If a config was previously selected and now no longer is, unselect any selected results */

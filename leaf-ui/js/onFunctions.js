@@ -3,6 +3,7 @@ This file contains all the jQuery functions that are associated with buttons and
 It also contains the setup for Rappid elements.
 */
 
+
 // Used to be onFunctionsBothWindows.js
 // Navigation bar functions:
 var max_font = 20;
@@ -169,6 +170,12 @@ $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function () { clearAll() });
 $('#btn-clear-flabel').on('click', function () {
+    removeHighlight(); // deselects intention
+    if ($('.analysis-only').css("display") == "none") {
+        clearInspector();
+    } else {
+        setName();
+    }
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
@@ -207,8 +214,17 @@ function isDark(color){
     const c_r = parseInt(hex.substr(0, 2), 16);
     const c_g = parseInt(hex.substr(2, 2), 16);
     const c_b = parseInt(hex.substr(4, 2), 16);
-    const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
-    return brightness < 155;
+    const brightness = 0.2126 * Math.pow(c_r / 255, 2.2) + 0.7152 * Math.pow(c_g / 255, 2.2) + 0.0722 * Math.pow(c_b / 255, 2.2);
+    return ((1 + brightness) / brightness)> 4.5;
+}
+
+
+/**
+ * closes a popup
+ * @param ID the popup to be closed 
+*/
+function closePopup(ID){
+    $(ID).css("display", "none");
 }
 
 /**
@@ -216,55 +232,22 @@ function isDark(color){
  * @param {*} palette_number 
  */
 function displayPalette(palette_number ) {
+    //hides palette options
+    $('#palette-options').css("display", "none");
 
     //creates the table that contains all satisfaction values 
-    showAlert('Evaluation Visualisation Overlay Color Key',
-            '<table class="abs-table">'+
-            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>'+
-            '<tbody>'+
-                '<tr>'+
-                '    <th style= "text-align:center"> None</th>'+
-                '    <th style= "text-align:center"> Satisfied</th>'+
-                '    <th style= "text-align:center"> Partially Satisfied </th>'+
-                '    <th style= "text-align:center"> Partially Denied</th>'+
-                '    <th style= "text-align:center"> Denied</th>'+
-                '</tr>'+
-                '<tr style= "background-color: #FFFFFF;">'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "FS"> (F ,⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "PS"> (P ,⊥) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "PD"> (⊥ ,P) </span> </td>'+
-                '    <td style="text-align:center"> <span class = "s_value_box" id = "FD"> (⊥ ,F) </span> </td>'+
-                '</tr>'+
-            '</tbody>'+
-        '</table>'+
-        ' <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Values </h3>'+
-        '<table id="conflict-satisfied-list" class="abs-table">'+
-        '<tbody>'+
-        '<tr>'+
-        '<th style= "text-align:center"> Partially Satisfied/ Partially Denied </th>'+
-        '<th style= "text-align:center"> Fully Satisfied/ Partially Denied</th>'+
-        '<th style= "text-align:center"> Partially Satisfied/ Fully Denied</th>'+
-        '<th style= "text-align:center"> Fully Satisfied/ Fully Denied</th>'+
-        '</tr>'+
-        '<tr style= "background-color: #FFFFFF;">'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "FP"> (F, P) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "PF"> (P, F) </span> </td>'+
-        '<td style= "text-align:center"> <span class = "s_value_box" id = "FF"> (F, F) </span> </td>'+
-        '</tr>'+
-        '</tbody>'+
-        '</table>',
-    550, 'alert', 'warning');
-   
+    $('#palette-color-key').css("display", "");
+
     //updates the color key based on the chosen palette 
-    if(palette_number<6){
+    if(palette_number<8){
         //pre-made palettes
         for (let charVal in EVO.charSatValueToNum){
             let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
             document.getElementById(charVal).style.backgroundColor= color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
+            } else {
+                document.getElementById(charVal).style.color = "black";
             }
         }
     
@@ -275,34 +258,18 @@ function displayPalette(palette_number ) {
             document.getElementById(charVal).style.backgroundColor= color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
+            } else {
+                document.getElementById(charVal).style.color = "black";
             }
         }
     }       
 }
 
-
-
-
 /** displays the color palette options*/
 $('#evo-color-key').on('click', function () {
     removeHighlight();
-    showAlert('EVO Color Key',
-        '<p>What color key do you ' +
-        'want to see?</p> ' +
-        '<p><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(1)" style="width:100%">Red-Blue Palette' +
-        '</button><button type="button" ' +
-        'class="model-editing" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
-        '</button> <button type="button" class="model-editing" ' +
-        'onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
-        '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
-        '</button><button type="button" class="model-editing" ' +
-        'onclick="displayPalette(6)" style="width:100%"> My Palette' +
-        '</button></p>',
-        window.innerWidth * 0.3, 'alert', 'warning');
+    $('#palette-options').css("display", "");
 });
-
 
 
 /**
@@ -540,6 +507,7 @@ paper.on({
                     var actorInspector = new ActorInspector({ model: cell });
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
+                    
                     // If user was dragging actor 
                     if (evt.data.move) {
                         // AND actor doesn't overlap with other actors
@@ -564,7 +532,6 @@ paper.on({
                 } else {
                     var elementInspector = new ElementInspector({ model: cell });
                     $('.inspector').append(elementInspector.el);
-                    elementInspector.render();
                     // If user was dragging element
                     if (evt.data.move) {
                         // Unembed intention from old actor
@@ -583,6 +550,7 @@ paper.on({
                             actorCell.embed(cell);
                         }
                     }
+                    elementInspector.render();
                 }
             }
         }
@@ -748,6 +716,15 @@ paper.on("link:options", function (cell) {
             setInteraction(true);
             if (selectResult !== undefined) {
                 selectResult.set('selected', false);
+            }
+
+            var elements = SliderObj.getIntentionsAndActorsView();
+            var links = SliderObj.getLinksView();
+            for (var i = 0; i < elements.length; i ++) {
+                $("#" + elements[i].id).css("display", "");
+            }
+            for (var i = 0; i < links.length; i ++) {
+                $("#" + links[i].id).css("display", "");
             }
 
             // Reset to initial graph prior to analysis
@@ -929,6 +906,12 @@ paper.on("link:options", function (cell) {
 
 
     $('#btn-clear-elabel').on('click', function () {
+        removeHighlight(); // deselects intention
+        if ($('.analysis-only').css("display") == "none") {
+            clearInspector();
+        } else {
+            setName();
+        }
         for (let element of graph.getElements()) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
@@ -953,7 +936,9 @@ paper.on("link:options", function (cell) {
         EVO.refresh(selectResult);
     });
 
-    $('#color-palette-1').on('click', function () { // Choose color palettes
+    // All the pre-made palettes 
+    // 1: Default 
+    $('#palette-red-blue').on('click', function () { 
         EVO.paletteOption = 1;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -963,7 +948,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-2').on('click', function () { // Choose color palettes
+    //2: Red-green 
+    $('#palette-red-green').on('click', function () { 
         EVO.paletteOption = 2;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -972,7 +958,9 @@ paper.on("link:options", function (cell) {
             EVO.refresh(selectResult);
         }
     });
-    $('#color-palette-3').on('click', function () { // Choose color palettes
+
+    //3: Green-black
+    $('#palette-green-black').on('click', function () { 
         EVO.paletteOption = 3;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -982,7 +970,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-4').on('click', function () { // Choose color palettes
+    //4: Yellow-purple
+    $('#palette-yellow-purple').on('click', function () { // Choose color palettes
         EVO.paletteOption = 4;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -992,7 +981,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-5').on('click', function () { // Choose color palettes
+    //5: traffic-light
+    $('#palette-traffic-light').on('click', function () { // Choose color palettes
         EVO.paletteOption = 5;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1002,7 +992,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-6').on('click', function () { // Apply Chosen Colors
+    //6: pastel
+    $('#palette-pastel').on('click', function () { // Choose color palettes
         EVO.paletteOption = 6;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -1012,38 +1003,87 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-7').on('click', function () { // Choose color palettes
+    // 7: color-blind
+    $('#palette-cb').on('click', function () { // Choose color palettes
         EVO.paletteOption = 7;
-        //render a table
-        $('#color-input').css("display", "");
-    });
-
-    //Show warning messages if use input invalid color
-    $('#submit-color').on('click', function () {
-        //fill in the dictionary
-        EVO.fillInDictionary();
-
-        //check that the entered colors are different
-        if (validateColor(EVO.selfColorVisDict) == false) { swal("Please make sure your satisfied and denied values are different", "", "error"); }
-
-        // Display a message to tell the user their selection is saved
-        $("#saved-options-message").css("display", "");
-        setTimeout(function(){
-            $("#saved-options-message").css("display", "none");
-            //close the color input
-            $('#color-input').css("display", "none");
-        }, 500);
-    
-        // refresh the visual overlay on the model and the palette dropdown
-        EVO.paletteOption =6;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
             EVO.refresh(undefined);
         } else {
             EVO.refresh(selectResult);
         }
+    });
+
+    // 8: customizable
+    $('#palette-mine').on('click', function () { // Apply Chosen Colors
+        EVO.paletteOption = 8;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    // 9: edit my palette
+    $('#palette-edit').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 9;
+        //render a table
+        $('#color-input').css("display", "");
+    });
+
+    //Show warning messages if use input invalid color
+    $('#submit-color').on('click', function () {
+       
+        //check that the entered colors for the satisfied and  denied values are different
+        if (!EVO.fillInDictionary()) 
+        {
+            //changes the color for fully satisfied and fully denied to what they were 
+            document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
+            document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
+            document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
+            document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
+            //error messsage 
+            console.log(EVO.paletteOption);
+            swal("Please make sure your satisfied, denied, none, and FF values are different from one another",   "", "error")
+            
+        }
+        else{
+            // Display a message to tell the user their selection is saved
+            $("#saved-options-message").css("display", "");
+            setTimeout(function(){
+                $("#saved-options-message").css("display", "none");
+                //close the color input
+                $('#color-input').css("display", "none");
+            }, 500);
+        
+            // refresh the visual overlay on the model and the palette dropdown
+            EVO.paletteOption =7;
+            highlightPalette(EVO.paletteOption);
+            if ($('#analysisSlider').css("display") == "none") {
+                EVO.refresh(undefined);
+            } else {
+                EVO.refresh(selectResult);
+            }
+        };
         
     });
+
+    //cancel edits to palette customization
+    $('#cancel-customization').on('click', function () { 
+        document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
+        document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
+        document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
+        document.getElementById('my-PS').value=  EVO.selfColorVisDict["0010"];
+        document.getElementById('my-PD').value=  EVO.selfColorVisDict["0100"];
+        document.getElementById('my-PP').value=  EVO.selfColorVisDict["0110"];
+        document.getElementById('my-FP').value=  EVO.selfColorVisDict["0111"];
+        document.getElementById('my-PF').value=  EVO.selfColorVisDict["1110"];
+        document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
+        $('#color-input').css("display", "none");
+
+    });
+   
 
     /**
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
@@ -1064,7 +1104,6 @@ paper.on("link:options", function (cell) {
      */
     document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
         var selectConfig;
-        //TODO: Find out why the selectResult is empty before we reassign it
         if (configCollection.length !== 0) {
             selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
             if (selectConfig.get('results') !== undefined) {
@@ -1256,7 +1295,7 @@ function stringifyCirc(obj) {
  * Highlights the chosen palette on the dropdown
  */
 function highlightPalette(paletteOption) {
-    for (var i = 1; i <= 6; i++) {
+    for (var i = 1; i <= 8; i++) {
         var id = '#color-palette-'
         id = id + i;
         if (i == paletteOption) {
@@ -1272,19 +1311,12 @@ function highlightPalette(paletteOption) {
  * UnHighlights the chosen palette on the dropdown
  */
 function unhighlightPalettes() {
-    for (var i = 1; i <= 6; i++) {
+    for (var i = 1; i <= 8; i++) {
         var id = '#color-palette-'
         id = id + i;
         $(id).css("background-color", "#f9f9f9"); //unhighlight the choice
     }
 }
 
-/**
- * Checks if the color selections for satisfied and denied are different
- * @param {*} colorDict 
- * @returns {boolean}
- */
-function validateColor(colorDict) {
-    return colorDict[ "0011"] != colorDict["1100"];
-}
+
     
