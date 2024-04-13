@@ -1,0 +1,3694 @@
+{
+  "graph": {
+    "cells": [
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 480,
+          "height": 650
+        },
+        "position": {
+          "x": 70,
+          "y": 110
+        },
+        "angle": 0,
+        "id": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "z": -3,
+        "nodeID": "a004",
+        "embeds": [
+          "cb3d750a-50c5-4904-b5f3-360bb137f3c3",
+          "30df5554-1534-48ba-b08d-78d841055124",
+          "3fc3f7de-c59b-4d95-b9ff-4aaf49b82cca",
+          "cdf86b5f-1655-459f-af74-61ee7be3552f",
+          "c884b6a1-0ac9-47b1-a648-79058f61e73e",
+          "aad8f902-cfa8-4afd-8b51-c7e6942611c7",
+          "b54ecc5a-2e39-43e2-bdd7-bc3d197315fd",
+          "a9a946fc-86bd-484e-824c-57b66ae46ee6",
+          "beffe087-1c40-4673-840e-cbff3b43f955",
+          "e7164bac-efbb-46a7-8bdd-7129cf491eda",
+          "25de1aa1-063a-4a0a-a451-86e187028283",
+          "52091b78-eb5b-479b-bdb5-65c91195283f",
+          "f33bfc89-f98c-4de5-bc24-b644355100d8",
+          "29219de6-fcea-4de0-9824-eab2b30c7f75",
+          "2ceeca06-ef55-46a3-97b5-c79d6857657f",
+          "a03d1f3a-c860-434b-869a-d56cdde15f05",
+          "0eb30bcb-2e2c-47ec-9ccc-b975485cbc87",
+          "d821b35d-8b94-4cd1-b8e9-a1f4e829f4a6",
+          "e35b1bc4-7416-4c85-ac8a-c97d42193be3",
+          "8ad67b4c-fefe-46f9-8c57-888741d27fc9",
+          "f4cda96e-c60a-47e0-826d-7241a1c6583b",
+          "d984a74b-4950-4684-9bf2-b046bcf28398",
+          "50569c08-76d2-4a77-ae07-ae1db94aecc0"
+        ],
+        "attrs": {
+          ".label": {
+            "cx": 120,
+            "cy": 65.078117176547
+          },
+          ".name": {
+            "text": "Spadina\nProject",
+            "font-size": 13
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 130,
+          "height": 110
+        },
+        "position": {
+          "x": 490,
+          "y": 670
+        },
+        "angle": 0,
+        "id": "8714e565-01c1-4ec3-8e09-2c60bf358854",
+        "z": -2,
+        "nodeID": "a003",
+        "embeds": [
+          "53fd5c9f-8e93-4369-af64-a563b25b8445"
+        ],
+        "attrs": {
+          ".label": {
+            "cx": 32.5,
+            "cy": 11.358401879491
+          },
+          ".name": {
+            "text": "York",
+            "font-size": 13
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 300,
+          "height": 120
+        },
+        "position": {
+          "x": 430,
+          "y": 80
+        },
+        "angle": 0,
+        "id": "582955f9-4161-4f03-a85f-53e2995736a4",
+        "z": -1,
+        "nodeID": "a002",
+        "embeds": [
+          "9ae2311a-1e42-4b79-8430-62ef85880b9a",
+          "1cc21031-0357-457a-8eae-2ea1e104378e",
+          "c884b6a1-0ac9-47b1-a648-79058f61e73e"
+        ],
+        "attrs": {
+          ".label": {
+            "cx": 75,
+            "cy": 12.353299855639
+          },
+          ".name": {
+            "text": "Metro",
+            "font-size": 13
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 320,
+          "height": 170
+        },
+        "position": {
+          "x": 510,
+          "y": 220
+        },
+        "angle": 0,
+        "id": "9577afc1-cff8-4e7f-89ff-8295005a7434",
+        "z": 0,
+        "nodeID": "a001",
+        "embeds": [
+          "924feafa-8a4f-468f-8106-049a72c082f6",
+          "a19324df-260c-4d0d-a540-40c993d54f69",
+          "9eb13b09-297e-4e45-8497-9bd1deed273e",
+          "c87bccbc-f366-4a02-8adc-4fea1342f9ec",
+          "24b9599f-e44c-4c4d-ae3b-3ca62031873a"
+        ],
+        "attrs": {
+          ".label": {
+            "cx": 80,
+            "cy": 17.327598916421
+          },
+          ".name": {
+            "text": "Province",
+            "font-size": 13
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 260,
+          "height": 310
+        },
+        "position": {
+          "x": 530,
+          "y": 390
+        },
+        "angle": 0,
+        "id": "32cd105a-48f7-489f-9468-46edf58c259e",
+        "z": 1,
+        "nodeID": "a000",
+        "embeds": [
+          "ddb7f450-8c86-4602-bde7-4fd44eab6ffe",
+          "0f6c648c-4411-4afa-9f2f-9a7fbc7a9c23",
+          "10435845-4bc8-401d-a49c-d0166818a1d0",
+          "50e57eec-371d-4965-88d4-46a1dbbfaf80",
+          "01729973-1646-467b-9c9a-52636c007af9",
+          "135b8b2d-f3a3-4916-b0dd-5adf2de788f5"
+        ],
+        "attrs": {
+          ".label": {
+            "cx": 65,
+            "cy": 31.255033489031
+          },
+          ".name": {
+            "text": "Yorkdale\nProject",
+            "font-size": 13
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 80,
+          "y": 370
+        },
+        "angle": 0,
+        "id": "e7164bac-efbb-46a7-8bdd-7129cf491eda",
+        "z": 2,
+        "nodeID": "0000",
+        "elementid": "0000",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Have Spadina\nExpressway",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 90,
+          "y": 490
+        },
+        "angle": 0,
+        "id": "25de1aa1-063a-4a0a-a451-86e187028283",
+        "z": 3,
+        "nodeID": "0001",
+        "elementid": "0001",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Build Spadina\nExpressway",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 210,
+          "y": 290
+        },
+        "angle": 0,
+        "id": "beffe087-1c40-4673-840e-cbff3b43f955",
+        "z": 4,
+        "nodeID": "0002",
+        "elementid": "0002",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Get Funding",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 130,
+          "y": 230
+        },
+        "angle": 0,
+        "id": "b54ecc5a-2e39-43e2-bdd7-bc3d197315fd",
+        "z": 5,
+        "nodeID": "0003",
+        "elementid": "0003",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Plan\nProject",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 210,
+          "y": 370
+        },
+        "angle": 0,
+        "id": "50569c08-76d2-4a77-ae07-ae1db94aecc0",
+        "z": 6,
+        "nodeID": "0004",
+        "elementid": "0004",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Terminal\nExpressway",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 220,
+          "y": 480
+        },
+        "angle": 0,
+        "id": "d984a74b-4950-4684-9bf2-b046bcf28398",
+        "z": 7,
+        "nodeID": "0005",
+        "elementid": "0005",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Connected\nExpressway",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 140,
+          "height": 60
+        },
+        "position": {
+          "x": 260,
+          "y": 120
+        },
+        "angle": 0,
+        "id": "aad8f902-cfa8-4afd-8b51-c7e6942611c7",
+        "z": 8,
+        "nodeID": "0006",
+        "elementid": "0006",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "DS"
+          },
+          ".name": {
+            "text": "Approve Construction\nto Lawrence",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 35,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 280,
+          "y": 190
+        },
+        "angle": 0,
+        "id": "a9a946fc-86bd-484e-824c-57b66ae46ee6",
+        "z": 9,
+        "nodeID": "0007",
+        "elementid": "0007",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "DS"
+          },
+          ".name": {
+            "text": "Approve\nPlan",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 390,
+          "y": 200
+        },
+        "angle": 0,
+        "id": "0eb30bcb-2e2c-47ec-9ccc-b975485cbc87",
+        "z": 10,
+        "nodeID": "0008",
+        "elementid": "0008",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Get Funding\nFrom Metro",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 370,
+          "y": 270
+        },
+        "angle": 0,
+        "id": "a03d1f3a-c860-434b-869a-d56cdde15f05",
+        "z": 11,
+        "nodeID": "0009",
+        "elementid": "0009",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Get Funding\nFrom Province",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 130,
+          "height": 60
+        },
+        "position": {
+          "x": 390,
+          "y": 340
+        },
+        "angle": 0,
+        "id": "f33bfc89-f98c-4de5-bc24-b644355100d8",
+        "z": 12,
+        "nodeID": "0010",
+        "elementid": "0010",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "UD"
+          },
+          ".name": {
+            "text": "Build Wilson-401\nto Lawrence",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 32.5,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 110,
+          "height": 60
+        },
+        "position": {
+          "x": 400,
+          "y": 410
+        },
+        "angle": 0,
+        "id": "29219de6-fcea-4de0-9824-eab2b30c7f75",
+        "z": 13,
+        "nodeID": "0011",
+        "elementid": "0011",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "UD"
+          },
+          ".name": {
+            "text": "Build Lawrence\nto Eglinton",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 27.5,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 110,
+          "height": 60
+        },
+        "position": {
+          "x": 410,
+          "y": 480
+        },
+        "angle": 0,
+        "id": "2ceeca06-ef55-46a3-97b5-c79d6857657f",
+        "z": 14,
+        "nodeID": "0012",
+        "elementid": "0012",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "C"
+          },
+          ".name": {
+            "text": "Build Davenport\nTo Bloor",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 27.5,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 120,
+          "height": 60
+        },
+        "position": {
+          "x": 230,
+          "y": 670
+        },
+        "angle": 0,
+        "id": "8ad67b4c-fefe-46f9-8c57-888741d27fc9",
+        "z": 15,
+        "nodeID": "0013",
+        "elementid": "0013",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "C"
+          },
+          ".name": {
+            "text": "Build Eglinton to\nDavenport",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 30,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 110,
+          "height": 60
+        },
+        "position": {
+          "x": 120,
+          "y": 580
+        },
+        "angle": 0,
+        "id": "52091b78-eb5b-479b-bdb5-65c91195283f",
+        "z": 16,
+        "nodeID": "0014",
+        "elementid": "0014",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "C"
+          },
+          ".name": {
+            "text": "Build Bloor\nTo Lakeshore",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 27.5,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 120,
+          "height": 60
+        },
+        "position": {
+          "x": 240,
+          "y": 590
+        },
+        "angle": 0,
+        "id": "d821b35d-8b94-4cd1-b8e9-a1f4e829f4a6",
+        "z": 17,
+        "nodeID": "0015",
+        "elementid": "0015",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "C"
+          },
+          ".name": {
+            "text": "Build Crosstown\nInterchange",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 30,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 360,
+          "y": 650
+        },
+        "angle": 0,
+        "id": "f4cda96e-c60a-47e0-826d-7241a1c6583b",
+        "z": 18,
+        "nodeID": "0016",
+        "elementid": "0016",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Get Land\nFrom York",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 400,
+          "y": 550
+        },
+        "angle": 0,
+        "id": "e35b1bc4-7416-4c85-ac8a-c97d42193be3",
+        "z": 19,
+        "nodeID": "0017",
+        "elementid": "0017",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Eglinton to\nDavenport",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 510,
+          "y": 700
+        },
+        "angle": 0,
+        "id": "53fd5c9f-8e93-4369-af64-a563b25b8445",
+        "z": 20,
+        "nodeID": "0018",
+        "elementid": "0018",
+        "parent": "8714e565-01c1-4ec3-8e09-2c60bf358854",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "C"
+          },
+          ".name": {
+            "text": "Approve Land\nRelease",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 110,
+          "height": 70
+        },
+        "position": {
+          "x": 600,
+          "y": 100
+        },
+        "angle": 0,
+        "id": "1cc21031-0357-457a-8eae-2ea1e104378e",
+        "z": 21,
+        "nodeID": "0019",
+        "elementid": "0019",
+        "parent": "582955f9-4161-4f03-a85f-53e2995736a4",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Honour\nInterchange\nAgreement",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 27.5,
+            "cy": 7.378502805078
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 110,
+          "height": 60
+        },
+        "position": {
+          "x": 460,
+          "y": 120
+        },
+        "angle": 0,
+        "id": "c884b6a1-0ac9-47b1-a648-79058f61e73e",
+        "z": 22,
+        "nodeID": "0020",
+        "elementid": "0020",
+        "parent": "582955f9-4161-4f03-a85f-53e2995736a4",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "DS"
+          },
+          ".name": {
+            "text": "Approve\nProject Funding",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 27.5,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 630,
+          "y": 230
+        },
+        "angle": 0,
+        "id": "a19324df-260c-4d0d-a540-40c993d54f69",
+        "z": 23,
+        "nodeID": "0021",
+        "elementid": "0021",
+        "parent": "9577afc1-cff8-4e7f-89ff-8295005a7434",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Fund\nInfrastructure",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 520,
+          "y": 270
+        },
+        "angle": 0,
+        "id": "c87bccbc-f366-4a02-8adc-4fea1342f9ec",
+        "z": 24,
+        "nodeID": "0022",
+        "elementid": "0022",
+        "parent": "9577afc1-cff8-4e7f-89ff-8295005a7434",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "DS"
+          },
+          ".name": {
+            "text": "Approve\nFunds",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 620,
+          "y": 320
+        },
+        "angle": 0,
+        "id": "24b9599f-e44c-4c4d-ae3b-3ca62031873a",
+        "z": 25,
+        "nodeID": "0023",
+        "elementid": "0023",
+        "parent": "9577afc1-cff8-4e7f-89ff-8295005a7434",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Economic\nDevelopment",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 720,
+          "y": 280
+        },
+        "angle": 0,
+        "id": "9eb13b09-297e-4e45-8497-9bd1deed273e",
+        "z": 26,
+        "nodeID": "0024",
+        "elementid": "0024",
+        "parent": "9577afc1-cff8-4e7f-89ff-8295005a7434",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".name": {
+            "text": "Have 401\nInterchange",
+            "font-size": 13
+          },
+          ".funcvalue": {
+            "text": "UD"
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 650,
+          "y": 410
+        },
+        "angle": 0,
+        "id": "0f6c648c-4411-4afa-9f2f-9a7fbc7a9c23",
+        "z": 27,
+        "nodeID": "0025",
+        "elementid": "0025",
+        "parent": "32cd105a-48f7-489f-9468-46edf58c259e",
+        "attrs": {
+          ".satvalue": {
+            "text": "(\u22a5, F)"
+          },
+          ".funcvalue": {
+            "text": "UD"
+          },
+          ".name": {
+            "text": "Build Mall",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 550,
+          "y": 460
+        },
+        "angle": 0,
+        "id": "10435845-4bc8-401d-a49c-d0166818a1d0",
+        "z": 28,
+        "nodeID": "0026",
+        "elementid": "0026",
+        "parent": "32cd105a-48f7-489f-9468-46edf58c259e",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Have Access\nto 401",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 680,
+          "y": 520
+        },
+        "angle": 0,
+        "id": "01729973-1646-467b-9c9a-52636c007af9",
+        "z": 29,
+        "nodeID": "0027",
+        "elementid": "0027",
+        "parent": "32cd105a-48f7-489f-9468-46edf58c259e",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Parking\nSpaces",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 110,
+          "height": 60
+        },
+        "position": {
+          "x": 560,
+          "y": 550
+        },
+        "angle": 0,
+        "id": "50e57eec-371d-4965-88d4-46a1dbbfaf80",
+        "z": 30,
+        "nodeID": "0028",
+        "elementid": "0028",
+        "parent": "32cd105a-48f7-489f-9468-46edf58c259e",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Have Yorkdale\nShopping Plaza",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 27.5,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 120,
+          "height": 60
+        },
+        "position": {
+          "x": 600,
+          "y": 630
+        },
+        "angle": 0,
+        "id": "135b8b2d-f3a3-4916-b0dd-5adf2de788f5",
+        "z": 31,
+        "nodeID": "0029",
+        "elementid": "0029",
+        "parent": "32cd105a-48f7-489f-9468-46edf58c259e",
+        "attrs": {
+          ".satvalue": {
+            "text": "(F, \u22a5)"
+          },
+          ".funcvalue": {
+            "text": "C"
+          },
+          ".name": {
+            "text": "Plan for\nShopping Plaza",
+            "font-size": 13
+          },
+          "text": {
+            "fill": "black"
+          },
+          ".label": {
+            "cx": 30,
+            "cy": 6.3833753244528
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "25de1aa1-063a-4a0a-a451-86e187028283"
+        },
+        "target": {
+          "id": "e7164bac-efbb-46a7-8bdd-7129cf491eda"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "7462d0a3-ae06-4947-8056-162456ffd223",
+        "z": 32,
+        "linkID": "0000",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "beffe087-1c40-4673-840e-cbff3b43f955"
+        },
+        "target": {
+          "id": "e7164bac-efbb-46a7-8bdd-7129cf491eda"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "4c626eeb-3346-459d-a0cf-90b0107e17ea",
+        "z": 33,
+        "linkID": "0001",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "b54ecc5a-2e39-43e2-bdd7-bc3d197315fd"
+        },
+        "target": {
+          "id": "e7164bac-efbb-46a7-8bdd-7129cf491eda"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "648c11c5-a329-4093-9b05-92a0e7b7ae39",
+        "z": 34,
+        "linkID": "0002",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "50569c08-76d2-4a77-ae07-ae1db94aecc0"
+        },
+        "target": {
+          "id": "25de1aa1-063a-4a0a-a451-86e187028283"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "dff1b77e-3134-4fa2-8436-06d688070265",
+        "z": 35,
+        "linkID": "0003",
+        "link-type": "OR",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "d984a74b-4950-4684-9bf2-b046bcf28398"
+        },
+        "target": {
+          "id": "25de1aa1-063a-4a0a-a451-86e187028283"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "db7ce0b2-ce3d-4bd9-a846-4bddec8b34e6",
+        "z": 36,
+        "linkID": "0004",
+        "link-type": "OR",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "52091b78-eb5b-479b-bdb5-65c91195283f"
+        },
+        "target": {
+          "id": "d984a74b-4950-4684-9bf2-b046bcf28398"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "9afd187d-486c-48e7-b16a-faa4db3f34ea",
+        "z": 37,
+        "linkID": "0005",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "d821b35d-8b94-4cd1-b8e9-a1f4e829f4a6"
+        },
+        "target": {
+          "id": "d984a74b-4950-4684-9bf2-b046bcf28398"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "50e9f20d-6a37-493b-aa3d-35a96ba28c6b",
+        "z": 38,
+        "linkID": "0006",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "e35b1bc4-7416-4c85-ac8a-c97d42193be3"
+        },
+        "target": {
+          "id": "d984a74b-4950-4684-9bf2-b046bcf28398"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "8af734aa-575d-4457-986f-ef9640f44420",
+        "z": 39,
+        "linkID": "0007",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "2ceeca06-ef55-46a3-97b5-c79d6857657f"
+        },
+        "target": {
+          "id": "d984a74b-4950-4684-9bf2-b046bcf28398"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "a06de6c7-b07b-4741-b78c-a292149d97be",
+        "z": 40,
+        "linkID": "0008",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "29219de6-fcea-4de0-9824-eab2b30c7f75"
+        },
+        "target": {
+          "id": "d984a74b-4950-4684-9bf2-b046bcf28398"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "d8832686-de03-4d04-ba63-eb5a7c0c1233",
+        "z": 41,
+        "linkID": "0009",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "f33bfc89-f98c-4de5-bc24-b644355100d8"
+        },
+        "target": {
+          "id": "d984a74b-4950-4684-9bf2-b046bcf28398"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "30df5554-1534-48ba-b08d-78d841055124",
+        "z": 42,
+        "linkID": "0010",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "vertices": [
+          {
+            "x": 350,
+            "y": 470
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "e35b1bc4-7416-4c85-ac8a-c97d42193be3"
+        },
+        "target": {
+          "id": "50569c08-76d2-4a77-ae07-ae1db94aecc0"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "3fc3f7de-c59b-4d95-b9ff-4aaf49b82cca",
+        "z": 43,
+        "linkID": "0011",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "vertices": [
+          {
+            "x": 380,
+            "y": 470
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "2ceeca06-ef55-46a3-97b5-c79d6857657f"
+        },
+        "target": {
+          "id": "50569c08-76d2-4a77-ae07-ae1db94aecc0"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "cdf86b5f-1655-459f-af74-61ee7be3552f",
+        "z": 44,
+        "linkID": "0012",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "vertices": [
+          {
+            "x": 360,
+            "y": 430
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "29219de6-fcea-4de0-9824-eab2b30c7f75"
+        },
+        "target": {
+          "id": "50569c08-76d2-4a77-ae07-ae1db94aecc0"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "cb3d750a-50c5-4904-b5f3-360bb137f3c3",
+        "z": 45,
+        "linkID": "0013",
+        "parent": "0ec5e7cf-e067-49e2-a85c-135587dea389",
+        "vertices": [
+          {
+            "x": 350,
+            "y": 410
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "f33bfc89-f98c-4de5-bc24-b644355100d8"
+        },
+        "target": {
+          "id": "50569c08-76d2-4a77-ae07-ae1db94aecc0"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "61c9a6a8-d1ff-4785-bc1d-16725fc8bdc3",
+        "z": 46,
+        "linkID": "0014",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "8ad67b4c-fefe-46f9-8c57-888741d27fc9"
+        },
+        "target": {
+          "id": "e35b1bc4-7416-4c85-ac8a-c97d42193be3"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "8fc13f2c-9a37-46f9-9628-1def1892792b",
+        "z": 47,
+        "linkID": "0015",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "f4cda96e-c60a-47e0-826d-7241a1c6583b"
+        },
+        "target": {
+          "id": "e35b1bc4-7416-4c85-ac8a-c97d42193be3"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "3e6e9754-4aac-4a82-a4e1-5d0aaf8ea2b9",
+        "z": 48,
+        "linkID": "0016",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "aad8f902-cfa8-4afd-8b51-c7e6942611c7"
+        },
+        "target": {
+          "id": "b54ecc5a-2e39-43e2-bdd7-bc3d197315fd"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "bd8bd02d-f962-4908-8719-9f06c45b016c",
+        "z": 49,
+        "linkID": "0017",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "a9a946fc-86bd-484e-824c-57b66ae46ee6"
+        },
+        "target": {
+          "id": "b54ecc5a-2e39-43e2-bdd7-bc3d197315fd"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "ed7afb6e-7ad8-404b-9e00-c990dc32e674",
+        "z": 50,
+        "linkID": "0018",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "0eb30bcb-2e2c-47ec-9ccc-b975485cbc87"
+        },
+        "target": {
+          "id": "beffe087-1c40-4673-840e-cbff3b43f955"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "d2fae4c2-206f-4e2e-9cfd-a2cce344b9e5",
+        "z": 51,
+        "linkID": "0019",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "a03d1f3a-c860-434b-869a-d56cdde15f05"
+        },
+        "target": {
+          "id": "beffe087-1c40-4673-840e-cbff3b43f955"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "008b5352-6d57-47c4-b132-486de7f1b4f9",
+        "z": 52,
+        "linkID": "0020",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "c884b6a1-0ac9-47b1-a648-79058f61e73e"
+        },
+        "target": {
+          "id": "1cc21031-0357-457a-8eae-2ea1e104378e"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "9ae2311a-1e42-4b79-8430-62ef85880b9a",
+        "z": 53,
+        "linkID": "0021",
+        "link-type": "+",
+        "parent": "582955f9-4161-4f03-a85f-53e2995736a4",
+        "vertices": [
+          {
+            "x": 580,
+            "y": 100
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "c884b6a1-0ac9-47b1-a648-79058f61e73e"
+        },
+        "target": {
+          "id": "0eb30bcb-2e2c-47ec-9ccc-b975485cbc87"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "2bb0e308-284e-468c-b71b-f578994040f1",
+        "z": 54,
+        "linkID": "0022",
+        "link-type": "++",
+        "vertices": [
+          {
+            "x": 460,
+            "y": 160
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "c87bccbc-f366-4a02-8adc-4fea1342f9ec"
+        },
+        "target": {
+          "id": "a03d1f3a-c860-434b-869a-d56cdde15f05"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "dddb377e-527d-4848-a6b9-ae76c459731f",
+        "z": 55,
+        "linkID": "0023",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "f33bfc89-f98c-4de5-bc24-b644355100d8"
+        },
+        "target": {
+          "id": "1cc21031-0357-457a-8eae-2ea1e104378e"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "c5f17819-8906-4c74-be05-0b37fe818610",
+        "z": 56,
+        "linkID": "0024",
+        "link-type": "++",
+        "vertices": [
+          {
+            "x": 510,
+            "y": 220
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "c87bccbc-f366-4a02-8adc-4fea1342f9ec"
+        },
+        "target": {
+          "id": "a19324df-260c-4d0d-a540-40c993d54f69"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "924feafa-8a4f-468f-8106-049a72c082f6",
+        "z": 57,
+        "linkID": "0025",
+        "parent": "9577afc1-cff8-4e7f-89ff-8295005a7434",
+        "vertices": [
+          {
+            "x": 650,
+            "y": 310
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "50e57eec-371d-4965-88d4-46a1dbbfaf80"
+        },
+        "target": {
+          "id": "24b9599f-e44c-4c4d-ae3b-3ca62031873a"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+S"
+              }
+            }
+          }
+        ],
+        "id": "a3cfa62d-adff-4737-9524-eff51aae942e",
+        "z": 58,
+        "linkID": "0026",
+        "vertices": [
+          {
+            "x": 790,
+            "y": 600
+          },
+          {
+            "x": 790,
+            "y": 390
+          }
+        ],
+        "link-type": "+S",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "9eb13b09-297e-4e45-8497-9bd1deed273e"
+        },
+        "target": {
+          "id": "10435845-4bc8-401d-a49c-d0166818a1d0"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "66e0e8e3-8bce-40b7-b059-66a4d576298e",
+        "z": 59,
+        "linkID": "0027",
+        "vertices": [
+          {
+            "x": 740,
+            "y": 390
+          },
+          {
+            "x": 650,
+            "y": 410
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "f33bfc89-f98c-4de5-bc24-b644355100d8"
+        },
+        "target": {
+          "id": "10435845-4bc8-401d-a49c-d0166818a1d0"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "5a47538c-54bf-4c71-9034-6a37ab3082fa",
+        "z": 60,
+        "linkID": "0028",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "0f6c648c-4411-4afa-9f2f-9a7fbc7a9c23"
+        },
+        "target": {
+          "id": "50e57eec-371d-4965-88d4-46a1dbbfaf80"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "2ef7115d-b1b9-41e5-b987-507b7e8ad2e0",
+        "z": 61,
+        "linkID": "0029",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "10435845-4bc8-401d-a49c-d0166818a1d0"
+        },
+        "target": {
+          "id": "50e57eec-371d-4965-88d4-46a1dbbfaf80"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "a4916cbb-d2b5-4765-a36f-8f735f8ff93b",
+        "z": 62,
+        "linkID": "0030",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "0f6c648c-4411-4afa-9f2f-9a7fbc7a9c23"
+        },
+        "target": {
+          "id": "01729973-1646-467b-9c9a-52636c007af9"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "73e222c1-3d71-4315-bc68-7c9db19bcd39",
+        "z": 63,
+        "linkID": "0031",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "135b8b2d-f3a3-4916-b0dd-5adf2de788f5"
+        },
+        "target": {
+          "id": "50e57eec-371d-4965-88d4-46a1dbbfaf80"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "ddb7f450-8c86-4602-bde7-4fd44eab6ffe",
+        "z": 64,
+        "linkID": "0032",
+        "vertices": [
+          {
+            "x": 710,
+            "y": 610
+          },
+          {
+            "x": 680,
+            "y": 610
+          }
+        ],
+        "parent": "32cd105a-48f7-489f-9468-46edf58c259e",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "53fd5c9f-8e93-4369-af64-a563b25b8445"
+        },
+        "target": {
+          "id": "f4cda96e-c60a-47e0-826d-7241a1c6583b"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "19c9ad46-38c8-43ad-8da4-a44fdc7e9a62",
+        "z": 65,
+        "linkID": "0033",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "black",
+            "stroke-width": 1
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "black",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+            "stroke-width": 1
+          }
+        }
+      }
+    ]
+  },
+  "model": {
+    "actors": [
+      {
+        "nodeID": "a000",
+        "nodeName": "Yorkdale\nProject",
+        "intentionIDs": [
+          "0025",
+          "0025",
+          "0026",
+          "0027",
+          "0028",
+          "0029",
+          "0028",
+          "0025",
+          "0026",
+          "0027",
+          "0025",
+          "0029",
+          "0029",
+          "0025",
+          "0025",
+          "0028",
+          "0029",
+          "0025",
+          "0025",
+          "0026",
+          "0027",
+          "0028",
+          "0029",
+          "0027",
+          "0027",
+          "0029",
+          "0029",
+          "0029",
+          "0029",
+          "0029"
+        ]
+      },
+      {
+        "nodeID": "a001",
+        "nodeName": "Province",
+        "intentionIDs": [
+          "0021",
+          "0022",
+          "0023",
+          "0024",
+          "0022",
+          "0022",
+          "0021",
+          "0024",
+          "0022",
+          "0024",
+          "0022",
+          "0021",
+          "0024",
+          "0022",
+          "0022",
+          "0023",
+          "0024",
+          "0022",
+          "0023"
+        ]
+      },
+      {
+        "nodeID": "a002",
+        "nodeName": "Metro",
+        "intentionIDs": [
+          "0019",
+          "0020",
+          "0020",
+          "0019",
+          "0020",
+          "0020",
+          "0020",
+          "0020",
+          "0019",
+          "0020",
+          "0020",
+          "0019",
+          "0020",
+          "0020"
+        ]
+      },
+      {
+        "nodeID": "a003",
+        "nodeName": "York",
+        "intentionIDs": [
+          "0018",
+          "0018",
+          "0018",
+          "0018",
+          "0018"
+        ]
+      },
+      {
+        "nodeID": "a004",
+        "nodeName": "Spadina\nProject",
+        "intentionIDs": [
+          "0000",
+          "0001",
+          "0002",
+          "0001",
+          "0003",
+          "0004",
+          "0005",
+          "0006",
+          "0007",
+          "0008",
+          "0009",
+          "0009",
+          "0010",
+          "0011",
+          "0011",
+          "0012",
+          "0013",
+          "0011",
+          "0014",
+          "0015",
+          "0014",
+          "0016",
+          "0015",
+          "0016",
+          "0013",
+          "0017",
+          "0020",
+          "0001",
+          "0002",
+          "0003",
+          "0004",
+          "0005",
+          "0014",
+          "0015",
+          "0012",
+          "0012",
+          "0017",
+          "0012",
+          "0011",
+          "0010",
+          "0017",
+          "0012",
+          "0011",
+          "0010",
+          "0013",
+          "0016",
+          "0006",
+          "0007",
+          "0007",
+          "0008",
+          "0009",
+          "0020",
+          "0020",
+          "0020",
+          "0010",
+          "0010",
+          "0006",
+          "0007",
+          "0014",
+          "0015",
+          "0013",
+          "0012",
+          "0020",
+          "0010",
+          "0011",
+          "0010",
+          "0011",
+          "0020",
+          "0006",
+          "0014",
+          "0015",
+          "0013",
+          "0015",
+          "0010",
+          "0011",
+          "0012",
+          "0016",
+          "0006",
+          "0003",
+          "0007",
+          "0002",
+          "0000",
+          "0001",
+          "0008",
+          "0009",
+          "0004",
+          "0005",
+          "0014",
+          "0012",
+          "0017",
+          "0015",
+          "0013",
+          "0016",
+          "0010",
+          "0011",
+          "0012",
+          "0017",
+          "0016",
+          "0013",
+          "0016",
+          "0013",
+          "0009",
+          "0008",
+          "0015",
+          "0017",
+          "0016",
+          "0013",
+          "0016",
+          "0005",
+          "0004",
+          "0020"
+        ]
+      }
+    ],
+    "intentions": [
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0000",
+        "nodeType": "basic.Goal",
+        "nodeName": "Have Spadina\nExpressway",
+        "dynamicFunction": {
+          "intentionID": "0000",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0001",
+        "nodeType": "basic.Goal",
+        "nodeName": "Build Spadina\nExpressway",
+        "dynamicFunction": {
+          "intentionID": "0001",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0002",
+        "nodeType": "basic.Goal",
+        "nodeName": "Get Funding",
+        "dynamicFunction": {
+          "intentionID": "0002",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0003",
+        "nodeType": "basic.Task",
+        "nodeName": "Plan\nProject",
+        "dynamicFunction": {
+          "intentionID": "0003",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0004",
+        "nodeType": "basic.Goal",
+        "nodeName": "Terminal\nExpressway",
+        "dynamicFunction": {
+          "intentionID": "0004",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0005",
+        "nodeType": "basic.Goal",
+        "nodeName": "Connected\nExpressway",
+        "dynamicFunction": {
+          "intentionID": "0005",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0006",
+        "nodeType": "basic.Task",
+        "nodeName": "Approve Construction\nto Lawrence",
+        "dynamicFunction": {
+          "intentionID": "0006",
+          "stringDynVis": "DS",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "A"
+            },
+            {
+              "funcType": "C",
+              "funcX": "0011",
+              "funcStart": "A",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0007",
+        "nodeType": "basic.Task",
+        "nodeName": "Approve\nPlan",
+        "dynamicFunction": {
+          "intentionID": "0007",
+          "stringDynVis": "DS",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "A"
+            },
+            {
+              "funcType": "C",
+              "funcX": "0011",
+              "funcStart": "A",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0008",
+        "nodeType": "basic.Task",
+        "nodeName": "Get Funding\nFrom Metro",
+        "dynamicFunction": {
+          "intentionID": "0008",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0009",
+        "nodeType": "basic.Task",
+        "nodeName": "Get Funding\nFrom Province",
+        "dynamicFunction": {
+          "intentionID": "0009",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0010",
+        "nodeType": "basic.Task",
+        "nodeName": "Build Wilson-401\nto Lawrence",
+        "dynamicFunction": {
+          "intentionID": "0010",
+          "stringDynVis": "UD",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "A"
+            },
+            {
+              "funcType": "I",
+              "funcX": "0010",
+              "funcStart": "A",
+              "funcStop": "B"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0011",
+        "nodeType": "basic.Task",
+        "nodeName": "Build Lawrence\nto Eglinton",
+        "dynamicFunction": {
+          "intentionID": "0011",
+          "stringDynVis": "UD",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "A"
+            },
+            {
+              "funcType": "C",
+              "funcX": "0100",
+              "funcStart": "A",
+              "funcStop": "B"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0012",
+        "nodeType": "basic.Task",
+        "nodeName": "Build Davenport\nTo Bloor",
+        "dynamicFunction": {
+          "intentionID": "0012",
+          "stringDynVis": "C",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0013",
+        "nodeType": "basic.Task",
+        "nodeName": "Build Eglinton to\nDavenport",
+        "dynamicFunction": {
+          "intentionID": "0013",
+          "stringDynVis": "C",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0014",
+        "nodeType": "basic.Task",
+        "nodeName": "Build Bloor\nTo Lakeshore",
+        "dynamicFunction": {
+          "intentionID": "0014",
+          "stringDynVis": "C",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0015",
+        "nodeType": "basic.Task",
+        "nodeName": "Build Crosstown\nInterchange",
+        "dynamicFunction": {
+          "intentionID": "0015",
+          "stringDynVis": "C",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0016",
+        "nodeType": "basic.Task",
+        "nodeName": "Get Land\nFrom York",
+        "dynamicFunction": {
+          "intentionID": "0016",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a004",
+        "nodeID": "0017",
+        "nodeType": "basic.Task",
+        "nodeName": "Eglinton to\nDavenport",
+        "dynamicFunction": {
+          "intentionID": "0017",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a003",
+        "nodeID": "0018",
+        "nodeType": "basic.Task",
+        "nodeName": "Approve Land\nRelease",
+        "dynamicFunction": {
+          "intentionID": "0018",
+          "stringDynVis": "C",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a002",
+        "nodeID": "0019",
+        "nodeType": "basic.Goal",
+        "nodeName": "Honour\nInterchange\nAgreement",
+        "dynamicFunction": {
+          "intentionID": "0019",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a002",
+        "nodeID": "0020",
+        "nodeType": "basic.Task",
+        "nodeName": "Approve\nProject Funding",
+        "dynamicFunction": {
+          "intentionID": "0020",
+          "stringDynVis": "DS",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "A"
+            },
+            {
+              "funcType": "C",
+              "funcX": "0011",
+              "funcStart": "A",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0021",
+        "nodeType": "basic.Goal",
+        "nodeName": "Fund\nInfrastructure",
+        "dynamicFunction": {
+          "intentionID": "0021",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0022",
+        "nodeType": "basic.Task",
+        "nodeName": "Approve\nFunds",
+        "dynamicFunction": {
+          "intentionID": "0022",
+          "stringDynVis": "DS",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "A"
+            },
+            {
+              "funcType": "C",
+              "funcX": "0011",
+              "funcStart": "A",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0023",
+        "nodeType": "basic.Softgoal",
+        "nodeName": "Economic\nDevelopment",
+        "dynamicFunction": {
+          "intentionID": "0023",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0024",
+        "nodeType": "basic.Goal",
+        "nodeName": "Have 401\nInterchange",
+        "dynamicFunction": {
+          "intentionID": "0024",
+          "stringDynVis": "UD",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "A"
+            },
+            {
+              "funcType": "I",
+              "funcX": "0011",
+              "funcStart": "A",
+              "funcStop": "B"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0025",
+        "nodeType": "basic.Task",
+        "nodeName": "Build Mall",
+        "dynamicFunction": {
+          "intentionID": "0025",
+          "stringDynVis": "UD",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "1100",
+              "funcStart": "0",
+              "funcStop": "A"
+            },
+            {
+              "funcType": "C",
+              "funcX": "0100",
+              "funcStart": "A",
+              "funcStop": "B"
+            },
+            {
+              "funcType": "C",
+              "funcX": "0010",
+              "funcStart": "B",
+              "funcStop": "C"
+            }
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0026",
+        "nodeType": "basic.Goal",
+        "nodeName": "Have Access\nto 401",
+        "dynamicFunction": {
+          "intentionID": "0026",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0027",
+        "nodeType": "basic.Resource",
+        "nodeName": "Parking\nSpaces",
+        "dynamicFunction": {
+          "intentionID": "0027",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0028",
+        "nodeType": "basic.Goal",
+        "nodeName": "Have Yorkdale\nShopping Plaza",
+        "dynamicFunction": {
+          "intentionID": "0028",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0029",
+        "nodeType": "basic.Task",
+        "nodeName": "Plan for\nShopping Plaza",
+        "dynamicFunction": {
+          "intentionID": "0029",
+          "stringDynVis": "C",
+          "functionSegList": [
+            {
+              "funcType": "C",
+              "funcX": "0011",
+              "funcStart": "0",
+              "funcStop": "Infinity"
+            }
+          ]
+        }
+      }
+    ],
+    "links": [
+      {
+        "linkID": "0000",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0001",
+        "linkDestID": "0000",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0001",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0002",
+        "linkDestID": "0000",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0002",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0003",
+        "linkDestID": "0000",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0003",
+        "linkType": "OR",
+        "postType": null,
+        "linkSrcID": "0004",
+        "linkDestID": "0001",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0004",
+        "linkType": "OR",
+        "postType": null,
+        "linkSrcID": "0005",
+        "linkDestID": "0001",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0005",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0014",
+        "linkDestID": "0005",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0006",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0015",
+        "linkDestID": "0005",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0007",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0017",
+        "linkDestID": "0005",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0008",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0012",
+        "linkDestID": "0005",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0009",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0011",
+        "linkDestID": "0005",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0010",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0010",
+        "linkDestID": "0005",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0011",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0017",
+        "linkDestID": "0004",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0012",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0012",
+        "linkDestID": "0004",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0013",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0011",
+        "linkDestID": "0004",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0014",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0010",
+        "linkDestID": "0004",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0015",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0013",
+        "linkDestID": "0017",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0016",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0016",
+        "linkDestID": "0017",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0017",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0006",
+        "linkDestID": "0003",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0018",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0007",
+        "linkDestID": "0003",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0019",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0008",
+        "linkDestID": "0002",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0020",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0009",
+        "linkDestID": "0002",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0021",
+        "linkType": "+",
+        "postType": null,
+        "linkSrcID": "0020",
+        "linkDestID": "0019",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0022",
+        "linkType": "++",
+        "postType": null,
+        "linkSrcID": "0020",
+        "linkDestID": "0008",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0023",
+        "linkType": "++",
+        "postType": null,
+        "linkSrcID": "0022",
+        "linkDestID": "0009",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0024",
+        "linkType": "++",
+        "postType": null,
+        "linkSrcID": "0010",
+        "linkDestID": "0019",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0025",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0022",
+        "linkDestID": "0021",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0026",
+        "linkType": "+S",
+        "postType": null,
+        "linkSrcID": "0028",
+        "linkDestID": "0023",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0027",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0024",
+        "linkDestID": "0026",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0028",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0010",
+        "linkDestID": "0026",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0029",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0025",
+        "linkDestID": "0028",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0030",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0026",
+        "linkDestID": "0028",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0031",
+        "linkType": "++",
+        "postType": null,
+        "linkSrcID": "0025",
+        "linkDestID": "0027",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0032",
+        "linkType": "AND",
+        "postType": null,
+        "linkSrcID": "0029",
+        "linkDestID": "0028",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0033",
+        "linkType": "++",
+        "postType": null,
+        "linkSrcID": "0018",
+        "linkDestID": "0016",
+        "absoluteValue": -1
+      }
+    ],
+    "constraints": [
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0006",
+        "constraintSrcEB": "A",
+        "constraintDestID": null,
+        "constraintDestEB": null,
+        "absoluteValue": 3
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0007",
+        "constraintSrcEB": "A",
+        "constraintDestID": null,
+        "constraintDestEB": null,
+        "absoluteValue": 3
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0022",
+        "constraintSrcEB": "A",
+        "constraintDestID": null,
+        "constraintDestEB": null,
+        "absoluteValue": 3
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0020",
+        "constraintSrcEB": "A",
+        "constraintDestID": null,
+        "constraintDestEB": null,
+        "absoluteValue": 3
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0010",
+        "constraintSrcEB": "A",
+        "constraintDestID": null,
+        "constraintDestEB": null,
+        "absoluteValue": 8
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0011",
+        "constraintSrcEB": "A",
+        "constraintDestID": null,
+        "constraintDestEB": null,
+        "absoluteValue": 7
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0024",
+        "constraintSrcEB": "A",
+        "constraintDestID": null,
+        "constraintDestEB": null,
+        "absoluteValue": 8
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0025",
+        "constraintSrcEB": "A",
+        "constraintDestID": null,
+        "constraintDestEB": null,
+        "absoluteValue": 4
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0025",
+        "constraintSrcEB": "B",
+        "constraintDestID": null,
+        "constraintDestEB": null,
+        "absoluteValue": 5
+      }
+    ],
+    "maxAbsTime": "100"
+  },
+  "analysisRequest": {
+    "action": null,
+    "conflictLevel": "S",
+    "numRelTime": "1",
+    "absTimePts": "",
+    "absTimePtsArr": [
+      
+    ],
+    "currentState": "0",
+    "userAssignmentsList": [
+      {
+        "intentionID": "0000",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0001",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0002",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0003",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0004",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0005",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0006",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0007",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0008",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0009",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0010",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0011",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0012",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0013",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0014",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0015",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0016",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0017",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0018",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0019",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0020",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0021",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0022",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0023",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0024",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0025",
+        "absTime": "0",
+        "evaluationValue": "1100"
+      },
+      {
+        "intentionID": "0026",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0027",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0028",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0029",
+        "absTime": "0",
+        "evaluationValue": "0011"
+      }
+    ],
+    "previousAnalysis": null
+  }
+}

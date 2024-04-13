@@ -312,17 +312,30 @@ $('#analysis-btn').on('click', function () {
 });
 
 /** For Load Sample Model button */
-
-/** 
 $('#load-sample').on('click', function() {
-
-    $.getJSON('http://www.cs.toronto.edu/~amgrubb/archive/REJ-Supplement/S1Frag.json', function(myData){		
-        var response = JSON.stringify(myData);
+    // $.getJSON('https://www.cs.toronto.edu/~amgrubb/archive/REJ19-SI/MFull.json', function(myData){		
+    //     var response = JSON.stringify(myData);
+    //     var newModel = new Blob([response], {type : 'application/json'});
+    //     reader.readAsText(newModel);  	
+    // });
+    fetch('./userguides/sampleModel.JSON')
+    .then(response => {
+        if (!response.ok) {
+          throw new Error('Couldn\'t find the Sample Model file');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data); 
+        var response = JSON.stringify(data);
         var newModel = new Blob([response], {type : 'application/json'});
         reader.readAsText(newModel);  	
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
     });
+
 });
-*/
 
 // Switches to modeling mode
 $('#modeling-btn').on('click', function () { switchToModellingMode(); });
