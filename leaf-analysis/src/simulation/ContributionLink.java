@@ -19,9 +19,20 @@ public class ContributionLink extends AbstractElementLink {
 	public ContributionType getPreContribution() {
 		return preContribution;
 	}
+	public void setPreContribution(ContributionType ct){
+		preContribution = ct;
+	}
 
 	public ContributionType getPostContribution() {
 		return postContribution;
+	}
+	public void setPostContribution(ContributionType ct){
+		postContribution = ct;
+	}
+	
+	/**Method to describe link in written format as connection between two elements*/
+	public String getName() {
+		return super.getZeroSrc().getName() + " --" + preContribution.getCode() + "--> " + super.getDest().getName();
 	}
 
 	/** Check if the relationship types are correct, then constructs a contribution link. 
@@ -47,6 +58,7 @@ public class ContributionLink extends AbstractElementLink {
 				case "or":
 				case "AND":
 				case "OR":
+				case "no":
 					return null;
 				default:
 					throw new IllegalArgumentException("(Simple) Invalid relationship type: " + linkType);

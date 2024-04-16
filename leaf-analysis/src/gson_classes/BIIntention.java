@@ -4,6 +4,11 @@ import java.util.List;
 
 public class BIIntention {
     private Attributes attributes;
+    
+    public BIIntention(BIEvolvingFunction evolvingFunction, String nodeName, List<BIUserEvaluation> userEvalutationList) {
+    	this.attributes = new Attributes(evolvingFunction, nodeName, userEvalutationList);
+    }
+    
 	public BIEvolvingFunction getEvolvingFunction() {
 		return attributes.evolvingFunction;
 	}
@@ -17,6 +22,12 @@ public class BIIntention {
     private class Attributes {
     	BIEvolvingFunction evolvingFunction; 
         String nodeName;
-        List<BIUserEvaluation> userEvaluationList;   
+        List<BIUserEvaluation> userEvaluationList;
+        
+        private Attributes(BIEvolvingFunction evolvingFunction, String nodeName, List<BIUserEvaluation> userEvalutationList) {
+        	this.evolvingFunction = evolvingFunction;
+        	this.nodeName = nodeName;
+        	this.userEvaluationList = userEvalutationList;
+        }
     }
 }

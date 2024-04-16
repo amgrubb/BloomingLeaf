@@ -9,6 +9,9 @@ leaf-ui/cgi-bin/temp/output.*
 leaf-analysis/doc/*
 
 leaf-analysis/temp/default.json
+leaf-analysis/temp/*.*
+leaf-analysis/temp/*/*
+leaf-analysis/temp/*
 
 *.class
 *.idea
@@ -21,9 +24,12 @@ leaf-analysis/temp/default.json
 *.jar
 *.war
 *.ear
+*.zip
+
 
 # Apple OSX Files #
 .DS_Store
+*.DS_Store
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*

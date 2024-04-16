@@ -11,7 +11,7 @@ class ChartObj {
 			scaleSteps: 4, // The number of steps on the y-axis
 			scaleStepWidth: 1, // The value increment of the y-axis
 			scaleStartValue: -2, // The y-axis starting value
-			scaleFontSize: 10, // The y-axis label font size
+			scaleFontSize: 12, // The y-axis label font size
 			pointHitDetectionRadius: 5, // Extra amount to add to the radius to cater for hit detection outside the drawn point
 			tooltipTemplate: "", // Sets template string for single tooltips to empty
 			multiTooltipTemplate: "", // Sets template string for multi tooltips to empty

@@ -132,7 +132,7 @@ public class Main {
 			Gson gson = builder.create();
 			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
 
-			ModelSpec modelSpec =  BIModelSpecBuilder.buildModelSpec(frontendObject);
+			ModelSpec modelSpec = BIModelSpecBuilder.buildModelSpec(frontendObject);
 			return modelSpec;
 			
 		} catch(Exception e) {

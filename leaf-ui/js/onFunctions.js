@@ -3,12 +3,13 @@ This file contains all the jQuery functions that are associated with buttons and
 It also contains the setup for Rappid elements.
 */
 
+
 // Used to be onFunctionsBothWindows.js
 // Navigation bar functions:
 var max_font = 20;
 var min_font = 6;
-var current_font = 10;
-var default_font = 10;
+var current_font = 12;
+var default_font = 12;
 
 function zoomIn(pPaperScroller) {
     pPaperScroller.zoom(0.2, { max: 3 });
@@ -54,7 +55,7 @@ function fontDown(pPaper) {
 }
 
 /**
- * Changes font size to default (10)
+ * Changes font size to default (12)
  * @param {*} pPaper 
  */
 function defaultFont(pPaper) {
@@ -169,6 +170,12 @@ $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function () { clearAll() });
 $('#btn-clear-flabel').on('click', function () {
+    removeHighlight(); // deselects intention
+    if ($('.analysis-only').css("display") == "none") {
+        clearInspector();
+    } else {
+        setName();
+    }
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
@@ -179,11 +186,8 @@ $('#btn-clear-flabel').on('click', function () {
             $(".function-type").val('NT');
             cell.attr(".funcvalue/text", "");
 
-            if ($('.inspector-views').length != 0) {
-                // Rerender elementInspector for clearing Dynamic Labels
-                var elementInspector = new ElementInspector({ model: cell });
-                elementInspector.render();
-            }
+            // Rerender elementInspector for clearing Dynamic Labels
+            resetInspectorView(cell);
         }
     }
 });
@@ -199,7 +203,74 @@ $('#btn-fnt').on('click', function () { defaultFont(paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(paper); });
 $('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
-$('#evo-color-key').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
+
+/**
+ * returns whether or not a color is dark
+ * @param {*} color 
+ * @returns 
+ */
+function isDark(color){
+    const hex = color.replace('#', '');
+    const c_r = parseInt(hex.substr(0, 2), 16);
+    const c_g = parseInt(hex.substr(2, 2), 16);
+    const c_b = parseInt(hex.substr(4, 2), 16);
+    const brightness = 0.2126 * Math.pow(c_r / 255, 2.2) + 0.7152 * Math.pow(c_g / 255, 2.2) + 0.0722 * Math.pow(c_b / 255, 2.2);
+    return ((1 + brightness) / brightness)> 4.5;
+}
+
+
+/**
+ * closes a popup
+ * @param ID the popup to be closed 
+*/
+function closePopup(ID){
+    $(ID).css("display", "none");
+}
+
+/**
+ * displays the color palette
+ * @param {*} palette_number 
+ */
+function displayPalette(palette_number ) {
+    //hides palette options
+    $('#palette-options').css("display", "none");
+
+    //creates the table that contains all satisfaction values 
+    $('#palette-color-key').css("display", "");
+
+    //updates the color key based on the chosen palette 
+    if(palette_number<8){
+        //pre-made palettes
+        for (let charVal in EVO.charSatValueToNum){
+            let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor= color;
+            if (isDark(color)) {
+                document.getElementById(charVal).style.color = "white";
+            } else {
+                document.getElementById(charVal).style.color = "black";
+            }
+        }
+    
+    } else{
+        //personalized palette
+        for (let charVal in EVO.charSatValueToNum){
+            let color = EVO.selfColorVisDict[EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor= color;
+            if (isDark(color)) {
+                document.getElementById(charVal).style.color = "white";
+            } else {
+                document.getElementById(charVal).style.color = "black";
+            }
+        }
+    }       
+}
+
+/** displays the color palette options*/
+$('#evo-color-key').on('click', function () {
+    removeHighlight();
+    $('#palette-options').css("display", "");
+});
+
 
 /**
  * Displays the absolute and relative assignments modal for the user.
@@ -218,7 +289,7 @@ $('#btn-view-intermediate').on('click', function () {
     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
     $('#intermediate-table').append(intermediateValuesTable.el);
     intermediateValuesTable.render();
-    $('.intermT').height($('#paper').height() * 0.9);
+    $('.popup_frame').height($('#paper').height() * 0.9);
 });
 
 /**
@@ -436,6 +507,7 @@ paper.on({
                     var actorInspector = new ActorInspector({ model: cell });
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
+                    
                     // If user was dragging actor 
                     if (evt.data.move) {
                         // AND actor doesn't overlap with other actors
@@ -460,7 +532,6 @@ paper.on({
                 } else {
                     var elementInspector = new ElementInspector({ model: cell });
                     $('.inspector').append(elementInspector.el);
-                    elementInspector.render();
                     // If user was dragging element
                     if (evt.data.move) {
                         // Unembed intention from old actor
@@ -479,6 +550,7 @@ paper.on({
                             actorCell.embed(cell);
                         }
                     }
+                    elementInspector.render();
                 }
             }
         }
@@ -646,6 +718,15 @@ paper.on("link:options", function (cell) {
                 selectResult.set('selected', false);
             }
 
+            var elements = SliderObj.getIntentionsAndActorsView();
+            var links = SliderObj.getLinksView();
+            for (var i = 0; i < elements.length; i ++) {
+                $("#" + elements[i].id).css("display", "");
+            }
+            for (var i = 0; i < links.length; i ++) {
+                $("#" + links[i].id).css("display", "");
+            }
+
             // Reset to initial graph prior to analysis
             revertNodeValuesToInitial(selectResult);
 
@@ -791,7 +872,7 @@ paper.on("link:options", function (cell) {
                 resizeWindow(configResults.get('timePointPath').length - 1);
             }
         }
-        $('.intermT').height($('#paper').height() * 0.9);
+        $('.popup_frame').height($('#paper').height() * 0.9);
     });
     $('#btn-clear-cycle').on('click', function () {
         clearCycleHighlighting(selectResult);
@@ -802,9 +883,7 @@ paper.on("link:options", function (cell) {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
         if (name) {
             clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            // EVO.returnAllColors(graph.getElements(), paper);
-            // EVO.revertIntentionsText(graph.getElements(), paper);  
+            EVO.deactivate();  
             var fileName = name + ".json";
             var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
             obj.version = "BloomingLeaf_2.0";
@@ -815,6 +894,12 @@ paper.on("link:options", function (cell) {
 
 
     $('#btn-clear-elabel').on('click', function () {
+        removeHighlight(); // deselects intention
+        if ($('.analysis-only').css("display") == "none") {
+            clearInspector();
+        } else {
+            setName();
+        }
         for (let element of graph.getElements()) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
@@ -824,19 +909,24 @@ paper.on("link:options", function (cell) {
                 if (intention.get('evolvingFunction') != null) {
                     var funcType = intention.get('evolvingFunction').get('type');
                 }
-            }
 
-            // If the initsatVal is not empty and if funcType empty
-            if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
-                intention.removeInitialSatValue();
-                cell.attr(".satvalue/text", "");
-                $('#init-sat-value').val('(no value)');
+                // If the initsatVal is not empty and if funcType empty
+                if (initSatVal != '(no value)' && funcType === 'NT') {
+                    intention.removeInitialSatValue();
+                    cell.attr(".satvalue/text", "");
+                    $('#init-sat-value').val('(no value)');
+
+                    // Rerender elementInspector for clearing Evaluation Labels
+                    resetInspectorView(cell);
+                }
             }
         }
         EVO.refresh(selectResult);
     });
 
-    $('#color-palette-1').on('click', function () { // Choose color palettes
+    // All the pre-made palettes 
+    // 1: Default 
+    $('#palette-red-blue').on('click', function () { 
         EVO.paletteOption = 1;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -846,7 +936,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-2').on('click', function () { // Choose color palettes
+    //2: Red-green 
+    $('#palette-red-green').on('click', function () { 
         EVO.paletteOption = 2;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -855,7 +946,9 @@ paper.on("link:options", function (cell) {
             EVO.refresh(selectResult);
         }
     });
-    $('#color-palette-3').on('click', function () { // Choose color palettes
+
+    //3: Green-black
+    $('#palette-green-black').on('click', function () { 
         EVO.paletteOption = 3;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -865,7 +958,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-4').on('click', function () { // Choose color palettes
+    //4: Yellow-purple
+    $('#palette-yellow-purple').on('click', function () { // Choose color palettes
         EVO.paletteOption = 4;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -875,7 +969,8 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-5').on('click', function () { // Choose color palettes
+    //5: traffic-light
+    $('#palette-traffic-light').on('click', function () { // Choose color palettes
         EVO.paletteOption = 5;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
@@ -885,11 +980,10 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-6').on('click', function () { // Choose color palettes
+    //6: pastel
+    $('#palette-pastel').on('click', function () { // Choose color palettes
         EVO.paletteOption = 6;
         highlightPalette(EVO.paletteOption);
-        //render a table
-        $('#color-input').css("display", "");
         if ($('#analysisSlider').css("display") == "none") {
             EVO.refresh(undefined);
         } else {
@@ -897,11 +991,87 @@ paper.on("link:options", function (cell) {
         }
     });
 
+    // 7: color-blind
+    $('#palette-cb').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 7;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    // 8: customizable
+    $('#palette-mine').on('click', function () { // Apply Chosen Colors
+        EVO.paletteOption = 8;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    // 9: edit my palette
+    $('#palette-edit').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 9;
+        //render a table
+        $('#color-input').css("display", "");
+    });
+
     //Show warning messages if use input invalid color
     $('#submit-color').on('click', function () {
-
-        if (Object.values(EVO.selfColorVisDict).some((v) => validateColor(v) == false)) { swal("Invalid Color", "", "error"); }
+       
+        //check that the entered colors for the satisfied and  denied values are different
+        if (!EVO.fillInDictionary()) 
+        {
+            //changes the color for fully satisfied and fully denied to what they were 
+            document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
+            document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
+            document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
+            document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
+            //error messsage 
+            console.log(EVO.paletteOption);
+            swal("Please make sure your satisfied, denied, none, and FF values are different from one another",   "", "error")
+            
+        }
+        else{
+            // Display a message to tell the user their selection is saved
+            $("#saved-options-message").css("display", "");
+            setTimeout(function(){
+                $("#saved-options-message").css("display", "none");
+                //close the color input
+                $('#color-input').css("display", "none");
+            }, 500);
+        
+            // refresh the visual overlay on the model and the palette dropdown
+            EVO.paletteOption =7;
+            highlightPalette(EVO.paletteOption);
+            if ($('#analysisSlider').css("display") == "none") {
+                EVO.refresh(undefined);
+            } else {
+                EVO.refresh(selectResult);
+            }
+        };
+        
     });
+
+    //cancel edits to palette customization
+    $('#cancel-customization').on('click', function () { 
+        document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
+        document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
+        document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
+        document.getElementById('my-PS').value=  EVO.selfColorVisDict["0010"];
+        document.getElementById('my-PD').value=  EVO.selfColorVisDict["0100"];
+        document.getElementById('my-PP').value=  EVO.selfColorVisDict["0110"];
+        document.getElementById('my-FP').value=  EVO.selfColorVisDict["0111"];
+        document.getElementById('my-PF').value=  EVO.selfColorVisDict["1110"];
+        document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
+        $('#color-input').css("display", "none");
+
+    });
+   
 
     /**
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
@@ -909,13 +1079,19 @@ paper.on("link:options", function (cell) {
      */
     document.getElementById("colorReset").oninput = function () { // Turns slider on/off and refreshes
         EVO.setSliderOption(this.value, selectResult);
+        //highlight the first palette by default  if EVO is on 
+        if(EVO.sliderOption ==1){
+            highlightPalette(EVO.paletteOption);
+        } else{
+        //unhighlights all palettes if EVO is off
+          unhighlightPalettes();
+        }
     }
     /**
      * Four option analysis mode slider
      */
     document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
         var selectConfig;
-        //TODO: Find out why the selectResult is empty before we reassign it
         if (configCollection.length !== 0) {
             selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
             if (selectConfig.get('results') !== undefined) {
@@ -976,6 +1152,16 @@ function removeHighlight() {
 function clearInspector() {
     if ($('.inspector-views').length != 0) {
         $('.inspector-views').trigger('clearInspector');
+    }
+}
+
+/**
+ * Reinstantiate the inspector panel for a selected cellView
+ */
+function resetInspectorView(cell) {
+    if ($('.inspector-views').length != 0) {
+        var elementInspector = new ElementInspector({ model: cell });
+        elementInspector.render();
     }
 }
 
@@ -1069,7 +1255,7 @@ function revertNodeValuesToInitial(analysisResult) {
         } else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
-        curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal', 'font-size': 10 } });
+        
     }
     // Remove slider
     if (analysisResult !== undefined) {
@@ -1097,7 +1283,7 @@ function stringifyCirc(obj) {
  * Highlights the chosen palette on the dropdown
  */
 function highlightPalette(paletteOption) {
-    for (var i = 1; i <= 5; i++) {
+    for (var i = 1; i <= 8; i++) {
         var id = '#color-palette-'
         id = id + i;
         if (i == paletteOption) {
@@ -1108,10 +1294,17 @@ function highlightPalette(paletteOption) {
         }
     }
 }
+
 /**
- * Validates if the input colors are hexcolor
+ * UnHighlights the chosen palette on the dropdown
  */
-function validateColor(color) {
-    const COLOR_PATTERN = new RegExp("^(#[a-fA-F0-9]{6})$");
-    return COLOR_PATTERN.test(color);
+function unhighlightPalettes() {
+    for (var i = 1; i <= 8; i++) {
+        var id = '#color-palette-'
+        id = id + i;
+        $(id).css("background-color", "#f9f9f9"); //unhighlight the choice
+    }
 }
+
+
+    

@@ -114,7 +114,16 @@ public class IOSolution {
 			previousValuesMap.put(e.id, prevVal);
 		}		
 		return previousValuesMap;	
-	}		
+	}	
+	
+	public List<ElementData> getElementList(){
+		return elementList;
+	}
+	
+	
+	
+	
+	
 	// *** End Input DATA ***
 	
 	/**

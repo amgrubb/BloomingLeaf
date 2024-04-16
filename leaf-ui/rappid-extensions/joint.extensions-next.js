@@ -33,7 +33,7 @@ joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
                 'fill': 'black',
                 'ref-y': '0.5',
                 'ref-x': '0.5',
-                'font-size': 10,
+                'font-size': 12,
                 'x-alignment': 'middle',
                 'y-alignment': 'middle'
             }
@@ -181,7 +181,7 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
                 'ref-y': '0.5',
                 'ref-x': '0.5',
                 'ref': '.label',
-                'font-size': 10,
+                'font-size': 12,
                 'x-alignment': 'middle',
                 'y-alignment': 'middle'
             },

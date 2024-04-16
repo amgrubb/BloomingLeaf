@@ -197,6 +197,14 @@
         var pagination = document.getElementById("pagination");
         var num_states_lbl = document.getElementById("num_states_lbl");
         var currentPageIn = document.getElementById("currentPage");
+
+        // disable Explore Next States button if last time point
+        var exploreNextStatesBtn = document.getElementById("exploreNextStates");
+        if (myInputJSObject.results.get('timePointPath').length == myInputJSObject.results.totalNumTimePoints.length - 1) {
+            exploreNextStatesBtn.disabled = true;
+            exploreNextStatesBtn.classList.add('disabled');
+        }
+
         // Clear any previous pages by reseting page values
         pagination.innerHTML = "";
         num_states_lbl.innerHTML = "";
@@ -210,6 +218,9 @@
         updateNodesValues(currentPage);
 
         renderEVO();
+
+        document.getElementById("thisState").textContent = myInputJSObject.results.get('timePointPath').length;
+        document.getElementById("totalStates").textContent = myInputJSObject.results.totalNumTimePoints.length - 1;
     }
 
     /**
@@ -239,35 +250,33 @@
      * @param {Integer} currentPage
      * The number of the page that is selected in the next State window 
      */
-    function updatePagination(currentPage) {
+    function updatePagination(currentPage) { 
+        var currentDigits = currentPage.toString().length; // number of digits in the selected page number
         var pagination = document.getElementById("pagination");
         var nextSteps_array_size = allSolutionArray.length;
-        if (nextSteps_array_size > 6) {
+        var numBefore = Math.ceil((7 - currentDigits)/2); // number of digits displayed to the left of the selected page number
+        var numAfter = Math.ceil((8 - currentDigits)/2); // number of digits displayed to the right of and including the selected page number
+        if (nextSteps_array_size > 7) {
             renderPreviousBtn(pagination, currentPage);
-            if (currentPage - 3 < 0) {
-                for (var i = 0; i < 6; i++) {
+            if (currentPage - 3 < 0) { // if current page number is low cannot be the middle number
+                for (var i = 0; i < 7; i++) {
                     render_pagination_values(currentPage, i);
                 }
+            } else if (currentPage > nextSteps_array_size - numBefore) { // if current page number is high cannot be the middle number
+                for (i = (nextSteps_array_size) - (numBefore + numAfter); i < nextSteps_array_size; i++){
+                    render_pagination_values(currentPage, i); //if current page is beyond the possible amount of page it would set the page the user is on as the last possible page
+                }
             } else {
-                if (currentPage < 100) {
-                    if (currentPage + 3 < nextSteps_array_size) {
-                        for (i = currentPage - 3; i < currentPage + 3; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
-                    } else {
-                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
+                if (numAfter < 1) { // must show at least one digit
+                    numAfter = 1;
+                }
+                if (currentPage + numBefore < nextSteps_array_size) { // show the numbers less than the current page number
+                    for (i = currentPage - numBefore; i < currentPage + numAfter; i++) {
+                        render_pagination_values(currentPage, i);
                     }
                 } else {
-                    if (currentPage + 2 < nextSteps_array_size) {
-                        for (i = currentPage - 2; i < currentPage + 3; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
-                    } else {
-                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
+                    for (i = currentPage - numAfter; i < nextSteps_array_size; i++) { // show the numbers equal to and greater than the current page number
+                        render_pagination_values(currentPage, i);
                     }
                 }
             }
@@ -329,8 +338,8 @@
         var nextSteps_array_size = allSolutionArray.length;
 
         if ((requiredState != "NaN") && (requiredState > 0)) {
-            if (requiredState > nextSteps_array_size) {
-                renderNavigationSidebar(nextSteps_array_size);
+            if (requiredState > nextSteps_array_size - 1) {
+                renderNavigationSidebar(nextSteps_array_size - 1); //makes sure required states is always within the possible maximum value of pages
             } else {
                 renderNavigationSidebar(requiredState);
             }
@@ -342,7 +351,6 @@
      * based on this. The first switch case has been documented with comments.
      */
     function add_filter(tempResults2) {
-        console.log("clicked");
         console.log(filterOrderQueue);
         tempResults = tempResults2;
 
@@ -965,11 +973,8 @@
                     case "1100":
                         var tableSatVal = "Denied (⊥, F)";
                         break;
-                    case "unknown":
-                        var tableSatVal = "(no value)";
-                        break;
                     default:
-                        var tableSatVal =  "error";   
+                        var tableSatVal = "(no value)";
                         break;
                 }
                 // Appends filter information to the intention filter table
@@ -1022,11 +1027,8 @@
             case "Denied (⊥, F)":
                 desiredSatVal = "1100";
                 break;
-            case "(no value)":
-                desiredSatVal = "unknown";
-                break;
             default:
-                desiredSatVal =  "error";   
+                desiredSatVal = "unknown";
                 break;
         }
 
@@ -1077,6 +1079,7 @@
         if (intention) {
             // 4 digit sat value code selected from dropdown menu
             var desiredSatVal = $("#sat-value").val();
+            console.log(desiredSatVal);
 
             // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
             // If empty, create new array and push filter
@@ -1085,6 +1088,11 @@
                 for (var i = 0; i < filterIntentionList.length; i++) {
                     if (filterIntentionList[i][0].includes(selectedIntention)) {
                         if (filterIntentionList[i][1].includes(desiredSatVal)) { // If same filter being applied to one intention
+                            swal({
+                                title: "Filter already applied!",
+                                text: "You have previously selected the same filter on the same intention. Please check the Applied Intention Filters table.",
+                                icon: "warning",
+                              })
                             break;
                         }
                         // Push new filter sat value to already existing array of filter sat vals

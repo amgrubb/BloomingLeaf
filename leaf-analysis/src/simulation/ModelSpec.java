@@ -22,6 +22,7 @@ public class ModelSpec {
 	private List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
+	private List<ActorLink> actorLinks = new ArrayList<ActorLink>();
 
 	// Cross-Element Model Variables
     private int maxTime = 5;
@@ -333,6 +334,10 @@ public class ModelSpec {
 		return intentions;
 	}
 	
+	public void setIntentions(List<Intention> intentions) {
+		this.intentions = intentions;
+	}
+	
 	public IOSolution getPrevResult() {
 		return prevResult;
 	}
@@ -343,6 +348,10 @@ public class ModelSpec {
 
 	public HashMap<String, String> getChangedTPNames() {
 		return changedTPNames;
+	}
+	
+	public void setChangedTPNames(HashMap<String, String> changedTPNames) {
+		this.changedTPNames = changedTPNames;
 	}
 
 	public List<ContributionLink> getContributionLinks() {
@@ -360,9 +369,29 @@ public class ModelSpec {
 	public void setDecompositionLinks(List<DecompositionLink> decompositionLinks) {
 		this.decompositionLinks = decompositionLinks;
 	}
+	
+	public List<NotBothLink> getNotBothLinks() {		// TODO: Merge getNotBothLink with getNotBothLinks...they appear to be the same function.
+		return notBothLink;
+	}
+
+	public void setNotBothLinks(List<NotBothLink> notBothLinks) {
+		this.notBothLink = notBothLinks;
+	}
+	
+	public List<NotBothLink> getNotBothLink() {
+		return notBothLink;
+	}
+
+	public void setNotBothLink(List<NotBothLink> notBothLinks) {
+		this.notBothLink = notBothLinks;
+	}
 
 	public List<TPConstraint> getLtTPconstraints() {
 		return ltTPconstraints;
+	}
+	
+	public void setLtTPconstraints(List<TPConstraint> ltTPconstraints) {
+		this.ltTPconstraints = ltTPconstraints;
 	}
 
 	public char getConflictAvoidLevel() {
@@ -377,6 +406,16 @@ public class ModelSpec {
 		this.maxTime = maxTime;
 	}
 	
+	public HashMap<String, Integer> getAbsTP(){
+		return this.absTP;
+	}
+	
+	public void incrementAbsTP(Integer delta) {
+		for (String key: absTP.keySet()) {
+			absTP.put(key, absTP.get(key) + delta);
+		}
+	}
+	
 	public int getNumRelativeTimePoints() {
 		return numRelativeTimePoints;
 	}
@@ -388,6 +427,14 @@ public class ModelSpec {
 	public void setActors(List<Actor> actors) {
 		this.actors = actors;
 	}
+	
+	public List<ActorLink> getActorLinks() {
+		return actorLinks;
+	}
+
+	public void setActorLinks(List<ActorLink> actorLinks) {
+		this.actorLinks = actorLinks;
+	}
 
 	public void setNumRelativeTimePoints(int numRelativeTimePoints) {
 		this.numRelativeTimePoints = numRelativeTimePoints;
@@ -395,14 +442,6 @@ public class ModelSpec {
 
 	public void setConflictAvoidLevel(char conflictAvoidLevel) {
 		this.conflictAvoidLevel = conflictAvoidLevel;
-	}
-
-	public List<NotBothLink> getNotBothLink() {
-		return notBothLink;
-	}
-
-	public void setNotBothLink(List<NotBothLink> notBothLink) {
-		this.notBothLink = notBothLink;
 	}
 
 	public String getAnalysisType() {
