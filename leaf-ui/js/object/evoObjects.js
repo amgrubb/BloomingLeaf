@@ -85,13 +85,13 @@ class EVO {
     // The Yellow-Purple Palette
     static colorVisDict4 = {
         "0000": "#D3D3D3",
-        "0011": "#FFFF00",
-        "0010": "#fcf5bb",
-        "0100": "#e0bfff",
-        "0110": "#c56700",
-        "0111": "#d9a000",
-        "1100": "#9c1fdf",
-        "1110": "#5946b2",
+        "0011": "#d4c400",
+        "0010": "#A9B159",
+        "0100": "#9475B4",
+        "0110": "#96804E",
+        "0111": "#9A584C",
+        "1100": "#6050A8",
+        "1110": "#783B68",
         "1111": "#0D0221"
     };
 
@@ -99,14 +99,13 @@ class EVO {
      static colorVisDict5 = {
         "0000": "#b5b5b5", // None (⊥, ⊥)
         "0011": "#549C30",// Satisfied (F, ⊥)
-        "0010": "#e1ff00",// Partially satisfied
-        "0100": "#Ff5349",// Partially denied 
-        "0110": "#00FFFF",// Conflict (P, P)
-        "0111": "#00FFFF",// Conflict (F, P)
+        "0010": "#D4C400",// Partially satisfied
+        "0100": "#D96E03",// Partially denied 
+        "0110": "#6F8C83",// Conflict (P, P)
+        "0111": "#6F8C83",// Conflict (F, P)
         "1100": "#DD1806",// Fully denied (⊥, 
-        "1110": "#00FFFF",// Conflict (P, F)
-        "1111": "#00FFFF"// Conflict (F, F)
- 
+        "1110": "#6F8C83",// Conflict (P, F)
+        "1111": "#6F8C83"// Conflict (F, F)
     };
 
      // The Pastel Palette
@@ -418,6 +417,7 @@ class EVO {
                         var gradientID = this.defineGradient(element);
                         // Visualize model at user selected timepoint
                         cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
+                        cellView.model.attr({ 'text': { 'fill': "white", stroke:"none" } });
                     }
                     else {
                         var timepoint = EVO.curTimePoint;
@@ -425,15 +425,14 @@ class EVO {
                         var color = EVO.getColor(intentionEval);
                         cellView.model.attr({ '.outer': { 'fill': color } });
 
-                        //update text font to white if the chosen color is dark 
-                        if (color != undefined){
-                            if (isDark(color)) {
-                                cellView.model.attr({ 'text': { 'fill': "white", stroke:"none" } });
-                            }else {
-                                cellView.model.attr({ 'text': { 'fill': "black", stroke:"none" } });
-                            }
-                        }
-                        
+                        //  //update text font to white if the chosen color is dark 
+                        //  if (color != undefined){
+                        //     if (isDark(color)) {
+                        //         cellView.model.attr({ 'text': { 'fill': "white", stroke:"none" } });
+                        //     }else {
+                        //         cellView.model.attr({ 'text': { 'fill': "black", stroke:"none" } });
+                        //     }
+                        // }
                     }
                 }
             }
@@ -792,6 +791,7 @@ class EVONextState {
             var element = analysis.intentions[i];
             var cellView = element.findView(analysis.paper);
             cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
+            cellView.model.attr({ 'text': { 'fill': "white", stroke:"none" } });
         }
     }
 
