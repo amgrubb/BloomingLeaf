@@ -123,7 +123,6 @@ class EVO {
 
     // Color Blind palette
     static colorVisDict7 = {
-     
         "0000": "#CCCCCC", // None (⊥, ⊥)
         "0011": "#0000FF", // Satisfied (F, ⊥)
         "0010": "#0000FF", // Partially satisfied (P, ⊥)
@@ -133,7 +132,6 @@ class EVO {
         "1100": "#FF0000", // Fully denied (⊥, F)
         "1110": "#FFFF00", // Conflict (P, F)
         "1111": "#FFFF00"  // Conflict (F, F)
-
     };
 
     //Initialize user-created-palette as Red-Blue
@@ -155,7 +153,7 @@ class EVO {
      * List of color visualization dictionaries
      */
     static colorVisDictCollection = [
-        EVO.colorVisDict1,  // red-blue palette
+        EVO.colorVisDict1, // red-blue palette
         EVO.colorVisDict2, // red-green palette 
         EVO.colorVisDict3, // green-black palette
         EVO.colorVisDict4, // yellow-purple palette
@@ -417,14 +415,18 @@ class EVO {
                         var gradientID = this.defineGradient(element);
                         // Visualize model at user selected timepoint
                         cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
-                        cellView.model.attr({ 'text': { 'fill': "white", stroke:"none" } });
+                        cellView.model.attr({ 'text': { 'fill': "white", stroke:"none",
+                        'font-weight': 'normal' } });
+                        if (EVO.paletteOption == 7 || EVO.paletteOption == 8) {
+                            cellView.model.attr({ 'text': { 'fill': "white", stroke:"black",
+                            'font-weight': 'bold', 'strokeWidth': 0.6} });
+                        }
                     }
                     else {
                         var timepoint = EVO.curTimePoint;
                         var intentionEval = element.timePoints[timepoint];
                         var color = EVO.getColor(intentionEval);
                         cellView.model.attr({ '.outer': { 'fill': color } });
-
                         //  //update text font to white if the chosen color is dark 
                         //  if (color != undefined){
                         //     if (isDark(color)) {
@@ -477,7 +479,7 @@ class EVO {
 
             if (analysisResult !== undefined) {
                 // The EVO mode fill color
-                curr.attr({ text: { fill: 'white', stroke: 'none' } });
+                curr.attr({ text: { fill: 'white', stroke: 'none', 'font-weight': 'normal' } });
                 // If the result is selected 
                 if (analysisResult.get('selected')) {
                     // If the option is states
@@ -495,12 +497,12 @@ class EVO {
                 }
                 // If result is unselected
                 else {
-                    curr.attr({ text: { fill: 'black', stroke: 'none' } });
+                    curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal' } });
                 }
             }
             // If a config without results is selected
             else {
-                curr.attr({ text: { fill: 'black', stroke: 'none' } });
+                curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal' } });
             }
         }
     }
@@ -552,7 +554,7 @@ class EVO {
                         curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
                     }
                 }
-                curr.attr({ text: { fill: 'black', stroke: 'none' } });
+                curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal' } });
             }
         }
     }
@@ -581,9 +583,9 @@ class EVO {
                 //update text font to white if the chosen color is dark 
                 if (colorChange != undefined){
                     if (isDark(colorChange)) {
-                        cellView.model.attr({ text: { fill: 'white', stroke: 'none' }})
+                        cellView.model.attr({ text: { fill: 'white', stroke: 'none', 'font-weight': 'normal' }})
                     }else {
-                        cellView.model.attr({ text: { fill: 'black', stroke: 'none' }});
+                        cellView.model.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal' }});
                     }
                 }
                 
@@ -791,7 +793,7 @@ class EVONextState {
             var element = analysis.intentions[i];
             var cellView = element.findView(analysis.paper);
             cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
-            cellView.model.attr({ 'text': { 'fill': "white", stroke:"none" } });
+            cellView.model.attr({ 'text': { 'fill': "white", stroke:"none", 'font-weight': 'normal' } });
         }
     }
 
@@ -875,15 +877,15 @@ class EVONextState {
         
         if (EVONextState.sliderOptionNextState != '0') {
             for (let element of analysis.intentions) {
-                element.attr({ text: { fill: 'white' } });
+                element.attr({ text: { fill: 'white', stroke: "none", 'font-weight': 'normal' } });
             }
         } else {
             for (let element of analysis.intentions) {
                 var satValue = element.attr(".satvalue").value;
                 if ( (satValue == "0000") || (satValue == "0100") || (satValue == "1000") || (satValue == "1100") || (satValue == "0001") || (satValue == "0011") || (satValue == "0010")) {
-                    element.attr({ text: { fill: 'black' } });
+                    element.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } });
                 } else {
-                    element.attr({ text: { fill: 'red' } });
+                    element.attr({ text: { fill: 'white', stroke: "none", 'font-weight': 'normal' } });
                 }
             }
         }

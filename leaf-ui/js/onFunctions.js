@@ -724,7 +724,7 @@ paper.on("link:options", function (cell) {
             for (var i = 0; i < elements.length; i ++) {
                 $("#" + elements[i].id).css("display", "");
                 var cell = graph.getCell(elements[i].model.id);
-                cell.attr({ text: { fill: 'black' } }); 
+                cell.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } }); 
             }
             for (var i = 0; i < links.length; i ++) {
                 $("#" + links[i].id).css("display", "");
@@ -929,7 +929,7 @@ paper.on("link:options", function (cell) {
 
     // All the pre-made palettes 
     // 1: Default 
-    $('#palette-red-blue').on('click', function () { 
+    $('#palette-blue-red').on('click', function () { 
         EVO.paletteOption = 1;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
