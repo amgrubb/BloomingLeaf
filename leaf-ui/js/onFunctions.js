@@ -390,7 +390,14 @@ class GuideBox {
         helpTitle.innerHTML = this.label + ". " + this.task;
 
         var helpContent = document.getElementById('help-content');
-        helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;
+        //if there is learn more content, display the learn more button
+        if (this.context.length > 0){
+            helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;
+        }
+        //if the context section (learn more) is empty do not show the learn more button
+        else{
+            helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1);
+        }
         var buttons = []
         for (var i = 0; i < this.button_names.length; i++) {
             buttons.push({ action: "next", content: this.button_names[i], position: "right" })
