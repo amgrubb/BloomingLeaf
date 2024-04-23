@@ -47,6 +47,11 @@
     
  }
 
+.video-container {
+    position: relative;
+    width: 100%;
+}
+
 /* Adds sliding Animation for popup window */
 @-webkit-keyframes animatetop {
     from {top:-300px; opacity:0}
