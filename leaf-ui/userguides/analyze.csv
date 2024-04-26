@@ -1,9 +1,9 @@
-2a,, Pick an intention,, `Pick any intention from the model that you would to focus on.`,, ,,Next,,2b
-2b,, Identify links,, `Is this intention part of an or-decomposition?`,, ,,Yes,,2c,,No,,2d
-2c,, Identify parent or child,, `Is this intention the child or parent within the or-link?`,, ,,Parent,,2d,,Child,,2e
-2d,, Identify satisfaction value,, `Does this intention have a satisfaction value?`,, ,,Yes,,3a,,No,,3b
-2e,, Observe satisfaction combinations,, `Find the other children of this intention's parent. Try different combinations of satisfaction values for the children intentions.`,, "give combo examples",,Next,,3a
-3a,, Analysis mode,, `Switch to analysis mode, choose the amount of timepoints you would like to have based on how many outcomes you would like to see, and click simulate single path. Did you get an error while simulating?`,, ,,Yes,,3c,,No,,3d
-3b,, Assign satisfaction value,, `Assign this intention a satisfaction value that represents the satisfaction state you would like it to be.`,, ,,Next,,3a
-3c,, Avoid the error,, `Remove the most recent constraint, and then assign the intention a different satisfaction value or leave the satisfaction value to "no value"`,, ,,Next,,3a
-3d,, Explore results,, `Turn on EVO mode, use the slider at the bottom of the screen to explore the outcome at each timepoint.`,, ,,Done,,close,,Continue analyzing,,2a
+Pick an intention,, `Pick any intention from the model that you would to focus on.`,, ,,Next,,Identify links
+Identify links,, `Is this intention part of an or-decomposition?`,, ,,Yes,,Identify parent or child,,No,,Identify satisfaction value
+Identify parent or child,, `Is this intention the child or parent within the or-link?`,, ,,Parent,,Identify satisfaction value,,Child,,Observe satisfaction combinations
+Identify satisfaction value,, `Does this intention have a satisfaction value?`,, ,,Yes,,Analysis mode,,No,,Assign satisfaction value
+Observe satisfaction combinations,, `Find the other children of this intention's parent. Try different combinations of satisfaction values for the children intentions.`,, "give combo examples",,Next,,Analysis mode
+Analysis mode,, `Switch to analysis mode, choose the amount of timepoints you would like to have based on how many outcomes you would like to see, and click simulate single path. Did you get an error while simulating?`,, ,,Yes,,Avoid the error,,No,,Explore results
+Assign satisfaction value,, `Assign this intention a satisfaction value that represents the satisfaction state you would like it to be.`,, ,,Next,,Analysis mode
+Avoid the error,, `Remove the most recent constraint, and then assign the intention a different satisfaction value or leave the satisfaction value to "no value"`,, ,,Next,,Analysis mode
+Explore results,, `Turn on EVO mode, use the slider at the bottom of the screen to explore the outcome at each timepoint.`,, ,,Done,,close,,Continue analyzing,,Pick an intention

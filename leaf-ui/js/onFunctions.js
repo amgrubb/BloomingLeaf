@@ -325,8 +325,7 @@ $('#evo-color-key').on('click', function () {
 */
 class GuideBox {
 
-    constructor(label, task, instructions, context, button_names, button_paths) {
-        this.label = label;
+    constructor(task, instructions, context, button_names, button_paths) {
         this.task = task;
         this.instructions = instructions;
         this.context = context;
@@ -335,7 +334,7 @@ class GuideBox {
     }
 
     static tutorial = 0;
-    static step = ['1a', '1a', '2a']
+    static step = ['1a. Add actor to model', '1a. What is BloomingLeaf', 'Pick an intention']
 
     static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
     static build = GuideBox.makeBoxes("http://localhost:8080/userguides/build.csv");
@@ -351,9 +350,9 @@ class GuideBox {
                     line[j] = line[j].trim();
                 }
                 if (line[6]) {
-                boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], line[3], [line[4], line[6]], [line[5], line[7]])));
+                    boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3], line[5]], [line[4], line[6]])));
                 } else {
-                    boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], line[3], [line[4]], [line[5]])));
+                    boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3]], [line[4]])));
                 }
             }
         })
@@ -376,10 +375,10 @@ class GuideBox {
         document.getElementById("guide-name").innerHTML = "";
         for (let [key, value] of tutorial) {
             if (key.length > 0) {
-                if (key == this.label) {
-                    $('#guide-name').append(`<option value="${key}" selected>${key + ". " + value.task}</option>`)
+                if (key == this.task) {
+                    $('#guide-name').append(`<option value="${key}" selected>${key}</option>`)
                 } else {
-                    $('#guide-name').append(`<option value="${key}">${key + ". " + value.task}</option>`)
+                    $('#guide-name').append(`<option value="${key}">${key}</option>`)
                 }
             }
         }
@@ -387,7 +386,7 @@ class GuideBox {
         var helpPopup = document.getElementById('help-popup');
 
         var helpTitle = document.getElementById('help-title');
-        helpTitle.innerHTML = this.label + ". " + this.task;
+        helpTitle.innerHTML = this.task;
 
         var helpContent = document.getElementById('help-content');
         //if there is learn more content, display the learn more button
@@ -444,7 +443,7 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
-        var id = tutorial.get($('#help-title')[0].innerHTML.split(".")[0]).button_paths[0]
+        var id = tutorial.get($('#help-title')[0].innerHTML).button_paths[0]
         if (id != "close") {
             GuideBox.step[GuideBox.tutorial] = id;
             tutorial.get(id).showGuideBox();
@@ -462,7 +461,7 @@ class GuideBox {
         } else if (GuideBox.tutorial == 2) {
             tutorial = GuideBox.analyze;
         }
-        var id = tutorial.get($('#help-title')[0].innerHTML.split(".")[0]).button_paths[1]
+        var id = tutorial.get($('#help-title')[0].innerHTML).button_paths[1]
         if (id != "close") {
             GuideBox.step[GuideBox.tutorial] = id;
             tutorial.get(id).showGuideBox();
