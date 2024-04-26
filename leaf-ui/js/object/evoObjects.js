@@ -401,6 +401,13 @@ class EVO {
         var elements = graph.getElements();
         var actorBuffer = 0;
 
+        // Hides slider in % and time modes
+        if (EVO.sliderOption == 3) {
+            EVO.displaySlider(true);
+        } else {
+            EVO.displaySlider(false);
+        }
+
         for (var i = 0; i < elements.length; i++) {
             var cellView = elements[i].findView(paper);
             var intention = elements[i].get('intention');

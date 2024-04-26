@@ -23,7 +23,7 @@ class SliderObj {
         this.sliderElement = document.getElementById('slider');
         this.sliderValueElement = document.getElementById('sliderValue');
         this.storedValue = null;
-        document.getElementById('colorResetAnalysis').addEventListener('change', this.hideSlider);
+        document.getElementById('colorResetAnalysis').addEventListener('change', this.displayAll);
     }
 
     /**
@@ -125,25 +125,12 @@ class SliderObj {
     }
 
     /**
-     * Hides slider in percent and time modes
+     * Display all elements and links in time and percent mode
      */
-    hideSlider() {
+    displayAll() {
         if (document.getElementById('colorResetAnalysis').value == 1 || document.getElementById('colorResetAnalysis').value == 2) {
-            document.getElementById('slider').style.display = "none";
-            document.getElementById('sliderValue').style.display = "none";
-
-            var elements = SliderObj.getIntentionsAndActorsView();
-            var links = SliderObj.getLinksView();
-            for (var i = 0; i < elements.length; i ++) {
-                $("#" + elements[i].id).css("display", "");
-            }
-            for (var i = 0; i < links.length; i ++) {
-                $("#" + links[i].id).css("display", "");
-            }
+            SliderObj.defaultToAppear(SliderObj.getActorsView(), SliderObj.getIntentionsView(), SliderObj.getLinksView());
         } else {
-            document.getElementById('slider').style.display = "";
-            document.getElementById('sliderValue').style.display = "";
-
             SliderObj.hideElements();
         }
     }
