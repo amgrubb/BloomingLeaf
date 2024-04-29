@@ -440,6 +440,23 @@ class EVO {
                         var intentionEval = element.timePoints[timepoint];
                         var color = EVO.getColor(intentionEval);
                         cellView.model.attr({ '.outer': { 'fill': color } });
+                        if (isDark(color)){
+                            cellView.model.attr({
+                                'text': {
+                                    'fill': 'white', 
+                                    'stroke': 'none',
+                                    'font-weight': 'normal',
+                                },
+                            });
+                        } else {
+                            cellView.model.attr({
+                                'text': {
+                                    'fill': 'black', 
+                                    'stroke': 'none',
+                                    'font-weight': 'normal',
+                                },
+                            });
+                        }
                     }
                 }
             }
