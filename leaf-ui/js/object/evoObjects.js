@@ -418,16 +418,22 @@ class EVO {
             if (analysisResult.get('colorVis') !== undefined) {
                 var element = analysisResult.get('colorVis').intentionListColorVis[i - actorBuffer];
                 if (intention != null && element != null) {
-                    if (EVO.sliderOption != 3) {
+                    if (EVO.sliderOption == 0 ){
+                        cellView.model.attr({
+                            'text': {
+                                'fill': 'black', 
+                                'stroke': 'none',
+                                'font-weight': 'normal',
+                            },
+                        });
+                    } else if (EVO.sliderOption == 1 || EVO.sliderOption==2) {
                         var gradientID = this.defineGradient(element);
                         // Visualize model at user selected timepoint
-                        cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
-                        cellView.model.attr({ 'text': { 'fill': "white", stroke:"none",
-                        'font-weight': 'normal' } });
-                        if (EVO.paletteOption == 7 || EVO.paletteOption == 8) {
-                            cellView.model.attr({ 'text': { 'fill': "white", stroke:"black",
-                            'font-weight': 'bold', 'strokeWidth': 0.6} });
-                        }
+                        cellView.model.attr({
+                            '.outer': { 
+                                'fill': 'url(#' + gradientID + ')' 
+                            },
+                        });
                     }
                     else {
                         var timepoint = EVO.curTimePoint;
