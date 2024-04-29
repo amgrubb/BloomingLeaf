@@ -24,6 +24,20 @@ class IntentionColorVis {
 }
 
 /**
+ * returns whether or not a color is dark
+ * @param {*} color 
+ * @returns 
+ */
+function isDark(color){
+    const hex = color.replace('#', '');
+    const c_r = parseInt(hex.substr(0, 2), 16);
+    const c_g = parseInt(hex.substr(2, 2), 16);
+    const c_b = parseInt(hex.substr(4, 2), 16);
+    const brightness = 0.2126 * Math.pow(c_r / 255, 2.2) + 0.7152 * Math.pow(c_g / 255, 2.2) + 0.0722 * Math.pow(c_b / 255, 2.2);
+    return ((1 + brightness) / brightness)> 4.5;
+}
+
+/**
  * Colors the nodes based on the different EVO types 
  * This order is created intentionally for the frontend. Please DO NOT change the order
  */
@@ -470,71 +484,6 @@ class EVO {
         }
     }
 
-    /**
-     * Makes text on intentions white when EVO is activated
-     * @param {ResultBBM} analysisResult 
-     */
-    static changeIntentionsText(analysisResult) {
-        var elements = graph.getElements();
-        var curr;
-        var colorVis;
-        var satVal;
-        var intention;
-        var initSatVal;
-        var actor = 0; // Counts the number of actor 
-
-        // Shows .satvalue automatically
-        $('.satvalue').css("display", "");
-
-        for (var i = 0; i < elements.length; i++) {
-            curr = elements[i].findView(paper).model;
-            if (curr.get('type') == 'basic.Actor') {
-                actor++;
-                continue;
-            }
-            
-            // Sets satvalue/text to the initSatVal
-            intention = curr.get('intention');
-            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            // If there is no initSatVal
-            if (initSatVal === '(no value)') {
-                curr.attr('.satvalue/text', '');
-            } else {
-                curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-            }
-
-            // The slider automatic setting
-            EVO.displaySlider(false);
-
-            if (analysisResult !== undefined) {
-                // The EVO mode fill color
-                curr.attr({ text: { fill: 'white', stroke: 'none', 'font-weight': 'normal' } });
-                // If the result is selected 
-                if (analysisResult.get('selected')) {
-                    // If the option is states
-                    if (EVO.sliderOption == 3) {
-                        // Resets the satvalue back
-                        colorVis = analysisResult.get('colorVis');
-                        satVal = colorVis.intentionListColorVis[i-actor].timePoints[EVO.curTimePoint]; // Subtract actor from i to find intentionListColorVis for elements only
-                        curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
-                        EVO.displaySlider(true);
-                    }
-                    // If it is % or time
-                    else {
-                        $('.satvalue').css("display", "none");
-                    }
-                }
-                // If result is unselected
-                else {
-                    curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal' } });
-                }
-            }
-            // If a config without results is selected
-            else {
-                curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal' } });
-            }
-        }
-    }
 
     /** 
      * Makes slider dis/appear 
@@ -759,17 +708,14 @@ class EVONextState {
         switch (this.sliderOptionNextState) {
             case '1':
                 EVONextState.colorIntentionsByPercents();
-                this.changeIntentionsText(analysis);
                 break;
 
             case '2':
                 EVONextState.colorIntentionsByState();
-                this.changeIntentionsText(analysis);
                 break;
 
             default: // ColorVis off
                 EVONextState.returnAllColors(analysis);
-                this.changeIntentionsText(analysis);
                 break;
         }
     }
@@ -783,11 +729,13 @@ class EVONextState {
         var colorChange;
 
         for (var i = 0; i < analysis.intentions.length; i++) {
+            console.log("here");
             var element = analysis.intentions[i];
             value = element.attr(".satvalue").value;
             cellView = element.findView(analysis.paper);
             colorChange = EVONextState.getColor(value);
             cellView.model.attr({ '.outer': { 'fill': colorChange } });
+            isDark(colorChange) ? cellView.model.attr({ text: { fill: 'white', stroke: "none", 'font-weight': 'normal' } }) : cellView.model.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } });
         }
     }
 
@@ -822,7 +770,7 @@ class EVONextState {
             var element = analysis.intentions[i];
             var cellView = element.findView(analysis.paper);
             cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
-            cellView.model.attr({ 'text': { 'fill': "white", stroke:"none", 'font-weight': 'normal' } });
+            cellView.model.attr({ text: { fill: 'white', stroke: "black", 'font-weight': 'bold' } });
         }
     }
 
@@ -834,13 +782,11 @@ class EVONextState {
         if (EVONextState.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
-
         if (EVONextState.paletteOption < 8) {
             return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
         }
         if (EVONextState.paletteOption == 8) {
             var selfVis = myInputJSObject.results.get('colorVis').selfColorVisDict;
-
             return selfVis[intentionEval];
         }
 
@@ -891,31 +837,11 @@ class EVONextState {
     /**
     * Returns element color to based on element type
     */
-        static returnAllColors(analysis) {
+    static returnAllColors(analysis) {
         for (var i = 0; i < analysis.intentions.length; i++) {
             var cellView = analysis.intentions[i].findView(analysis.paper);
             cellView.model.changeToOriginalColour();
-        }
-    }
-
-    /**
-     * Changes text color to white when EVO is on
-     */
-    static changeIntentionsText(analysis) {
-        
-        if (EVONextState.sliderOptionNextState != '0') {
-            for (let element of analysis.intentions) {
-                element.attr({ text: { fill: 'white', stroke: "none", 'font-weight': 'normal' } });
-            }
-        } else {
-            for (let element of analysis.intentions) {
-                var satValue = element.attr(".satvalue").value;
-                if ( (satValue == "0000") || (satValue == "0100") || (satValue == "1000") || (satValue == "1100") || (satValue == "0001") || (satValue == "0011") || (satValue == "0010")) {
-                    element.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } });
-                } else {
-                    element.attr({ text: { fill: 'white', stroke: "none", 'font-weight': 'normal' } });
-                }
-            }
+            cellView.model.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } });
         }
     }
 
