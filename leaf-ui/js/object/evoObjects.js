@@ -433,7 +433,14 @@ class EVO {
                             '.outer': { 
                                 'fill': 'url(#' + gradientID + ')' 
                             },
+                            'text': {
+                                'fill': 'white', 
+                                'stroke': 'black',
+                                'font-weight': '800',
+                            },
+                           
                         });
+
                     }
                     else {
                         var timepoint = EVO.curTimePoint;
@@ -829,7 +836,6 @@ class EVONextState {
         }
 
         if (EVONextState.paletteOption < 8) {
-
             return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
         }
         if (EVONextState.paletteOption == 8) {
