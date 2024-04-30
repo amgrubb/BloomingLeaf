@@ -972,7 +972,7 @@ input[id="slider-2"]:active::-webkit-slider-thumb{
   padding: 10px 12px;
 }
 
-.learn-more {
+.guide-link {
   background: none;
   border: none;
   padding: 0;

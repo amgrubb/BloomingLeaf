@@ -391,12 +391,20 @@ class GuideBox {
         var helpContent = document.getElementById('help-content');
         //if there is learn more content, display the learn more button
         if (this.context.length > 0){
-            helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="learn-more">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;
+            helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="learn-more guide-link">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;
         }
         //if the context section (learn more) is empty do not show the learn more button
         else{
             helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1);
         }
+
+        var jumpto;
+        if (GuideBox.tutorial == 1 | GuideBox.tutorial == 2) {
+            jumpto = "Build";
+        } else if (GuideBox.tutorial == 0) {
+            jumpto = "Analysis"
+        }
+        helpContent.innerHTML = helpContent.innerHTML.concat(`<br><br/><button id="jump" class="guide-link">` + "Jump to " + jumpto + `</button><br/>`)
         var buttons = []
         for (var i = 0; i < this.button_names.length; i++) {
             buttons.push({ action: "next", content: this.button_names[i], position: "right" })
@@ -431,6 +439,16 @@ class GuideBox {
         $('#help-prev').on('click', function(event) {
             $('#help-prev').off('click')
             popup.openLeft();
+        });
+
+        $('#jump').on('click', function(event) {
+            if (GuideBox.tutorial == 1 || GuideBox.tutorial == 2) {
+                GuideBox.tutorial  = 0;
+                GuideBox.build.get(GuideBox.step[0]).showGuideBox();
+            } else if (GuideBox.tutorial == 0) {
+                GuideBox.tutorial  = 2;
+                GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
+            }
         });
     }
 
