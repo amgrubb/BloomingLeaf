@@ -94,7 +94,7 @@ public class DecompositionLink extends AbstractElementLink {
 					}
 
 					
-					if (absTime != inputLink.getLink().getAbsTime())
+					if (evolve && absTime != -1 && absTime != inputLink.getLink().getAbsTime())
 						throw new IllegalArgumentException("Not all decomposition children have the same absTime.");
 				}
 			}
