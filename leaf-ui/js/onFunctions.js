@@ -185,6 +185,7 @@ $('#btn-clear-flabel').on('click', function () {
             intention.setEvolvingFunction('NT');
             $(".function-type").val('NT');
             cell.attr(".funcvalue/text", "");
+            intention.attributes.evolvingFunction.attributes.functionSegList = []
 
             // Rerender elementInspector for clearing Dynamic Labels
             resetInspectorView(cell);
@@ -735,6 +736,8 @@ paper.on("link:options", function (cell) {
             var links = SliderObj.getLinksView();
             for (var i = 0; i < elements.length; i ++) {
                 $("#" + elements[i].id).css("display", "");
+                var cell = graph.getCell(elements[i].model.id);
+                cell.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } }); 
             }
             for (var i = 0; i < links.length; i ++) {
                 $("#" + links[i].id).css("display", "");
@@ -939,7 +942,7 @@ paper.on("link:options", function (cell) {
 
     // All the pre-made palettes 
     // 1: Default 
-    $('#palette-red-blue').on('click', function () { 
+    $('#palette-blue-red').on('click', function () { 
         EVO.paletteOption = 1;
         highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
