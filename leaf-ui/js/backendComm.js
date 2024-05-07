@@ -6,6 +6,7 @@
  * which returns the analysisResult.
  */
 
+
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 var globalAnalysisResult; 
 
@@ -13,7 +14,7 @@ var globalAnalysisResult;
  * {ConfigBBM} analysisRequest
  * Note: function was originally called `backendComm`.
  */
-function backendSimulationRequest(analysisRequest) {
+function backendSimulationRequest(analysisRequest, fromNextState=false) {
 	var jsObject = {};
 	jsObject.analysisRequest = analysisRequest;
 	jsObject.graph = graph;
@@ -23,13 +24,12 @@ function backendSimulationRequest(analysisRequest) {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	var data = backendStringifyCirc(jsObject);
-	console.log(data)
 	xhr.onload = function () {
 		// This function get called when the response is received.
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
-			responseFunc(analysisRequest, response);
+		    responseFunc(analysisRequest, response, fromNextState);
 		}
 	}
 	xhr.send(data);	// Why is this sent down here? What is this send function.
@@ -51,7 +51,7 @@ function backendStringifyCirc(obj) {
  * {ConfigBBM} analysisRequest
  * Note: function was originally called `backendComm`.
  */
-function responseFunc(analysisRequest, response) {
+function responseFunc(analysisRequest, response, fromNextState=false) {
 	$("body").removeClass("spinning"); // Remove spinner from page
 	var results = JSON.parse(response);
 	if (errorExists(results)) {
@@ -68,7 +68,7 @@ function responseFunc(analysisRequest, response) {
 			// Copy of single path result to be able to access total slider time points in Next State 
 			globalAnalysisResult = analysisResult;
 			SliderObj.displayAnalysis(analysisResult, false);
-			analysisRequest.addResult(analysisResult);
+			analysisRequest.addResult(analysisResult, fromNextState);
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 			var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
 			// New attribute: total time points in slider in original window 

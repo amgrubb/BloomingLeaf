@@ -1135,11 +1135,9 @@
     *   of the simulation path.
     */
     function save_current_state() {
-        console.log('saveCurrentState');
-        console.log(myInputJSObject.request);
         updateAnalysisRequestWithCurrentState();
         myInputJSObject.request.set('action', "updatePath");
-        window.opener.backendSimulationRequest(myInputJSObject.request);
+        window.opener.backendSimulationRequest(myInputJSObject.request, true);
         window.close();
     }
 

@@ -112,8 +112,8 @@ var ConfigBBM = Backbone.Model.extend({
      * Will be called to add a new result model to the results param
      * when the backend returns an AnalysisResult
      */
-    addResult: function (result) {
-        result.set('name', 'Result ' + (this.get('results').length + 1))
+    addResult: function (result, fromNextState=false) {
+        fromNextState ? result.set('name', 'Result ' + (this.get('results').length + 1)+' (NS)') : result.set('name', 'Result ' + (this.get('results').length + 1));
         this.get("results").add(result);
         $('#conflict-level').prop('disabled', true);
         $('#num-rel-time').prop('disabled', true);
