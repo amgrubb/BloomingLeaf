@@ -981,3 +981,8 @@ input[id="slider-2"]:active::-webkit-slider-thumb{
   text-decoration: underline;
   cursor: pointer;
 }
+
+#jump {
+  font-style: italic;
+  float: right;
+}

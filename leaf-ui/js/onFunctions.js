@@ -333,13 +333,16 @@ class GuideBox {
         this.button_paths = button_paths;
     }
 
+    // keeps track of which tutorial user is in (why, build, or analyze)
     static tutorial = 0;
     static step = ['1a. Add actor to model', '1a. What is BloomingLeaf', 'Pick an intention']
 
+    // load content from files
     static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
     static build = GuideBox.makeBoxes("http://localhost:8080/userguides/build.csv");
     static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.csv");
 
+    // initialize tutorial content
     static makeBoxes (file) {
         var boxes = new Map();
         fetch(file).then((res) => res.text()).then((text) => {
@@ -356,13 +359,16 @@ class GuideBox {
                 }
             }
         })
+        // returns a map of ids and their content
         return boxes;
     }
 
+    // displays a tutorial box
     showGuideBox() {
         $('#help-next').off('click')
         $('#help-prev').off('click')
 
+        // determines which tutorial user has selected
         var tutorial;
         if (GuideBox.tutorial == 0) {
             tutorial = GuideBox.build;
@@ -372,6 +378,7 @@ class GuideBox {
             tutorial = GuideBox.analyze;
         }
 
+        // makes dropdown menu
         document.getElementById("guide-name").innerHTML = "";
         for (let [key, value] of tutorial) {
             if (key.length > 0) {
@@ -383,6 +390,7 @@ class GuideBox {
             }
         }
         
+        // sets content of the popup
         var helpPopup = document.getElementById('help-popup');
 
         var helpTitle = document.getElementById('help-title');
@@ -398,13 +406,21 @@ class GuideBox {
             helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1);
         }
 
+        // makes jump to build/analysis button
         var jumpto;
         if (GuideBox.tutorial == 1 | GuideBox.tutorial == 2) {
-            jumpto = "Build";
+            jumpto = "Modeling";
         } else if (GuideBox.tutorial == 0) {
             jumpto = "Analysis"
         }
         helpContent.innerHTML = helpContent.innerHTML.concat(`<br><br/><button id="jump" class="guide-link">` + "Jump to " + jumpto + `</button><br/>`)
+        if (jumpto == "Modeling") {
+            $('#jump').css("float", "left")
+        } else {
+            $('#jump').css("float", "right")
+        }
+
+        // adds buttons for navigation
         var buttons = []
         for (var i = 0; i < this.button_names.length; i++) {
             buttons.push({ action: "next", content: this.button_names[i], position: "right" })
@@ -421,6 +437,7 @@ class GuideBox {
         }
         $('#help-popup').css("display", "");
         
+        // makes learn more button
         $('.learn-more').on('click', function () {
             if (document.getElementsByClassName("more")[0].style.display == "none") {
                 document.getElementsByClassName("more")[0].style.display = "";
@@ -431,6 +448,7 @@ class GuideBox {
             }
         });
 
+        // called when next or back buttons are clicked
         var popup = this;
         $('#help-next').on('click', function(event) {
             $('#help-next').off('click')
@@ -441,6 +459,7 @@ class GuideBox {
             popup.openLeft();
         });
 
+        // called when dropdown is used to jump between steps
         $('#jump').on('click', function(event) {
             if (GuideBox.tutorial == 1 || GuideBox.tutorial == 2) {
                 GuideBox.tutorial  = 0;
@@ -452,6 +471,7 @@ class GuideBox {
         });
     }
 
+    // opens the tutorial linked by the next/righthand button
     openRight() {
         var tutorial;
         if (GuideBox.tutorial == 0) {
@@ -470,6 +490,7 @@ class GuideBox {
         }
     }
 
+    // opens the tutorial linked by the back/lefthand button
     openLeft() {
         var tutorial;
         if (GuideBox.tutorial == 0) {
@@ -486,6 +507,7 @@ class GuideBox {
         }
     }
 
+    // opens the tutorial when dropdown menu is used
     static skip() {
         var tutorial;
         if (GuideBox.tutorial == 0) {
@@ -502,76 +524,33 @@ class GuideBox {
     }
 }
 
+// begins build tutorial when clicked from Help tab
 $('#build-btn').on('click', function () {
     GuideBox.tutorial  = 0;
     GuideBox.build.get(GuideBox.step[0]).showGuideBox();
 });
 
+// begins why tutorial when clicked from Help tab
 $('#why-btn').on('click', function () {
     GuideBox.tutorial  = 1;
     GuideBox.why.get(GuideBox.step[1]).showGuideBox();
 });
 
+// begins analyze tutorial when clicked from Help tab
 $('#analyze-btn').on('click', function () {
     GuideBox.tutorial  = 2;
     GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
 });
 
+// skips around when dropdown is used
 $('#guide-name').on('change', function () {
     GuideBox.skip();
 });
 
+// closes help popups
 $('#help-close').on('click',  function () {
     closePopup('#help-popup');
 });
-
-//     /** About BloomingLeaf button */
-//     $('#about-BloomingLeaf').on('click', function () { 
-//     const dialog1 = showAlert('About',
-//         '<p> BloomingLeaf is a browser-based tool that uses precise semantics (with Tropos) to model goals and ' +
-//         'relationships that evolve over time. Simulation techniques are used to enable stakeholders to choose between ' +
-//         'design alternatives, ask what-if questions, and plan for software evolution in an ever-changing world. '+
-//         'BloomingLeaf implements the Evolving Intentions framework.</p>',
-//         window.innerWidth * 0.5, 'alert', 'warning');      
-//     });
-
-//     /** Model Creation button */
-//    $('#help-model-creation').on('click', function () { 
-//         const dialog2 = showAlert('Model Creation',
-//         '<p> We recommend going through the documentation first to get yourself used to notions of actor, goal, soft goal, resource, and task. </p>' +
-//         '<p> Once you have done that, click on next to go through the steps of model creation.</p>' +
-//         '<div> <button type="button" class="help-buttons" style= "width:50%" id="next"> Next </button>' +
-//         '<button type="button" style= "width:50%" class="help-buttons" > Cancel </button> </div>',
-//         window.innerWidth * 0.5, 'alert', 'warning');
-//         document.querySelectorAll('.help-buttons').forEach(function (button) {
-//             button.addEventListener('click', function () { 
-//                 dialog2.close(); 
-//                 if (button.id=='next') {showDialog3();};
-//             });
-//         });
-//     });
-
-
-//     function showDialog3() {
-//         const dialog3 = showAlert('Model Creation',
-//         '<p> Now let us get you ....</p>' +
-//         '<div> <button type="button" class="help-buttons" style= "width:50%" id="next"> Next </button>' +
-//         '<button type="button" style= "width:50%" class="help-buttons"> Cancel </button> </div>',
-//         window.innerWidth * 0.5, 'alert', 'warning');
-//         document.querySelectorAll('.help-buttons').forEach(function (button) {
-//             button.addEventListener('click', function () { 
-//                 dialog3.close(); 
-//             });
-//         });
-//     } 
-
-
-
-
-//    $('#Other-help').on('click', function () { 
-//     let question = prompt("Please enter your question here", "I need help with ...");
-//     //register the question here 
-//    });
 
 /**
  * Displays the absolute and relative assignments modal for the user.
