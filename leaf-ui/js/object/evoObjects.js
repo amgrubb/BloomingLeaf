@@ -24,6 +24,20 @@ class IntentionColorVis {
 }
 
 /**
+ * returns whether or not a color is dark
+ * @param {*} color 
+ * @returns 
+ */
+function isDark(color){
+    const hex = color.replace('#', '');
+    const c_r = parseInt(hex.substr(0, 2), 16);
+    const c_g = parseInt(hex.substr(2, 2), 16);
+    const c_b = parseInt(hex.substr(4, 2), 16);
+    const brightness = 0.2126 * Math.pow(c_r / 255, 2.2) + 0.7152 * Math.pow(c_g / 255, 2.2) + 0.0722 * Math.pow(c_b / 255, 2.2);
+    return ((1 + brightness) / brightness)> 4.5;
+}
+
+/**
  * Colors the nodes based on the different EVO types 
  * This order is created intentionally for the frontend. Please DO NOT change the order
  */
@@ -43,9 +57,9 @@ class EVO {
     
     }
     
-    //default palette
-    static colorVisDict = {
-        "0000": "#D3D3D3", // None (⊥, ⊥)
+    //Red-blue palette
+    static colorVisDict1= {
+        "0000": "#b5b5b5", // None (⊥, ⊥)
         "0011": "#003fff", // Satisfied (F, ⊥)
         "0010": "#8FB8DE", // Partially satisfied (P, ⊥)
         "0100": "#fbaca8", // Partially denied (⊥, P)
@@ -58,15 +72,15 @@ class EVO {
 
     // The Red-Green Palette
     static colorVisDict2 = {
-        "0000": "#bdaead",
-        "0011": "#d11a2d",
-        "0010": "#e16c96",
-        "0100": "#6e8b74",
-        "0110": "#ffd111",
-        "0111": "#862617",
-        "1100": "#1a6840",
-        "1110": "#887322",
-        "1111": "#000000"
+        "0000": "#a77f7f",
+        "0011": "#c12a38",
+        "0010": "#e05c8a",
+        "0100": "#54705a",
+        "0110": "#d4c400",
+        "0111": "#704e43",
+        "1100": "#13644e",
+        "1110": "#775f1e",
+        "1111": "#2a2a2a"
     };
 
     // The Green-Black Palette
@@ -79,25 +93,50 @@ class EVO {
         "0111": "#ba0098",
         "1100": "#616161",
         "1110": "#900091",
-        "1111": "#790604"
+        "1111": "#a35604"
     };
 
     // The Yellow-Purple Palette
     static colorVisDict4 = {
         "0000": "#D3D3D3",
-        "0011": "#FFFF00",
-        "0010": "#fcf5bb",
-        "0100": "#e0bfff",
-        "0110": "#d37f00",
-        "0111": "#d69d00",
-        "1100": "#A020F0",
-        "1110": "#5946b2",
+        "0011": "#d4c400",
+        "0010": "#A9B159",
+        "0100": "#9475B4",
+        "0110": "#96804E",
+        "0111": "#9A584C",
+        "1100": "#6050A8",
+        "1110": "#783B68",
         "1111": "#0D0221"
     };
 
+     // The Traffic-Light Palette
+     static colorVisDict5 = {
+        "0000": "#b5b5b5", // None (⊥, ⊥)
+        "0011": "#549C30",// Satisfied (F, ⊥)
+        "0010": "#D4C400",// Partially satisfied
+        "0100": "#D96E03",// Partially denied 
+        "0110": "#6F8C83",// Conflict (P, P)
+        "0111": "#6F8C83",// Conflict (F, P)
+        "1100": "#DD1806",// Fully denied (⊥, 
+        "1110": "#6F8C83",// Conflict (P, F)
+        "1111": "#6F8C83"// Conflict (F, F)
+    };
+
+     // The Pastel Palette
+     static colorVisDict6 = {
+        "0000": "#7E9679",
+        "0011": "#5F798C",
+        "0010": "#6D94B0",
+        "0100": "#D1757E",
+        "0110": "#A784B3",
+        "0111": "#8F89A4",
+        "1100": "#C0595A",
+        "1110": "#BC7BA6",
+        "1111": "#5A5471"
+    };
+
     // Color Blind palette
-    static colorVisDictColorBlind = {
-     
+    static colorVisDict7 = {
         "0000": "#CCCCCC", // None (⊥, ⊥)
         "0011": "#0000FF", // Satisfied (F, ⊥)
         "0010": "#0000FF", // Partially satisfied (P, ⊥)
@@ -107,8 +146,6 @@ class EVO {
         "1100": "#FF0000", // Fully denied (⊥, F)
         "1110": "#FFFF00", // Conflict (P, F)
         "1111": "#FFFF00"  // Conflict (F, F)
-
-        
     };
 
     //Initialize user-created-palette as Red-Blue
@@ -124,16 +161,19 @@ class EVO {
         "1111": "#0D0221"  // Conflict (F, F)
     };
 
+
     
     /**
      * List of color visualization dictionaries
      */
     static colorVisDictCollection = [
-        EVO.colorVisDict,
-        EVO.colorVisDict2,
-        EVO.colorVisDict3,
-        EVO.colorVisDict4,
-        EVO.colorVisDictColorBlind,
+        EVO.colorVisDict1, // red-blue palette
+        EVO.colorVisDict2, // red-green palette 
+        EVO.colorVisDict3, // green-black palette
+        EVO.colorVisDict4, // yellow-purple palette
+        EVO.colorVisDict5, // traffic-light palette
+        EVO.colorVisDict6, // pastel palette
+        EVO.colorVisDict7  // color-blind palette
     ];
 
     /**
@@ -154,7 +194,7 @@ class EVO {
     
 
     // Number of evaluation types
-    static numEvals = Object.keys(EVO.colorVisDict).length + 1;
+    static numEvals = Object.keys(EVO.colorVisDict1).length + 1;
     // Current time point, defined by selection in lower time point slider after simulating a single path
     static curTimePoint = 0;
     // User selected slider option
@@ -375,6 +415,13 @@ class EVO {
         var elements = graph.getElements();
         var actorBuffer = 0;
 
+        // Hides slider in % and time modes
+        if (EVO.sliderOption == 3) {
+            EVO.displaySlider(true);
+        } else {
+            EVO.displaySlider(false);
+        }
+
         for (var i = 0; i < elements.length; i++) {
             var cellView = elements[i].findView(paper);
             var intention = elements[i].get('intention');
@@ -385,97 +432,58 @@ class EVO {
             if (analysisResult.get('colorVis') !== undefined) {
                 var element = analysisResult.get('colorVis').intentionListColorVis[i - actorBuffer];
                 if (intention != null && element != null) {
-                    if (EVO.sliderOption != 3) {
+                    if (EVO.sliderOption == 0 ){
+                        cellView.model.attr({
+                            'text': {
+                                'fill': 'black', 
+                                'stroke': 'none',
+                                'font-weight': 'normal',
+                            },
+                        });
+                    } else if (EVO.sliderOption == 1 || EVO.sliderOption==2) {
                         var gradientID = this.defineGradient(element);
                         // Visualize model at user selected timepoint
-                        cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
+                        cellView.model.attr({
+                            '.outer': { 
+                                'fill': 'url(#' + gradientID + ')' 
+                            },
+                            'text': {
+                                'fill': 'white', 
+                                'stroke': 'black',
+                                'font-weight': '800',
+                            },
+                           
+                        });
+
                     }
                     else {
                         var timepoint = EVO.curTimePoint;
                         var intentionEval = element.timePoints[timepoint];
                         var color = EVO.getColor(intentionEval);
                         cellView.model.attr({ '.outer': { 'fill': color } });
-
-                        //update text font to white if the chosen color is dark 
-                        if (color != undefined){
-                            if (isDark(color)) {
-                                cellView.model.attr({ 'text': { 'fill': "white" } });
-                            }else {
-                                cellView.model.attr({ 'text': { 'fill': "black" } });
-                            }
+                        if (isDark(color)){
+                            cellView.model.attr({
+                                'text': {
+                                    'fill': 'white', 
+                                    'stroke': 'none',
+                                    'font-weight': 'normal',
+                                },
+                            });
+                        } else {
+                            cellView.model.attr({
+                                'text': {
+                                    'fill': 'black', 
+                                    'stroke': 'none',
+                                    'font-weight': 'normal',
+                                },
+                            });
                         }
-                        
                     }
                 }
             }
         }
     }
 
-    /**
-     * Makes text on intentions white when EVO is activated
-     * @param {ResultBBM} analysisResult 
-     */
-    static changeIntentionsText(analysisResult) {
-        var elements = graph.getElements();
-        var curr;
-        var colorVis;
-        var satVal;
-        var intention;
-        var initSatVal;
-        var actor = 0; // Counts the number of actor 
-
-        // Shows .satvalue automatically
-        $('.satvalue').css("display", "");
-
-        for (var i = 0; i < elements.length; i++) {
-            curr = elements[i].findView(paper).model;
-            if (curr.get('type') == 'basic.Actor') {
-                actor++;
-                continue;
-            }
-            
-            // Sets satvalue/text to the initSatVal
-            intention = curr.get('intention');
-            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            // If there is no initSatVal
-            if (initSatVal === '(no value)') {
-                curr.attr('.satvalue/text', '');
-            } else {
-                curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-            }
-
-            // The slider automatic setting
-            EVO.displaySlider(false);
-
-            if (analysisResult !== undefined) {
-                // The EVO mode fill color
-                curr.attr({ text: { fill: 'white', stroke: 'none' } });
-                // If the result is selected 
-                if (analysisResult.get('selected')) {
-                    // If the option is states
-                    if (EVO.sliderOption == 3) {
-                        // Resets the satvalue back
-                        colorVis = analysisResult.get('colorVis');
-                        satVal = colorVis.intentionListColorVis[i-actor].timePoints[EVO.curTimePoint]; // Subtract actor from i to find intentionListColorVis for elements only
-                        curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
-                        EVO.displaySlider(true);
-                    }
-                    // If it is % or time
-                    else {
-                        $('.satvalue').css("display", "none");
-                    }
-                }
-                // If result is unselected
-                else {
-                    curr.attr({ text: { fill: 'black', stroke: 'none' } });
-                }
-            }
-            // If a config without results is selected
-            else {
-                curr.attr({ text: { fill: 'black', stroke: 'none' } });
-            }
-        }
-    }
 
     /** 
      * Makes slider dis/appear 
@@ -524,7 +532,7 @@ class EVO {
                         curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
                     }
                 }
-                curr.attr({ text: { fill: 'black', stroke: 'none' } });
+                curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal' } });
             }
         }
     }
@@ -553,9 +561,9 @@ class EVO {
                 //update text font to white if the chosen color is dark 
                 if (colorChange != undefined){
                     if (isDark(colorChange)) {
-                        cellView.model.attr({ 'text': { 'fill': "white" } });
+                        cellView.model.attr({ text: { fill: 'white', stroke: 'none', 'font-weight': 'normal' }})
                     }else {
-                        cellView.model.attr({ 'text': { 'fill': "black" } });
+                        cellView.model.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal' }});
                     }
                 }
                 
@@ -572,11 +580,11 @@ class EVO {
      */
     static getColor(intentionEval) {
 
-        if (EVO.paletteOption <= 5) {
+        if (EVO.paletteOption <= 7) {
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
 
-        if (EVO.paletteOption >= 6) {
+        if (EVO.paletteOption >= 8) {
             return EVO.selfColorVisDict[intentionEval];
         }
     }
@@ -616,7 +624,7 @@ class EVO {
             $('#modelingSlider').css("display", "");
             $('#analysisSlider').css("display", "none");
             if (EVO.sliderOption > 0) {
-                EVO.sliderOption = '1';
+                EVO.sliderOption = '3';
             }
             document.getElementById("colorReset").value = EVO.sliderOption;
         }
@@ -643,7 +651,7 @@ class EVO {
      * Fill in self-dictionary
      */
     static fillInDictionary() {
-        if (EVO.paletteOption == 7 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-None").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-FF").value & document.getElementById("my-Denied").value!= document.getElementById("my-None").value & document.getElementById("my-FF").value!= document.getElementById("my-Denied").value & document.getElementById("my-None").value!= document.getElementById("my-FF").value ){
+        if (EVO.paletteOption == 9 & document.getElementById("my-Satisfied").value!= document.getElementById("my-Denied").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-None").value & document.getElementById("my-Satisfied").value!= document.getElementById("my-FF").value & document.getElementById("my-Denied").value!= document.getElementById("my-None").value & document.getElementById("my-FF").value!= document.getElementById("my-Denied").value & document.getElementById("my-None").value!= document.getElementById("my-FF").value ){
             EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
                 "0011": document.getElementById("my-Satisfied").value,
@@ -700,17 +708,14 @@ class EVONextState {
         switch (this.sliderOptionNextState) {
             case '1':
                 EVONextState.colorIntentionsByPercents();
-                this.changeIntentionsText(analysis);
                 break;
 
             case '2':
                 EVONextState.colorIntentionsByState();
-                this.changeIntentionsText(analysis);
                 break;
 
             default: // ColorVis off
                 EVONextState.returnAllColors(analysis);
-                this.changeIntentionsText(analysis);
                 break;
         }
     }
@@ -724,11 +729,13 @@ class EVONextState {
         var colorChange;
 
         for (var i = 0; i < analysis.intentions.length; i++) {
+            console.log("here");
             var element = analysis.intentions[i];
             value = element.attr(".satvalue").value;
             cellView = element.findView(analysis.paper);
             colorChange = EVONextState.getColor(value);
             cellView.model.attr({ '.outer': { 'fill': colorChange } });
+            isDark(colorChange) ? cellView.model.attr({ text: { fill: 'white', stroke: "none", 'font-weight': 'normal' } }) : cellView.model.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } });
         }
     }
 
@@ -763,6 +770,7 @@ class EVONextState {
             var element = analysis.intentions[i];
             var cellView = element.findView(analysis.paper);
             cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
+            cellView.model.attr({ text: { fill: 'white', stroke: "black", 'font-weight': 'bold' } });
         }
     }
 
@@ -774,14 +782,11 @@ class EVONextState {
         if (EVONextState.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
-
-        if (EVONextState.paletteOption < 6) {
-
+        if (EVONextState.paletteOption < 8) {
             return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
         }
-        if (EVONextState.paletteOption == 6) {
+        if (EVONextState.paletteOption == 8) {
             var selfVis = myInputJSObject.results.get('colorVis').selfColorVisDict;
-
             return selfVis[intentionEval];
         }
 
@@ -832,31 +837,11 @@ class EVONextState {
     /**
     * Returns element color to based on element type
     */
-        static returnAllColors(analysis) {
+    static returnAllColors(analysis) {
         for (var i = 0; i < analysis.intentions.length; i++) {
             var cellView = analysis.intentions[i].findView(analysis.paper);
             cellView.model.changeToOriginalColour();
-        }
-    }
-
-    /**
-     * Changes text color to white when EVO is on
-     */
-    static changeIntentionsText(analysis) {
-        
-        if (EVONextState.sliderOptionNextState != '0') {
-            for (let element of analysis.intentions) {
-                element.attr({ text: { fill: 'white' } });
-            }
-        } else {
-            for (let element of analysis.intentions) {
-                var satValue = element.attr(".satvalue").value;
-                if ( (satValue == "0000") || (satValue == "0100") || (satValue == "1000") || (satValue == "1100") || (satValue == "0001") || (satValue == "0011") || (satValue == "0010")) {
-                    element.attr({ text: { fill: 'black' } });
-                } else {
-                    element.attr({ text: { fill: 'red' } });
-                }
-            }
+            cellView.model.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } });
         }
     }
 
