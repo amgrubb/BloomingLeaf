@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
     <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selection.css" />
     <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
+    <!-- <link rel="stylesheet" type="text/css" href=".rappid/dist/joint.ui.dialog.css"/> -->
 
     <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
     <link rel="stylesheet" type="text/css" href="./plugins/slider/nouislider.min.css" />
@@ -69,8 +70,8 @@
         <div class="dropdown">
             <div class="btn">Documentation</div>
             <div class="dropdown-toolbar">
-                <a href="./userguides/documentation.pdf" download='documentation.pdf'>Download Documentation</a>
-                <a id="legend">Evolving Function Legend</a>
+                <a href="./userguides/updatedDocumentation.pdf" download='updatedDocumentation.pdf'>Download Documentation</a>
+                <a id=" legend">Legend</a>
                 <a id="evo-color-key">EVO Color Key</a>
                 <a id="load-sample">Load Sample Model</a>
 
@@ -203,13 +204,43 @@
         <button id="btn-view-intermediate" class="btn model-only">Intermediate
             Values</button>
         
+        <!-- Help popup pages -->
+        <div id="help-popup" class="popup_frame" style="display: none;width: 100%; height: 615px;">
+            <div id="page-mask"></div>
+            <div class="popup_content" style="width:50%;">
+                <div class="popup_header"> 
+                    <span class="close" id="help-close">&times;</span>
+                    <h2 id="help-title"></h2>
+                </div>                           
+                <div class="popup_body">
+                    <p id = "help-content"></p> 
+                    <div class="one-line">
+                        <button class="help-button-l" role="button" id = "help-prev"></button>
+                        <!-- Dropdown menu -->
+                        <select id="guide-name" class="guide-nav" style="display:none"></select>
+                        <button class="help-button-r" role="button" id = "help-next"></button>
+                    </div>
+                <div style="height: 5px;"></div>
+                <br>
+                </div>
+            </div>
+        </div>        
+        
         <!-- This is simulate path button-->
         <button id="simulate-path-btn" class="btn analysis-only" style="border-radius: none; display: none" ;>Simulate
             Path</button>
         <!-- This is explore states button-->
         <button id="next-state-btn" class="btn analysis-only" style="border-radius: none; display: none">Explore
             States</button>
-    
+
+        <div class="dropdown">
+            <button class="btn" style="display:inline">HELP</button>
+            <div class="dropdown-toolbar">
+                <a id="why-btn">What is BloomingLeaf?</a>
+                <a id="build-btn">Build a Model</a>
+                <a id="analyze-btn">Analyze the Model</a>
+            </div>
+        </div>
 
         <!-- EVO Create My Palette Table-->
         <div id="color-input" class="popup_frame" style="display: none;width: 1000px;">

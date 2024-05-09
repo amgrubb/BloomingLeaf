@@ -210,7 +210,7 @@ $('#legend').on('click', function () { window.open('./userguides/legend.html', '
  * @param {*} color 
  * @returns 
  */
-function isDark(color){
+function isDark(color) {
     const hex = color.replace('#', '');
     const c_r = parseInt(hex.substr(0, 2), 16);
     const c_g = parseInt(hex.substr(2, 2), 16);
@@ -219,6 +219,14 @@ function isDark(color){
     return ((1 + brightness) / brightness)> 4.5;
 }
 
+
+/**
+ * closes a popup
+ * @param ID the popup to be closed 
+*/
+function closePopup(ID){
+    $(ID).css("display", "none");
+}
 
 /**
  * closes a popup
@@ -242,28 +250,28 @@ function displayPalette(palette_number ) {
     //updates the color key based on the chosen palette 
     if(palette_number<8){
         //pre-made palettes
-        for (let charVal in EVO.charSatValueToNum){
-            let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
-            document.getElementById(charVal).style.backgroundColor= color;
+        for (let charVal in EVO.charSatValueToNum) {
+            let color = EVO.colorVisDictCollection[palette_number - 1][EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor = color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
             } else {
                 document.getElementById(charVal).style.color = "black";
             }
         }
-    
-    } else{
+
+    } else {
         //personalized palette
-        for (let charVal in EVO.charSatValueToNum){
+        for (let charVal in EVO.charSatValueToNum) {
             let color = EVO.selfColorVisDict[EVO.charSatValueToNum[charVal]];
-            document.getElementById(charVal).style.backgroundColor= color;
+            document.getElementById(charVal).style.backgroundColor = color;
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
             } else {
                 document.getElementById(charVal).style.color = "black";
             }
         }
-    }       
+    }
 }
 
 /** displays the color palette options*/
@@ -272,6 +280,237 @@ $('#evo-color-key').on('click', function () {
     $('#palette-options').css("display", "");
 });
 
+/**
+ * Guide me instructions
+*/
+class GuideBox {
+
+    constructor(task, instructions, context, button_names, button_paths) {
+        this.task = task;
+        this.instructions = instructions;
+        this.context = context;
+        this.button_names = button_names;
+        this.button_paths = button_paths;
+    }
+
+    // keeps track of which tutorial user is in (why, build, or analyze)
+    static tutorial = 0;
+    static step = ['1a. Add actor to model', '1a. What is BloomingLeaf', 'Pick an intention']
+
+    // load content from files
+    static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
+    static build = GuideBox.makeBoxes("http://localhost:8080/userguides/build.csv");
+    static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.csv");
+
+    // initialize tutorial content
+    static makeBoxes (file) {
+        var boxes = new Map();
+        fetch(file).then((res) => res.text()).then((text) => {
+            var arr = text.split("\n");
+            for(var i = 0; i < arr.length; i++) {
+                var line = arr[i].split(",,");
+                for(var j = 0; j < line.length; j++) {
+                    line[j] = line[j].trim();
+                }
+                if (line[6]) {
+                    boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3], line[5]], [line[4], line[6]])));
+                } else {
+                    boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3]], [line[4]])));
+                }
+            }
+        })
+        // returns a map of ids and their content
+        return boxes;
+    }
+
+    // displays a tutorial box
+    showGuideBox() {
+        $('#help-next').off('click')
+        $('#help-prev').off('click')
+
+        // determines which tutorial user has selected
+        var tutorial;
+        if (GuideBox.tutorial == 0) {
+            tutorial = GuideBox.build;
+        } else if (GuideBox.tutorial == 1) {
+            tutorial = GuideBox.why;
+        } else if (GuideBox.tutorial == 2) {
+            tutorial = GuideBox.analyze;
+        }
+
+        // makes dropdown menu
+        document.getElementById("guide-name").innerHTML = "";
+        for (let [key, value] of tutorial) {
+            if (key.length > 0) {
+                if (key == this.task) {
+                    $('#guide-name').append(`<option value="${key}" selected>${key}</option>`)
+                } else {
+                    $('#guide-name').append(`<option value="${key}">${key}</option>`)
+                }
+            }
+        }
+        
+        // sets content of the popup
+        var helpPopup = document.getElementById('help-popup');
+
+        var helpTitle = document.getElementById('help-title');
+        helpTitle.innerHTML = this.task;
+
+        var helpContent = document.getElementById('help-content');
+        //if there is learn more content, display the learn more button
+        if (this.context.length > 0){
+            helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="learn-more guide-link">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;
+        }
+        //if the context section (learn more) is empty do not show the learn more button
+        else{
+            helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1);
+        }
+
+        // makes jump to build/analysis button
+        var jumpto;
+        if (GuideBox.tutorial == 1 | GuideBox.tutorial == 2) {
+            jumpto = "Modeling";
+        } else if (GuideBox.tutorial == 0) {
+            jumpto = "Analysis"
+        }
+        helpContent.innerHTML = helpContent.innerHTML.concat(`<br><br/><button id="jump" class="guide-link">` + "Jump to " + jumpto + `</button><br/>`)
+        if (jumpto == "Modeling") {
+            $('#jump').css("float", "left")
+        } else {
+            $('#jump').css("float", "right")
+        }
+
+        // adds buttons for navigation
+        var buttons = []
+        for (var i = 0; i < this.button_names.length; i++) {
+            buttons.push({ action: "next", content: this.button_names[i], position: "right" })
+        }
+
+        document.getElementById("guide-name").style.display = "";
+
+        $('.help-button-r')[0].textContent = buttons[0].content;
+        if (buttons[1]) {
+            $('.help-button-l')[0].textContent = buttons[1].content;
+            $('.help-button-l').css("display", "");
+        } else {
+            $('.help-button-l').css("display", "none");
+        }
+        $('#help-popup').css("display", "");
+        
+        // makes learn more button
+        $('.learn-more').on('click', function () {
+            if (document.getElementsByClassName("more")[0].style.display == "none") {
+                document.getElementsByClassName("more")[0].style.display = "";
+                document.getElementsByClassName("learn-more")[0].textContent = "Show Less";
+            } else {
+                document.getElementsByClassName("more")[0].style.display = "none";
+                document.getElementsByClassName("learn-more")[0].textContent = "Learn More";
+            }
+        });
+
+        // called when next or back buttons are clicked
+        var popup = this;
+        $('#help-next').on('click', function(event) {
+            $('#help-next').off('click')
+            popup.openRight();
+        });
+        $('#help-prev').on('click', function(event) {
+            $('#help-prev').off('click')
+            popup.openLeft();
+        });
+
+        // called when dropdown is used to jump between steps
+        $('#jump').on('click', function(event) {
+            if (GuideBox.tutorial == 1 || GuideBox.tutorial == 2) {
+                GuideBox.tutorial  = 0;
+                GuideBox.build.get(GuideBox.step[0]).showGuideBox();
+            } else if (GuideBox.tutorial == 0) {
+                GuideBox.tutorial  = 2;
+                GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
+            }
+        });
+    }
+
+    // opens the tutorial linked by the next/righthand button
+    openRight() {
+        var tutorial;
+        if (GuideBox.tutorial == 0) {
+            tutorial = GuideBox.build;
+        } else if (GuideBox.tutorial == 1) {
+            tutorial = GuideBox.why;
+        } else if (GuideBox.tutorial == 2) {
+            tutorial = GuideBox.analyze;
+        }
+        var id = tutorial.get($('#help-title')[0].innerHTML).button_paths[0]
+        if (id != "close") {
+            GuideBox.step[GuideBox.tutorial] = id;
+            tutorial.get(id).showGuideBox();
+        } else {
+            $('#help-popup').css("display", "none");
+        }
+    }
+
+    // opens the tutorial linked by the back/lefthand button
+    openLeft() {
+        var tutorial;
+        if (GuideBox.tutorial == 0) {
+            tutorial = GuideBox.build;
+        } else if (GuideBox.tutorial == 1) {
+            tutorial = GuideBox.why;
+        } else if (GuideBox.tutorial == 2) {
+            tutorial = GuideBox.analyze;
+        }
+        var id = tutorial.get($('#help-title')[0].innerHTML).button_paths[1]
+        if (id != "close") {
+            GuideBox.step[GuideBox.tutorial] = id;
+            tutorial.get(id).showGuideBox();
+        }
+    }
+
+    // opens the tutorial when dropdown menu is used
+    static skip() {
+        var tutorial;
+        if (GuideBox.tutorial == 0) {
+            tutorial = GuideBox.build;
+        } else if (GuideBox.tutorial == 1) {
+            tutorial = GuideBox.why;
+        } else if (GuideBox.tutorial == 2) {
+            tutorial = GuideBox.analyze;
+        }
+        
+        var id = document.getElementById('guide-name').value;
+        GuideBox.step[GuideBox.tutorial] = id;
+        tutorial.get(id).showGuideBox();
+    }
+}
+
+// begins build tutorial when clicked from Help tab
+$('#build-btn').on('click', function () {
+    GuideBox.tutorial  = 0;
+    GuideBox.build.get(GuideBox.step[0]).showGuideBox();
+});
+
+// begins why tutorial when clicked from Help tab
+$('#why-btn').on('click', function () {
+    GuideBox.tutorial  = 1;
+    GuideBox.why.get(GuideBox.step[1]).showGuideBox();
+});
+
+// begins analyze tutorial when clicked from Help tab
+$('#analyze-btn').on('click', function () {
+    GuideBox.tutorial  = 2;
+    GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
+});
+
+// skips around when dropdown is used
+$('#guide-name').on('change', function () {
+    GuideBox.skip();
+});
+
+// closes help popups
+$('#help-close').on('click',  function () {
+    closePopup('#help-popup');
+});
 
 /**
  * Displays the absolute and relative assignments modal for the user.
@@ -292,6 +531,23 @@ $('#btn-view-intermediate').on('click', function () {
     intermediateValuesTable.render();
     $('.popup_frame').height($('#paper').height() * 0.9);
 });
+
+// /**
+//  *  Display BloomingLeaf help popups
+//  */
+//  $('#BL-help-1').on('click', function () {
+//     const dialog = showAlert('Testing',
+//                     'Testing',
+//                     window.innerWidth * 0.3, 'alert', 'warning');
+// });
+
+// $('#BL-help-2').on('click', function () {
+//     removeHighlight();
+//     clearInspector();
+//     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
+//     $('#intermediate-table').append(intermediateValuesTable.el);
+//     intermediateValuesTable.render();
+// });
 
 /**
  * Switches to Analysis view if there are no cycles and no syntax errors.
@@ -388,13 +644,13 @@ graph.on("add", function (cell) {
                 }
             }
             // If all actor names have been changed
-            if (numList.length == 0){
+            if (numList.length == 0) {
                 name = cell.attr('.name/text') + "_0";
             } else {
                 // Gets highest number from array
                 name = cell.attr('.name/text') + "_" + (Math.max.apply(null, numList) + 1);
             }
-        // Creates first actor name
+            // Creates first actor name
         } else {
             name = cell.attr('.name/text') + "_0";
         }
@@ -408,7 +664,7 @@ graph.on("add", function (cell) {
 
     resetConfig()
     // Trigger click on cell to highlight, activate inspector, etc. 
-   paper.trigger("cell:pointerup", cell.findView(paper));
+    paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
 // Auto-save the cookie whenever the graph is changed.
@@ -521,18 +777,18 @@ paper.on({
                     var actorInspector = new ActorInspector({ model: cell });
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
-                    
+
                     // If user was dragging actor 
                     if (evt.data.move) {
                         // AND actor doesn't overlap with other actors
                         var overlapCells = paper.findViewsInArea(cell.getBBox());
                         var overlapActors = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
-                        if (overlapActors.length == 1){
+                        if (overlapActors.length == 1) {
                             // Embed each overlapping intention in actor
                             var actorCell = overlapActors[0].model;
                             var overlapIntentions = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Intention);
 
-                            for (var i=0; i < overlapIntentions.length; i++) {
+                            for (var i = 0; i < overlapIntentions.length; i++) {
                                 var intention = overlapIntentions[i].model;
                                 // Unembed intention from old actor
                                 if (intention.get('parent')) {
@@ -552,7 +808,7 @@ paper.on({
                         if (cell.get('parent')) {
                             graph.getCell(cell.get('parent')).unembed(cell);
                         }
-                        
+
                         // Find overlapping cells
                         var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
 
@@ -609,13 +865,14 @@ paper.on("link:options", function (cell) {
      * Selects the current configuration and passes to backendSimulationRequest()  */
     $('#simulate-path-btn').on('click', function () {
         var curRequest = configCollection.findWhere({ selected: true });
-        var numRel = $('#num-rel-time'); 
+        var numRel = $('#num-rel-time');
         //Can't simulate path when num-rel-time equals 0
         if (numRel.val() == 0) {
             swal("Num Relative Time Points cannot be 0", "", "error");
         } else {
             curRequest.set('action', 'singlePath');
-            backendSimulationRequest(curRequest); }
+            backendSimulationRequest(curRequest);
+        }
     });
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
@@ -636,7 +893,7 @@ paper.on("link:options", function (cell) {
             curRequest.set('previousAnalysis', curResult);
 
             // If the last time point is selected, error message shows that you can't open Next State
-            if (EVO.sliderOption==1 || EVO.sliderOption==2){ 
+            if (EVO.sliderOption == 1 || EVO.sliderOption == 2) {
                 swal("Error: Cannot explore next states with EVO in % or Time.", "", "error");
                 $("body").removeClass("spinning"); // Remove spinner from page
             } else if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
@@ -734,12 +991,12 @@ paper.on("link:options", function (cell) {
 
             var elements = SliderObj.getIntentionsAndActorsView();
             var links = SliderObj.getLinksView();
-            for (var i = 0; i < elements.length; i ++) {
+            for (var i = 0; i < elements.length; i++) {
                 $("#" + elements[i].id).css("display", "");
                 var cell = graph.getCell(elements[i].model.id);
                 cell.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } }); 
             }
-            for (var i = 0; i < links.length; i ++) {
+            for (var i = 0; i < links.length; i++) {
                 $("#" + links[i].id).css("display", "");
             }
 
@@ -835,7 +1092,7 @@ paper.on("link:options", function (cell) {
     }
 
     function loadOldConfig(oldAnalysisRequest) {
-        var configBBM = new ConfigBBM({conflictLevel: oldAnalysisRequest.conflictLevel, numRelTime: oldAnalysisRequest.numRelTime, currentState: oldAnalysisRequest.currentState})
+        var configBBM = new ConfigBBM({ conflictLevel: oldAnalysisRequest.conflictLevel, numRelTime: oldAnalysisRequest.numRelTime, currentState: oldAnalysisRequest.currentState })
         configCollection.add(configBBM);
     }
 
@@ -899,7 +1156,7 @@ paper.on("link:options", function (cell) {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
         if (name) {
             clearCycleHighlighting(selectResult);
-            EVO.deactivate();  
+            EVO.deactivate();
             var fileName = name + ".json";
             var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
             obj.version = "BloomingLeaf_2.0";
@@ -1038,29 +1295,27 @@ paper.on("link:options", function (cell) {
 
     //Show warning messages if use input invalid color
     $('#submit-color').on('click', function () {
-       
+
         //check that the entered colors for the satisfied and  denied values are different
-        if (!EVO.fillInDictionary()) 
-        {
+        if (!EVO.fillInDictionary()) {
             //changes the color for fully satisfied and fully denied to what they were 
-            document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
-            document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
-            document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
-            document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
+            document.getElementById('my-Satisfied').value = EVO.selfColorVisDict["0011"];
+            document.getElementById('my-Denied').value = EVO.selfColorVisDict["1100"];
+            document.getElementById('my-None').value = EVO.selfColorVisDict["0000"];
+            document.getElementById('my-FF').value = EVO.selfColorVisDict["1111"];
             //error messsage 
-            console.log(EVO.paletteOption);
-            swal("Please make sure your satisfied, denied, none, and FF values are different from one another",   "", "error")
-            
+            swal("Please make sure your satisfied, denied, none, and FF values are different from one another", "", "error")
+
         }
-        else{
+        else {
             // Display a message to tell the user their selection is saved
             $("#saved-options-message").css("display", "");
-            setTimeout(function(){
+            setTimeout(function () {
                 $("#saved-options-message").css("display", "none");
                 //close the color input
                 $('#color-input').css("display", "none");
             }, 500);
-        
+
             // refresh the visual overlay on the model and the palette dropdown
             EVO.paletteOption =7;
             highlightPalette(EVO.paletteOption);
@@ -1070,24 +1325,24 @@ paper.on("link:options", function (cell) {
                 EVO.refresh(selectResult);
             }
         };
-        
+
     });
 
     //cancel edits to palette customization
-    $('#cancel-customization').on('click', function () { 
-        document.getElementById('my-Satisfied').value=EVO.selfColorVisDict["0011"];
-        document.getElementById('my-Denied').value=  EVO.selfColorVisDict["1100"];
-        document.getElementById('my-None').value=  EVO.selfColorVisDict["0000"];
-        document.getElementById('my-PS').value=  EVO.selfColorVisDict["0010"];
-        document.getElementById('my-PD').value=  EVO.selfColorVisDict["0100"];
-        document.getElementById('my-PP').value=  EVO.selfColorVisDict["0110"];
-        document.getElementById('my-FP').value=  EVO.selfColorVisDict["0111"];
-        document.getElementById('my-PF').value=  EVO.selfColorVisDict["1110"];
-        document.getElementById('my-FF').value=  EVO.selfColorVisDict["1111"];
+    $('#cancel-customization').on('click', function () {
+        document.getElementById('my-Satisfied').value = EVO.selfColorVisDict["0011"];
+        document.getElementById('my-Denied').value = EVO.selfColorVisDict["1100"];
+        document.getElementById('my-None').value = EVO.selfColorVisDict["0000"];
+        document.getElementById('my-PS').value = EVO.selfColorVisDict["0010"];
+        document.getElementById('my-PD').value = EVO.selfColorVisDict["0100"];
+        document.getElementById('my-PP').value = EVO.selfColorVisDict["0110"];
+        document.getElementById('my-FP').value = EVO.selfColorVisDict["0111"];
+        document.getElementById('my-PF').value = EVO.selfColorVisDict["1110"];
+        document.getElementById('my-FF').value = EVO.selfColorVisDict["1111"];
         $('#color-input').css("display", "none");
 
     });
-   
+
 
     /**
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
@@ -1096,11 +1351,11 @@ paper.on("link:options", function (cell) {
     document.getElementById("colorReset").oninput = function () { // Turns slider on/off and refreshes
         EVO.setSliderOption(this.value, selectResult);
         //highlight the first palette by default  if EVO is on 
-        if(EVO.sliderOption ==1){
+        if (EVO.sliderOption == 1) {
             highlightPalette(EVO.paletteOption);
-        } else{
-        //unhighlights all palettes if EVO is off
-          unhighlightPalettes();
+        } else {
+            //unhighlights all palettes if EVO is off
+            unhighlightPalettes();
         }
     }
     /**
@@ -1184,7 +1439,7 @@ function resetInspectorView(cell) {
 /**
  * Trigger setConfigName outside ConfigInspector 
  */
- function setName() {
+function setName() {
     $('.config-input').trigger('outsideSetName');
 }
 
@@ -1271,7 +1526,7 @@ function revertNodeValuesToInitial(analysisResult) {
         } else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
-        
+
     }
     // Remove slider
     if (analysisResult !== undefined) {
@@ -1323,4 +1578,3 @@ function unhighlightPalettes() {
 }
 
 
-    
