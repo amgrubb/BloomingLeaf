@@ -113,7 +113,7 @@ var ConfigBBM = Backbone.Model.extend({
      * when the backend returns an AnalysisResult
      */
     addResult: function (result, fromNextState=false) {
-        fromNextState ? result.set('name', 'Result ' + (this.get('results').length + 1)+' (NS)') : result.set('name', 'Result ' + (this.get('results').length + 1));
+        fromNextState ? result.set('name', 'Result ' + (this.get('results').length + 1)+'!') : result.set('name', 'Result ' + (this.get('results').length + 1));
         this.get("results").add(result);
         $('#conflict-level').prop('disabled', true);
         $('#num-rel-time').prop('disabled', true);
