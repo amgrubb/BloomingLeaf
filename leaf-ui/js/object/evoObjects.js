@@ -440,6 +440,8 @@ class EVO {
                                 'font-weight': 'normal',
                             },
                         });
+                        // hide the satisfaction values 
+                        $('.satvalue').css("display", "none");
                     } else if (EVO.sliderOption == 1 || EVO.sliderOption==2) {
                         var gradientID = this.defineGradient(element);
                         // Visualize model at user selected timepoint
@@ -454,6 +456,7 @@ class EVO {
                             },
                            
                         });
+                        $('.satvalue').css("display", "none");
 
                     }
                     else {
@@ -478,6 +481,9 @@ class EVO {
                                 },
                             });
                         }
+                        //display the satisfaction values
+                        $('.satvalue').css("display", "");
+
                     }
                 }
             }
@@ -572,6 +578,8 @@ class EVO {
                 cellView.model.changeToOriginalColour();
             }
         }
+        //diplay the satisfaction Values 
+        $('.satvalue').css("display", "");
     }
 
     /**
@@ -727,7 +735,7 @@ class EVONextState {
         var value;
         var cellView;
         var colorChange;
-
+ 
         for (var i = 0; i < analysis.intentions.length; i++) {
             console.log("here");
             var element = analysis.intentions[i];
@@ -737,6 +745,10 @@ class EVONextState {
             cellView.model.attr({ '.outer': { 'fill': colorChange } });
             isDark(colorChange) ? cellView.model.attr({ text: { fill: 'white', stroke: "none", 'font-weight': 'normal' } }) : cellView.model.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } });
         }
+
+        //display satisfaction values 
+        $('.satvalue').css("display", "");
+
     }
 
     /**
@@ -772,6 +784,10 @@ class EVONextState {
             cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
             cellView.model.attr({ text: { fill: 'white', stroke: "black", 'font-weight': 'bold' } });
         }
+
+        //hide the satisfaction values
+        $('.satvalue').css("display", "none");
+
     }
 
     /**
@@ -843,6 +859,8 @@ class EVONextState {
             cellView.model.changeToOriginalColour();
             cellView.model.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } });
         }
+        //display the satisfaction Values 
+        $('.satvalue').css("display", "");
     }
 
 
