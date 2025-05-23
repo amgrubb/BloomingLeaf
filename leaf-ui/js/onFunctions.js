@@ -298,9 +298,9 @@ class GuideBox {
     static step = ['1a. Add actor to model', '1a. What is BloomingLeaf', 'Pick an intention']
 
     // load content from files
-    static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
-    static build = GuideBox.makeBoxes("http://localhost:8080/userguides/build.csv");
-    static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.csv");
+    static why = GuideBox.makeBoxes("./userguides/why.csv");
+    static build = GuideBox.makeBoxes("./userguides/build.csv");
+    static analyze = GuideBox.makeBoxes("./userguides/analyze.csv");
 
     // initialize tutorial content
     static makeBoxes (file) {
