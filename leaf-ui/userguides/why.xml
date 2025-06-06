@@ -1,0 +1,20 @@
+<tutorial>
+    <box>
+        <title>1a. What is BloomingLeaf</title>
+        <text><![CDATA[`BloomingLeaf is a tool that allows users to build goal models and use them to visualize their goals and tradeoffs in a certain situation. Goal models represent the interconnected needs of different stakeholders in a scenario and how the satisfaction of some elements affects other elements. Goal models allow analysts to visualize how making certain decisions may affect other parts of a project.`]]></text>
+        <more></more>
+        <rbutton>Next</rbutton>
+        <rdest>1b. Discover the purpose of your analysis</rdest>
+        <lbutton></lbutton>
+        <ldest></ldest>
+    </box>
+    <box>
+        <title>1b. Discover the purpose of your analysis</title>
+        <text><![CDATA[`BloomingLeaf allows users to ask and answer questions about a given situation. In order to answer these questions, one must first build a model, and then analyze the satisfaction values of different elemeents of the model. Here are some examples of questions that may be analyzed through this tool: <ul><li>Does it matter if Goal A or Goal B is satisfied first?</li><li>Is Goal A or Goal B satisfied more often?</li><li>Given that Task A is not currently satisfied, is it possible for Goal B to become satisfied?</li><li>Can Goal A remain satisfied if Goal B becomes not satisfed?</li></ul>`]]></text>
+        <more></more>
+        <rbutton>Done</rbutton>
+        <rdest>close</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>1a. What is BloomingLeaf</ldest>
+    </box>
+</tutorial>

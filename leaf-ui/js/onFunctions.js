@@ -298,27 +298,51 @@ class GuideBox {
     static step = ['1a. Add actor to model', '1a. What is BloomingLeaf', 'Pick an intention']
 
     // load content from files
-    static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.csv");
-    static build = GuideBox.makeBoxes("http://localhost:8080/userguides/build.csv");
-    static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.csv");
+    static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.xml");
+    static build = GuideBox.makeBoxes("http://localhost:8080/userguides/build.xml");
+    static analyze = GuideBox.makeBoxes("http://localhost:8080/userguides/analyze.xml");
 
     // initialize tutorial content
     static makeBoxes (file) {
         var boxes = new Map();
+
+        // for using xmls
         fetch(file).then((res) => res.text()).then((text) => {
-            var arr = text.split("\n");
-            for(var i = 0; i < arr.length; i++) {
-                var line = arr[i].split(",,");
-                for(var j = 0; j < line.length; j++) {
-                    line[j] = line[j].trim();
-                }
-                if (line[6]) {
-                    boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3], line[5]], [line[4], line[6]])));
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(text,"text/xml");
+            const tutorialNode = xmlDoc.querySelector("tutorial");
+            const tutorial = tutorialNode.querySelectorAll("box");
+            tutorial.forEach((tutorial) => {
+                const title = tutorial.querySelector("title").textContent;
+                const text = tutorial.querySelector("text").textContent;
+                const more = tutorial.querySelector("more").textContent;
+                const rbutton = tutorial.querySelector("rbutton").textContent;
+                const rdest = tutorial.querySelector("rdest").textContent;
+                const lbutton = tutorial.querySelector("lbutton").textContent;
+                const ldest = tutorial.querySelector("ldest").textContent;
+                if (lbutton.length > 0) {
+                    boxes.set(title, (new GuideBox(title, text, more, [rbutton, lbutton], [rdest, ldest])));
                 } else {
-                    boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3]], [line[4]])));
+                    boxes.set(title, (new GuideBox(title, text, more, [rbutton], [rdest])));
                 }
-            }
+            });
         })
+
+        // for using csvs
+        // fetch(file).then((res) => res.text()).then((text) => {
+        //     var arr = text.split("\n");
+        //     for(var i = 0; i < arr.length; i++) {
+        //         var line = arr[i].split(",,");
+        //         for(var j = 0; j < line.length; j++) {
+        //             line[j] = line[j].trim();
+        //         }
+        //         if (line[6]) {
+        //             boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3], line[5]], [line[4], line[6]])));
+        //         } else {
+        //             boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3]], [line[4]])));
+        //         }
+        //     }
+        // })
         // returns a map of ids and their content
         return boxes;
     }

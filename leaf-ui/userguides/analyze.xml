@@ -1,0 +1,101 @@
+<tutorial>
+    <box>
+        <title>Set satisfaction values of leaf nodes</title>
+        <text><![CDATA[`Begin by exploring the relationships represented in the model. Start by setting the satisfaction values of leaf nodes, which are nodes that only have arrows pointing away from them. For example, set all leaf nodes as satisfied, or set all the leaf nodes as denied. Click the green analysis button, then click Simulate Path. Think about how this affects the other nodes in the model.`]]></text>
+        <more></more>
+        <rbutton>Next</rbutton>
+        <rdest>Set satisfaction values of root nodes</rdest>
+        <lbutton></lbutton>
+        <ldest></ldest>
+    </box>
+    <box>
+        <title>Set satisfaction values of root nodes</title>
+        <text><![CDATA[`Set the satisfaction values of the root nodes, which are nodes that only have arrows pointing toward them. These are likely the top level goals. For example, set top level goals to the minimum acceptable level of satisfaction. Click the green analysis button, then click Simulate Path.`]]></text>
+        <more><![CDATA[`If you set the satisfaction values of all top level goals, you may get an error. In that case, remove satisfaction values for some until the error goes away.`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>Pick an intention</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>Set satisfaction values of leaf nodes</ldest>
+    </box>
+    <box>
+        <title>Pick an intention</title>
+        <text><![CDATA[`Now, ask a specific question about the model. Start by picking any intention from the model that you would like to focus on.`]]></text>
+        <more><![CDATA[`This intention will be the focus of your analysis. Pick an intention with links that you would like to understand. For example, when trying to answer the question, "Given that Task A is not currently satisfied, is it possible for Goal B to become satisfied?", one would pick Goal A.`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>Identify links</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>Set satisfaction values of root nodes</ldest>
+    </box>
+    <box>
+        <title>Identify links</title>
+        <text><![CDATA[`Is this intention part of an or-decomposition?`]]></text>
+        <more></more>
+        <rbutton>Yes</rbutton>
+        <rdest>Identify parent or child</rdest>
+        <lbutton>No</lbutton>
+        <ldest>Identify satisfaction value</ldest>
+    </box>
+    <box>
+        <title>Identify parent or child</title>
+        <text><![CDATA[`Is this intention the child or parent within the or-link?`]]></text>
+        <more><![CDATA[`If the arrow with the or-link is pointing toward the intention, it is the parent. If the arrow is pointing away, it is the child. If it is part of multiple or-decompositions and is both the parent and the child, choose which of the relationships you would like to analyze.`]]></more>
+        <rbutton>Parent</rbutton>
+        <rdest>Identify satisfaction value</rdest>
+        <lbutton>Child</lbutton>
+        <ldest>Observe satisfaction combinations</ldest>
+    </box>
+    <box>
+        <title>Identify satisfaction value</title>
+        <text><![CDATA[`Does this intention have a satisfaction value?`]]></text>
+        <more><![CDATA[`If it has a satisfaction value, there will be a pair of two symbols in the bottom right corner of the intention.`]]></more>
+        <rbutton>Yes</rbutton>
+        <rdest>Analysis mode</rdest>
+        <lbutton>No</lbutton>
+        <ldest>Assign satisfaction value</ldest>
+    </box>
+    <box>
+        <title>Observe satisfaction combinations</title>
+        <text><![CDATA[`Find the other children of this intention's parent. Try different combinations of satisfaction values for the children intentions.`]]></text>
+        <more><![CDATA[`For example, try changing the other children's satisfaction values and evolving functions such that they become denied in order to explore whether the chosen intention's satisfaction value is necessary for the parent to become satisfied. Or, set the chosen intention's satisfaction value to determine whether it is possible for the parent node to become satisfied for different values of the chosen intention.`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>Analysis mode</rdest>
+        <lbutton></lbutton>
+        <ldest></ldest>
+    </box>
+    <box>
+        <title>Analysis mode</title>
+        <text><![CDATA[`Switch to analysis mode, choose the amount of timepoints you would like to have based on how many outcomes you would like to see, and click simulate single path. Did you get an error while simulating?`]]></text>
+        <more><![CDATA[`The number of time points will be equal to the number of steps of the simulation.`]]></more>
+        <rbutton>No</rbutton>
+        <rdest>Explore results</rdest>
+        <lbutton>Yes</lbutton>
+        <ldest>Avoid the errorExplore results</ldest>
+    </box>
+    <box>
+        <title>Assign satisfaction value</title>
+        <text><![CDATA[`Assign this intention a satisfaction value that represents the satisfaction state you would like it to be.`]]></text>
+        <more><![CDATA[`See 2a. Set initial satisfaction value in the Build tutorial for a refresher.`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>Analysis mode</rdest>
+        <lbutton></lbutton>
+        <ldest></ldest>
+    </box>
+    <box>
+        <title>Avoid the error</title>
+        <text><![CDATA[`Remove the most recent constraint, and then assign the intention a different satisfaction value or leave the satisfaction value to "no value"`]]></text>
+        <more></more>
+        <rbutton>Next</rbutton>
+        <rdest>Analysis mode</rdest>
+        <lbutton></lbutton>
+        <ldest></ldest>
+    </box>
+    <box>
+        <title>Explore results</title>
+        <text><![CDATA[`Turn on EVO mode in the upper toolbar. Use the slider at the bottom of the screen to explore the outcome at each timepoint.`]]></text>
+        <more><![CDATA[`EVO is optional, but allows you to more easily see the satisfaction values of intentions. To view the meanings of each color, go the EVO tab in the top toolbar. In analysis mode, there can also be conflicting values, meaning that based on the propagation of satisfaction values, there is evidence both for and against a certain intention. Using the slider in the toolbar, you can use EVO to view the overall percentage in each evidence pair, how an intention's evidence pair changes over time, or the satisfaction values at each time point using the slider.`]]></more>
+        <rbutton>Done</rbutton>
+        <rdest>close</rdest>
+        <lbutton>Continue analyzing</lbutton>
+        <ldest>Pick an intention</ldest>
+    </box>
+</tutorial>

@@ -1,0 +1,128 @@
+<tutorial>
+    <box>
+        <title>1a. Add actor to model</title>
+        <text><![CDATA[`To begin modeling, consider which actors exist in your scenario. Actors are people, roles, or organizations who hold stake in the scenario being modeled. <ul><li>Click and drag the actor icons from the toolbar on the left into the workspace</li><li>Drag the actor around the workspace to relocate the actor</li><li>Click the X icon to delete the actor</li><li>Drag the icon with outward facing arrows to resize the actor</li></ul>`]]></text>
+        <more><![CDATA[`<video onclick="play()" class="video-container" muted><source src="http://localhost:8080/userguides/tutorial-1a.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>1b. Use actor inspector</rdest>
+        <lbutton></lbutton>
+        <ldest></ldest>
+    </box>
+    <box>
+        <title>1b. Use actor inspector</title>
+        <text><![CDATA[`To add details to an actor, click on the given actor. The actor inspector window will show up on the right hand side of the page.<ul><li>Change the actor's name by typing in the box</li><li>Change the actor's type using the dropdown</li></ul>`]]></text>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1b.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>1c. Add intentions to the model</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>1a. Add actor to model</ldest>
+    </box>
+    <box>
+        <title>1c. Add intentions to the model</title>
+        <text><![CDATA[`Intentions are the pieces that make up a goal model. Intentions are goals, tasks, soft goals, or resources. Intentions should be placed within an actor if the actor is the stakeholder who the intention belongs to, or they can be outside of any actor if they are general to the situation. <ul><li>Click and drag the goal, task, soft goal, or resource icons from the toolbar on the left into the workspace</li><li>Drag the intention around the workspace to relocate the intention</li><li>Click the X icon to delete the intention</li><li>Drag the icon with outward facing arrows to resize the intention</li></ul>`]]></text>
+        <more><![CDATA[`Choosing the type of intention:<ul><li>Goals are the main objectives of an actor</li><li>Soft goals are like goals, but it cannot be definitively determined whether they are satsifed (ie. describing something as "good")</li><li>Tasks are actions that can be done</li><li>Resources are physical materials</li><video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1c.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>1d. Use intention inspector</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>1b. Use actor inspector</ldest>
+    </box>
+    <box>
+        <title>1d. Use intention inspector</title>
+        <text><![CDATA[`When you click on an intention, a menu on the right panel will appear allowing you to change characteristics of your selected intention.<ul><li>Change the intention's name by typing in the box, then clicking out to save</li><li>Set the intention's initial satisfaction value</li><li>Choose the intention's function type</li><li>Determine satisfaction values over set time points</li><li>Set the interval over which the intention is present</li></ul>For now, focus on naming the intention.`]]></text>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1d.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>1e. Link intentions</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>1c. Add intentions to the model</ldest>
+    </box>
+    <box>
+        <title>1e. Link intentions</title>
+        <text><![CDATA[`Links connect intentions to one another and specify their relationship.<ul><li>Click on an intention and then drag the right arrow to another intention to connect them</li><li>Click on the link and select the gear icon to choose the link type</li><li>Click on the red X icon to delete the link</li><li>Drag anywhere on the arrow to create joints</li></ul>`]]></text>
+        <more><![CDATA[`"and" and "or" relationships are applicable when a parents node has two or more child nodes linked to it, and the satisfaction of the parent is dependent on either the satisfaction of all or at least one of the children, respectively. The other types of links refer to how evidence is propagated and are only between two intentions; evidence can be propagated for or against fulfillment, can be propagated either fully or partially, and can be propagated for only evidence for or only evidence against. <video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1e.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>2a. Set initial satisfaction value</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>1d. Use intention inspector</ldest>
+    </box>
+    <box>
+        <title>2a. Set initial satisfaction value</title>
+        <text><![CDATA[`Satisfaction values describe how much evidence there is for an intention being met at a given time point. Not all intentions will have set inital satisfaction values, and some intentions will automatically be assigned satisfaction values during analysis based on linked intentions' satisfaction values. To set an element's initial satisfaction value: <ul><li>Click on the element to view its intention inspector</li><li>Under Initial Satisfaction Value, select the desired value</li></ul>`]]></text>
+        <more><![CDATA[`For example, a goal would be satisfied if the goal is achieved, or a task would be satisfied if it has already been completed. A resource would be denied if the resource has not been acquired. <video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2a.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>2b. Set evolving functions</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>1e. Link intentions</ldest>
+    </box>
+    <box>
+        <title>2b. Set evolving functions</title>
+        <text><![CDATA[`After giving an element an initial satisfaction value, you can set its evolving function. This function describes how the element's satisfaction value changes over time. <ul><li>Click on different options from the dropdown to view how the function's satisfaction value changes with that option.</li><li>If your element's satisfaction changes in a way not specified by any of the options, click User Defined Function. Then you can set how a function changes between time points. Add more time points with the Add button. </li><li> If the satisfaction value repeats, you can define one cycle and then Set Repeats.</li></ul>`]]></text>
+        <more><![CDATA[`The simplest (elementary) functions are constant, increasing, decreasing, and stochastic. These functions describe whether the satisfaction value can change, and if so, how. For example, some intentions may be able to become unsatsified after being satisfied, but meeting with someone cannot, because after the meeting has happened, it can never un-happen. The other evolving functions are combinations of the four elementary functions. For compound functions, time points represent the time at which the function changes. If none of the compound functions describe the process, you can create a user-defined function, in which you set the number of time points and the function within each of those time points. <video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2b.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>2c. Limit presence intervals</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>2a. Set initial satisfaction value</ldest>
+    </box>
+    <box>
+        <title>2c. Limit presence intervals</title>
+        <text><![CDATA[`By default, intentions are present in the model for the entire time range. If an actor or intention is present for only part of the time range, use the slider in its Inspector to limit the time range. The blue shading shows the time during which that intention or actor is present.`]]></text>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2c.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>2d. Change max absolute time</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>2b. Set evolving functions</ldest>
+    </box>
+    <box>
+        <title>2d. Change max absolute time</title>
+        <text><![CDATA[`The Max Absolute Time refers to the amount of time during which the model is representing the situation, and is measured in arbitrary units. The Max Absolute Time is the maximum possible number of divisions of the timeline that you could make.<ul><li>Click on the View Assignments List tab in the navigation bar</li><li>Click and type in the Max Absolute Time text box or use the arrows to modify the Max Absolute Time</li><li>Close the Absolute and Relative Assignments popup to save</li></ul>`]]></text>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2d.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>2e. Set absolute time points</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>2c. Limit presence intervals</ldest>
+    </box>
+    <box>
+        <title>2e. Set absolute time points</title>
+        <text><![CDATA[`Absolute Time Points enables you to specify events, such as changing the satisfaction level of an intention, that occur at specific time points during the overall range between Time 0 and the Max Absolute Time.<ul><li>Click on the View Assignments List tab in the navigation bar</li><li>Type in the Absolute Time Points with spaces in between</li><li>Close the Absolute and Relative Assignments popup to save</li></ul>`]]></text>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2e.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>2f. Set intention assignments</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>2d. Change max absolute time</ldest>
+    </box>
+    <box>
+        <title>2f. Set intention assignments</title>
+        <text><![CDATA[`With two or more intentions that have Relative Time Points assigned by Evolving Functions, you can specify the relative order in which the Relative Time Points occur.<ul><li>Choose the first relative time point from the dropdown Epoch Boundary Name 1</li><li>Choose the second relative time point from the dropdown Epoch Boundary Name 2</li><li>Set whether the first relative time point is before, after, or at the same time as the second relative time point using the Relationship dropdown</li></ul>`]]></text>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2f.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>2g. Set absolute relationship assignments</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>2e. Set absolute time points</ldest>
+    </box>
+    <box>
+        <title>2g. Set absolute relationship assignments</title>
+        <text><![CDATA[`If a link in your model evolves over time, you can set the time point at which the relationship changes.<ul><li>Click and type in the Assigned Time text box or use the arrows to modify the Assigned Time</li><li>Click the Unassign button if you change your mind about making an absolute assignment</li></ul>`]]></text>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2g.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>2h. Change presence intervals</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>2f. Set intention assignments</ldest>
+    </box>
+    <box>
+        <title>2h. Change presence intervals</title>
+        <text><![CDATA[`By default, intentions and actors are present in the model throughout the time period. If you have modified the presence intervals of any actors or intentions, these modified intervals will show up in the Presence Condition Assignments table.<ul><li>Click the View Assignments List at the top of the screen and navigate to the Presence Condition Assignments section</li><li>Click the blue plus sign</li><li>Select the intention or actor from the dropdown</li><li>Click and type in the Available Time text boxes to set the max and min times the actor or intention is present or use the arrows</li><li>Click Add to save your changes</li><li>Click the trash can icon to remove the presence condition and make the actor or intention available throughout the time period</li></ul>`]]></text>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2h.mov"></video>`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>2i. Use intermediate values table</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>2g. Set absolute relationship assignments</ldest>
+    </box>
+    <box>
+        <title>2i. Use intermediate values table</title>
+        <text><![CDATA[`If you have set absolute time points in your model and you have intentions with relative time points, you can use the intermediate values table to specify where those relative time points occur in relation to the absolute time points.<ul><li>Click the Intermediate Values Table tab in the navigation bar</li><li>Each intention with an evolving function is displayed as a row, and each absolute time point is displayed as a column</li><li>Intentions will default to their initial satisfaction value at all absolute time points</li><li>Click the dropdowns to specify the satisfaction value of each node at each absolute time point</li></ul>`]]></text>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-2i.mov"></video>`]]></more>
+        <rbutton>Done</rbutton>
+        <rdest>close</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>2h. Change presence intervals</ldest>
+    </box>
+</tutorial>
