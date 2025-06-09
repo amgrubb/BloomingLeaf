@@ -1,12 +1,21 @@
 <tutorial>
     <box>
+        <title>1. Overview - Create the model</title>
+        <text>In this tutorial, you will build a goal model by representing who participates in a scenario, what their contributions are, and how those contributions relate to and depend on each other.</text>
+        <more></more>
+        <rbutton>Next</rbutton>
+        <rdest>1a. Add actor to model</rdest>
+        <lbutton></lbutton>
+        <ldest></ldest>
+    </box>
+    <box>
         <title>1a. Add actor to model</title>
         <text><![CDATA[`To begin modeling, consider which actors exist in your scenario. Actors are people, roles, or organizations who hold stake in the scenario being modeled. <ul><li>Click and drag the actor icons from the toolbar on the left into the workspace</li><li>Drag the actor around the workspace to relocate the actor</li><li>Click the X icon to delete the actor</li><li>Drag the icon with outward facing arrows to resize the actor</li></ul>`]]></text>
         <more><![CDATA[`<video onclick="play()" class="video-container" muted><source src="http://localhost:8080/userguides/tutorial-1a.mov"></video>`]]></more>
         <rbutton>Next</rbutton>
         <rdest>1b. Use actor inspector</rdest>
-        <lbutton></lbutton>
-        <ldest></ldest>
+        <lbutton>Back</lbutton>
+        <ldest>1. Overview - Create the model</ldest>
     </box>
     <box>
         <title>1b. Use actor inspector</title>
@@ -40,9 +49,18 @@
         <text><![CDATA[`Links connect intentions to one another and specify their relationship.<ul><li>Click on an intention and then drag the right arrow to another intention to connect them</li><li>Click on the link and select the gear icon to choose the link type</li><li>Click on the red X icon to delete the link</li><li>Drag anywhere on the arrow to create joints</li></ul>`]]></text>
         <more><![CDATA[`"and" and "or" relationships are applicable when a parents node has two or more child nodes linked to it, and the satisfaction of the parent is dependent on either the satisfaction of all or at least one of the children, respectively. The other types of links refer to how evidence is propagated and are only between two intentions; evidence can be propagated for or against fulfillment, can be propagated either fully or partially, and can be propagated for only evidence for or only evidence against. <video class="video-container" onclick="play()" muted><source src="http://localhost:8080/userguides/tutorial-1e.mov"></video>`]]></more>
         <rbutton>Next</rbutton>
-        <rdest>2a. Set initial satisfaction value</rdest>
+        <rdest>2. Overview - Adding evolutionary information</rdest>
         <lbutton>Back</lbutton>
         <ldest>1d. Use intention inspector</ldest>
+    </box>
+    <box>
+        <title>2. Overview - Adding evolutionary information</title>
+        <text><![CDATA[`Now that you have created the structure and connectivity of your model, you will add information about each intention's level of satisfaction. You will also add time-related information about how the satisfaction of different intentions change, and when those changes occur.`]]></text>
+        <more></more>
+        <rbutton>Next</rbutton>
+        <rdest>2a. Set initial satisfaction value</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>1e. Link intentions</ldest>
     </box>
     <box>
         <title>2a. Set initial satisfaction value</title>
@@ -51,7 +69,7 @@
         <rbutton>Next</rbutton>
         <rdest>2b. Set evolving functions</rdest>
         <lbutton>Back</lbutton>
-        <ldest>1e. Link intentions</ldest>
+        <ldest>2. Overview - Adding evolutionary information</ldest>
     </box>
     <box>
         <title>2b. Set evolving functions</title>

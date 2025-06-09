@@ -295,7 +295,7 @@ class GuideBox {
 
     // keeps track of which tutorial user is in (why, build, or analyze)
     static tutorial = 0;
-    static step = ['1a. Add actor to model', '1a. What is BloomingLeaf', 'Pick an intention']
+    static step = ['1. Overview - Create the model', '0. Overview - BloomingLeaf', 'Overview - Analyze the model']
 
     // load content from files
     static why = GuideBox.makeBoxes("http://localhost:8080/userguides/why.xml");

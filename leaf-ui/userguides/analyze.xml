@@ -1,12 +1,21 @@
 <tutorial>
     <box>
+        <title>Overview - Analyze the model</title>
+        <text>This tutorial assumes that you have already built a model. Next, you will use your model to answer questions about tradeoffs represented by your model. First, you will generally explore how satisfaction values of certain intentions affect other intentions. Then, you will ask a question about a specific tradeoff and use the model to simulate the answer to the question.</text>
+        <more></more>
+        <rbutton>Next</rbutton>
+        <rdest>Set satisfaction values of leaf nodes</rdest>
+        <lbutton></lbutton>
+        <ldest></ldest>
+    </box>
+    <box>
         <title>Set satisfaction values of leaf nodes</title>
         <text><![CDATA[`Begin by exploring the relationships represented in the model. Start by setting the satisfaction values of leaf nodes, which are nodes that only have arrows pointing away from them. For example, set all leaf nodes as satisfied, or set all the leaf nodes as denied. Click the green analysis button, then click Simulate Path. Think about how this affects the other nodes in the model.`]]></text>
         <more></more>
         <rbutton>Next</rbutton>
         <rdest>Set satisfaction values of root nodes</rdest>
-        <lbutton></lbutton>
-        <ldest></ldest>
+        <lbutton>Back</lbutton>
+        <ldest>Overview - Analyze the model</ldest>
     </box>
     <box>
         <title>Set satisfaction values of root nodes</title>
@@ -69,7 +78,7 @@
         <rbutton>No</rbutton>
         <rdest>Explore results</rdest>
         <lbutton>Yes</lbutton>
-        <ldest>Avoid the errorExplore results</ldest>
+        <ldest>Avoid the error</ldest>
     </box>
     <box>
         <title>Assign satisfaction value</title>

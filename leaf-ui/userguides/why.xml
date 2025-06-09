@@ -1,20 +1,47 @@
 <tutorial>
-    <box>
-        <title>1a. What is BloomingLeaf</title>
-        <text><![CDATA[`BloomingLeaf is a tool that allows users to build goal models and use them to visualize their goals and tradeoffs in a certain situation. Goal models represent the interconnected needs of different stakeholders in a scenario and how the satisfaction of some elements affects other elements. Goal models allow analysts to visualize how making certain decisions may affect other parts of a project.`]]></text>
+    <box>  
+        <title>0. Overview - BloomingLeaf</title>
+        <text><![CDATA[`BloomingLeaf is a tool that allows users to build and analyze goal models to efficiently gain insights about a certain scenario as it evolves over time.`]]></text>
         <more></more>
         <rbutton>Next</rbutton>
-        <rdest>1b. Discover the purpose of your analysis</rdest>
+        <rdest>0a. Goal modeling</rdest>
         <lbutton></lbutton>
         <ldest></ldest>
     </box>
     <box>
-        <title>1b. Discover the purpose of your analysis</title>
-        <text><![CDATA[`BloomingLeaf allows users to ask and answer questions about a given situation. In order to answer these questions, one must first build a model, and then analyze the satisfaction values of different elemeents of the model. Here are some examples of questions that may be analyzed through this tool: <ul><li>Does it matter if Goal A or Goal B is satisfied first?</li><li>Is Goal A or Goal B satisfied more often?</li><li>Given that Task A is not currently satisfied, is it possible for Goal B to become satisfied?</li><li>Can Goal A remain satisfied if Goal B becomes not satisfed?</li></ul>`]]></text>
+        <title>0a. Goal modeling</title>
+        <text><![CDATA[`Goal models represent the interconnected needs of different stakeholders in a scenario and how the satisfaction of some elements affects other elements. The main components of goal models are actors, intentions, links, and satisfaction values. <ul><li>Actors contain intentions.</li><li>Intentions are connected by links.</li><li>Intentions have satisfaction values.</li></ul>Goal models allow analysts to visualize how making certain decisions may affect other parts of a project.`]]></text>
+        <more></more>
+        <rbutton>Next</rbutton>
+        <rdest>0b. Time-related information</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>0. Overview - BloomingLeaf</ldest>
+    </box>
+    <box>
+        <title>0b. Time-related information</title>
+        <text><![CDATA[`BloomingLeaf incorporates time-related information into goal modeling, so in addition to modeling relationships at one instance in time, models can track how relationships and satisfaction values change over time. Several elements of the goal model can be modified to include time. These include:<ul><li>The number of time points of the model can be set</li><li>The number of time points to be simulated can be changed</li><li>Intentions and actors can disappear or appear at a certain time</li><li>The satisfaction value of an intention can change following a certain pattern over time</li><li>The satisfaction value of an intention can change either at a certain time or at a time defined in relation to another event</li></ul>`]]></text>
+        <more></more>
+        <rbutton>Next</rbutton>
+        <rdest>0c. Examples of insights</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>0a. Goal modeling</ldest>
+    </box>
+    <box>
+        <title>0c. Examples of insights</title>
+        <text><![CDATA[`After building a goal model, you can ask and answer questions about a given situation by looking at the satisfaction of different intentions. Here are some examples of questions that may be analyzed through this tool: <ul><li>Does it matter if Goal A or Goal B is satisfied first?</li><li>Is Goal A or Goal B satisfied more often?</li><li>Given that Task A is not currently satisfied, is it possible for Goal B to become satisfied?</li><li>Can Goal A remain satisfied if Goal B becomes not satisfed?</li></ul>`]]></text>
+        <more></more>
+        <rbutton>Next</rbutton>
+        <rdest>0d. Getting started</rdest>
+        <lbutton>Back</lbutton>
+        <ldest>0b. Time-related information</ldest>
+    </box>
+    <box>
+        <title>0d. Getting started</title>
+        <text><![CDATA[`Consider the scenario that you hope to represent and analyze with a goal model. Who is involved in the scenario? What do they contribute, and what do they hope for? How do their actions affect their goals?`]]></text>
         <more></more>
         <rbutton>Done</rbutton>
         <rdest>close</rdest>
         <lbutton>Back</lbutton>
-        <ldest>1a. What is BloomingLeaf</ldest>
+        <ldest>0c. Examples of insights</ldest>
     </box>
 </tutorial>
