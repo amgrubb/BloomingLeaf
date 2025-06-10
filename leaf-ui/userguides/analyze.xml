@@ -1,7 +1,7 @@
 <tutorial>
     <box>
         <title>Overview - Analyze the model</title>
-        <text>This tutorial assumes that you have already built a model. Next, you will use your model to answer questions about tradeoffs represented by your model. First, you will generally explore how satisfaction values of certain intentions affect other intentions. Then, you will ask a question about a specific tradeoff and use the model to simulate the answer to the question.</text>
+        <text><![CDATA[`This tutorial assumes that you have already built a model. Next, you will use your model to answer questions about tradeoffs represented by your model. First, you will generally explore how satisfaction values of certain intentions affect other intentions. Then, you will ask a question about a specific tradeoff and use the model to simulate the answer to the question.`]]></text>
         <more></more>
         <rbutton>Next</rbutton>
         <rdest>Set satisfaction values of leaf nodes</rdest>
@@ -11,7 +11,7 @@
     <box>
         <title>Set satisfaction values of leaf nodes</title>
         <text><![CDATA[`Begin by exploring the relationships represented in the model. Start by setting the satisfaction values of leaf nodes, which are nodes that only have arrows pointing away from them. For example, set all leaf nodes as satisfied, or set all the leaf nodes as denied. Click the green analysis button, then click Simulate Path. Think about how this affects the other nodes in the model.`]]></text>
-        <more></more>
+        <more><![CDATA[`<video class="video-container" onclick="play()" muted><source src="/userguides/leafnodes-video.mov"></video>In this example, we set the leaf nodes to be denied and explored what is possible in the model in these conditions.`]]></more>
         <rbutton>Next</rbutton>
         <rdest>Set satisfaction values of root nodes</rdest>
         <lbutton>Back</lbutton>
@@ -20,7 +20,7 @@
     <box>
         <title>Set satisfaction values of root nodes</title>
         <text><![CDATA[`Set the satisfaction values of the root nodes, which are nodes that only have arrows pointing toward them. These are likely the top level goals. For example, set top level goals to the minimum acceptable level of satisfaction. Click the green analysis button, then click Simulate Path.`]]></text>
-        <more><![CDATA[`If you set the satisfaction values of all top level goals, you may get an error. In that case, remove satisfaction values for some until the error goes away.`]]></more>
+        <more><![CDATA[`If you set the satisfaction values of all top level goals, you may get an error. In that case, remove satisfaction values for some until the error goes away.<video class="video-container" onclick="play()" muted><source src="/userguides/rootnodes-video.mov"></video>In this example, we set the root nodes to be satisfied and tried to run a simulation, but got an error. This indicates that it is not possible for all root nodes to be satisfied under the current conditions.`]]></more>
         <rbutton>Next</rbutton>
         <rdest>Pick an intention</rdest>
         <lbutton>Back</lbutton>
@@ -38,7 +38,7 @@
     <box>
         <title>Identify links</title>
         <text><![CDATA[`Is this intention part of an or-decomposition?`]]></text>
-        <more></more>
+        <more><![CDATA[`<img src="/userguides/links-image.png" width="80%"></img>In this example, the intentions that are part of an or-decomposition are 'do homework', 'learn the material', and 'go to class'.`]]></more>
         <rbutton>Yes</rbutton>
         <rdest>Identify parent or child</rdest>
         <lbutton>No</lbutton>
@@ -58,14 +58,23 @@
         <text><![CDATA[`Does this intention have a satisfaction value?`]]></text>
         <more><![CDATA[`If it has a satisfaction value, there will be a pair of two symbols in the bottom right corner of the intention.`]]></more>
         <rbutton>Yes</rbutton>
-        <rdest>Analysis mode</rdest>
+        <rdest>Formulate a question</rdest>
         <lbutton>No</lbutton>
         <ldest>Assign satisfaction value</ldest>
     </box>
     <box>
         <title>Observe satisfaction combinations</title>
-        <text><![CDATA[`Find the other children of this intention's parent. Try different combinations of satisfaction values for the children intentions.`]]></text>
-        <more><![CDATA[`For example, try changing the other children's satisfaction values and evolving functions such that they become denied in order to explore whether the chosen intention's satisfaction value is necessary for the parent to become satisfied. Or, set the chosen intention's satisfaction value to determine whether it is possible for the parent node to become satisfied for different values of the chosen intention.`]]></more>
+        <text><![CDATA[`Find the other children of this intention's parent. Try different combinations of satisfaction values for the children intentions. Ask a question about what is possible for other intentions in the model, based on the tradeoffs between the children.`]]></text>
+        <more><![CDATA[`For example, try changing the other children's satisfaction values and evolving functions such that they become denied in order to explore whether the chosen intention's satisfaction value is necessary for the parent to become satisfied. Or, set the chosen intention's satisfaction value to determine whether it is possible for the parent node to become satisfied for different values of the chosen intention.<br/>Your question might be something along the lines of: 'How does the satisfaction value of Task 1 versus Task 2 affect the ability to satisfy Goal?' In this case, Task 1 as satisfied and Task 2 as denied and vice versa, observing whether Goal can be satisfied.`]]></more>
+        <rbutton>Next</rbutton>
+        <rdest>Analysis mode</rdest>
+        <lbutton></lbutton>
+        <ldest></ldest>
+    </box>
+    <box>
+        <title>Formulate a question</title>
+        <text><![CDATA[`Develop a question about how your selected intention affects another intention. Then, think about how you would use the tool to answer your question.`]]></text>
+        <more><![CDATA[`Your question might be something along the lines of: 'Given that Goal is satisfied, what must be true of Task?' In this case, set Goal to satisfied and simulate values of Task, or set Task to a specific value and see if you get an error.`]]></more>
         <rbutton>Next</rbutton>
         <rdest>Analysis mode</rdest>
         <lbutton></lbutton>
@@ -91,7 +100,7 @@
     </box>
     <box>
         <title>Avoid the error</title>
-        <text><![CDATA[`Remove the most recent constraint, and then assign the intention a different satisfaction value or leave the satisfaction value to "no value"`]]></text>
+        <text><![CDATA[`The error occurs because there are too many constraints on the model and it is not possible for them all to be true at the same time. This means that the situation represented by the model is not possible. Remove the most recent constraint, and then assign the intention a different satisfaction value or leave the satisfaction value to "no value"`]]></text>
         <more></more>
         <rbutton>Next</rbutton>
         <rdest>Analysis mode</rdest>
