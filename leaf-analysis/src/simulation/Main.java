@@ -26,7 +26,8 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "temp/"; 			
+		String filePath = "leaf-analysis/temp/"; //Server			
+		//String filePath = "temp/"; //Local
 		String inputFile = "default.json";
 		String outputFile = "output.out";
 				
