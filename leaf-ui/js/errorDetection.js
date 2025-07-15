@@ -392,6 +392,52 @@ function cycleSearch() {
 }
 
 /**
+ * Finds and highlights root and leaf nodes.
+ * @returns {null}
+ */
+function rootLeafSearch() {
+	var links = graph.getLinks();
+	var vertices = getElementList();
+
+	// maps ids to vertices
+	var idMap = new Map();
+	for (i = 0; i < vertices.length; i++) {
+		idMap.set(vertices[i].id, vertices[i]);
+	}
+
+	// initializes lists with all vertices
+	var roots = getElementList();
+	var leaves = getElementList();
+
+	for (i = 0; i < links.length; i++) {
+		// removes source nodes from list of roots
+		var source = idMap.get(links[i].attributes.source.id);
+		if (roots.indexOf(source) > -1) {
+			roots.splice(roots.indexOf(source), 1);
+		}
+		// removes target nodes from list of leaves
+		var target = idMap.get(links[i].attributes.target.id);
+		if (leaves.indexOf(target) > -1) {
+			leaves.splice(leaves.indexOf(target), 1);
+		}
+	}
+
+	// highlights root and leaf nodes in different colors
+	clearCycleHighlighting();
+	var colors = initColorList();
+	for (var l = 0; l < leaves.length; l++) {
+		var leafNode = graph.getCell(leaves[l]);
+		cellView = leafNode.findView(paper);
+		cellView.model.attr({ '.outer': { 'fill': colors[0] } });
+	}
+	for (var l = 0; l < roots.length; l++) {
+		var leafNode = graph.getCell(roots[l]);
+		cellView = leafNode.findView(paper);
+		cellView.model.attr({ '.outer': { 'fill': colors[1] } });
+	}
+}
+
+/**
  * Creates a hash map representation of the graph.  
  * @param {Array.<Object>} vertices list of elements in the graph
  * @param {Array.<Object>} links list of links in the graph

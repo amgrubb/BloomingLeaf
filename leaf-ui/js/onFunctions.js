@@ -1175,6 +1175,16 @@ paper.on("link:options", function (cell) {
         clearCycleHighlighting(selectResult);
     });
 
+    $('#btn-show-root-leaf').on('click', function () {
+        if (this.textContent == "Highlight Root/Leaf Nodes") {
+            rootLeafSearch();
+            this.textContent = "Clear Root/Leaf Highlighting";
+        } else if (this.textContent == "Clear Root/Leaf Highlighting") {
+            clearCycleHighlighting(selectResult); // clears all highlighting in the model
+            this.textContent = "Highlight Root/Leaf Nodes";
+        }    
+    });
+
     // Save the current graph to json file
     $('#btn-save').on('click', function () {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
