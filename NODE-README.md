@@ -35,7 +35,7 @@ This file explains how to run the tool using a Node.js server.
 
 	b) In terminal (or cmd on Windows) type the following command: 
 	
-	1. `cd` to the folder `../BloomingLeaf/leaf-analysis/.` (path of the directory containing both app.js and temp folder). This step is required, the tool will not work if Step 2 is executed outside the `leaf-analysis` folder.
+	1. `cd` to the folder `../BloomingLeaf/.` (path of the directory containing app.js). This step is required, the tool will not work if Step 2 is executed outside the root BloomingLeaf folder.
 	
 	2. Type `node app.js` in terminal.
 	
