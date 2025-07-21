@@ -1159,13 +1159,7 @@ paper.on("link:options", function (cell) {
     });
 
     $('#btn-show-root-leaf').on('click', function () {
-        if (this.textContent == "Highlight Root/Leaf Nodes") {
-            rootLeafSearch();
-            this.textContent = "Clear Root/Leaf Highlighting";
-        } else if (this.textContent == "Clear Root/Leaf Highlighting") {
-            clearCycleHighlighting(selectResult); // clears all highlighting in the model
-            this.textContent = "Highlight Root/Leaf Nodes";
-        }    
+        rootLeafSearch();
     });
 
     // Save the current graph to json file
