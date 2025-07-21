@@ -327,23 +327,6 @@ class GuideBox {
                 }
             });
         })
-
-        // for using csvs
-        // fetch(file).then((res) => res.text()).then((text) => {
-        //     var arr = text.split("\n");
-        //     for(var i = 0; i < arr.length; i++) {
-        //         var line = arr[i].split(",,");
-        //         for(var j = 0; j < line.length; j++) {
-        //             line[j] = line[j].trim();
-        //         }
-        //         if (line[6]) {
-        //             boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3], line[5]], [line[4], line[6]])));
-        //         } else {
-        //             boxes.set(line[0], (new GuideBox(line[0], line[1], line[2], [line[3]], [line[4]])));
-        //         }
-        //     }
-        // })
-        // returns a map of ids and their content
         return boxes;
     }
 
