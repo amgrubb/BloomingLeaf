@@ -11,7 +11,7 @@ Start up setting up the project locally, see [setup guide](https://github.com/am
 and follow the directions for a local `Node` server.
 
 ## Committing Changes
-Before working on an update, make sure their is an appropriate entry on the [issues page](https://github.com/amgrubb/BloomingLeaf/issues) and assign yourself to this issue.
+Before working on an update, make sure there is an appropriate entry on the [issues page](https://github.com/amgrubb/BloomingLeaf/issues) and assign yourself to this issue.
 
 Generally, we follow [this diagram](http://nvie.com/files/Git-branching-model.pdf) for our workflow model, but we exclusively use pull requests to commit to both `develop` and `master`.
 

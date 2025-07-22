@@ -79,7 +79,7 @@ Navigate to the root project directory `../BloomingLeaf/.` (path of the director
 If `index.js` was overwritten, compare and put back the correct contents.
 
 8. Create and update the SSL certificate. This step is tricky and you may need your system administrator to help you. We recommend reviewing these two resources ([OpenSSL](https://docs.openiam.com/docs-4.2.1.3/appendix/2-openssl), [Node.js Certs](https://dev.to/devland/how-to-generate-and-use-an-ssl-certificate-in-nodejs-2996)).   
-Once you have created the certifications, you need to update `index.js` with the correct information. Update `host` with the correc addres and `port` with the server port you are hosting on (we assume port `8080`). Update the absoltue path to the key/certificate files for `key`, `ca`, and `cert`. We show examples for a fake server called `gru`. In `index.js` update the following lines (approximately lines 9 through 17):  
+Once you have created the certifications, you need to update `index.js` with the correct information. Update `host` with the correct address and `port` with the server port you are hosting on (we assume port `8080`). Update the absolute path to the key/certificate files for `key`, `ca`, and `cert`. We show examples for a fake server called `gru`. In `index.js` update the following lines (approximately lines 9 through 17):  
 	```
 	const host = '0.0.0.0';
 	const port = 8080;
@@ -105,7 +105,7 @@ which should show the output:
 
 ## Additional Information
 
-The server is run either through `app.js` or `index.js`. These files are very similar and contains most of the code for the server. It creates the server and listen to the port 8080. It handles incoming requests (GET and POST request). When the post request gets called, it execute the `Blooming.jar` file, and write the result to the response.
+The server is run either through `app.js` or `index.js`. These files are very similar and contain most of the code for the server. It creates the server and listen to the port 8080. It handles incoming requests (GET and POST request). When the post request gets called, it execute the `Blooming.jar` file, and write the result to the response.
 
 The server uses three additional files: `backendComm.js`, `fileServer.js`, and `index.html`. 
 
