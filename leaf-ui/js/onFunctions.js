@@ -298,9 +298,9 @@ class GuideBox {
     static step = ['1. Overview - Create the model', '0. Overview - BloomingLeaf', 'Overview - Analyze the model']
 
     // load content from files
-    static why = GuideBox.makeBoxes("/userguides/why.xml");
-    static build = GuideBox.makeBoxes("/userguides/build.xml");
-    static analyze = GuideBox.makeBoxes("/userguides/analyze.xml");
+    static why = GuideBox.makeBoxes("./userguides/why.xml");
+    static build = GuideBox.makeBoxes("./userguides/build.xml");
+    static analyze = GuideBox.makeBoxes("./userguides/analyze.xml");
 
     // initialize tutorial content
     static makeBoxes (file) {

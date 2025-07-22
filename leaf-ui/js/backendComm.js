@@ -7,7 +7,7 @@
  */
 
 
-var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
+var url = "./untitled.html";	// Hardcoded URL for Node calls. 
 var globalAnalysisResult; 
 
 /** Makes a request for the backend and calls the response function.

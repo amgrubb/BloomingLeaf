@@ -3,15 +3,14 @@
 //Last updated: 4/28/2019
 
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
-//var userPath = "/Users/<your user path here>/BloomingLeaf"
-var userPath = "/Users/judySmith/git/BloomingLeaf"
+var userPath = "<your absolute path here>/BloomingLeaf"
 
 var http = require('http'),
     url = require('url'),
-    fileServer = require('./node/fileServer.js'),
+    fileServer = require('./leaf-analysis/node/fileServer.js'),
     fs = require('fs');
-    qs = require('./node/query.js'),
-    utils = require('./node/utils.js');
+    qs = require('./leaf-analysis/node/query.js'),
+    utils = require('./leaf-analysis/node/utils.js');
     exec = require('child_process').exec;
 
 //TODO: If wait is not longer needed, this function can be removed.

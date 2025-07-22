@@ -10,7 +10,25 @@ BloomingLeaf is developed primarily in [The Grubb Lab](https://amgrubb.github.io
 
 Review our [overview poster](http://www.cs.toronto.edu/~amgrubb/archive/RE18-Demo-Poster.pdf) to learn more about the original goals of BloomingLeaf Version 1.0. 
 
-## *Updates for Version 2.0*
+BloomingLeaf can be run locally as a `Node` server or online as an `Express` application, see the [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/SETUP.md) for addtional details. 
+
+## Versions
+### *Updates for Version 2.7*
+In Version 2.7, we integrated training into the tool itself. We implemented a set of embedded instructional tutorials that aim to guide and instruct first-time goal modelers, while clarifying the common points of confusion. These updates are described in our MoDRE'25 paper.
+
+Additionally, we now allow users to host BloomingLeaf as an Express application, which enables online hosting with the SSL protocol (see updated [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/SETUP.md)).
+
+### *Updates for Version 2.6*
+In Version 2.6, we added the Presences Conditions feature as describe in our MoDRE'23 paper: https://ieeexplore.ieee.org/document/10260777
+
+### *Updates for Version 2.5*
+In Version 2.5, we focused on updating the analysis capabilities and a few bug fixes to the interface. 
+
+- We implemented backend capabilities for model merging, as described in [our RE'22 paper](https://ieeexplore.ieee.org/document/9920087).
+- We added the EVO capabilities to the *Next State* view and created filters for intention filters, as described in our RE@Next'23 paper.
+- We extended the EVO palettes to add more appropriate options for our international audience and users with a color vision deficiency, as describe in our iStar'23 paper.
+
+### *Updates for Version 2.0*
 In Version 2.0, we refactored the code base to take advantage of the underlying backbone.js structure:
 
 * removed all global variables in `leaf-ui` and updated the graph data structure
@@ -25,7 +43,7 @@ In Version 2.0, we refactored the code base to take advantage of the underlying 
 
 See our [summary](https://amgrubb.github.io/posts/2021-08-13-backbone-refactor) for further details about these additions.
 
-## *Updates for Version 1.5*
+### *Updates for Version 1.5*
 In Version 1.5, we added the following model-management features (+ additional small features and fixes):
 
 * separate analysis results from model elements
@@ -37,7 +55,7 @@ In Version 1.5, we added the following model-management features (+ additional s
 See our [poster](https://amgrubb.github.io/posts/2021-04-01-restructuring) for further details about these additions.
 
 ## Want to contribute?
-The [contributing guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/CONTRIBUTING.md) and [Node guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/NODE-README.md) are good places to start. 
+The [contributing guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/CONTRIBUTING.md) and [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/SETUP.md) are good places to start. 
 If you have questions, feel free to ask.
 
 ## Dependencies

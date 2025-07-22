@@ -7,11 +7,11 @@ Anyone with a gitHub account can contribute a bug/feature request to our project
 The following explains how to contribute to BloomingLeaf. 
 
 ## Project Setup
-1. Clone / Download a local copy of the [repository](https://github.com/amgrubb/BloomingLeaf).
-2. You also need a copy of [Rappid](https://www.jointjs.com/), which we use as the basis for our tool. We are currently using Rappid Academic Version 1.7.0 in the [live](http://www.cs.utoronto.ca/~amgrubb/leaf-blooming-ui) version of our tool.
+Start up setting up the project locally, see [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/SETUP.md)
+and follow the directions for a local `Node` server.
 
 ## Committing Changes
-Before working on an update, make sure their is an appropriate entry on the [issues page](https://github.com/amgrubb/BloomingLeaf/issues) and assign yourself to this issue.
+Before working on an update, make sure there is an appropriate entry on the [issues page](https://github.com/amgrubb/BloomingLeaf/issues) and assign yourself to this issue.
 
 Generally, we follow [this diagram](http://nvie.com/files/Git-branching-model.pdf) for our workflow model, but we exclusively use pull requests to commit to both `develop` and `master`.
 
@@ -70,9 +70,13 @@ After pull requests are approved you will need to update your local copy of `dev
 
 You may also need to merge it into other ongoing feature branches.
 `git checkout feature-otherWork`
-`git merge —no-ff develop`
+`git merge --no-ff develop`
 
 After your pull request has been approved you can delete your local copy of feature-myfeature. Project admins will delete the origin version of feature-myfeature upon approving the corresponding pull request.
 `git branch -d feature-myfeature`
 
 Thanks again for your contributions to BloomingLeaf.
+
+## Additional Help and Resources
+
+We also recommend reviewing our [Backbone.js Training](https://docs.google.com/document/d/1wnJlPZLH0HuUheInG7MVXaQfYZHSo9LOwTfgtadBJYc/edit?usp=sharing) and our [JavaScript Best Practices, and What Not To Do](https://docs.google.com/document/d/1qkBLs7yYifW6CdxHZtn9jRXV1ODnr1YgxJY2E2DufnM/edit?usp=sharing).

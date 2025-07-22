@@ -1,0 +1,24 @@
+{
+  "name": "bloomingleaf",
+  "version": "1.0.0",
+  "description": "BloomingLeaf is a browser-based tool that uses precise semantics (with Tropos) to model goals and relationships that evolve over time. Simulation techniques are used to enable stakeholders to choose between design alternatives, ask what-if questions, and plan for software evolution in an ever-changing world. BloomingLeaf implements the Evolving Intentions framework.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amgrubb/BloomingLeaf.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amgrubb/BloomingLeaf/issues"
+  },
+  "homepage": "https://github.com/amgrubb/BloomingLeaf#readme",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0"
+  }
+}
