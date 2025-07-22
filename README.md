@@ -10,13 +10,13 @@ BloomingLeaf is developed primarily in [The Grubb Lab](https://amgrubb.github.io
 
 Review our [overview poster](http://www.cs.toronto.edu/~amgrubb/archive/RE18-Demo-Poster.pdf) to learn more about the original goals of BloomingLeaf Version 1.0. 
 
-BloomingLeaf can be run locally as a `Node` server or online as an `Express` application, see the [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/NODE-README.md) for addtional details. 
+BloomingLeaf can be run locally as a `Node` server or online as an `Express` application, see the [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/SETUP.md) for addtional details. 
 
 ## Versions
 ### *Updates for Version 2.7*
 In Version 2.7, we integrated training into the tool itself. We implemented a set of embedded instructional tutorials that aim to guide and instruct first-time goal modelers, while clarifying the common points of confusion. These updates are described in our MoDRE'25 paper.
 
-Additionally, we now allow users to host BloomingLeaf as an Express application, which enables online hosting with the SSL protocol (see updated [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/NODE-README.md)).
+Additionally, we now allow users to host BloomingLeaf as an Express application, which enables online hosting with the SSL protocol (see updated [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/SETUP.md)).
 
 ### *Updates for Version 2.6*
 In Version 2.6, we added the Presences Conditions feature as describe in our MoDRE'23 paper: https://ieeexplore.ieee.org/document/10260777
@@ -55,7 +55,7 @@ In Version 1.5, we added the following model-management features (+ additional s
 See our [poster](https://amgrubb.github.io/posts/2021-04-01-restructuring) for further details about these additions.
 
 ## Want to contribute?
-The [contributing guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/CONTRIBUTING.md) and [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/NODE-README.md) are good places to start. 
+The [contributing guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/CONTRIBUTING.md) and [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/SETUP.md) are good places to start. 
 If you have questions, feel free to ask.
 
 ## Dependencies

@@ -7,7 +7,7 @@ Anyone with a gitHub account can contribute a bug/feature request to our project
 The following explains how to contribute to BloomingLeaf. 
 
 ## Project Setup
-Start up setting up the project locally, see [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/NODE-README.md)
+Start up setting up the project locally, see [setup guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/SETUP.md)
 and follow the directions for a local `Node` server.
 
 ## Committing Changes
