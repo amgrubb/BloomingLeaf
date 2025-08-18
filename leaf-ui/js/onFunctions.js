@@ -419,6 +419,75 @@ class GuideBox {
         var popup = this;
         $('#help-next').on('click', function(event) {
             $('#help-next').off('click')
+
+            // var xhr = new XMLHttpRequest();
+            // xhr.open("POST", './mouse_tracking', true);
+            // xhr.setRequestHeader("Content-Type", "application/json");
+            // xhr.onload = function () {
+            //     console.log("aaaa")
+            // }
+            // xhr.send(data);
+
+            // console.log(JSON.stringify({ "timestamp": new Date().toUTCString() }))
+
+            fetch('./mouse_tracking', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "timestamp": new Date().toUTCString() })
+            })
+            .then(response => response.json())
+            .then(response => console.log(JSON.stringify(response)))
+
+            // const fs = require('fs');
+            // const filePath = 'mouse_tracking.csv';
+            // const dataToWrite = new Date().toUTCString() + ", " + popup.task + popup.button_names[0];
+
+            // fs.writeFile(filePath, dataToWrite, (err) => {
+            // if (err) {
+            //     console.error('Error writing file:', err);
+            //     return;
+            // }
+            // console.log('File written successfully!');
+            // });
+
+            // var timestamp = new Date().toUTCString()
+            // console.log("INSERT INTO clicks SET timestamp = '" + timestamp + "', button = '" + popup.button_names[0] + "', step = '" + popup.task + "';")
+
+            // var mysql = require('mysql')
+            // const connection = mysql.createConnection({
+            //     host: 'gru',
+            //     user: 'root',
+            //     password: 'xxx',
+            //     database: 'tracking',
+            // });
+
+            // connection.connect(function(err) {
+            //     if (err) throw err;
+            //     console.log("Connected!");
+            //     connection.query("INSERT INTO clicks SET timestamp = '" + timestamp + "', button = '" + popup.button_names[0] + "', step = '" + popup.task + "';", function (err, result) {
+            //         if (err) throw err;
+            //         console.log("Result: " + result);
+            //     });
+            // });
+
+            // connection.end()
+
+            // var timestamp = new Date().toUTCString()
+            // var queryString = "query=" +  encodeURIComponent("insert into tracking(timestamp) '(CREATE " + timestamp + ")'") + "&type=" + 1;
+            // console.log(queryString);
+            // $.ajax({
+            //     type: "POST",
+            //     url: "./ajaxjs.php",
+            //     data: queryString,
+            //     cache: false,
+            //     success: function(html) {
+            //         console.log(html);
+            //     },
+            // });
+
             popup.openRight();
         });
         $('#help-prev').on('click', function(event) {

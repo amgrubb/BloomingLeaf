@@ -69,8 +69,22 @@ app.post('/{*any}', jsonParser, (req, res) => {
   if (body || queryObj.name) {
     queryObj.message = body;
   }
-  fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
-  passIntoJar(res);
+  if (req.url == "/mouse_tracking") {
+    const fs = require('fs');
+    const filePath = './mouse_tracking_data.csv';
+    const content = body
+
+    fs.writeFile(filePath, content, (err) => {
+    if (err) {
+      console.error('Error writing file:', err);
+      return;
+    }
+      console.log('File written successfully!');
+    });
+  } else {
+    fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
+    passIntoJar(res);
+  }
 });
 
 function passIntoJar(res) {
