@@ -71,15 +71,7 @@ app.post('/{*any}', jsonParser, (req, res) => {
     queryObj.message = body;
   }
   if (req.url == "/mouse_tracking") {
-    fs.writeFileSync(path.join(__dirname, "mouse_tracking.csv"), body.timestamp, {"flags": "a"});
-    // fs.writeFile(filePath, content, (err) => {
-    // if (err) {
-    //   console.error('Error writing file:', err);
-    //   return;
-    // }
-    //   console.log('File written successfully!');
-      
-    // });
+    fs.appendFileSync(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n");
   } else {
     fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
     passIntoJar(res);
