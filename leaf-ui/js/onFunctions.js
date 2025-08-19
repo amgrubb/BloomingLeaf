@@ -407,9 +407,11 @@ class GuideBox {
         // makes learn more button
         $('.learn-more').on('click', function () {
             if (document.getElementsByClassName("more")[0].style.display == "none") {
+                trackClick(popup.task, "Learn More")
                 document.getElementsByClassName("more")[0].style.display = "";
                 document.getElementsByClassName("learn-more")[0].textContent = "Show Less";
             } else {
+                trackClick(popup.task, "Show Less")
                 document.getElementsByClassName("more")[0].style.display = "none";
                 document.getElementsByClassName("learn-more")[0].textContent = "Learn More";
             }
@@ -419,37 +421,23 @@ class GuideBox {
         var popup = this;
         $('#help-next').on('click', function(event) {
             $('#help-next').off('click')
-            console.log(new Date().toUTCString().replace(",",""))
-
-            fetch('./mouse_tracking', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "timestamp": new Date().toUTCString().replace(",",""),
-                    "user": pseudonym,
-                    "step": popup.task,
-                    "button": popup.button_names[0],
-                })
-            })
-            .then(response => response.json())
-            .then(response => console.log(JSON.stringify(response)))
-
+            trackClick(popup.task, popup.button_names[0])
             popup.openRight();
         });
         $('#help-prev').on('click', function(event) {
             $('#help-prev').off('click')
+            trackClick(popup.task, popup.button_names[1])
             popup.openLeft();
         });
 
         // called when dropdown is used to jump between steps
         $('#jump').on('click', function(event) {
             if (GuideBox.tutorial == 1 || GuideBox.tutorial == 2) {
-                GuideBox.tutorial  = 0;
+                trackClick(popup.task, "Jump to Modeling")
+                GuideBox.tutorial = 0;
                 GuideBox.build.get(GuideBox.step[0]).showGuideBox();
             } else if (GuideBox.tutorial == 0) {
+                trackClick(popup.task, "Jump to Analysis")
                 GuideBox.tutorial  = 2;
                 GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
             }
@@ -503,7 +491,9 @@ class GuideBox {
             tutorial = GuideBox.analyze;
         }
         
+        var task = GuideBox.step[GuideBox.tutorial]
         var id = document.getElementById('guide-name').value;
+        trackClick(task, id + " (via dropdown)")
         GuideBox.step[GuideBox.tutorial] = id;
         tutorial.get(id).showGuideBox();
     }
@@ -511,18 +501,21 @@ class GuideBox {
 
 // begins build tutorial when clicked from Help tab
 $('#build-btn').on('click', function () {
+    trackClick("NA", "Open Modeling (via nav bar)")
     GuideBox.tutorial  = 0;
     GuideBox.build.get(GuideBox.step[0]).showGuideBox();
 });
 
 // begins why tutorial when clicked from Help tab
 $('#why-btn').on('click', function () {
+    trackClick("NA", "Open Purpose (via nav bar)")
     GuideBox.tutorial  = 1;
     GuideBox.why.get(GuideBox.step[1]).showGuideBox();
 });
 
 // begins analyze tutorial when clicked from Help tab
 $('#analyze-btn').on('click', function () {
+    trackClick("NA", "Open Analysis (via nav bar)")
     GuideBox.tutorial  = 2;
     GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
 });
@@ -534,8 +527,27 @@ $('#guide-name').on('change', function () {
 
 // closes help popups
 $('#help-close').on('click',  function () {
+    trackClick(GuideBox.step[GuideBox.tutorial], "Close Tutorials")
     closePopup('#help-popup');
 });
+
+function trackClick(step, button) {
+    fetch('./mouse_tracking', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "timestamp": new Date().toUTCString().replace(",",""),
+            "user": pseudonym,
+            "step": step,
+            "button": button,
+        })
+    })
+    .then(response => response.json())
+    .then(response => console.log(JSON.stringify(response)))
+}
 
 /**
  * Displays the absolute and relative assignments modal for the user.
