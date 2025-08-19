@@ -428,15 +428,18 @@ class GuideBox {
             // }
             // xhr.send(data);
 
-            // console.log(JSON.stringify({ "timestamp": new Date().toUTCString() }))
-
             fetch('./mouse_tracking', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ "timestamp": new Date().toUTCString() })
+                body: JSON.stringify({
+                    "timestamp": new Date().toUTCString(),
+                    "user": pseudonym,
+                    "step": popup.task,
+                    "button": popup.button_names[0],
+                })
             })
             .then(response => response.json())
             .then(response => console.log(JSON.stringify(response)))

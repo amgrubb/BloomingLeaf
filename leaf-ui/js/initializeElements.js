@@ -145,3 +145,22 @@ var sliderValuePosition = 200 + $('#paper').width() * 0.1;
 $('#sliderValue').css("top", '20px');
 $('#sliderValue').css("left", (200 + $('#paper').width() * 0.1).toString() + 'px');
 $('#sliderValue').css("position", "relative");
+
+dialog = new joint.ui.Dialog(
+	{
+		type: "warning",
+		width: window.innerWidth * 0.3,
+		title: "Tracking Notice",
+		content: '<div class="creativity-dialog-wrapper" data-prompttype="alert">During this studt, some of your mouse clicks will be recorded. Please enter a pseudonym under which your clicks can be logged.<br/>'+
+		'</br>Pseudonym:<input type="text" id="pseudonym" value=""><input type="submit" value="Submit" id="pseudonym-submit"></div>',
+		modal: false
+	});
+dialog.open();
+
+var pseudonym;
+$('#pseudonym-submit').click(function() {
+	pseudonym = document.getElementById("pseudonym").value;
+    var $div = $(this).closest('div.fg');
+    var $closeButton = $div.find('button.btn-close');
+    $closeButton.trigger('click');
+});

@@ -62,6 +62,7 @@ var jsonParser = bodyParser.json()
 
 app.post('/{*any}', jsonParser, (req, res) => {
   let body = req.body;
+  console.log(body)
 
   var messages = [];
   var currentId = 0;
@@ -70,17 +71,15 @@ app.post('/{*any}', jsonParser, (req, res) => {
     queryObj.message = body;
   }
   if (req.url == "/mouse_tracking") {
-    const fs = require('fs');
-    const filePath = './mouse_tracking_data.csv';
-    const content = body
-
-    fs.writeFile(filePath, content, (err) => {
-    if (err) {
-      console.error('Error writing file:', err);
-      return;
-    }
-      console.log('File written successfully!');
-    });
+    fs.writeFileSync(path.join(__dirname, "mouse_tracking.csv"), body.timestamp, {"flags": "a"});
+    // fs.writeFile(filePath, content, (err) => {
+    // if (err) {
+    //   console.error('Error writing file:', err);
+    //   return;
+    // }
+    //   console.log('File written successfully!');
+      
+    // });
   } else {
     fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
     passIntoJar(res);
