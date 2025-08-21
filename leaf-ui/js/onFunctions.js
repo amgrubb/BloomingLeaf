@@ -203,7 +203,11 @@ $('#btn-zoom-out').on('click', function () { zoomOut(paperScroller); });
 $('#btn-fnt').on('click', function () { defaultFont(paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(paper); });
-$('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
+$('#legend').on('click', function () {
+    trackClick("NA", "Legend")
+    window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250');
+    return false;
+});
 
 /**
  * returns whether or not a color is dark
@@ -276,6 +280,7 @@ function displayPalette(palette_number ) {
 
 /** displays the color palette options*/
 $('#evo-color-key').on('click', function () {
+    trackClick("NA", "EVO Color Key");
     removeHighlight();
     $('#palette-options').css("display", "");
 });
@@ -549,6 +554,11 @@ function trackClick(step, button) {
     .then(response => console.log(JSON.stringify(response)))
 }
 
+function playVideo(self) {
+    trackClick(GuideBox.step[GuideBox.tutorial], "Play Video")
+    self.play()
+}
+
 /**
  * Displays the absolute and relative assignments modal for the user.
  */
@@ -605,8 +615,13 @@ $('#analysis-btn').on('click', function () {
     }
 });
 
+$('#download-doc').on('click', function() {
+    trackClick("NA", "Download Documentation")
+});
+
 /** For Load Sample Model button */
 $('#load-sample').on('click', function() {
+    trackClick("NA", "Load Sample Model")
     // $.getJSON('https://www.cs.toronto.edu/~amgrubb/archive/REJ19-SI/MFull.json', function(myData){		
     //     var response = JSON.stringify(myData);
     //     var newModel = new Blob([response], {type : 'application/json'});

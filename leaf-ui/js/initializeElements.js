@@ -163,6 +163,8 @@ dialog.open();
 
 var pseudonym;
 dialog.on("action:submit", function() {
-	pseudonym = document.getElementById("pseudonym").value;
-	dialog.close();
+	if (document.getElementById("pseudonym").value.length > 0) {
+		pseudonym = document.getElementById("pseudonym").value;
+		dialog.close();
+	}
 })
