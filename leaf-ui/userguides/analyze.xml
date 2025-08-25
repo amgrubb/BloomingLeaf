@@ -11,7 +11,7 @@
     <box>
         <title>Set satisfaction values of leaf nodes</title>
         <text><![CDATA[`Begin by exploring the relationships represented in the model. Start by setting the satisfaction values of leaf nodes, which are nodes that only have arrows pointing away from them. For example, set all leaf nodes as satisfied, or set all the leaf nodes as denied. Click the green analysis button, then click Simulate Path. Think about how this affects the other nodes in the model.`]]></text>
-        <more><![CDATA[`<video class="video-container" onclick="playVideo(self)" muted><source src="/userguides/leafnodes-video.mov"></video>In this example, we set the leaf nodes to be denied and explored what is possible in the model in these conditions.`]]></more>
+        <more><![CDATA[`<video class="video-container" onclick="playVideo(this)" muted><source src="/userguides/leafnodes-video.mov"></video>In this example, we set the leaf nodes to be denied and explored what is possible in the model in these conditions.`]]></more>
         <rbutton>Next</rbutton>
         <rdest>Set satisfaction values of root nodes</rdest>
         <lbutton>Back</lbutton>
@@ -20,7 +20,7 @@
     <box>
         <title>Set satisfaction values of root nodes</title>
         <text><![CDATA[`Set the satisfaction values of the root nodes, which are nodes that only have arrows pointing toward them. These are likely the top level goals. For example, set top level goals to the minimum acceptable level of satisfaction. Click the green analysis button, then click Simulate Path.`]]></text>
-        <more><![CDATA[`If you set the satisfaction values of all top level goals, you may get an error. In that case, remove satisfaction values for some until the error goes away.<video class="video-container" onclick="playVideo(self)" muted><source src="/userguides/rootnodes-video.mov"></video>In this example, we set the root nodes to be satisfied and tried to run a simulation, but got an error. This indicates that it is not possible for all root nodes to be satisfied under the current conditions.`]]></more>
+        <more><![CDATA[`If you set the satisfaction values of all top level goals, you may get an error. In that case, remove satisfaction values for some until the error goes away.<video class="video-container" onclick="playVideo(this)" muted><source src="/userguides/rootnodes-video.mov"></video>In this example, we set the root nodes to be satisfied and tried to run a simulation, but got an error. This indicates that it is not possible for all root nodes to be satisfied under the current conditions.`]]></more>
         <rbutton>Next</rbutton>
         <rdest>Pick an intention</rdest>
         <lbutton>Back</lbutton>

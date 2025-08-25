@@ -156,7 +156,8 @@ dialog = new joint.ui.Dialog(
 		'</br>Pseudonym:<input type="text" id="pseudonym" value=""></div>',
 		modal: false,
 		buttons: [
-			{ action: "submit", content: "Submit"}
+			{ action: "submit", content: "Submit", position: "left" },
+			{ action: "tutorials", content: "Submit & Start Tutorial", position: "right" }
 		]
 	});
 dialog.open();
@@ -166,5 +167,14 @@ dialog.on("action:submit", function() {
 	if (document.getElementById("pseudonym").value.length > 0) {
 		pseudonym = document.getElementById("pseudonym").value;
 		dialog.close();
+	}
+})
+dialog.on("action:tutorials", function() {
+	if (document.getElementById("pseudonym").value.length > 0) {
+		pseudonym = document.getElementById("pseudonym").value;
+		dialog.close();
+		trackClick("NA", "Open Purpose (via nav bar)")
+		GuideBox.tutorial  = 1;
+		GuideBox.why.get(GuideBox.step[1]).showGuideBox();
 	}
 })
