@@ -203,7 +203,11 @@ $('#btn-zoom-out').on('click', function () { zoomOut(paperScroller); });
 $('#btn-fnt').on('click', function () { defaultFont(paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(paper); });
-$('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
+$('#legend').on('click', function () {
+    trackClick("NA", "Legend")
+    window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250');
+    return false;
+});
 
 /**
  * returns whether or not a color is dark
@@ -276,6 +280,7 @@ function displayPalette(palette_number ) {
 
 /** displays the color palette options*/
 $('#evo-color-key').on('click', function () {
+    trackClick("NA", "EVO Color Key");
     removeHighlight();
     $('#palette-options').css("display", "");
 });
@@ -283,240 +288,262 @@ $('#evo-color-key').on('click', function () {
 /**
  * Guide me instructions
 */
-class GuideBox {
+// class GuideBox {
 
-    constructor(task, instructions, context, button_names, button_paths) {
-        this.task = task;
-        this.instructions = instructions;
-        this.context = context;
-        this.button_names = button_names;
-        this.button_paths = button_paths;
-    }
+//     constructor(task, instructions, context, button_names, button_paths) {
+//         this.task = task;
+//         this.instructions = instructions;
+//         this.context = context;
+//         this.button_names = button_names;
+//         this.button_paths = button_paths;
+//     }
 
-    // keeps track of which tutorial user is in (why, build, or analyze)
-    static tutorial = 0;
-    static step = ['1. Overview - Create the model', '0. Overview - BloomingLeaf', 'Overview - Analyze the model']
+//     // keeps track of which tutorial user is in (why, build, or analyze)
+//     static tutorial = 0;
+//     static step = ['1. Overview - Create the model', '0. Overview - BloomingLeaf', 'Overview - Analyze the model']
 
-    // load content from files
-    static why = GuideBox.makeBoxes("./userguides/why.xml");
-    static build = GuideBox.makeBoxes("./userguides/build.xml");
-    static analyze = GuideBox.makeBoxes("./userguides/analyze.xml");
+//     // load content from files
+//     static why = GuideBox.makeBoxes("./userguides/why.xml");
+//     static build = GuideBox.makeBoxes("./userguides/build.xml");
+//     static analyze = GuideBox.makeBoxes("./userguides/analyze.xml");
 
-    // initialize tutorial content
-    static makeBoxes (file) {
-        var boxes = new Map();
+//     // initialize tutorial content
+//     static makeBoxes (file) {
+//         var boxes = new Map();
 
-        // for using xmls
-        fetch(file).then((res) => res.text()).then((text) => {
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(text,"text/xml");
-            const tutorialNode = xmlDoc.querySelector("tutorial");
-            const tutorial = tutorialNode.querySelectorAll("box");
-            tutorial.forEach((tutorial) => {
-                const title = tutorial.querySelector("title").textContent;
-                const text = tutorial.querySelector("text").textContent;
-                const more = tutorial.querySelector("more").textContent;
-                const rbutton = tutorial.querySelector("rbutton").textContent;
-                const rdest = tutorial.querySelector("rdest").textContent;
-                const lbutton = tutorial.querySelector("lbutton").textContent;
-                const ldest = tutorial.querySelector("ldest").textContent;
-                if (lbutton.length > 0) {
-                    boxes.set(title, (new GuideBox(title, text, more, [rbutton, lbutton], [rdest, ldest])));
-                } else {
-                    boxes.set(title, (new GuideBox(title, text, more, [rbutton], [rdest])));
-                }
-            });
+//         // for using xmls
+//         fetch(file).then((res) => res.text()).then((text) => {
+//             const parser = new DOMParser();
+//             const xmlDoc = parser.parseFromString(text,"text/xml");
+//             const tutorialNode = xmlDoc.querySelector("tutorial");
+//             const tutorial = tutorialNode.querySelectorAll("box");
+//             tutorial.forEach((tutorial) => {
+//                 const title = tutorial.querySelector("title").textContent;
+//                 const text = tutorial.querySelector("text").textContent;
+//                 const more = tutorial.querySelector("more").textContent;
+//                 const rbutton = tutorial.querySelector("rbutton").textContent;
+//                 const rdest = tutorial.querySelector("rdest").textContent;
+//                 const lbutton = tutorial.querySelector("lbutton").textContent;
+//                 const ldest = tutorial.querySelector("ldest").textContent;
+//                 if (lbutton.length > 0) {
+//                     boxes.set(title, (new GuideBox(title, text, more, [rbutton, lbutton], [rdest, ldest])));
+//                 } else {
+//                     boxes.set(title, (new GuideBox(title, text, more, [rbutton], [rdest])));
+//                 }
+//             });
+//         })
+//         return boxes;
+//     }
+
+//     // displays a tutorial box
+//     showGuideBox() {
+//         $('#help-next').off('click')
+//         $('#help-prev').off('click')
+
+//         // determines which tutorial user has selected
+//         var tutorial;
+//         if (GuideBox.tutorial == 0) {
+//             tutorial = GuideBox.build;
+//         } else if (GuideBox.tutorial == 1) {
+//             tutorial = GuideBox.why;
+//         } else if (GuideBox.tutorial == 2) {
+//             tutorial = GuideBox.analyze;
+//         }
+
+//         // makes dropdown menu
+//         document.getElementById("guide-name").innerHTML = "";
+//         for (let [key, value] of tutorial) {
+//             if (key.length > 0) {
+//                 if (key == this.task) {
+//                     $('#guide-name').append(`<option value="${key}" selected>${key}</option>`)
+//                 } else {
+//                     $('#guide-name').append(`<option value="${key}">${key}</option>`)
+//                 }
+//             }
+//         }
+        
+//         // sets content of the popup
+//         var helpPopup = document.getElementById('help-popup');
+
+//         var helpTitle = document.getElementById('help-title');
+//         helpTitle.innerHTML = this.task;
+
+//         var helpContent = document.getElementById('help-content');
+//         //if there is learn more content, display the learn more button
+//         if (this.context.length > 0){
+//             helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="learn-more guide-link">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;
+//         }
+//         //if the context section (learn more) is empty do not show the learn more button
+//         else{
+//             helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1);
+//         }
+
+//         // makes jump to build/analysis button
+//         var jumpto;
+//         if (GuideBox.tutorial == 1 | GuideBox.tutorial == 2) {
+//             jumpto = "Modeling";
+//         } else if (GuideBox.tutorial == 0) {
+//             jumpto = "Analysis"
+//         }
+//         helpContent.innerHTML = helpContent.innerHTML.concat(`<br><br/><button id="jump" class="guide-link">` + "Jump to " + jumpto + `</button><br/>`)
+//         if (jumpto == "Modeling") {
+//             $('#jump').css("float", "left")
+//         } else {
+//             $('#jump').css("float", "right")
+//         }
+
+//         // adds buttons for navigation
+//         var buttons = []
+//         for (var i = 0; i < this.button_names.length; i++) {
+//             buttons.push({ action: "next", content: this.button_names[i], position: "right" })
+//         }
+
+//         document.getElementById("guide-name").style.display = "";
+
+//         $('.help-button-r')[0].textContent = buttons[0].content;
+//         if (buttons[1]) {
+//             $('.help-button-l')[0].textContent = buttons[1].content;
+//             $('.help-button-l').css("display", "");
+//         } else {
+//             $('.help-button-l').css("display", "none");
+//         }
+//         $('#help-popup').css("display", "");
+        
+//         // makes learn more button
+//         $('.learn-more').on('click', function () {
+//             if (document.getElementsByClassName("more")[0].style.display == "none") {
+//                 document.getElementsByClassName("more")[0].style.display = "";
+//                 document.getElementsByClassName("learn-more")[0].textContent = "Show Less";
+//             } else {
+//                 document.getElementsByClassName("more")[0].style.display = "none";
+//                 document.getElementsByClassName("learn-more")[0].textContent = "Learn More";
+//             }
+//         });
+
+//         // called when next or back buttons are clicked
+//         var popup = this;
+//         $('#help-next').on('click', function(event) {
+//             $('#help-next').off('click')
+//             popup.openRight();
+//         });
+//         $('#help-prev').on('click', function(event) {
+//             $('#help-prev').off('click')
+//             popup.openLeft();
+//         });
+
+//         // called when dropdown is used to jump between steps
+//         $('#jump').on('click', function(event) {
+//             if (GuideBox.tutorial == 1 || GuideBox.tutorial == 2) {
+//                 GuideBox.tutorial  = 0;
+//                 GuideBox.build.get(GuideBox.step[0]).showGuideBox();
+//             } else if (GuideBox.tutorial == 0) {
+//                 GuideBox.tutorial  = 2;
+//                 GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
+//             }
+//         });
+//     }
+
+//     // opens the tutorial linked by the next/righthand button
+//     openRight() {
+//         var tutorial;
+//         if (GuideBox.tutorial == 0) {
+//             tutorial = GuideBox.build;
+//         } else if (GuideBox.tutorial == 1) {
+//             tutorial = GuideBox.why;
+//         } else if (GuideBox.tutorial == 2) {
+//             tutorial = GuideBox.analyze;
+//         }
+//         var id = tutorial.get($('#help-title')[0].innerHTML).button_paths[0]
+//         if (id != "close") {
+//             GuideBox.step[GuideBox.tutorial] = id;
+//             tutorial.get(id).showGuideBox();
+//         } else {
+//             $('#help-popup').css("display", "none");
+//         }
+//     }
+
+//     // opens the tutorial linked by the back/lefthand button
+//     openLeft() {
+//         var tutorial;
+//         if (GuideBox.tutorial == 0) {
+//             tutorial = GuideBox.build;
+//         } else if (GuideBox.tutorial == 1) {
+//             tutorial = GuideBox.why;
+//         } else if (GuideBox.tutorial == 2) {
+//             tutorial = GuideBox.analyze;
+//         }
+//         var id = tutorial.get($('#help-title')[0].innerHTML).button_paths[1]
+//         if (id != "close") {
+//             GuideBox.step[GuideBox.tutorial] = id;
+//             tutorial.get(id).showGuideBox();
+//         }
+//     }
+
+//     // opens the tutorial when dropdown menu is used
+//     static skip() {
+//         var tutorial;
+//         if (GuideBox.tutorial == 0) {
+//             tutorial = GuideBox.build;
+//         } else if (GuideBox.tutorial == 1) {
+//             tutorial = GuideBox.why;
+//         } else if (GuideBox.tutorial == 2) {
+//             tutorial = GuideBox.analyze;
+//         }
+        
+//         var id = document.getElementById('guide-name').value;
+//         GuideBox.step[GuideBox.tutorial] = id;
+//         tutorial.get(id).showGuideBox();
+//     }
+// }
+
+// // begins build tutorial when clicked from Help tab
+// $('#build-btn').on('click', function () {
+//     GuideBox.tutorial  = 0;
+//     GuideBox.build.get(GuideBox.step[0]).showGuideBox();
+// });
+
+// // begins why tutorial when clicked from Help tab
+// $('#why-btn').on('click', function () {
+//     GuideBox.tutorial  = 1;
+//     GuideBox.why.get(GuideBox.step[1]).showGuideBox();
+// });
+
+// // begins analyze tutorial when clicked from Help tab
+// $('#analyze-btn').on('click', function () {
+//     GuideBox.tutorial  = 2;
+//     GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
+// });
+
+// // skips around when dropdown is used
+// $('#guide-name').on('change', function () {
+//     GuideBox.skip();
+// });
+
+// // closes help popups
+// $('#help-close').on('click',  function () {
+//     closePopup('#help-popup');
+// });
+
+function trackClick(step, button) {
+    fetch('./mouse_tracking', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "timestamp": new Date().toUTCString().replace(",",""),
+            "user": pseudonym,
+            "step": step,
+            "button": button,
         })
-        return boxes;
-    }
-
-    // displays a tutorial box
-    showGuideBox() {
-        $('#help-next').off('click')
-        $('#help-prev').off('click')
-
-        // determines which tutorial user has selected
-        var tutorial;
-        if (GuideBox.tutorial == 0) {
-            tutorial = GuideBox.build;
-        } else if (GuideBox.tutorial == 1) {
-            tutorial = GuideBox.why;
-        } else if (GuideBox.tutorial == 2) {
-            tutorial = GuideBox.analyze;
-        }
-
-        // makes dropdown menu
-        document.getElementById("guide-name").innerHTML = "";
-        for (let [key, value] of tutorial) {
-            if (key.length > 0) {
-                if (key == this.task) {
-                    $('#guide-name').append(`<option value="${key}" selected>${key}</option>`)
-                } else {
-                    $('#guide-name').append(`<option value="${key}">${key}</option>`)
-                }
-            }
-        }
-        
-        // sets content of the popup
-        var helpPopup = document.getElementById('help-popup');
-
-        var helpTitle = document.getElementById('help-title');
-        helpTitle.innerHTML = this.task;
-
-        var helpContent = document.getElementById('help-content');
-        //if there is learn more content, display the learn more button
-        if (this.context.length > 0){
-            helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1) + `<br><br/><button class="learn-more guide-link">Learn More</button><br/><div class="more" style='display:none'>` + this.context.substring(1, this.context.length-1) + `</div>`;
-        }
-        //if the context section (learn more) is empty do not show the learn more button
-        else{
-            helpContent.innerHTML = this.instructions.substring(1, this.instructions.length-1);
-        }
-
-        // makes jump to build/analysis button
-        var jumpto;
-        if (GuideBox.tutorial == 1 | GuideBox.tutorial == 2) {
-            jumpto = "Modeling";
-        } else if (GuideBox.tutorial == 0) {
-            jumpto = "Analysis"
-        }
-        helpContent.innerHTML = helpContent.innerHTML.concat(`<br><br/><button id="jump" class="guide-link">` + "Jump to " + jumpto + `</button><br/>`)
-        if (jumpto == "Modeling") {
-            $('#jump').css("float", "left")
-        } else {
-            $('#jump').css("float", "right")
-        }
-
-        // adds buttons for navigation
-        var buttons = []
-        for (var i = 0; i < this.button_names.length; i++) {
-            buttons.push({ action: "next", content: this.button_names[i], position: "right" })
-        }
-
-        document.getElementById("guide-name").style.display = "";
-
-        $('.help-button-r')[0].textContent = buttons[0].content;
-        if (buttons[1]) {
-            $('.help-button-l')[0].textContent = buttons[1].content;
-            $('.help-button-l').css("display", "");
-        } else {
-            $('.help-button-l').css("display", "none");
-        }
-        $('#help-popup').css("display", "");
-        
-        // makes learn more button
-        $('.learn-more').on('click', function () {
-            if (document.getElementsByClassName("more")[0].style.display == "none") {
-                document.getElementsByClassName("more")[0].style.display = "";
-                document.getElementsByClassName("learn-more")[0].textContent = "Show Less";
-            } else {
-                document.getElementsByClassName("more")[0].style.display = "none";
-                document.getElementsByClassName("learn-more")[0].textContent = "Learn More";
-            }
-        });
-
-        // called when next or back buttons are clicked
-        var popup = this;
-        $('#help-next').on('click', function(event) {
-            $('#help-next').off('click')
-            popup.openRight();
-        });
-        $('#help-prev').on('click', function(event) {
-            $('#help-prev').off('click')
-            popup.openLeft();
-        });
-
-        // called when dropdown is used to jump between steps
-        $('#jump').on('click', function(event) {
-            if (GuideBox.tutorial == 1 || GuideBox.tutorial == 2) {
-                GuideBox.tutorial  = 0;
-                GuideBox.build.get(GuideBox.step[0]).showGuideBox();
-            } else if (GuideBox.tutorial == 0) {
-                GuideBox.tutorial  = 2;
-                GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
-            }
-        });
-    }
-
-    // opens the tutorial linked by the next/righthand button
-    openRight() {
-        var tutorial;
-        if (GuideBox.tutorial == 0) {
-            tutorial = GuideBox.build;
-        } else if (GuideBox.tutorial == 1) {
-            tutorial = GuideBox.why;
-        } else if (GuideBox.tutorial == 2) {
-            tutorial = GuideBox.analyze;
-        }
-        var id = tutorial.get($('#help-title')[0].innerHTML).button_paths[0]
-        if (id != "close") {
-            GuideBox.step[GuideBox.tutorial] = id;
-            tutorial.get(id).showGuideBox();
-        } else {
-            $('#help-popup').css("display", "none");
-        }
-    }
-
-    // opens the tutorial linked by the back/lefthand button
-    openLeft() {
-        var tutorial;
-        if (GuideBox.tutorial == 0) {
-            tutorial = GuideBox.build;
-        } else if (GuideBox.tutorial == 1) {
-            tutorial = GuideBox.why;
-        } else if (GuideBox.tutorial == 2) {
-            tutorial = GuideBox.analyze;
-        }
-        var id = tutorial.get($('#help-title')[0].innerHTML).button_paths[1]
-        if (id != "close") {
-            GuideBox.step[GuideBox.tutorial] = id;
-            tutorial.get(id).showGuideBox();
-        }
-    }
-
-    // opens the tutorial when dropdown menu is used
-    static skip() {
-        var tutorial;
-        if (GuideBox.tutorial == 0) {
-            tutorial = GuideBox.build;
-        } else if (GuideBox.tutorial == 1) {
-            tutorial = GuideBox.why;
-        } else if (GuideBox.tutorial == 2) {
-            tutorial = GuideBox.analyze;
-        }
-        
-        var id = document.getElementById('guide-name').value;
-        GuideBox.step[GuideBox.tutorial] = id;
-        tutorial.get(id).showGuideBox();
-    }
+    })
+    .then(response => response.json())
+    .then(response => console.log(JSON.stringify(response)))
 }
 
-// begins build tutorial when clicked from Help tab
-$('#build-btn').on('click', function () {
-    GuideBox.tutorial  = 0;
-    GuideBox.build.get(GuideBox.step[0]).showGuideBox();
-});
-
-// begins why tutorial when clicked from Help tab
-$('#why-btn').on('click', function () {
-    GuideBox.tutorial  = 1;
-    GuideBox.why.get(GuideBox.step[1]).showGuideBox();
-});
-
-// begins analyze tutorial when clicked from Help tab
-$('#analyze-btn').on('click', function () {
-    GuideBox.tutorial  = 2;
-    GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
-});
-
-// skips around when dropdown is used
-$('#guide-name').on('change', function () {
-    GuideBox.skip();
-});
-
-// closes help popups
-$('#help-close').on('click',  function () {
-    closePopup('#help-popup');
+$('#download-doc').on('click', function() {
+    trackClick("NA", "Download Documentation")
 });
 
 /**
@@ -577,6 +604,7 @@ $('#analysis-btn').on('click', function () {
 
 /** For Load Sample Model button */
 $('#load-sample').on('click', function() {
+    trackClick("NA", "Load Sample Model");
     // $.getJSON('https://www.cs.toronto.edu/~amgrubb/archive/REJ19-SI/MFull.json', function(myData){		
     //     var response = JSON.stringify(myData);
     //     var newModel = new Blob([response], {type : 'application/json'});

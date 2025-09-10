@@ -145,3 +145,47 @@ var sliderValuePosition = 200 + $('#paper').width() * 0.1;
 $('#sliderValue').css("top", '20px');
 $('#sliderValue').css("left", (200 + $('#paper').width() * 0.1).toString() + 'px');
 $('#sliderValue').css("position", "relative");
+
+dialog = new joint.ui.Dialog(
+	{
+		type: "warning",
+		width: window.innerWidth * 0.3,
+		title: "Tracking Notice",
+		closeButton: false,
+		content: '<div class="creativity-dialog-wrapper" data-prompttype="alert">During this study, some of your mouse clicks will be recorded. Please enter a pseudonym under which your clicks can be logged.<br/>'+
+		'</br>Pseudonym:<input type="text" id="pseudonym" value=""></div>',
+		modal: false,
+		buttons: [
+			{ action: "submit", content: "Submit", position: "left" },
+			{ action: "tutorials", content: "Submit & Start Tutorial", position: "right" }
+		]
+	});
+dialog.open();
+
+var pseudonym;
+dialog.on("action:submit", function() {
+	if (document.getElementById("pseudonym").value.length > 0) {
+		pseudonym = document.getElementById("pseudonym").value;
+		dialog.close();
+	}
+})
+dialog.on("action:tutorials", function() {
+	if (document.getElementById("pseudonym").value.length > 0) {
+		pseudonym = document.getElementById("pseudonym").value;
+		dialog.close();
+		trackClick("NA", "Open Purpose (via nav bar)")
+		GuideBox.tutorial  = 1;
+		GuideBox.why.get(GuideBox.step[1]).showGuideBox();
+	}
+})
+
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        // User has switched away or minimized the browser
+        trackClick("NA", "left BloomingLeaf tab");
+        // You could send a beacon here too if needed
+    } else {
+        // User is back on the page
+        trackClick("NA", "rejoined BloomingLeaf tab");
+    }
+});
