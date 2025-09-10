@@ -178,3 +178,14 @@ dialog.on("action:tutorials", function() {
 		GuideBox.why.get(GuideBox.step[1]).showGuideBox();
 	}
 })
+
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        // User has switched away or minimized the browser
+        trackClick("NA", "left BloomingLeaf tab");
+        // You could send a beacon here too if needed
+    } else {
+        // User is back on the page
+        trackClick("NA", "rejoined BloomingLeaf tab");
+    }
+});
