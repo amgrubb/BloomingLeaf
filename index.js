@@ -71,13 +71,13 @@ app.post('/{*any}', jsonParser, (req, res) => {
     queryObj.message = body;
   }
   if (req.url == "/mouse_tracking") {
-    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err) => {
+    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err, data) => {
       if (err) {
         console.log(err);
       } else {
         var ct = content_type_for_path(path.join(__dirname, 'leaf-ui', urlPath));
         res.writeHead(200, { "Content-Type": ct });
-        res.end();
+        res.status(200).end();
       }
       return
     });

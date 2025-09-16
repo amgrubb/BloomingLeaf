@@ -550,8 +550,16 @@ function trackClick(step, button) {
             "button": button,
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
     .then(response => console.log(JSON.stringify(response)))
+    .catch(error => {
+        console.log(error)
+    });
 }
 
 function playVideo(self) {
