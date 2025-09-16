@@ -537,29 +537,21 @@ $('#help-close').on('click',  function () {
 });
 
 function trackClick(step, button) {
-    const fs = require('fs');
-    // fetch('./mouse_tracking', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Accept': 'application/json',
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         "timestamp": new Date().toUTCString().replace(",",""),
-    //         "user": pseudonym,
-    //         "step": step,
-    //         "button": button,
-    //     })
-    // })
-    // .then(response => response.json())
-    // .then(response => console.log(JSON.stringify(response)))
-    fs.appc("mouse_tracking.csv",new Date().toUTCString().replace(",","") + "," + user + "," + step + "," + button + "\n");
-    // console.log(JSON.stringify({
-    //         "timestamp": new Date().toUTCString().replace(",",""),
-    //         "user": pseudonym,
-    //         "step": step,
-    //         "button": button,
-    //     }))
+    fetch('./mouse_tracking', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "timestamp": new Date().toUTCString().replace(",",""),
+            "user": pseudonym,
+            "step": step,
+            "button": button,
+        })
+    })
+    .then(response => response.json())
+    .then(response => console.log(JSON.stringify(response)))
 }
 
 function playVideo(self) {

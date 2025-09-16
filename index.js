@@ -70,12 +70,21 @@ app.post('/{*any}', jsonParser, (req, res) => {
   if (body || queryObj.name) {
     queryObj.message = body;
   }
-  // if (endFileSynreq.url == "/mouse_tracking") {
-  //   fs.appc(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n");
-  // } else {
+  if (req.url == "/mouse_tracking") {
+    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        var ct = content_type_for_path(path.join(__dirname, 'leaf-ui', urlPath));
+        res.writeHead(200, { "Content-Type": ct });
+        res.end();
+      }
+      return
+    });
+  } else {
     fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
     passIntoJar(res);
-  // }
+  }
 });
 
 function passIntoJar(res) {
