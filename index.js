@@ -1,6 +1,6 @@
 const express = require('express');
 const https = require('https');
-const fs = require('fs/promises');
+const fs = require('fs');
 const path = require('path');
 const app = express();
 const bodyParser = require("body-parser");
@@ -64,7 +64,6 @@ var jsonParser = bodyParser.json()
 
 app.post('/{*any}', jsonParser, async (req, res) => {
   let body = req.body;
-  console.log(body)
 
   var messages = [];
   var currentId = 0;
@@ -73,18 +72,12 @@ app.post('/{*any}', jsonParser, async (req, res) => {
     queryObj.message = body;
   }
   if (req.url == "/mouse_tracking") {
-    await fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err, data) => {
-      if (err) {
-        console.log(err);
-        res.status(500).end();
-      } else {
-        console.log(res);
-        var ct = content_type_for_path(path.join(__dirname, 'leaf-ui', urlPath));
-        res.writeHead(200, { "Content-Type": ct });
-        res.end();
-      }
-      return stdout;
-    });
+    try {
+      fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n");
+      res.status(200).end();
+    } catch {
+      res.status(500).end();
+    }
   } else {
     fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
     passIntoJar(res);
