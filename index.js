@@ -1,6 +1,6 @@
 const express = require('express');
 const https = require('https');
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
 const app = express();
 const bodyParser = require("body-parser");
@@ -32,6 +32,8 @@ const requestListener = function (req, res) {
 };
 
 app.use('/', express.static(path.join(__dirname, 'leaf-ui'), { index: 'index.html' }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/{*any}', (req, res) => {
   const urlPath = req.path;
@@ -60,7 +62,7 @@ app.get('/{*any}', (req, res) => {
 
 var jsonParser = bodyParser.json()
 
-app.post('/{*any}', jsonParser, (req, res) => {
+app.post('/{*any}', jsonParser, async (req, res) => {
   let body = req.body;
   console.log(body)
 
@@ -71,15 +73,17 @@ app.post('/{*any}', jsonParser, (req, res) => {
     queryObj.message = body;
   }
   if (req.url == "/mouse_tracking") {
-    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err, data) => {
+    await fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err, data) => {
       if (err) {
         console.log(err);
+        res.status(500).end();
       } else {
+        console.log(res);
         var ct = content_type_for_path(path.join(__dirname, 'leaf-ui', urlPath));
         res.writeHead(200, { "Content-Type": ct });
-        res.status(200).end();
+        res.end();
       }
-      return
+      return stdout;
     });
   } else {
     fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
