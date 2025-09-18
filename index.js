@@ -72,12 +72,10 @@ app.post('/{*any}', jsonParser, async (req, res) => {
     queryObj.message = body;
   }
   if (req.url == "/mouse_tracking") {
-    try {
-      fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n");
-      res.status(200).end();
-    } catch {
-      res.status(500).end();
-    }
+    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n");
+    res.writeHead(200, { "Content-Type": 'text/plain' });
+    res.write(analysisFileString);
+    res.end();
   } else {
     fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
     passIntoJar(res);
