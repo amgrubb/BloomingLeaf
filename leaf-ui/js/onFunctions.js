@@ -551,7 +551,9 @@ function trackClick(step, button) {
         })
     })
     .then(response => {
+        console.log("made it here")
         if (!response.ok) {
+            console.log("there was an error")
             return response.text().then(text => { throw new Error(text) });
         }
         return response.json();
