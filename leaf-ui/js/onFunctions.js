@@ -537,7 +537,7 @@ $('#help-close').on('click',  function () {
 });
 
 function trackClick(step, button) {
-    fetch('./mouse_tracking', {
+    fetch('/mouse_tracking', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -554,11 +554,11 @@ function trackClick(step, button) {
         console.log("made it here")
         if (!response.ok) {
             console.log("there was an error")
-            return response.text().then(text => { throw new Error(text) });
+            throw new Error(`Server responded with status ${response.status}`);
         }
         return response.json();
     })
-    .then(response => console.log(JSON.stringify(response)))
+    .then(data => console.log(JSON.stringify(data)))
     .catch(error => {
         console.log(error)
     });

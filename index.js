@@ -62,23 +62,49 @@ app.get('/{*any}', (req, res) => {
 
 var jsonParser = bodyParser.json()
 
-app.post('/{*any}', jsonParser, async (req, res) => {
-  let body = req.body;
+// var cors=require('cors');
 
-  var messages = [];
-  var currentId = 0;
-  let queryObj = req.query || {};
-  if (body || queryObj.name) {
-    queryObj.message = body;
-  }
-  if (req.url == "/mouse_tracking") {
-    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n");
-    res.writeHead(200, { "Content-Type": 'text/plain' });
-    res.write(analysisFileString);
-    res.end();
-  } else {
+// app.use(cors({
+//     credentials: true,
+//     preflightContinue: true,
+//     methods: ['POST'],
+//     origin: true
+// }));
+
+app.post('/{*any}', jsonParser, async (req, res) => {
+  if (req.url != "/mouse_tracking") {
+
+    let body = req.body;
+
+    var messages = [];
+    var currentId = 0;
+    let queryObj = req.query || {};
+    if (body || queryObj.name) {
+      queryObj.message = body;
+    }
     fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
     passIntoJar(res);
+  }
+});
+
+app.post('/mouse_tracking', express.json(), async (req, res) => {
+  res.setTimeout(5000, () => {
+    response.status(504).send("5s timeout");
+  });
+
+  try {
+    const body = req.body;
+
+    if (!body.timestamp || !body.user || !body.step || !body.button) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const line = `${body.timestamp},${body.user},${body.step},${body.button}\n`;
+    await fs.promises.appendFile(path.join(__dirname, "mouse_tracking.csv"), line);
+    res.json({ message: "finished" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to write file" });
   }
 });
 
