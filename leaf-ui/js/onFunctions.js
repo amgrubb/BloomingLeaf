@@ -551,14 +551,12 @@ function trackClick(step, button) {
         })
     })
     .then(response => {
-        console.log("made it here")
         if (!response.ok) {
-            console.log("there was an error")
-            throw new Error(`Server responded with status ${response.status}`);
+            throw new Error(response.status);
         }
         return response.json();
     })
-    .then(data => console.log(JSON.stringify(data)))
+    .then(response => console.log(JSON.stringify(response)))
     .catch(error => {
         console.log(error)
     });
@@ -1642,5 +1640,3 @@ function unhighlightPalettes() {
         $(id).css("background-color", "#f9f9f9"); //unhighlight the choice
     }
 }
-
-

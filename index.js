@@ -31,8 +31,38 @@ const requestListener = function (req, res) {
     });
 };
 
-app.post('/mouse_tracking', express.json(), async (req, res) => {
+app.use('/', express.static(path.join(__dirname, 'leaf-ui'), { index: 'index.html' }));
+
+app.get('/{*any}', (req, res) => {
+  const urlPath = req.path;
+
+  if (urlPath && urlPath.length > 1) {
+    fs.readFile(path.join(__dirname, 'leaf-ui', urlPath), function (err, data) {
+      // readFile call back function
+      if (err) { // in case of error send back a 404 error and error object
+        var out = { error: "not_found", message: "'" + path.join(__dirname, 'leaf-ui', urlPath) + "' not found" };
+        res.writeHead(404, { "Content-Type": "application/json" });
+        console.log(JSON.stringify(out));
+        res.write(JSON.stringify(out));
+        res.end();
+      }
+      else {
+        // send success code 200 and Content-type based on file extension 
+        var ct = content_type_for_path(path.join(__dirname, 'leaf-ui', urlPath));
+        res.writeHead(200, { "Content-Type": ct });
+        res.write(data);
+        res.end();
+      }
+    });
+    return;
+  }
+});
+
+var jsonParser = bodyParser.json()
+
+app.post('/{*any}', jsonParser, (req, res) => {
   let body = req.body;
+  console.log(body)
 
   var messages = [];
   var currentId = 0;
@@ -40,81 +70,18 @@ app.post('/mouse_tracking', express.json(), async (req, res) => {
   if (body || queryObj.name) {
     queryObj.message = body;
   }
-
-  fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      var ct = content_type_for_path(path.join(__dirname, 'leaf-ui', urlPath));
-      res.writeHead(200, { "Content-Type": ct });
-      res.status(200).end();
-    }
-    return
-  });
-});
-
-app.use('/', express.static(path.join(__dirname, 'leaf-ui'), { index: 'index.html' }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get('/{*any}', (req, res) => {
-  const urlPath = req.path;
-
-  if (req.path != "/mouse_tracking") {
-    let body = req.body;
-
-    var messages = [];
-    var currentId = 0;
-    let queryObj = req.query || {};
-    if (body || queryObj.name) {
-      queryObj.message = body;
-    }
-    
-    if (urlPath && urlPath.length > 1) {
-      fs.readFile(path.join(__dirname, 'leaf-ui', urlPath), function (err, data) {
-        // readFile call back function
-        if (err) { // in case of error send back a 404 error and error object
-          var out = { error: "not_found", message: "'" + path.join(__dirname, 'leaf-ui', urlPath) + "' not found" };
-          res.writeHead(404, { "Content-Type": "application/json" });
-          console.log(JSON.stringify(out));
-          res.write(JSON.stringify(out));
-          res.end();
-        }
-        else {
-          // send success code 200 and Content-type based on file extension 
-          var ct = content_type_for_path(path.join(__dirname, 'leaf-ui', urlPath));
-          res.writeHead(200, { "Content-Type": ct });
-          res.write(data);
-          res.end();
-        }
-      });
-      return;
-    }
-  }
-});
-
-var jsonParser = bodyParser.json()
-
-// var cors=require('cors');
-
-// app.use(cors({
-//     credentials: true,
-//     preflightContinue: true,
-//     methods: ['POST'],
-//     origin: true
-// }));
-
-app.post('/{*any}', jsonParser, async (req, res) => {
-  if (req.url != "/mouse_tracking") {
-
-    let body = req.body;
-
-    var messages = [];
-    var currentId = 0;
-    let queryObj = req.query || {};
-    if (body || queryObj.name) {
-      queryObj.message = body;
-    }
+  if (req.url == "/mouse_tracking") {
+    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err, data) => {
+      if (err) {
+        console.log(err);
+      } else {
+        var ct = content_type_for_path(path.join(__dirname, 'leaf-ui', urlPath));
+        res.writeHead(200, { "Content-Type": ct });
+        res.status(200).end();
+      }
+      return
+    });
+  } else {
     fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
     passIntoJar(res);
   }
