@@ -64,19 +64,16 @@ app.post('/{*any}', jsonParser, (req, res) => {
   let body = req.body;
   console.log(body)
 
-  var messages = [];
-  var currentId = 0;
   let queryObj = req.query || {};
   if (body || queryObj.name) {
     queryObj.message = body;
   }
   if (req.url == "/mouse_tracking") {
-    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err, data) => {
+    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err) => {
       if (err) {
         console.log(err);
+        return res.status(500).json({error: "failed to write csv"})
       } else {
-        var ct = content_type_for_path(path.join(__dirname, 'leaf-ui', urlPath));
-        res.writeHead(200, { "Content-Type": ct });
         res.status(200).end();
       }
       return
