@@ -62,15 +62,22 @@ var jsonParser = bodyParser.json()
 
 app.post('/{*any}', jsonParser, (req, res) => {
   let body = req.body;
+  console.log(body)
 
-  var messages = [];
-  var currentId = 0;
   let queryObj = req.query || {};
   if (body || queryObj.name) {
     queryObj.message = body;
   }
   if (req.url == "/mouse_tracking") {
-    fs.appendFileSync(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n");
+    fs.appendFile(path.join(__dirname, "mouse_tracking.csv"),body.timestamp + "," + body.user + "," + body.step + "," + body.button + "\n", (err) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({error: "failed to write csv"})
+      } else {
+        res.status(200).end();
+      }
+      return
+    });
   } else {
     fs.writeFileSync(path.join(__dirname, "leaf-analysis/temp/default.json"), JSON.stringify(body));
     passIntoJar(res);

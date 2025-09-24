@@ -525,7 +525,7 @@ $('#evo-color-key').on('click', function () {
 // });
 
 function trackClick(step, button) {
-    fetch('./mouse_tracking', {
+    fetch('/mouse_tracking', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -538,8 +538,16 @@ function trackClick(step, button) {
             "button": button,
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+        return response.json();
+    })
     .then(response => console.log(JSON.stringify(response)))
+    .catch(error => {
+        console.log(error)
+    });
 }
 
 $('#download-doc').on('click', function() {
