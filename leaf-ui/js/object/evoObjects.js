@@ -268,39 +268,10 @@ class EVO {
     }
 
     /**
-     * Switches to analysis slider, uses the single path analysis results to calculate evaluation percentages, stores time point info, prints info to console
-     * @param {Object} elementList Array of the elements that contains the element's ID and analysis results
-     * @param {ResultBBM} analysisResult
-     */
-    singlePathResponse(elementList, analysisResult) {
-        $('#modelingSlider').css("display", "none");
-        $('#analysisSlider').css("display", "");
-        document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
-        var percentPerEvaluation = 1.0 / this.numTimePoints;
-
-        // Calculate evaluation percentages and other data for ColorVis
-        for (var i = 0; i < this.numIntentions; ++i) {
-            this.intentionListColorVis[i].id = elementList[i].id;
-            for (var k = 0; k < this.numTimePoints; ++k) {
-                var currEval = elementList[i].status[k];
-                // For fill intention by timepoint
-                this.intentionListColorVis[i].timePoints.push(currEval);
-                var newPercent = this.intentionListColorVis[i].evals[currEval];
-                newPercent += percentPerEvaluation;
-                this.intentionListColorVis[i].evals[currEval] = newPercent;
-            }
-        }
-        this.generateConsoleReport();
-        EVO.refresh(analysisResult);
-    }
-
-
-    /**
      * Turn off EVO
      * @param {ResultBBM} analysisResult
      */
     static deactivate(analysisResult) {
-        document.getElementById("colorResetAnalysis").value = 0;
         document.getElementById("colorReset").value = 0;
         EVO.sliderOption = 0;
         EVO.refresh(analysisResult);
@@ -640,7 +611,6 @@ class EVO {
         else {
             $('#modelingSlider').css("display", "none");
             $('#analysisSlider').css("display", "");
-            document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
         }
         EVO.refresh(analysisResult);
     }
@@ -699,15 +669,6 @@ class EVONextState {
      * Sets new slider option and refreshes to make applicable changes
      * @param {String} newSliderOption 
      */
-    static setSliderOptionNextState() {
-        var newSliderOption = $('#colorResetAnalysis').val();
-        if (newSliderOption >= 0 && newSliderOption <= 2) {
-            EVONextState.sliderOptionNextState = newSliderOption;
-        } else {
-            console.log("ERROR: invalid sliderOption");
-        }
-        EVONextState.refresh();
-    }
 
     /**
      * Changes visual layout depending on slider option.

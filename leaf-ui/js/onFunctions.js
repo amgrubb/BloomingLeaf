@@ -229,14 +229,6 @@ function closePopup(ID){
 }
 
 /**
- * closes a popup
- * @param ID the popup to be closed 
-*/
-function closePopup(ID){
-    $(ID).css("display", "none");
-}
-
-/**
  * displays the color palette
  * @param {*} palette_number 
  */
@@ -295,12 +287,11 @@ class GuideBox {
 
     // keeps track of which tutorial user is in (why, build, or analyze)
     static tutorial = 0;
-    static step = ['1. Overview - Create the model', '0. Overview - BloomingLeaf', 'Overview - Analyze the model']
+    static step = ['1. Overview - Create the model', '0. Overview - BloomingLeaf']
 
     // load content from files
     static why = GuideBox.makeBoxes("./userguides/why.xml");
     static build = GuideBox.makeBoxes("./userguides/build.xml");
-    static analyze = GuideBox.makeBoxes("./userguides/analyze.xml");
 
     // initialize tutorial content
     static makeBoxes (file) {
@@ -356,9 +347,6 @@ class GuideBox {
                 }
             }
         }
-        
-        // sets content of the popup
-        var helpPopup = document.getElementById('help-popup');
 
         var helpTitle = document.getElementById('help-title');
         helpTitle.innerHTML = this.task;
@@ -377,14 +365,8 @@ class GuideBox {
         var jumpto;
         if (GuideBox.tutorial == 1 | GuideBox.tutorial == 2) {
             jumpto = "Modeling";
-        } else if (GuideBox.tutorial == 0) {
-            jumpto = "Analysis"
-        }
-        helpContent.innerHTML = helpContent.innerHTML.concat(`<br><br/><button id="jump" class="guide-link">` + "Jump to " + jumpto + `</button><br/>`)
-        if (jumpto == "Modeling") {
+            helpContent.innerHTML = helpContent.innerHTML.concat(`<br><br/><button id="jump" class="guide-link">` + "Jump to " + jumpto + `</button><br/>`)
             $('#jump').css("float", "left")
-        } else {
-            $('#jump').css("float", "right")
         }
 
         // adds buttons for navigation
@@ -503,12 +485,6 @@ $('#why-btn').on('click', function () {
     GuideBox.why.get(GuideBox.step[1]).showGuideBox();
 });
 
-// begins analyze tutorial when clicked from Help tab
-$('#analyze-btn').on('click', function () {
-    GuideBox.tutorial  = 2;
-    GuideBox.analyze.get(GuideBox.step[2]).showGuideBox();
-});
-
 // skips around when dropdown is used
 $('#guide-name').on('change', function () {
     GuideBox.skip();
@@ -539,49 +515,8 @@ $('#btn-view-intermediate').on('click', function () {
     $('.popup_frame').height($('#paper').height() * 0.9);
 });
 
-// /**
-//  *  Display BloomingLeaf help popups
-//  */
-//  $('#BL-help-1').on('click', function () {
-//     const dialog = showAlert('Testing',
-//                     'Testing',
-//                     window.innerWidth * 0.3, 'alert', 'warning');
-// });
-
-// $('#BL-help-2').on('click', function () {
-//     removeHighlight();
-//     clearInspector();
-//     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
-//     $('#intermediate-table').append(intermediateValuesTable.el);
-//     intermediateValuesTable.render();
-// });
-
-/**
- * Switches to Analysis view if there are no cycles and no syntax errors.
- */
-$('#analysis-btn').on('click', function () {
-    // Check if there are any syntax errors 
-    var isError = syntaxCheck();
-    /**
-     * If there are cycles, then display error message.
-     * Otherwise, remove any "red" elements.
-     */
-    var cycleList = cycleSearch();
-    // Alerts user if there are any cycles 
-    cycleResponse(cycleList);
-    if (!isACycle(cycleList) && !isError && hasElements()) {
-        clearCycleHighlighting();
-        switchToAnalysisMode();
-    }
-});
-
 /** For Load Sample Model button */
 $('#load-sample').on('click', function() {
-    // $.getJSON('https://www.cs.toronto.edu/~amgrubb/archive/REJ19-SI/MFull.json', function(myData){		
-    //     var response = JSON.stringify(myData);
-    //     var newModel = new Blob([response], {type : 'application/json'});
-    //     reader.readAsText(newModel);  	
-    // });
     fetch('./userguides/sampleModel.JSON')
     .then(response => {
         if (!response.ok) {
@@ -600,9 +535,6 @@ $('#load-sample').on('click', function() {
     });
 
 });
-
-// Switches to modeling mode
-$('#modeling-btn').on('click', function () { switchToModellingMode(); });
 
 /*** Events for Rappid/JointJS objets ***/
 
@@ -868,52 +800,6 @@ paper.on("link:options", function (cell) {
     let configInspector = null;
     let selectResult = undefined;
 
-    /** Simulate Single Path: 
-     * Selects the current configuration and passes to backendSimulationRequest()  */
-    $('#simulate-path-btn').on('click', function () {
-        var curRequest = configCollection.findWhere({ selected: true });
-        var numRel = $('#num-rel-time');
-        //Can't simulate path when num-rel-time equals 0
-        if (numRel.val() == 0) {
-            swal("Num Relative Time Points cannot be 0", "", "error");
-        } else {
-            curRequest.set('action', 'singlePath');
-            backendSimulationRequest(curRequest);
-        }
-    });
-    /** All Next States:
-     * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
-    $('#next-state-btn').on('click', function () {
-        var curRequest = configCollection.findWhere({ selected: true });
-        // Checks to see if single path has been run by seeing if there are any results
-        if (typeof curRequest.previousAttributes().results === 'undefined' || curRequest.previousAttributes().results.length == 0) {
-            var singlePathRun = false;
-        } else {
-            var singlePathRun = true;
-        }
-
-        // If single path has been run backend analysis
-        if (singlePathRun === true) {
-            $("body").addClass("spinning"); // Adds spinner animation to page
-            var curResult = curRequest.previousAttributes().results.findWhere({ selected: true });
-            curRequest.set('action', 'allNextStates');
-            curRequest.set('previousAnalysis', curResult);
-
-            // If the last time point is selected, error message shows that you can't open Next State
-            if (EVO.sliderOption == 1 || EVO.sliderOption == 2) {
-                swal("Error: Cannot explore next states with EVO in % or Time.", "", "error");
-                $("body").removeClass("spinning"); // Remove spinner from page
-            } else if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
-                swal("Error: Cannot explore next states with last time point selected.", "", "error");
-                $("body").removeClass("spinning"); // Remove spinner from page
-            } else {
-                backendSimulationRequest(curRequest);
-            }
-        } else { // If single path has not been run show error message
-            swal("Error: Cannot explore next states before simulating a single path.", "", "error");
-        }
-    });
-
     function resetConfig() {
         var model;
         while (model = configCollection.first()) {
@@ -921,220 +807,12 @@ paper.on("link:options", function (cell) {
         }
     }
 
-    /**
-     * This is an option under clear button to clear red-highlight from
-     * cycle detection function
-     */
-
-    $('#btn-clear-analysis').on('click', function () {
-        resetConfig();
-        // Updates EVO slider
-        $('#modelingSlider').css("display", "");
-        $('#analysisSlider').css("display", "none");
-        EVO.switchToModelingMode(undefined);
-        revertNodeValuesToInitial(selectResult);
-        // Creates new config
-        $('#configID').append(configInspector.el);
-        configInspector.render();
-    });
-
-    $('#btn-clear-results').on('click', function () {
-        var results;
-        for (var i = 0; i < configCollection.length; i++) {
-            while (results = configCollection.models[i].get('results').first()) {
-                results.destroy();
-            }
-        }
-        $('.result-elements').remove();
-        // Updates EVO slider
-        $('#modelingSlider').css("display", "");
-        $('#analysisSlider').css("display", "none");
-        EVO.switchToModelingMode(undefined);
-        revertNodeValuesToInitial(selectResult);
-    });
-
-    /**
-     * Helper function for switching to Analysis view.
-     */
-    function switchToAnalysisMode() {
-        setInteraction(false);
-
-        document.getElementById("colorResetAnalysis").value = 1;
-        // Clear the right panel
-        clearInspector();
-
-        removeHighlight();
-        configInspector = new ConfigInspector({ collection: configCollection });
-        $('#configID').append(configInspector.el);
-        configInspector.render();
-
-        // Remove model only elements 
-        $('.model-only').css("display", "none");
-        $('#paper').css("right", "0px");
-
-        // Show extra tools for analysis mode
-        $('.analysis-only').css("display", "");
-
-        // Disable link settings
-        $('.link-tools').css("display", "none");
-
-        // TODO: Add check for model changes to potentially clear configCollection back in
-    }
-
-    {
-        /** Initialize showEditingWarning within scope of brackets */
-        let showEditingWarning = true;
-
-        /**
-         * Switches back to Modelling Mode from Analysis Mode
-         * and resets the Nodes' satValues to the values prior to analysis
-         * Display the modeling mode page
-         */
-        function switchToModellingMode() {
-            setInteraction(true);
-            if (selectResult !== undefined) {
-                selectResult.set('selected', false);
-            }
-
-            var elements = SliderObj.getIntentionsAndActorsView();
-            var links = SliderObj.getLinksView();
-            for (var i = 0; i < elements.length; i++) {
-                $("#" + elements[i].id).css("display", "");
-                var cell = graph.getCell(elements[i].model.id);
-                cell.attr({ text: { fill: 'black', stroke: "none", 'font-weight': 'normal' } }); 
-            }
-            for (var i = 0; i < links.length; i++) {
-                $("#" + links[i].id).css("display", "");
-            }
-
-            // Reset to initial graph prior to analysis
-            revertNodeValuesToInitial(selectResult);
-
-            // Remove analysis only elements 
-            $('.analysis-only').css("display", "none");
-
-            // Show extra tools for modelling mode
-            $('.model-only').css("display", "");
-            $('#paper').css("right", "260px");
-
-            // Reinstantiate link settings
-            $('.link-tools').css("display", "");
-            EVO.switchToModelingMode(selectResult);
-            // Remove configInspector and analysis view
-            configInspector.remove();
-
-            // TODO: Determine if we should be setting action to null on all configs
-            configCollection.findWhere({ selected: true }).set('action', null);
-
-            // Popup to warn user that changing model will clear results
-            // From analysis configuration sidebar
-            // Defaults to showing each time if user clicks out of box instead of selecting option
-            if (showEditingWarning) {
-                const dialog = showAlert('Warning',
-                    '<p>Changing the model will clear all ' +
-                    'results from all configurations.</p><p>Do you wish to proceed?</p>' +
-                    '<p><button type="button" class="model-editing"' +
-                    ' id="repeat" style="width:100%">Yes' +
-                    '</button><button type="button" ' +
-                    'class="model-editing" id="singular" style="width:100%">Yes, please do not show this warning again ' +
-                    '</button> <button type="button" class="model-editing"' +
-                    ' id="decline" onclick="switchToAnalysisMode()" style="width:100%"> No, please return to analysis mode' +
-                    '</button></p>',
-                    window.innerWidth * 0.3, 'alert', 'warning');
-                document.querySelectorAll('.model-editing').forEach(function (button) {
-                    button.addEventListener('click', function () { dialog.close(); if (button.id == 'singular') { showEditingWarning = false; }; });
-                });
-            }
-        }
-    } // End scope of showEditingWarning
-
     function clearAll() {
         graph.clear();
         configCollection.reset();
         // Delete cookie by setting expiry to past date
         document.cookie = 'graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
     }
-
-    // Load ConfigCollection for display 
-    // TODO: modify it to read results after results can be shown
-    function loadConfig(loadedConfig) {
-        var selectedConfig;
-        var selectedResult;
-        // Clears current configCollection
-        resetConfig();
-
-        // Individually creates each ConfigBBM and add to collection
-        for (let config of loadedConfig) {
-            if (config.selected) { // If selected is true
-                selectedConfig = config.name; // Record the name of config
-            }
-            var configBBM = new ConfigBBM({ name: config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, previousAnalysis: config.previousAnalysis, selected: config.selected })
-            if (config.results.length !== 0) { // Creates results if there applicable
-                var results = configBBM.get('results'); // Grabs the coolection from the configBBM
-                // Individually creates each ResultBBM and add to collection
-                for (let result of config.results) {
-                    if (result.selected) { // If selected is true
-                        selectedResult = result.name; // Record the name of result
-                    }
-                    var resultsBBM = new ResultBBM({ name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected });
-                    results.add(resultsBBM)
-                }
-                configCollection.add(configBBM);
-            }
-            configCollection.add(configBBM);
-        }
-
-        // Sets what the config/result the user was last on as selected
-        var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig); //Find the config with the same name as the selected that is read in
-        if (configGroup.length !== 0) {
-            configGroup[0].set('selected', true); // Set the selected to true
-        }
-
-        var currResult;
-        if (configGroup[0].get('results').length !== 0) { // Within that selected config
-            // Set selected of the selected result as true
-            currResult = configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
-            currResult.set('selected', true);
-        }
-    }
-
-    function loadOldConfig(oldAnalysisRequest) {
-        var configBBM = new ConfigBBM({ conflictLevel: oldAnalysisRequest.conflictLevel, numRelTime: oldAnalysisRequest.numRelTime, currentState: oldAnalysisRequest.currentState })
-        configCollection.add(configBBM);
-    }
-
-    /**
-     * 
-     * Set selectResult from functions outside of the parenthesis
-     * @param {*} result 
-     */
-    function setSelectResult(result) {
-        selectResult = result;
-    }
-
-    // Save the current graph and analysis (without results) to json file
-    $('#btn-save-analysis').on('click', function () {
-        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name) {
-            clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            var fileName = name + ".json";
-            var obj = getModelAnalysisJson(configCollection);
-            download(fileName, stringifyCirc(obj));
-        }
-    });
-
-    // Save the current graph and analysis (with results) to json file
-    $('#btn-save-all').on('click', function () {
-        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name) {
-            clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            var fileName = name + ".json";
-            var obj = getFullJson(configCollection);
-            download(fileName, stringifyCirc(obj));
-        }
-    });
 
     // Workaround for load, activates a hidden input element
     $('#btn-load').on('click', function () {
@@ -1372,16 +1050,16 @@ paper.on("link:options", function (cell) {
     /**
      * Four option analysis mode slider
      */
-    document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
-        var selectConfig;
-        if (configCollection.length !== 0) {
-            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
-            if (selectConfig.get('results') !== undefined) {
-                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
-            }
-        }
-        EVO.setSliderOption(this.value, selectResult);
-    }
+    // document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
+    //     var selectConfig;
+    //     if (configCollection.length !== 0) {
+    //         selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
+    //         if (selectConfig.get('results') !== undefined) {
+    //             selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
+    //         }
+    //     }
+    //     EVO.setSliderOption(this.value, selectResult);
+    // }
 } // End scope of configCollection and configInspector
 
 /**
@@ -1511,38 +1189,6 @@ function setInteraction(interactionValue) {
     _.each(graph.getCells(), function (cell) {
         cell.findView(paper).options.interactive = interactionValue;
     });
-}
-
-/**
- * Sets each node/cellview in the paper to its initial 
- * satisfaction value and colours all text to black
- */
-function revertNodeValuesToInitial(analysisResult) {
-    var elements = graph.getElements();
-    var curr;
-    for (var i = 0; i < elements.length; i++) {
-        curr = elements[i].findView(paper).model;
-        if (curr.get('type') !== 'basic.Goal' &&
-            curr.get('type') !== 'basic.Task' &&
-            curr.get('type') !== 'basic.Softgoal' &&
-            curr.get('type') !== 'basic.Resource') {
-            continue;
-        }
-        var intention = curr.get('intention');
-        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-
-        if (initSatVal === '(no value)') {
-            curr.attr('.satvalue/text', '');
-
-        } else {
-            curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-        }
-
-    }
-    // Remove slider
-    if (analysisResult !== undefined) {
-        SliderObj.removeSlider(analysisResult);
-    }
 }
 
 /**

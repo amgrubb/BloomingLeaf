@@ -34,8 +34,6 @@
             <div class="dropdown-toolbar">
                 <a id="btn-load" class="model-only">Load</a>
                 <a id="btn-save">Save Model</a>
-                <a id="btn-save-analysis">Save Model and Analysis Requests</a>
-                <a id="btn-save-all">Save Model, Analysis Requests, and Results</a>
                 <a id="btn-svg">Open as SVG</a>
             </div>
         </div>
@@ -45,14 +43,11 @@
             <div class="dropdown-toolbar">
                 <a id="btn-undo" class='model-only'>Undo Move</a>
                 <a id="btn-redo" class='model-only'>Redo Move</a>
-                <a id="btn-clear-all" class='model-only'>Clear Full Model and Analysis</a>
+                <a id="btn-clear-all" class='model-only'>Clear Full Model<!-- and Analysis --></a>
                 <a id="btn-clear-elabel" class='model-only'>Clear Evaluation Labels</a>
                 <a id="btn-clear-flabel" class='model-only'>Clear Evolving Function Labels</a>
                 <a id="btn-clear-cycle" class='model-only'>Clear Highlighting</a>
                 <a id="btn-show-root-leaf" class='model-only'>Highlight Root/Leaf Nodes</a>
-                <a id="btn-clear-results" class='analysis-only' style="display: none;">Clear Results Only</a>
-                <a id="btn-clear-analysis" class='analysis-only' style="display: none;">Clear Requests and
-                    Results</a>
             </div>
         </div>
         <div class="dropdown">
@@ -153,9 +148,6 @@
                 </div>
             </div>
 
-        <button id="analysis-btn" class="green-btn btn model-only" style="border-radius:none;">Analysis</button>
-        <button id="modeling-btn" class="red-btn btn analysis-only" style="display: none;">Modeling</button>
-
         <!-- EVO dropdown menu for palette choices-->
         <div class="dropdown">
             <div class="btn" style="display: inline-block">EVO</div>
@@ -183,16 +175,6 @@
             <input type="range" min="0" max="1" value="0" class="EVO-slider" id="colorReset">
             <!-- makes slider -->
             <p class="on-off" class="analysis-only"> Off &ensp; On</p>
-            <!--  on/off label -->
-        </div>
-        
-        
-        <!-- Analysis mode slider: option to fill by percentage of timepoints -->
-        <div class="EVO-whole-button" id='analysisSlider' style='display: none'>
-            <!-- slider div -->
-            <input type="range" min="0" max="3" value="0" class="EVO-slider" id="colorResetAnalysis">
-            <!-- makes slider -->
-            <p class="on-off"> Off &ensp; % &ensp; Time &ensp; State </p>
             <!--  on/off label -->
         </div>
         
@@ -225,20 +207,12 @@
                 </div>
             </div>
         </div>        
-        
-        <!-- This is simulate path button-->
-        <button id="simulate-path-btn" class="btn analysis-only" style="border-radius: none; display: none" ;>Simulate
-            Path</button>
-        <!-- This is explore states button-->
-        <button id="next-state-btn" class="btn analysis-only" style="border-radius: none; display: none">Explore
-            States</button>
 
         <div class="dropdown">
             <button class="btn" style="display:inline">Tutorials</button>
             <div class="dropdown-toolbar">
                 <a id="why-btn">Purpose and Usage</a>
                 <a id="build-btn">Build a Model</a>
-                <a id="analyze-btn">Analyze the Model</a>
             </div>
         </div>
 
@@ -366,11 +340,9 @@
     <script src="./rappid-extensions/BackboneModelsAnalysis.js"></script>
     <script src="./rappid-extensions/AssignmentsTable.js"></script>
     <script src="./rappid-extensions/ElementInspector.js"></script>
-    <script src="./rappid-extensions/ConfigInspector.js"></script>
     <script src="./rappid-extensions/IntermediateValues.js"></script>
     <script src="./rappid-extensions/ActorInspector.js"></script>
     <script src="./rappid-extensions/LinkInspector.js"></script>
-    <script src="./rappid-extensions/AnalysisInspector.js"></script>
     <script src="./rappid-extensions/joint.extensions.js"></script>
 
     <!-- Front end scripts -->
@@ -383,8 +355,6 @@
     <!--SweetAlertJS is used for easy way to customize dialog or alert message
        -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.11.5/sweetalert2.all.js"></script>
-
-    <script src="./js/backendComm.js"></script>
 
     <div class="attribution model-only">
         <img src="./images/site-logo.png" style="width:25%;height:25%;float:left">

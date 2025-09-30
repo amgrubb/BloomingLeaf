@@ -27,78 +27,6 @@ class SliderObj {
     }
 
     /**
-     * Displays the analysis to the web app, by creating the slider display
-     *
-     * @param {ResultBBM} analysisResult
-     *   AnalysisResult object returned from backend
-     * @param {Boolean} isSwitch
-     *   True if we are switching analysis results,
-     *   false if new result from the back end
-     * 
-     * @return {Boolean} SliderObj.createSlider(analysisResult, isSwitch);
-     */
-    static displayAnalysis(analysisResult, isSwitch) {
-        // Check if slider has already been initialized
-        if (analysisResult.get('slider') == null) {
-            analysisResult.set('slider', new SliderObj());
-        }
-        if (analysisResult.get('slider').sliderElement.hasOwnProperty('noUiSlider')) {
-            analysisResult.get('slider').sliderElement.noUiSlider.destroy();
-        }
-        return SliderObj.createSlider(analysisResult, isSwitch);
-    }
-
-    /**
-     * Creates a slider and displays it in the web app
-     *
-     * @param {ResultBBM} currentAnalysis
-     *  an AnalysisResult object that contains data about the analysis that the back end performed
-     * @param {Boolean} isSwitch
-     *   True if the slider is being created when we are switching analysis results,
-     *   false if new result from the back end
-     * 
-     * @return {Boolean} 
-     */
-    static createSlider(currentAnalysis, isSwitch) {
-        var sliderMax = currentAnalysis.get('timePointPath').length - 1; // .timeScale;
-        var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
-        if (sliderMax == 0) {
-            swal("Error: There are no timepoints to simulate.", "", "error");
-            return false;
-        }
-
-        noUiSlider.create(currentAnalysis.get('slider').sliderElement, {
-            start: 0,
-            step: 1,
-            behaviour: 'tap',
-            connect: 'lower',
-            direction: 'ltr',
-            range: {
-                'min': 0,
-                'max': sliderMax
-            },
-            pips: {
-                mode: 'values',
-                values: [],
-                density: density
-            }
-        });
-        
-        // Set initial value of the slider
-        // 0 if switching between existing results; sliderMax if new result
-        currentAnalysis.get('slider').sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
-        currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
-            SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
-    
-            SliderObj.hideElements();
-        });
-        
-        EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
-        SliderObj.adjustSliderWidth(sliderMax);
-        return true;
-    }
-
-    /**
      * Resets display to default, before result is displayed
      * 
      * @param {ResultBBM} analysisResult 
@@ -109,53 +37,6 @@ class SliderObj {
         // show modeling mode EVO slider
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
-    }
-
-    /**
-     * Removes the slider from the UI
-     * 
-     * @param {ResultBBM} analysisResult 
-     */
-    static removeSlider(analysisResult) {
-        // if there's a slider, remove it
-        if (analysisResult.get('slider').sliderElement.hasOwnProperty('noUiSlider')) {
-            analysisResult.get('slider').sliderElement.noUiSlider.destroy();
-        }
-        $('#sliderValue').text("");
-    }
-
-    /**
-     * Display all elements and links in time and percent mode
-     */
-    displayAll() {
-        if (document.getElementById('colorResetAnalysis').value == 1 || document.getElementById('colorResetAnalysis').value == 2) {
-            SliderObj.defaultToAppear(SliderObj.getActorsView(), SliderObj.getIntentionsView(), SliderObj.getLinksView());
-        } else {
-            SliderObj.hideElements();
-        }
-    }
-
-    /**
-     * Adjusts the width of the slider depending on the width of the paper
-     *
-     * @param {Number} maxValue
-     *   The maximum value for the current slider
-     */
-    static adjustSliderWidth(maxValue) {
-        // Min width of slider is 15% of paper's width
-        var min = $('#paper').width() * 0.1;
-        // Max width of slider is 90% of paper's width
-        var max = $('#paper').width() * 0.9;
-        // This is the width based on maxvalue
-        var new_width = $('#paper').width() * maxValue / 65;
-        // new_width is too small or too large, adjust
-        if (new_width < min) {
-            new_width = min;
-        }
-        if (new_width > max) {
-            new_width = max;
-        }
-        $('#slider').width(new_width);
     }
 
     /**
@@ -178,24 +59,6 @@ class SliderObj {
             SliderObj.updateNodeValues(element, sliderValue));   
         EVO.setCurTimePoint(sliderValue, currentAnalysis);
     
-    }
-
-    /**
-     * Updates the satValue of the node.
-     * 
-     * @param {map} element
-     *  Map between element id and result data. 
-     *   Satisfaction value in string form. ie: '0011' for satisfied
-     * @param {Number} sliderValue
-     *   Current value of the slider
-     */
-    static updateNodeValues(element, sliderValue) {
-        var satValue = element.status[sliderValue];
-        var cell = graph.getCell(element.id);
-        if ((cell != null) && (satValue in satisfactionValuesDict)) {
-            cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
-            cell.attr({ text: { fill: 'white' } }); 
-        }
     }
 
     /**

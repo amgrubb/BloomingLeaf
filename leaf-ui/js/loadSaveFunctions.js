@@ -327,46 +327,6 @@ function loadConstraints() {
 }
 
 /**
- * Returns an object that contains the current graph, model, and analysis configurations
- * and REMOVES results from the analysisConfigurations map.
- * This return object is what the user would download when clicking the Save button
- * in the top menu bar.
- *
- * @returns {Object}
- */
-function getModelAnalysisJson(configCollection) {
-	var obj = {};
-	obj.graph = graph.toJSON();
-	// Clone to spearate the result removal from what is displayed in ConfigInspector 
-	var newConfig = configCollection.clone();
-
-	// Remove results
-	for (var i = 0; i < newConfig.length; i++) {
-		newConfig.at(i).set('results', new ResultCollection([]))
-	}
-	obj.configCollection = newConfig.toJSON();
-	obj.version = "BloomingLeaf_2.0";
-
-	return obj;
-}
-
-/**
- * Returns an object that contains the current graph, model and analysis configurations.
- * This return object is what the user would download when clicking the Save button
- * in the top menu bar.
- *
- * @returns {Object}
- */
-function getFullJson(configCollection) {
-	var obj = {};
-	obj.graph = graph.toJSON();
-	obj.configCollection = configCollection.toJSON();
-	obj.version = "BloomingLeaf_2.0";
-
-	return obj;
-}
-
-/**
  * Helper function to download saved graph in JSON format
  */
 function download(filename, text) {
