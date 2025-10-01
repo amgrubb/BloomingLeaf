@@ -58,7 +58,11 @@ We are currently running BloomingLeaf on `Ubuntu 24.04.2 LTS (GNU/Linux 6.8.0-63
  `sudo apt install git-all`
 
 2. Clone / Download a copy of the [repository](https://github.com/amgrubb/BloomingLeaf). You must use at least version 2.7 to host BloomingLeaf online.  
-`git clone https://github.com/amgrubb/BloomingLeaf.git`
+`git clone https://github.com/amgrubb/BloomingLeaf.git`  
+or   
+`git clone git@github.com:amgrubb/BloomingLeaf.git`.  
+We set up our repo in `/usr/local/`. Ask your system administrator where you should set up your repo in order to handle SSL certificates (and for permission to write to the folder).  
+_Note: you may need to set up a new SSH key to clone the repo, see the [GitHub help](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) for more details._
 
 3. You also need a copy of [Rappid](https://www.jointjs.com/), which we use as the basis for our tool. We are currently using Rappid Academic Version 2.3.1. A more recent version of Rappid will not work with BloomingLeaf. Put the Rappid library inplace of the `../BloomingLeaf/leaf-ui/rappid/` folder.
 
