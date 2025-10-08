@@ -161,6 +161,9 @@ public class BIModelSpecBuilder {
 
 				for (ICell link : links){
 					String linkType = link.getLink().getLinkType();
+					if (linkType.equals("participates-in") || linkType.equals("is-a") || 
+							linkType.equals("plays") || linkType.equals("is-part-of"))
+						continue;
 					String linkSrcID = link.getSourceID();
 					String linkDestID = link.getTargetID();
 					Intention intentElementSrc = modelSpec.getIntentionByUniqueID(linkSrcID);
